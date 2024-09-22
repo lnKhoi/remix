@@ -1,0 +1,10 @@
+import{r as n,j as e}from"./jsx-runtime-BEJf7xDi.js";import{b as h}from"./index-Ci7yfjs1.js";import{i as f,D as x}from"./error-boundary-8P-gqUxe.js";import{A as y}from"./auth.context-BpjR6wCg.js";import{a as j,b as S,_ as w,u as g,M as k,c as M,S as b}from"./components-CF6Lyjm6.js";import{u as v,c as A,O as E}from"./index-Dt0pqFoG.js";import"./clsx-B-dksMZM.js";import"./bundle-mjs-BOZU2X2x.js";import"./index-BJ3mzL9c.js";/**
+ * @remix-run/react v2.12.0
+ *
+ * Copyright (c) Remix Software Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE.md file in the root directory of this source tree.
+ *
+ * @license MIT
+ */let a="positions";function H({getKey:t,...l}){let{isSpaMode:c}=j(),o=v(),u=A();S({getKey:t,storageKey:a});let m=n.useMemo(()=>{if(!t)return null;let r=t(o,u);return r!==o.key?r:null},[]);if(c)return null;let d=((r,p)=>{if(!window.history.state||!window.history.state.key){let s=Math.random().toString(32).slice(2);window.history.replaceState({key:s},"")}try{let i=JSON.parse(sessionStorage.getItem(r)||"{}")[p||window.history.state.key];typeof i=="number"&&window.scrollTo(0,i)}catch(s){console.error(s),sessionStorage.removeItem(r)}}).toString();return n.createElement("script",w({},l,{suppressHydrationWarning:!0,dangerouslySetInnerHTML:{__html:`(${d})(${JSON.stringify(a)}, ${JSON.stringify(m)})`}}))}const W=()=>[{rel:"prefetch",href:f,as:"image"}];function $(){const t=g();return e.jsx(h.ThemeProvider,{specifiedTheme:t.theme,themeAction:"/action/set-theme",children:e.jsx(y,{children:e.jsx(L,{})})})}function L(){return e.jsxs("html",{lang:"en",children:[e.jsxs("head",{children:[e.jsx("meta",{charSet:"utf-8"}),e.jsx("meta",{name:"viewport",content:"width=device-width, initial-scale=1"}),e.jsx(k,{}),e.jsx(M,{})]}),e.jsxs("body",{suppressHydrationWarning:!0,children:[e.jsx(E,{}),e.jsx(H,{}),e.jsx(b,{})]})]})}function B(){return e.jsx(x,{})}function C(){return e.jsx("h1",{children:"Loading..."})}export{B as ErrorBoundary,C as HydrateFallback,$ as default,W as links};
