@@ -91,7 +91,7 @@ export default function Page() {
     return (
         <div className="flex h-[100vh] w-full items-center justify-between">
             <ToastContainer  />
-            <div className="flex min-h-full w-1/2 flex-col items-center justify-center">
+            <div className="flex h-[100vh] w-1/2 overflow-y-scroll pb-5 flex-col items-center justify-center">
                 <img
                     src={Logo}
                     alt="logo"
@@ -269,7 +269,7 @@ export default function Page() {
                     )}
                 </Formik>
             </div>
-            <div className="h-full w-1/2">
+            <div className="h-[100vh] w-1/2">
                 <img
                     src={LoginBanner}
                     alt="banner"

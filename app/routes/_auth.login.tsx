@@ -24,7 +24,6 @@ import Fb_icon from '~/assets/facebook.svg';
 import Gg_icon from '~/assets/google.svg';
 import Is_icon from '~/assets/insta.svg';
 import Logo from '~/assets/logo.svg';
-import TT_icon from '~/assets/tiktok.svg';
 import { Button } from '~/components/ui/button';
 import { CardDescription } from '~/components/ui/card';
 import { Input } from '~/components/ui/input';
@@ -77,7 +76,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 
 export default function Page() {
   const { updateUserInfo } = useAuthContext()
-  const [userType, setUserType] = useState<UserType>( 'creator');
+  const [userType, setUserType] = useState<UserType>('creator');
   const navigate = useNavigate();
   const [loading, setLoading] = useState<boolean>(false)
   const user: GoogleAccount = useLoaderData()
@@ -139,7 +138,7 @@ export default function Page() {
                   onValueChange={(e) => {
                     setUserType(e as UserType);
                     resetForm();
-                    localStorage.setItem('remix_tab',e)
+                    localStorage.setItem('remix_tab', e)
                   }}
                   defaultValue={userType}
                   className="w-[460px]"
@@ -195,7 +194,7 @@ export default function Page() {
                         Login
                       </Button>
 
-                      <CardDescription className="mt-4">
+                      <CardDescription className="mt-2">
                         <div className="flex items-center">
                           <div className="flex-grow border-t border-gray-300"></div>
                           <span className="mx-4 text-gray-500">or Login with</span>
@@ -204,26 +203,28 @@ export default function Page() {
                       </CardDescription>
 
                       {/* Social Login Buttons */}
-                      <Button type='button' variant="outline" className="w-full">
-                        <img className="mr-1" src={Fb_icon} alt="Facebook" />
-                        Login with Facebook
-                      </Button>
-                      <a href="/auth/google">
-                        <Button type='button' variant="outline" className="w-full">
-                          <img className="mr-1" src={Gg_icon} alt="Google" />
-                          Login with Google
+                      <div className='flex gap-4 items-center justify-between w-full'>
+                        <Button type='button' variant="outline" className="w-full h-[36px]">
+                          <img className="mr-1" src={Fb_icon} alt="Facebook" />
+                          Facebook
                         </Button>
-                      </a>
-                      {userType === 'creator' && (
+                        <a href="/auth/google" className='w-full'>
+                          <Button type='button' variant="outline" className="w-full h-[36px]">
+                            <img className="mr-1" src={Gg_icon} alt="Google" />
+                            Google
+                          </Button>
+                        </a>
+                        {/* {userType === 'creator' && (
                         <Button type='button' variant="outline" className="w-full">
                           <img className="mr-1" src={TT_icon} alt="Tiktok" />
-                          Login with Tiktok
+                          Tiktok
                         </Button>
-                      )}
-                      <Button type='button' variant="outline" className="w-full">
-                        <img className="mr-1" src={Is_icon} alt="Instagram" />
-                        Login with Instagram
-                      </Button>
+                      )} */}
+                        <Button type='button' variant="outline" className="w-full h-[36px]">
+                          <img className="mr-1" src={Is_icon} alt="Instagram" />
+                          Instagram
+                        </Button>
+                      </div>
                     </div>
 
                     <div className="mt-4 text-center text-sm">
