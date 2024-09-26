@@ -28,7 +28,7 @@ let googleStrategy = new GoogleStrategy(
   {
     clientID: import.meta.env.GOOGLE_OAUTH_CLIENT_ID ,
     clientSecret: import.meta.env.GOOGLE_OAUTH_CLIENT_SECRET,
-    callbackURL: `${import.meta.env.BASE_URL}/auth/google/callback`,
+    callbackURL: `https://spiral-tawny.vercel.app/auth/google/callback`,
   },
   async ({ accessToken, refreshToken, extraParams, profile }) => {
     return {

@@ -1,0 +1,33 @@
+{
+  "app/assets/avatar.jpeg": {
+    "file": "assets/avatar-k5i8dFE7.jpeg",
+    "src": "app/assets/avatar.jpeg"
+  },
+  "app/assets/login-banner.png": {
+    "file": "assets/login-banner-DkUQ0E4H.png",
+    "src": "app/assets/login-banner.png"
+  },
+  "app/assets/logo.svg": {
+    "file": "assets/logo-Os7jrbJO.svg",
+    "src": "app/assets/logo.svg"
+  },
+  "app/assets/tiktok-cover.jpeg": {
+    "file": "assets/tiktok-cover-o2rR4eid.jpeg",
+    "src": "app/assets/tiktok-cover.jpeg"
+  },
+  "virtual:remix/server-build": {
+    "file": "index.js",
+    "name": "server-build",
+    "src": "virtual:remix/server-build",
+    "isEntry": true,
+    "css": [
+      "assets/server-build-MQWjvgq1.css"
+    ],
+    "assets": [
+      "assets/logo-Os7jrbJO.svg",
+      "assets/login-banner-DkUQ0E4H.png",
+      "assets/tiktok-cover-o2rR4eid.jpeg",
+      "assets/avatar-k5i8dFE7.jpeg"
+    ]
+  }
+}
