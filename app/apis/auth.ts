@@ -42,7 +42,7 @@ export type OTPPayload = {
 }
 
 export const verifyOTP = (payload: OTPPayload) => {
-  return postData('/api/v1/auth/validate-otp', payload)
+  return postData('/api/v1/auth/validate-otp/active-user', payload)
 }
 
 export const login3rdParty = (role: string, email: string, name: string, phone: string) => {

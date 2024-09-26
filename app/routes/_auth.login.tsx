@@ -27,20 +27,13 @@ import Logo from '~/assets/logo.svg';
 import { Button } from '~/components/ui/button';
 import { CardDescription } from '~/components/ui/card';
 import { Input } from '~/components/ui/input';
-import {
-  Tabs,
-  TabsList,
-  TabsTrigger,
-} from '~/components/ui/tabs';
+import { Tabs } from '~/components/ui/tabs';
 import {
   EMAIL_REQUIRED,
   INVALID_EMAIL,
 } from '~/constants/messages.constant';
 import { useAuthContext } from '~/contexts/auth.context';
-import {
-  GoogleAccount,
-  UserType,
-} from '~/models/User.model';
+import { GoogleAccount } from '~/models/User.model';
 import {
   authenticator,
   getSession,
@@ -76,7 +69,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 
 export default function Page() {
   const { updateUserInfo } = useAuthContext()
-  const [userType, setUserType] = useState<UserType>('creator');
+  // const [userType, setUserType] = useState<UserType>( 'creator');
   const navigate = useNavigate();
   const [loading, setLoading] = useState<boolean>(false)
   const user: GoogleAccount = useLoaderData()
@@ -86,7 +79,7 @@ export default function Page() {
       await login3rdParty('brand', user.emails?.[0]?.value, user?.displayName, '')
         .then((res) => {
           localStorage.setItem('remix_us_tk', res?.data?.id)
-          userType === 'creator' ? navigate('/creator/dashboard') : navigate('/manager/dashboard')
+          navigate('/manager/dashboard')
         }
         )
     }
@@ -107,9 +100,7 @@ export default function Page() {
   const handleLogin = async (): Promise<void> => {
     await getMe().then((res) => {
       updateUserInfo(res.data)
-      res.data.role === 'CREATOR'
-        ? navigate('/creator/dashboard')
-        : navigate('/manager/dashboard')
+      navigate('/')
     })
   }
 
@@ -135,25 +126,19 @@ export default function Page() {
             return (
               <>
                 <Tabs
-                  onValueChange={(e) => {
-                    setUserType(e as UserType);
-                    resetForm();
-                    localStorage.setItem('remix_tab', e)
-                  }}
-                  defaultValue={userType}
                   className="w-[460px]"
                 >
-                  <TabsList className="grid w-full grid-cols-2">
+                  {/* <TabsList className="grid w-full grid-cols-2">
                     <TabsTrigger value="creator">Creator</TabsTrigger>
                     <TabsTrigger value="brand">Brands</TabsTrigger>
-                  </TabsList>
+                  </TabsList> */}
                   <FormikForm className="mt-[30px]">
                     <div className="grid gap-4">
                       <div className="grid gap-2">
                         <Field
                           onChange={handleChange}
                           as={Input}
-                          label={userType === 'creator' ? 'Email' : 'Business email'}
+                          label={'Business email'}
                           id="email"
                           name="email"
                           type="email"
@@ -194,7 +179,7 @@ export default function Page() {
                         Login
                       </Button>
 
-                      <CardDescription className="mt-2">
+                      <CardDescription className="mt-4">
                         <div className="flex items-center">
                           <div className="flex-grow border-t border-gray-300"></div>
                           <span className="mx-4 text-gray-500">or Login with</span>
@@ -203,28 +188,20 @@ export default function Page() {
                       </CardDescription>
 
                       {/* Social Login Buttons */}
-                      <div className='flex gap-4 items-center justify-between w-full'>
-                        <Button type='button' variant="outline" className="w-full h-[36px]">
-                          <img className="mr-1" src={Fb_icon} alt="Facebook" />
-                          Facebook
-                        </Button>
-                        <a href="/auth/google" className='w-full'>
-                          <Button type='button' variant="outline" className="w-full h-[36px]">
-                            <img className="mr-1" src={Gg_icon} alt="Google" />
-                            Google
-                          </Button>
-                        </a>
-                        {/* {userType === 'creator' && (
+                      <Button type='button' variant="outline" className="w-full">
+                        <img className="mr-1" src={Fb_icon} alt="Facebook" />
+                        Login with Facebook
+                      </Button>
+                      <a href="/auth/google">
                         <Button type='button' variant="outline" className="w-full">
-                          <img className="mr-1" src={TT_icon} alt="Tiktok" />
-                          Tiktok
+                          <img className="mr-1" src={Gg_icon} alt="Google" />
+                          Login with Google
                         </Button>
-                      )} */}
-                        <Button type='button' variant="outline" className="w-full h-[36px]">
-                          <img className="mr-1" src={Is_icon} alt="Instagram" />
-                          Instagram
-                        </Button>
-                      </div>
+                      </a>
+                      <Button type='button' variant="outline" className="w-full">
+                        <img className="mr-1" src={Is_icon} alt="Instagram" />
+                        Login with Instagram
+                      </Button>
                     </div>
 
                     <div className="mt-4 text-center text-sm">

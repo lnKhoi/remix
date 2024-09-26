@@ -1,203 +1,126 @@
+// import {
+//   Bell,
+//   Shell,
+// } from 'lucide-react';
+// import { Badge } from '~/components/ui/badge';
+// import { Button } from '~/components/ui/button';
+// import { navItems } from '~/constants/manager.constant';
+// import { useAuthContext } from '~/contexts/auth.context';
+
+// export default function ManagerLayout() {
+//   const location = useLocation();
+//   const { handleLogout } = useAuthContext()
+//   const isActive = (path: string) => {
+//     if (path === "#") return false;
+//     return location.pathname.startsWith(path);
+//   };
+//   return (
+//     <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
+//       <div className="hidden h-full overflow-hidden border-r bg-muted/40 md:block">
+//         <div className="flex h-full max-h-screen flex-col gap-2">
+//           <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
+//             <Link to="/login" className="flex items-center gap-2 font-semibold">
+//               <Shell className="h-6 w-6" />
+//               <span className="">Spiral Inc</span>
+//             </Link>
+//             <Button variant="outline" size="icon" className="ml-auto h-8 w-8">
+//               <Bell className="h-4 w-4" />
+//               <span className="sr-only">Toggle notifications</span>
+//             </Button>
+//           </div>
+//           <div className="flex-1">
+//             <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
+//               {navItems.map((item) => (
+//                 <div onClick={() => item.label === 'Logout' ? handleLogout() : null}
+//                 >
+//                   <Link
+//                     key={item.label}
+//                     to={item.to}
+//                     className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary ${isActive(item.to)
+//                         ? "bg-muted text-primary"
+//                         : "text-muted-foreground"
+//                       }`}
+//                   >
+//                     <item.icon className="h-4 w-4" />
+//                     {item.label}
+//                     {item.badge && (
+//                       <Badge className="ml-auto flex h-6 w-6 shrink-0 items-center justify-center rounded-full">
+//                         {item.badge}
+//                       </Badge>
+//                     )}
+//                   </Link>
+//                 </div>
+//               ))}
+//             </nav>
+//           </div>
+//         </div>
+//       </div>
+//       <div className="flex flex-col h-[100vh] overflow-y-scroll">
+//         <main className="flex flex-1 flex-col p-8">
+//           <Outlet />
+//         </main>
+//       </div>
+//     </div>
+//   );
+// }
 import {
-  Bell,
-  Home,
-  LineChart,
+  Avatar,
+  Badge,
+  Layout,
   Menu,
-  Package,
-  Package2,
-  Search,
-  Shell,
-  ShoppingCart,
-  Users,
-} from 'lucide-react';
-import { ThemeToggle } from '~/components/custom/themeToggle';
-import { Badge } from '~/components/ui/badge';
-import { Button } from '~/components/ui/button';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '~/components/ui/card';
-import { Input } from '~/components/ui/input';
-import {
-  Sheet,
-  SheetContent,
-  SheetTrigger,
-} from '~/components/ui/sheet';
+} from 'antd';
+import Logo from '~/assets/logo.svg';
 import { navItems } from '~/constants/manager.constant';
 import { useAuthContext } from '~/contexts/auth.context';
 
+import { BellIcon } from '@heroicons/react/24/outline';
 import {
   Link,
   Outlet,
-  useLocation,
 } from '@remix-run/react';
 
-export default function ManagerLayout() {
-  const location = useLocation();
+const { Header, Sider, Content } = Layout;
+
+function page() {
   const { handleLogout } = useAuthContext()
-
-  const isActive = (path: string) => {
-    if (path === "#") return false;
-    return location.pathname.startsWith(path);
-  };
-
+  
   return (
-    <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
-      <div className="hidden border-r bg-muted/40 md:block">
-        <div className="flex h-full max-h-screen flex-col gap-2">
-          <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
-            <Link to="/login" className="flex items-center gap-2 font-semibold">
-              <Shell className="h-6 w-6" />
-              <span className="">Spiral Inc</span>
-            </Link>
-            <Button variant="outline" size="icon" className="ml-auto h-8 w-8">
-              <Bell className="h-4 w-4" />
-              <span className="sr-only">Toggle notifications</span>
-            </Button>
-          </div>
-          <div className="flex-1">
-            <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
-              {navItems.map((item) => (
-                <div onClick={() => item.label === 'Logout' ? handleLogout() : null}
-                >
-                  <Link
-                    key={item.label}
-                    to={item.to}
-                    className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary ${isActive(item.to)
-                        ? "bg-muted text-primary"
-                        : "text-muted-foreground"
-                      }`}
-                  >
-                    <item.icon className="h-4 w-4" />
-                    {item.label}
-                    {item.badge && (
-                      <Badge className="ml-auto flex h-6 w-6 shrink-0 items-center justify-center rounded-full">
-                        {item.badge}
-                      </Badge>
-                    )}
-                  </Link>
-                </div>
-              ))}
-            </nav>
-          </div>
-          <div className="mt-auto p-4">
-            <Card x-chunk="dashboard-02-chunk-0">
-              <CardHeader className="p-2 pt-0 md:p-4">
-                <CardTitle>Upgrade to Pro</CardTitle>
-                <CardDescription>
-                  Unlock all features and get unlimited access to our support
-                  team.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="p-2 pt-0 md:p-4 md:pt-0">
-                <Button size="sm" className="w-full">
-                  Upgrade
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
+    <Layout style={{ height: '100vh' }}>
+      <Sider width={200} className='h-[100vh] overflow-hidden'>
+        <div className='h-[68px] flex items-center bg-[#F9FAFB] px-5 justify-between'>
+          <img src={Logo} className='h-[24px]' alt="logo" />
+          <Badge size='small' className='cursor-pointer' count={5}>
+            <BellIcon width={20} color='#374151' />
+          </Badge>
         </div>
+        <Menu
+          mode="inline"
+          defaultSelectedKeys={['/manager/dashboard']}
+          style={{ height: '100%', borderRight: 0, backgroundColor: '#F9FAFB' }}
+        >
+          {navItems.map(m => (
+            <Menu.Item  key={m.to}>
+              <div className='flex items-center' onClick={() => m.label === 'Logout' ? handleLogout() : null}>
+              <m.icon className="h-4 w-4" />
+              <Link to={m.to}><div className='ml-2'>{m.label}</div></Link>
+            </div>
+            </Menu.Item>
+          ))}
+
+        </Menu>
+        <div className='absolute bottom-0 left-0 w-full p-5 flex items-center gap-2'>
+        <Avatar className='w-[24px]' src="https://api.dicebear.com/7.x/miniavs/svg?seed=1" />
+        <div className='flex w-[100px] flex-col'>
+          <h6 className='text-gray-900 font-medium'>Alex</h6>
+          <p className='text-gray-500 text-sm'>khoi.dev@gmail</p>
+        </div>
+        </div>
+      </Sider>
+      <div className='flex w-full p-8 flex-col h-[100vh] overflow-y-scroll'>
+        <Outlet />
       </div>
-      <div className="flex flex-col">
-        <header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6">
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button
-                variant="outline"
-                size="icon"
-                className="shrink-0 md:hidden"
-              >
-                <Menu className="h-5 w-5" />
-                <span className="sr-only">Toggle navigation menu</span>
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="left" className="flex flex-col">
-              <nav className="grid gap-2 text-lg font-medium">
-                <Link
-                  to="#"
-                  className="flex items-center gap-2 text-lg font-semibold"
-                >
-                  <Package2 className="h-6 w-6" />
-                  <span className="sr-only">Acme Inc</span>
-                </Link>
-                <Link
-                  to="#"
-                  className="mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground"
-                >
-                  <Home className="h-5 w-5" />
-                  Dashboard
-                </Link>
-                <Link
-                  to="#"
-                  className="mx-[-0.65rem] flex items-center gap-4 rounded-xl bg-muted px-3 py-2 text-foreground hover:text-foreground"
-                >
-                  <ShoppingCart className="h-5 w-5" />
-                  Campaign
-                  <Badge className="ml-auto flex h-6 w-6 shrink-0 items-center justify-center rounded-full">
-                    6
-                  </Badge>
-                </Link>
-                <Link
-                  to="#"
-                  className="mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground"
-                >
-                  <Package className="h-5 w-5" />
-                  Products
-                </Link>
-                <Link
-                  to="#"
-                  className="mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground"
-                >
-                  <Users className="h-5 w-5" />
-                  Customers
-                </Link>
-                <Link
-                  to="#"
-                  className="mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground"
-                >
-                  <LineChart className="h-5 w-5" />
-                  Analytics
-                </Link>
-              </nav>
-              <div className="mt-auto">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Upgrade to Pro</CardTitle>
-                    <CardDescription>
-                      Unlock all features and get unlimited access to our
-                      support team.
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <Button size="sm" className="w-full">
-                      Upgrade
-                    </Button>
-                  </CardContent>
-                </Card>
-              </div>
-            </SheetContent>
-          </Sheet>
-          <div className="w-full flex-1">
-            <form>
-              <div className="relative flex justify-between">
-                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                <Input
-                  type="search"
-                  placeholder="Search..."
-                  className="w-full appearance-none bg-background pl-8 shadow-none md:w-2/3 lg:w-1/3"
-                />
-                <ThemeToggle />
-              </div>
-            </form>
-          </div>
-        </header>
-        <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
-          <Outlet />
-        </main>
-      </div>
-    </div>
-  );
+    </Layout>
+  )
 }
+
+export default page

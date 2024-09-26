@@ -7,6 +7,7 @@ import {
 } from 'react';
 
 import { User } from '~/models/User.model';
+import { authenticator } from '~/services/sessions.server';
 
 import { useNavigate } from '@remix-run/react';
 
@@ -26,7 +27,7 @@ type AuthContextType = {
       const handleLogout = (): void => {
           localStorage.removeItem('remix_us_tk')
           navigate('/logout')
-        //   authenticator.logout
+          authenticator.logout
       }
       return (
           <MyContext.Provider value={{ userInfo, updateUserInfo, handleLogout }}>

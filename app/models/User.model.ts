@@ -10,12 +10,12 @@ export type SignupPayload = {
   email?: string
   phone?: string
   industry?: string[]
-  category?:string[]
+  category?: string[]
   password?: string
   confirmPassword?: string
 }
 
-export type Brand  = {
+export type Brand = {
   id: string;
   name: string;
   phone: string;
@@ -63,4 +63,14 @@ export type GoogleAccount = {
     email_verified: boolean;
     hd: string;
   };
+}
+
+export type Creator = {
+  id:string,
+  name: string,
+  platform: string,
+  email: string,
+  country: string,
+  score: number
+  status: 'active' | 'inactive'
 }

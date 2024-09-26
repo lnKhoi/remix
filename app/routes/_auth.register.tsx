@@ -2,6 +2,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import React, { useState } from 'react';
 
+import { Checkbox } from 'antd';
 import {
   Field,
   FieldArray,
@@ -13,26 +14,15 @@ import {
   ToastContainer,
 } from 'react-toastify';
 import * as Yup from 'yup';
-import {
-  registerBrand,
-  registerCreator,
-} from '~/apis/auth';
+import { registerBrand } from '~/apis/auth';
 import LoginBanner from '~/assets/login-banner.png';
 import Logo from '~/assets/logo.svg';
 import { Button } from '~/components/ui/button';
-import { Checkbox } from '~/components/ui/checkbox';
 import { Input } from '~/components/ui/input';
 import PhoneNumberInput from '~/components/ui/input-country';
 import SelectGroup from '~/components/ui/select-group';
-import {
-  Tabs,
-  TabsList,
-  TabsTrigger,
-} from '~/components/ui/tabs';
-import {
-  CATEGORIES,
-  INDUSTRIES,
-} from '~/constants/auth.constant';
+import { Tabs } from '~/components/ui/tabs';
+import { INDUSTRIES } from '~/constants/auth.constant';
 import {
   CONFIRM_PASSWORD_REQUIRED,
   EMAIL_REQUIRED,
@@ -40,10 +30,7 @@ import {
   INVALID_EMAIL,
   PASSWORD_MISSMATCH,
 } from '~/constants/messages.constant';
-import {
-  SignupPayload,
-  UserType,
-} from '~/models/User.model';
+import { SignupPayload } from '~/models/User.model';
 import { createPasswordValidationSchema } from '~/validators/account.validator';
 
 import { MetaFunction } from '@remix-run/cloudflare';
@@ -69,29 +56,27 @@ const validationSchema = Yup.object().shape({
 export default function Page() {
     const navigate = useNavigate()
     const [phone, setPhone] = useState<string>('')
-    const [loading,setLoading] = useState<boolean>(false)
-    const [userType, setUserType] = useState<UserType>('creator')
+    const [loading, setLoading] = useState<boolean>(false)
+    const [accepted, setAccepted] = useState<boolean>(true)
 
     const handleSubmit = (values: SignupPayload) => {
         setLoading(true)
         delete values.confirmPassword
         const payload = { ...values, phone: phone }
 
-        const register = userType === 'brand' ? registerBrand(payload) : registerCreator(payload)
+        const register = registerBrand(payload)
         register
-        .then(res =>  navigate(`/verify-otp/${res?.data?.userId}`, {
-            state: {email: values.email},
-          }))
-        .finally(() => setLoading(false))
-        .catch((err) => toast.error(err?.message))
+            .then(res => navigate(`/verify-otp/${res?.data?.userId}`, {
+                state: { email: values.email },
+            }))
+            .finally(() => setLoading(false))
+            .catch((err) => toast.error(err?.message))
     }
-
-    const isBrand: boolean = userType === 'brand'
 
     return (
         <div className="flex h-[100vh] w-full items-center justify-between">
-            <ToastContainer  />
-            <div className="flex h-[100vh] w-1/2 overflow-y-scroll pb-5 flex-col items-center justify-center">
+            <ToastContainer />
+            <div className="flex min-h-full w-1/2 flex-col items-center justify-center">
                 <img
                     src={Logo}
                     alt="logo"
@@ -125,18 +110,9 @@ export default function Page() {
                     }) => (
                         <>
                             <Tabs
-                                onValueChange={e => {
-                                    setUserType(e as UserType)
-                                    resetForm()
-                                    setPhone('')
-                                }}
                                 defaultValue="creator"
                                 className="w-[460px]"
                             >
-                                <TabsList className="grid w-full grid-cols-2">
-                                    <TabsTrigger value="creator">Creator</TabsTrigger>
-                                    <TabsTrigger value="brand">Brands</TabsTrigger>
-                                </TabsList>
 
                                 <FormikForm className="mt-[30px]">
                                     <div className="grid gap-4">
@@ -159,9 +135,7 @@ export default function Page() {
                                             as={Input}
                                             id="email"
                                             name="email"
-                                            label={
-                                                userType === 'creator' ? 'Email' : 'Business email'
-                                            }
+                                            label={'Business email'}
                                             type="email"
                                             placeholder="m@example.com"
                                             hasError={touched.email && !!errors.email}
@@ -176,15 +150,15 @@ export default function Page() {
 
                                         {/* Industry - Category Field */}
                                         <FieldArray
-                                            name={isBrand ? "category" : 'industry'}
+                                            name={"category"}
                                             render={() => (
                                                 <div>
                                                     <SelectGroup
-                                                        options={isBrand ? INDUSTRIES : CATEGORIES}
-                                                        label={isBrand ? 'Industry' : 'Category/Niche'}
-                                                        value={isBrand ? values.category : values.industry}
+                                                        options={INDUSTRIES}
+                                                        label={'Industry'}
+                                                        value={values.category}
                                                         onChange={value =>
-                                                            setFieldValue(isBrand ? 'category' : 'industry', value)
+                                                            setFieldValue('category', value)
                                                         }
                                                     />
                                                 </div>
@@ -229,11 +203,11 @@ export default function Page() {
 
                                         <div className="flex items-center gap-4">
                                             <div className="h-full pt-1">
-                                                <Checkbox defaultChecked />
+                                                <Checkbox defaultChecked={accepted} value={true} onChange={(e) => setAccepted(!accepted)} ></Checkbox>
                                             </div>
                                             <div className="text-sm leading-5 text-gray-800">
                                                 By clicking on signup you agree to{' '}
-                                                <Link to="/privacy-policy">
+                                                <a href="/privacy-policy" target="_blank">
                                                     <span className="cursor-pointer underline">
                                                         Terms of Services
                                                     </span>{' '}
@@ -241,12 +215,13 @@ export default function Page() {
                                                     <span className="cursor-pointer underline">
                                                         Privacy Policy
                                                     </span>
-                                                </Link>
+                                                </a>
                                             </div>
                                         </div>
                                         <Button
                                             onClick={() => handleSubmit(values)}
                                             size="default"
+                                            disabled={!accepted}
                                             loading={loading}
                                             className="mt-1 w-full"
                                         >
@@ -269,7 +244,7 @@ export default function Page() {
                     )}
                 </Formik>
             </div>
-            <div className="h-[100vh] w-1/2">
+            <div className="h-full w-1/2">
                 <img
                     src={LoginBanner}
                     alt="banner"

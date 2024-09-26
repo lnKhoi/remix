@@ -55,7 +55,7 @@ export default function Page() {
     await verifyOTP(payload as OTPPayload)
       .then(() => {
         toast.success('Verify successfully!')
-        setTimeout(() =>    navigate('/login'),1000)
+        setTimeout(() => navigate('/login'),1000)
       })
       .finally(() => setLoading(false))
       .catch((err) => { setErr(err?.message) })

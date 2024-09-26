@@ -23,6 +23,13 @@ import {
   TooltipTrigger,
 } from '~/components/ui/tooltip';
 
+import { MetaFunction } from '@remix-run/cloudflare';
+
+export const meta: MetaFunction = () => {
+  return [{ title: 'Dashboard' }]
+}
+
+
 export default function Page() {
 
   return (

@@ -96,3 +96,19 @@
 .css-13cymwt-control {
   border-color: theme('colors.gray.200') !important;
 }
+
+.ant-dropdown-menu {
+  border-radius: 12px !important;
+  /* padding: 13px !important; */
+}
+.ant-dropdown-menu-item {
+  height: 36px !important;
+  padding: 0 13px !important;
+}
+
+.quill {
+  border-radius: 12px !important;
+}
+.ant-layout  {
+  background-color: white !important;
+}
