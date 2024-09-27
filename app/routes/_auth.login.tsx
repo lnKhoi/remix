@@ -31,6 +31,7 @@ import { Tabs } from '~/components/ui/tabs';
 import {
   EMAIL_REQUIRED,
   INVALID_EMAIL,
+  ONLY_MANAGER,
 } from '~/constants/messages.constant';
 import { useAuthContext } from '~/contexts/auth.context';
 import { GoogleAccount } from '~/models/User.model';
@@ -99,8 +100,12 @@ export default function Page() {
 
   const handleLogin = async (): Promise<void> => {
     await getMe().then((res) => {
-      updateUserInfo(res.data)
-      navigate('/')
+      if(res.data.role ==='CREATOR') {
+        toast.error(ONLY_MANAGER)
+      }else {
+        updateUserInfo(res.data)
+        navigate('/')
+      }
     })
   }
 

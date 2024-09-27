@@ -51,19 +51,19 @@ export const creatorColumns: TableProps<Creator>['columns'] = [
 
 export const socials = [
   {
-    name: 'Facebook',
+    name: 'facebook',
     icon: Fb
   },
   {
-    name: 'Instagram',
+    name: 'instagram',
     icon: Ig
   },
   {
-    name: 'Youtube',
+    name: 'youtube',
     icon: Yb
   },
   {
-    name: 'Tiktok',
+    name: 'tiktok',
     icon: Tiktok
   }
 ]

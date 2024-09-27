@@ -21,6 +21,8 @@ export const meta: MetaFunction = () => {
 
 function page() {
 
+
+
   return (
     <div>
       <div className='flex items-end justify-between'>
@@ -29,9 +31,9 @@ function page() {
           <p className='text-sm text-gray-500 mt-1'>Manage your campaigns and view their sales performance.</p>
         </div>
         <Link to='/manager/campaign/add-campaign'>
-        <Button  type='button' size='sm' >
-          <PlusIcon className='mr-1' color='white' width={20} />  Add Campaign
-        </Button>
+          <Button type='button' size='sm' >
+            <PlusIcon className='mr-1' color='white' width={20} />  Add Campaign
+          </Button>
         </Link>
       </div>
       <div className='mt-5 flex items-end justify-between'>

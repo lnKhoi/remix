@@ -51,7 +51,7 @@ export default function Page() {
 
   const handleVerifyOTP = async (): Promise<void> => {
     setLoading(true)
-    const payload = { userId: id, otp: otp }
+    const payload = { userId: id, otp: otp,email:location?.state?.email }
     await verifyOTP(payload as OTPPayload)
       .then(() => {
         toast.success('Verify successfully!')

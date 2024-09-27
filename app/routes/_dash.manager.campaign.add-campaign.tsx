@@ -52,9 +52,9 @@ const CampaignForm = () => {
     const payload = {
       ...values,
       campaignOverview: value,
-      deadline: 0,
+      deadline: '2024-12-31T23:59:59Z',
       discountType: 'percentage',
-      socialMedia: 'facebook'
+      socialMedia: selectedSocials
     }
 
     await createCampaign(payload as Campaign)
@@ -138,7 +138,7 @@ const CampaignForm = () => {
                     className='absolute top-3 left-3' />
                   <div className='flex flex-col gap-1 items-center justify-center'>
                     <img src={s.icon} alt="facebook" />
-                    <span className='text-[12px] text-gray-700'>{s.name}</span>
+                    <span className='text-[12px capitalize text-gray-700'>{s.name}</span>
                   </div>
                 </div>
               ))}
@@ -202,7 +202,7 @@ const CampaignForm = () => {
                 optionFilterProp="label"
               >
                 {countries.map((country) => (
-                  <Select.Option key={country.value} value={country.value}>
+                  <Select.Option key={country.value} value={country.label}>
                     <span role="img" aria-label={country.label} className="mr-2">
                       {country.flag}
                     </span>

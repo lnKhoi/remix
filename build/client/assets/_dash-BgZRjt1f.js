@@ -1,1 +1,0 @@
-import{j as t}from"./jsx-runtime-CHwbkWbZ.js";import{u as r}from"./useCheckAuth-PyTxIbRx.js";import{O as o}from"./index-Fe4a85aj.js";import"./auth-CWqnw3Po.js";import"./axiosClient-9asyDyVF.js";import"./auth.context-CHxM0nCf.js";function n(){return r(),t.jsx(t.Fragment,{children:t.jsx("main",{children:t.jsx(o,{})})})}export{n as default};

@@ -1,13 +1,13 @@
 export type Campaign = {
     name: string; 
-    deadline: number; 
+    deadline: string; 
     budget: number;
     minAge: number; 
     maxAge: number;
     gender: 'male' | 'female' | 'all'; 
     discountType: 'percentage' | 'fixed'; 
     status: 'active' | 'draft' | 'archive'; 
-    socialMedia: string; 
+    socialMedia: string[]; 
     location: string; 
     discount: number; 
     campaignOverview: string; 
