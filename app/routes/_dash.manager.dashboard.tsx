@@ -29,7 +29,6 @@ export const meta: MetaFunction = () => {
   return [{ title: 'Dashboard' }]
 }
 
-
 export default function Page() {
 
   return (

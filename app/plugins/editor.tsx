@@ -1,58 +1,61 @@
 import React, {
   Suspense,
+  useEffect,
   useState,
 } from 'react';
 
 const ReactQuill = React.lazy(() => import('react-quill'));
 
 type EditorProps = {
-    onChange: (content:string) => void
-}
+  onChange?: (content: string) => void;
+  value: string;
+};
 
-const Editor = ({onChange}:EditorProps) => {
-  const modules = {
-    toolbar: [
-      [{ header: [1, 2, 3, 4, 5, 6, false] }],
-      ["bold", "italic", "underline", "strike", "blockquote"],
-      [{ size: [] }],
-      [{ font: [] }],
-      [{ align: ["right", "center", "justify"] }],
-      [{ list: "ordered" }, { list: "bullet" }],
-      ["link", "image"],
-      [{ color: ["red", "#785412"] }],
-      [{ background: ["red", "#785412"] }]
-    ]
-  };
+const Editor = ({ onChange, value }: EditorProps) => {
+  const [code, setCode] = useState<string>(value);
 
-  const formats = [
-    "header",
-    "bold",
-    "italic",
-    "underline",
-    "strike",
-    "blockquote",
-    "list",
-    "bullet",
-    "link",
-    "color",
-    "image",
-    "background",
-    "align",
-    "size",
-    "font"
-  ];
-
-  const [code, setCode] = useState<string>("");
+  useEffect(() => {
+    setCode(value);
+  }, [value]);
 
   const handleProcedureContentChange = (
     content: string,
-    delta: any,
-    source: string,
-    editor: any
   ) => {
     setCode(content);
-    onChange(content)
+    onChange?.(content); 
   };
+
+  const modules = {
+    toolbar: [
+      [{ header: [1, 2, 3, 4, 5, 6, false] }],
+      ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+      [{ size: [] }],
+      [{ font: [] }],
+      [{ align: ['right', 'center', 'justify'] }],
+      [{ list: 'ordered' }, { list: 'bullet' }],
+      ['link', 'image'],
+      [{ color: ['red', '#785412'] }],
+      [{ background: ['red', '#785412'] }],
+    ],
+  };
+
+  const formats = [
+    'header',
+    'bold',
+    'italic',
+    'underline',
+    'strike',
+    'blockquote',
+    'list',
+    'bullet',
+    'link',
+    'color',
+    'image',
+    'background',
+    'align',
+    'size',
+    'font',
+  ];
 
   return (
     <>
@@ -60,6 +63,7 @@ const Editor = ({onChange}:EditorProps) => {
         <ReactQuill
           theme="snow"
           modules={modules}
+          defaultValue={code}
           formats={formats}
           value={code}
           onChange={handleProcedureContentChange}

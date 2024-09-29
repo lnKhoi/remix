@@ -1,8 +1,19 @@
-import React from 'react';
+import 'react-toastify/dist/ReactToastify.css';
 
+import React, {
+  useEffect,
+  useState,
+} from 'react';
+
+import {
+  toast,
+  ToastContainer,
+} from 'react-toastify';
+import { getCampaigns } from '~/apis/campaign';
 import CampaignCard from '~/components/campaign/campaignCard';
 import { Button } from '~/components/ui/button';
 import { InputSearch } from '~/components/ui/input-search';
+import { Campaign } from '~/models/Campaign.model';
 
 import {
   AdjustmentsHorizontalIcon,
@@ -20,11 +31,26 @@ export const meta: MetaFunction = () => {
 }
 
 function page() {
+  const [campaigns, setCampagins] = useState<Campaign[]>([])
+  const [params, setParams] = useState<{ page: number, limit: number }>({ page: 1, limit: 10 })
 
+  const handleGetCampaigns = async (): Promise<void> => {
+    await getCampaigns(params.limit, params.page)
+      .then(res => setCampagins(res?.data?.data))
+      .catch(err => toast.error(err?.message))
+  }
 
+  useEffect(() => {
+    handleGetCampaigns()
+  }, [])
+
+  const handleReloadCampagins = (): void => {
+    handleGetCampaigns()
+  }
 
   return (
     <div>
+      <ToastContainer />
       <div className='flex items-end justify-between'>
         <div className='flex flex-col'>
           <h2 className='text-2xl text-gray-900'>Campaigns</h2>
@@ -39,28 +65,22 @@ function page() {
       <div className='mt-5 flex items-end justify-between'>
         <InputSearch placeholder='Campaign name' className='w-[300px] h-[36px] ' />
         <div className='flex items-center gap-3'>
-          <button className='bg-[#F3F4F6] px-3 justify-between flex items-center px hover:bg-[#D1D5DB] transition-all text-sm h-[36px] w-[123px] font-semibold rounded-[12px] text-[#1F2937]'>
+          <button className='bg-[#F3F4F6] px-3 justify-between flex items-center px hover:bg-[#D1D5DB] transition-all text-sm h-[36px] w-[123px] font-semibold rounded-[9px] text-[#1F2937]'>
             All Status
             <ChevronUpDownIcon width={16} />
           </button>
-          <button className='bg-[#F3F4F6] hover:bg-[#D1D5DB] transition-all flex items-center justify-center gap-1 text-sm h-[36px] w-[87px] font-semibold rounded-[12px] text-[#1F2937]'>
+          <button className='bg-[#F3F4F6] hover:bg-[#D1D5DB] transition-all flex items-center justify-center gap-1 text-sm h-[36px] w-[87px] font-semibold rounded-[9px] text-[#1F2937]'>
             <AdjustmentsHorizontalIcon width={16} />  Filter
           </button>
-          <button className='bg-[#F3F4F6] hover:bg-[#D1D5DB] transition-all flex items-center justify-center gap-1 text-sm h-[36px] w-[87px] font-semibold rounded-[12px] text-[#1F2937]'>
+          <button className='bg-[#F3F4F6] hover:bg-[#D1D5DB] transition-all flex items-center justify-center gap-1 text-sm h-[36px] w-[87px] font-semibold rounded-[9px] text-[#1F2937]'>
             <CloudArrowDownIcon width={16} />  Export
           </button>
         </div>
       </div>
-      <div className='grid grid-cols-3 gap-6 mt-5'>
-        <CampaignCard />
-        <CampaignCard />
-        <CampaignCard />
-        <CampaignCard />
-        <CampaignCard />
-        <CampaignCard />
-        <CampaignCard />
-        <CampaignCard />
-        <CampaignCard />
+      <div className='grid 2xl:grid-cols-4 xl:grid-cols-3 md:grid-cols-2 grid-cols-1  gap-5 mt-5'>
+        {campaigns.map((c) => (
+          <CampaignCard onReload={handleReloadCampagins} key={c.id} campaign={c} />
+        ))}
       </div>
     </div>
   )

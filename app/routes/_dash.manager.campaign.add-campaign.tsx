@@ -14,11 +14,13 @@ import {
   Radio,
   Select,
 } from 'antd';
+import dayjs from 'dayjs';
 import {
   toast,
   ToastContainer,
 } from 'react-toastify';
 import { createCampaign } from '~/apis/campaign';
+import { discountOptions } from '~/constants/campaign.constant';
 import { countries } from '~/constants/countries.constant';
 import { socials } from '~/constants/creator.constant';
 import {
@@ -30,6 +32,7 @@ import {
   PLEASE_SELECT_GENDER,
   REQUIRED,
 } from '~/constants/messages.constant';
+import { DATE_TIME_FORMAT_V2 } from '~/constants/time.constant';
 import { Campaign } from '~/models/Campaign.model';
 import Editor from '~/plugins/editor';
 
@@ -37,33 +40,42 @@ import { MetaFunction } from '@remix-run/cloudflare';
 import { Link } from '@remix-run/react';
 
 export const meta: MetaFunction = () => {
-  return [{ title: 'Add Campaign' }]
+  return [{ title: 'Edit Campaign' }]
 }
 
 const { Option } = Select;
 
 const CampaignForm = () => {
   const [form] = Form.useForm();
-  const [value, setValue] = useState('')
-  const [loading,setLoading] = useState<boolean>(false)
+  const [content, setContent] = useState('')
+  const [loading, setLoading] = useState<boolean>(false)
+  const [discountType, setDiscountType] = useState<string>('percentage')
+  const [selectedSocials, setSelectedSocials] = useState<string[]>([]);
 
-  const onFinish =  async (values: Campaign) : Promise<void> => {
+  const minAge = Form.useWatch('minAge', form)
+
+  const onFinish = async (values: Campaign): Promise<void> => {
     setLoading(true)
     const payload = {
       ...values,
-      campaignOverview: value,
-      deadline: '2024-12-31T23:59:59Z',
-      discountType: 'percentage',
+      discount: Number(values.discount),
+      campaignOverview: content,
+      deadline: dayjs(values.deadline).toISOString(),
+      discountType: discountType,
       socialMedia: selectedSocials
     }
 
     await createCampaign(payload as Campaign)
-    .then((res) => toast.success('Create campaign successfully!'))
-    .catch(err => toast.error(err?.message))
-    .finally(() => setLoading(false))
+      .then((res) => {
+        toast.success('Create campaign successfully!')
+        form.resetFields()
+        setSelectedSocials([])
+        setContent('')
+      })
+      .catch(err => toast.error(err?.message))
+      .finally(() => setLoading(false))
   };
 
-  const [selectedSocials, setSelectedSocials] = useState<string[]>([]);
 
   const handleSelectSocial = (id: string) => {
     setSelectedSocials((prevSelected) =>
@@ -74,20 +86,17 @@ const CampaignForm = () => {
   };
 
   const handleChangeContent = (content: string): void => {
-    setValue(content)
+    setContent(content)
   }
 
   return (
-    <div>
-       <ToastContainer />
+    <div className='custom-select'>
+      <ToastContainer />
       <Breadcrumb
+        className='fixed h-[40px] w-full '
         items={[
-          {
-            title: <Link to={'/manager/campaigns'}>Campaigns</Link>,
-          },
-          {
-            title: <p className='text-gray-800'>Add Campaign</p>
-          },
+          { title: <Link to={'/manager/campaigns'}>Campaigns</Link>, },
+          { title: <p className='text-gray-800'>Add Campaign</p> },
         ]}
       />
       <div className='w-[750px] mx-auto'>
@@ -151,7 +160,13 @@ const CampaignForm = () => {
             name="deadline"
             rules={[{ required: true, message: PLEASE_SELECT_DEADLINE }]}
           >
-            <DatePicker style={{ width: '100%' }} />
+            <DatePicker
+              disabledDate={(current) => {
+                return current && current < dayjs().endOf('day');
+              }}
+              style={{ width: '100%' }}
+              showTime
+              format={DATE_TIME_FORMAT_V2} />
           </Form.Item>
 
           {/* Age */}
@@ -172,7 +187,7 @@ const CampaignForm = () => {
               rules={[{ required: true, message: REQUIRED }]}
             >
               <InputNumber
-                min={0}
+                min={minAge + 1}
                 style={{ width: '100%' }}
               />
             </Form.Item>
@@ -185,7 +200,7 @@ const CampaignForm = () => {
               <Select placeholder="Select gender">
                 <Option value="male">Male</Option>
                 <Option value="female">Female</Option>
-                <Option value="all">Other</Option>
+                {/* <Option value="all">Other</Option> */}
               </Select>
             </Form.Item>
 
@@ -213,24 +228,34 @@ const CampaignForm = () => {
             </Form.Item>
           </div>
           {/* Discount */}
-          <Form.Item
-            label="Discount"
-            name="discount"
-            rules={[{ required: true, message: DISCOUNT_REQUIRED }]}
-          >
-            <InputNumber
-              prefix="%"
-              min={0}
-              max={100}
-              style={{ width: '100%' }}
+          <div className='flex items-center'>
+            <div className='w-full'>
+              <Form.Item
+                label="Discount"
+                name="discount"
+                rules={[{ required: true, message: DISCOUNT_REQUIRED }]}
+              >
+                <InputNumber
+                  min={0}
+                  max={discountType === 'percentage' ? 100 : 100000000000000}
+                  className='w-full'
+                />
+              </Form.Item>
+            </div>
+            <Select
+            className='mt-[5px] '
+              style={{ width: 150 }}
+              onChange={(v) => setDiscountType(v)}
+              defaultValue={discountType}
+              options={discountOptions}
             />
-          </Form.Item>
+          </div>
 
           {/* Editor */}
           <div className='mt-4  border-t border-gray-200 mb-8 pt-6'>
             <h6 className='text-sm text-gray-800 font-medium' >Campaign Overview</h6>
             <p className='text-sm text-gray-500 mb-5'>A summary or description of campaign's goals and strategy.</p>
-            <Editor onChange={(value) => handleChangeContent(value)} />
+            <Editor value={content} onChange={(value) => handleChangeContent(value)} />
           </div>
 
           {/* Submit Button */}
