@@ -7,18 +7,35 @@ import {
   Menu,
   Modal,
 } from 'antd';
+import dayjs from 'dayjs';
+import { toast } from 'react-toastify';
+import { deleteCampaign } from '~/apis/campaign';
 import { campaignMenuItems } from '~/constants/manager.constant';
+import {
+  DELETE_CAMPAGIN_SUCCESS,
+  DELETE_CAMPAIGN_FAILED,
+} from '~/constants/messages.constant';
+import { DATE_TIME_FORMAT_V2 } from '~/constants/time.constant';
+import { getColorStatusCampaign } from '~/helpers/campaign.helper';
+import { Campaign } from '~/models/Campaign.model';
 
 import {
   CalendarDaysIcon,
   EllipsisHorizontalIcon,
   UserPlusIcon,
 } from '@heroicons/react/24/outline';
+import { useNavigate } from '@remix-run/react';
 
 import InviteCard from './InviteCard';
 
-function campaignCard() {
+type CampaignCardProps = {
+    campaign: Campaign
+    onReload: () => void
+}
+
+function CampaignCard({ campaign, onReload }: CampaignCardProps) {
     const [isModal, setIsModal] = useState<boolean>(false)
+    const navigate = useNavigate()
 
     const handleMenuClick = (key: string) => {
         switch (key) {
@@ -26,20 +43,26 @@ function campaignCard() {
                 setIsModal(true)
                 break;
             case 'view':
-                console.log('View details clicked');
+                navigate(`/manager/${campaign.id}`)
                 break;
             case 'edit':
-                // Call edit function
-                console.log('Edit clicked');
+                navigate(`/manager/edit/${campaign.id}`)
                 break;
             case 'delete':
-                // Call delete function
-                console.log('Delete clicked');
+                handleDeleteCampaign()
                 break;
             default:
                 break;
         }
     };
+
+    const handleDeleteCampaign = async () => {
+        await deleteCampaign(campaign.id as string).then(() => {
+            toast.error(DELETE_CAMPAGIN_SUCCESS)
+            onReload()
+        })
+            .catch(() => { toast.error(DELETE_CAMPAIGN_FAILED) })
+    }
 
     const menu = (
         <Menu onClick={(e) => handleMenuClick(e.key)}>
@@ -55,11 +78,13 @@ function campaignCard() {
     );
 
     return (
-        <div className='h-[300px] p-5 border flex flex-col justify-between border-[#E5E7EB] rounded-[20px] shadow-md'>
+        <div className='h-[300px] cursor-pointer p-5 border flex flex-col justify-between border-gray-200 hover:shadow-lg transition-shadow rounded-[20px] shadow-md'>
             <div className='items-center flex justify-between'>
-                <div className='inline-flex items-center px-4   gap-1 rounded-[50px] h-[28px] bg-[#CCFBF1]'>
-                    <div className='bg-[#0F766E] w-2 h-2 rounded-[50%]'></div>
-                    <span className='text-[12px] '>Active</span>
+                <div style={{ backgroundColor: getColorStatusCampaign(campaign.status)?.background }}
+                    className={`inline-flex items-center px-4   gap-1 rounded-[50px] h-[28px]`}>
+                    <div style={{ backgroundColor: getColorStatusCampaign(campaign.status)?.color }}
+                        className={`w-2 h-2 rounded-[50%]`}></div>
+                    <span style={{ color: getColorStatusCampaign(campaign.status)?.color }} className='text-[12px] capitalize '>{campaign.status}</span>
                 </div>
                 <Dropdown overlay={menu} trigger={['click']}>
                     <button className='hover:bg-[#D1D5DB] bg-[#F3F4F6] transition-all w-7 h-7 flex justify-center items-center rounded-md'>
@@ -68,10 +93,10 @@ function campaignCard() {
                 </Dropdown>
             </div>
             <div className='mt-4f'>
-                <h5 className='text-sm text-[#1F2937] font-medium'>Campaign Name 01</h5>
+                <h5 className='text-sm text-[#1F2937] font-medium'>{campaign.name}</h5>
                 <div className='flex items-center gap-1'>
                     <CalendarDaysIcon width={16} color='#6B7280' />
-                    <p className='mt-1 text-sm text-[#6B7280]'>01-09-2024 - 30-09-2024</p>
+                    <p className='mt-1 text-sm text-[#6B7280]'>{dayjs(campaign.deadline).format(DATE_TIME_FORMAT_V2)}</p>
                 </div>
             </div>
             <div className='flex items-center justify-between gap-2'>
@@ -124,16 +149,16 @@ function campaignCard() {
                         <p className='text-[#1F2937] text-sm'>Already in this campaign (0)</p>
                     </div>
                     <div className='h-[330px] mb-8 mt-4 pr-2 overflow-y-scroll w-full flex flex-col gap-3'>
-                        <InviteCard/>
-                        <InviteCard/>
-                        <InviteCard/>
-                        <InviteCard/>
-                        <InviteCard/>
-                        <InviteCard/>
-                        <InviteCard/>
-                        <InviteCard/>
-                        <InviteCard/>
-                        <InviteCard/>
+                        <InviteCard />
+                        <InviteCard />
+                        <InviteCard />
+                        <InviteCard />
+                        <InviteCard />
+                        <InviteCard />
+                        <InviteCard />
+                        <InviteCard />
+                        <InviteCard />
+                        <InviteCard />
                     </div>
                 </div>
 
@@ -143,4 +168,4 @@ function campaignCard() {
     )
 }
 
-export default campaignCard
+export default CampaignCard

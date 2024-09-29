@@ -1,12 +1,13 @@
 export type Campaign = {
     name: string; 
     deadline: string; 
+    id?:string,
     budget: number;
     minAge: number; 
     maxAge: number;
     gender: 'male' | 'female' | 'all'; 
     discountType: 'percentage' | 'fixed'; 
-    status: 'active' | 'draft' | 'archive'; 
+    status: CampaignStatus
     socialMedia: string[]; 
     location: string; 
     discount: number; 
@@ -14,4 +15,5 @@ export type Campaign = {
     isDeleted?: boolean; 
     deletedAt?: string; 
   }
-  
+
+ export type CampaignStatus = 'active' | 'draft' | 'archive'
