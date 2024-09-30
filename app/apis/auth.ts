@@ -48,3 +48,7 @@ export const verifyOTP = (payload: OTPPayload) => {
 export const login3rdParty = (role: string, email: string, name: string, phone: string) => {
   return postData(`/api/v1/auth/login-3rd-party/${role}`, { email, name, phone })
 }
+
+export const resendOTP = (payload: { email: string }) => {
+  return postData('/api/v1/auth/resend-otp/reset-password', payload)
+}

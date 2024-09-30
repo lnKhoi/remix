@@ -12,7 +12,10 @@ import {
   ToastContainer,
 } from 'react-toastify';
 import * as Yup from 'yup';
-import { forgotPassword } from '~/apis/auth';
+import {
+  forgotPassword,
+  resendOTP,
+} from '~/apis/auth';
 import Logo from '~/assets/logo.svg';
 import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/input';
@@ -34,15 +37,21 @@ const validationSchema = Yup.object().shape({
 });
 
 export default function Page() {
-  const [loading, setLoading] = useState<boolean>(false)
+  const [email,setEmail] = useState<string>('')
+  const [loading, setLoading] = useState<boolean>(false);
   const [isConfirmed, setIsConfirmed] = useState<boolean>(false);
 
   const handleConfirmEmail = async (email: string) => {
-    setLoading(true)
+    setLoading(true);
+    setEmail(email)
     await forgotPassword(email)
-      .then((res) => setIsConfirmed(true))
+      .then(() => setIsConfirmed(true))
       .catch((error) => toast.error(error?.message))
-      .finally(() => setLoading(false))
+      .finally(() => setLoading(false));
+  };
+
+  const handleResendOTP = async () => {
+      await resendOTP({email:email}).then( () =>  toast.success('Please check email to get new OTP'))
   };
 
   return (
@@ -55,18 +64,29 @@ export default function Page() {
         </h1>
         {isConfirmed
           ? <div className="text-sm mb-[30px] text-gray-700 text-center">
-            Thanks! If <span className='text-gray-950 font-semibold'>your email</span> matches an email we have on file, we've sent you an email containing further instructions for resetting your password.
-            <br />
-          </div>
-          : <h1 className="text-sm mb-[30px] text-gray-700 text-center">Enter the email address associated with your account and we’ll send you a link to reset your password.</h1>
+              Thanks! If <span className='text-gray-950 font-semibold'>your email</span> matches an email we have on file, we've sent you an email containing further instructions for resetting your password.
+              <br />
+            </div>
+          : <h1 className="text-sm mb-[30px] text-gray-700 text-center">
+              Enter the email address associated with your account and we’ll send you a link to reset your password.
+            </h1>
         }
 
         {isConfirmed && (
-          <span className='text-center text-sm text-gray-700'>
-            If you haven't received an email in 5 minutes, check your spam,
-            <br />
-            <span className='underline text-blue-500 font-semibold cursor-pointer'>resend</span>, or try a different <span onClick={(): void => setIsConfirmed(false)} className='underline cursor-pointer text-blue-500 font-semibold'>email</span>.
-          </span>
+          <Formik
+            initialValues={{ email: '' }}
+            validationSchema={validationSchema}
+            onSubmit={(values) => handleConfirmEmail(values.email)}
+          >
+            {({ values }) => (
+              <span className='text-center text-sm text-gray-700'>
+                If you haven't received an email in 5 minutes, check your spam,
+                <br />
+                <span onClick={handleResendOTP} className='underline text-blue-500 font-semibold cursor-pointer'>resend</span>, or try a different 
+                <span onClick={(): void => setIsConfirmed(false)} className='underline cursor-pointer text-blue-500 font-semibold'>email</span>.
+              </span>
+            )}
+          </Formik>
         )}
 
         {!isConfirmed && (
@@ -89,13 +109,13 @@ export default function Page() {
                     hasError={touched.email && !!errors.email}
                     errorMessage={touched.email && errors.email ? errors.email : ''}
                   />
-
                 </div>
                 <Button
                   size="lg"
                   loading={loading}
                   type="submit"
                   className="w-full mt-8"
+                  disabled={isSubmitting || !isValid || !dirty}
                 >
                   Continue
                 </Button>
@@ -103,6 +123,7 @@ export default function Page() {
             )}
           </Formik>
         )}
+
         <div className="mt-4 text-center text-sm">
           Recovered your account?{" "}
           <Link to='/login' className="underline font-bold text-blue-500">
