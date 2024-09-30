@@ -179,7 +179,7 @@ export default function Page() {
                         size="default"
                         loading={loading}
                         className="w-full mt-1"
-                        disabled={!isValid || isSubmitting}
+                        disabled={isSubmitting}
                       >
                         Login
                       </Button>

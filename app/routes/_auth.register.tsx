@@ -119,7 +119,7 @@ export default function Page() {
                                         {/* Full Name Field */}
                                         <Field
                                             as={Input}
-                                            label="Full name"
+                                            label="Brand name"
                                             name="name"
                                             type="text"
                                             placeholder="e.g. John Marr"
