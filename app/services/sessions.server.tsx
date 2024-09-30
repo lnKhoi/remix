@@ -26,7 +26,7 @@ export const authenticator = new Authenticator(sessionStorage);
 
 let googleStrategy = new GoogleStrategy(
   {
-    clientID: import.meta.env.GOOGLE_OAUTH_CLIENT_ID ,
+    clientID: '463266305530-ctq3htprdauqbp5qnrmkmdrcnife3mih.apps.googleusercontent.com' ,
     clientSecret: import.meta.env.GOOGLE_OAUTH_CLIENT_SECRET,
     callbackURL: `https://spiral-tawny.vercel.app/auth/google/callback`,
   },
