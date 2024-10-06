@@ -66,11 +66,24 @@ export type GoogleAccount = {
 }
 
 export type Creator = {
-  id:string,
-  name: string,
-  platform: string,
-  email: string,
-  country: string,
-  score: number
-  status: 'active' | 'inactive'
+  id?:string,
+  name?: string,
+  age?:number,
+  platform?: string,
+  email?: string,
+  country?: string,
+  gender?:string,
+  score?: number
+  status?: 'active' | 'inactive' | 'not registered' | 'registered',
+  followers?:number
+  alreadyInvited?:boolean
+}
+
+export type InfluencerContentStatus = 'waiting_to_apply' | "accepted_invitation" | 'joined_campaign'
+
+export type InfluencerInCampaign = {
+  creator:Brand,
+  campaignId:string,
+  status: InfluencerContentStatus
+
 }

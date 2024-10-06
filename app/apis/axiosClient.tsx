@@ -1,7 +1,7 @@
 import axios, { InternalAxiosRequestConfig } from 'axios';
 
 const axiosClient = axios.create({
-    baseURL: 'https://spiral-platform-dev.lava-art-group.workers.dev',
+    baseURL: 'http://localhost:8787',
     timeout: 20000,
     headers: { contentType: "application/json","ngrok-skip-browser-warning": "true", },
 });

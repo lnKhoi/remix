@@ -18,14 +18,14 @@ const InputSearch = React.forwardRef<HTMLInputElement, InputProps>(
             <div>
                 {label && <Label htmlFor={props.id}>{label}</Label>}
                 <div className={cn(
-                    "flex h-9 w-full mt-1 items-center gap-1 rounded-md border px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus:outline-none focus:ring-0",
+                    "flex h-9 w-full mt-1 items-center gap-1 rounded-md border px-3 py-1 text-sm border-none shadow-sm bg-gray-100 transition-colors placeholder:text-muted-foreground focus:outline-none focus:ring-0",
                     hasError ? 'border-red-500' : 'border-input focus:border-blue-600',
                     className
                 )}>
                     <MagnifyingGlassIcon width={20} color='#6B7280' />
 
                     <input
-                        className='w-full border-none outline-none'
+                        className='w-full bg-gray-100 border-none outline-none ml-1'
                         type={type}
 
                         ref={ref}

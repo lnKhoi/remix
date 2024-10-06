@@ -28,6 +28,7 @@ import {
   CAMPAIGN_REQUIRED,
   DISCOUNT_REQUIRED,
   LOCATION_REQUIRED,
+  MAXIMUM_PARTICIPANT,
   PLEASE_SELECT_DEADLINE,
   PLEASE_SELECT_GENDER,
   REQUIRED,
@@ -119,19 +120,34 @@ const CampaignForm = () => {
 
           {/* Campaign Budget */}
 
-          <Form.Item
-            label="Campaign Budget"
-            name="budget"
-            rules={[{ required: true, message: BUDGET_REQUIRED }]}
-          >
-            {/* <span className='transform -translate-y-1 text-sm text-gray-500'>The allocated for an Influencer</span> */}
-            <InputNumber
-              prefix="$"
-              suffix='USD'
-              min={0}
-              style={{ width: '100%' }}
-            />
-          </Form.Item>
+          <div className='flex items-center gap-3 justify-between'>
+            <Form.Item
+              className='w-1/2'
+              label="Campaign Budget"
+              name="budget"
+              rules={[{ required: true, message: BUDGET_REQUIRED }]}
+            >
+              {/* <span className='transform -translate-y-1 text-sm text-gray-500'>The allocated for an Influencer</span> */}
+              <InputNumber
+                prefix="$"
+                suffix='USD'
+                min={0}
+                style={{ width: '100%' }}
+              />
+            </Form.Item>
+            <Form.Item
+              className='w-1/2'
+              label="Maximum Participants"
+              name="maximumParticipants"
+              rules={[{ required: true, message: MAXIMUM_PARTICIPANT }]}
+            >
+              {/* <span className='transform -translate-y-1 text-sm text-gray-500'>The allocated for an Influencer</span> */}
+              <InputNumber
+                min={0}
+                style={{ width: '100%' }}
+              />
+            </Form.Item>
+          </div>
 
           {/* Social media */}
           <div className='mb-6'>
@@ -200,7 +216,8 @@ const CampaignForm = () => {
               <Select placeholder="Select gender">
                 <Option value="male">Male</Option>
                 <Option value="female">Female</Option>
-                {/* <Option value="all">Other</Option> */}
+                <Option value="other">Other</Option>
+                <Option value="all">All</Option>
               </Select>
             </Form.Item>
 
@@ -243,7 +260,7 @@ const CampaignForm = () => {
               </Form.Item>
             </div>
             <Select
-            className='mt-[5px] '
+              className='mt-[5px] '
               style={{ width: 150 }}
               onChange={(v) => setDiscountType(v)}
               defaultValue={discountType}
@@ -259,7 +276,7 @@ const CampaignForm = () => {
           </div>
 
           {/* Submit Button */}
-          <div className='flex justify-end h-[35px] mb-8  items-center'>
+          <div className='flex  justify-end h-[35px]   items-center'>
             <div className='h-full flex items-center'>
               <Form.Item name='status' initialValue='active' style={{ margin: 0 }}>
                 <Radio.Group>
