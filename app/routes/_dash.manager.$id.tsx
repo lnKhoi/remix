@@ -1,3 +1,5 @@
+import 'react-toastify/dist/ReactToastify.css';
+
 import React, {
   useEffect,
   useState,
@@ -7,8 +9,6 @@ import {
   Badge,
   Breadcrumb,
   Button,
-  Checkbox,
-  Modal,
   Segmented,
 } from 'antd';
 import {
@@ -19,7 +19,8 @@ import { getCampaignDetails } from '~/apis/campaign';
 import CampaignDetails from '~/components/campaign/CampaignDetails';
 import Content from '~/components/campaign/Content';
 import Influencer from '~/components/campaign/Influencer';
-import InviteCard from '~/components/campaign/InviteCard';
+import ModalInviteInfluencerToCampaign
+  from '~/components/campaign/ModalInviteInfluencerToCampaign';
 import Reports from '~/components/campaign/Reports';
 import { Campaign } from '~/models/Campaign.model';
 
@@ -104,7 +105,7 @@ function page() {
             {
               label: (
                 <div className='flex items-center'>
-                  Content <Badge  color='#EF4444' size='small' className='ml-1' count={14}></Badge>
+                  Content <Badge color='#EF4444' size='small' className='ml-1' count={14}></Badge>
                 </div>
               ),
               value: 'Content',
@@ -116,32 +117,7 @@ function page() {
       </div>
 
       {/* Modal Invite Influencer */}
-      <Modal
-        width={650}
-        title='Invite Influencer'
-        open={modalInvite}
-        onCancel={() => setModalInvite(false)}
-        footer={[
-          <div className='flex border-t border-t-gray-300 pt-5 items-center justify-end gap-2'>
-            <Button type='default'>Close</Button>
-            <Button type='primary'>Send Invitation</Button>
-          </div>,
-        ]}
-      >
-        <div>
-          <h5 className='text-[#374151] text-center'>
-            Invite your Influencer to review collaborate on this campaign.
-          </h5>
-          <div className='flex mt-8 items-center justify-between'>
-            <Checkbox>Select All</Checkbox>
-            <p className='text-[#1F2937] text-sm'>Already in this campaign (0)</p>
-          </div>
-          <div className='h-[330px] mb-8 mt-4 pr-2 overflow-y-scroll w-full flex flex-col gap-3'>
-            <InviteCard />
-            {/* Add more InviteCards as needed */}
-          </div>
-        </div>
-      </Modal>
+      <ModalInviteInfluencerToCampaign open={modalInvite} onClose={() => setModalInvite(false)} campaignId={campaign?.id as string} />
     </div>
   );
 }

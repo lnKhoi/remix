@@ -1,3 +1,5 @@
+import { User } from './User.model';
+
 export type Campaign = {
     name: string; 
     deadline: string; 
@@ -13,6 +15,7 @@ export type Campaign = {
     discount: number; 
     campaignOverview: string; 
     isDeleted?: boolean; 
+    joinedCreators?:User []
     deletedAt?: string; 
   }
 

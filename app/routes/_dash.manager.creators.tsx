@@ -1,76 +1,96 @@
-import React, { FC } from 'react';
+import React, {
+  FC,
+  useEffect,
+  useState,
+} from 'react';
 
 import {
   Button,
+  Spin,
   Table,
 } from 'antd';
+import { getInfluencerImported } from '~/apis/creator';
+import NoCSV from '~/assets/no-csv.png';
 import { creatorColumns } from '~/constants/creator.constant';
+import { useAuthContext } from '~/contexts/auth.context';
 import { Creator } from '~/models/User.model';
 
 import { CloudArrowDownIcon } from '@heroicons/react/24/outline';
-import { MetaFunction } from '@remix-run/react';
+import {
+  Link,
+  MetaFunction,
+} from '@remix-run/react';
 
 export const meta: MetaFunction = () => {
   return [{ title: 'Creators' }]
 }
 
-const data: Creator[] = [
-  {
-    id:'234',
-    name: 'John Brown',
-    platform: 'Facebook',
-    email: 'john.brown@example.com',
-    country: 'USA',
-    score: 85,
-    status: 'active',
-  },
-  {
-    id:'2344',
-    name: 'Jim Green',
-    platform: 'Twitter',
-    email: 'jim.green@example.com',
-    country: 'UK',
-    score: 72,
-    status: 'inactive',
-  },
-  {
-    id:'23434',
-    name: 'Joe Black',
-    platform: 'Instagram',
-    email: 'joe.black@example.com',
-    country: 'Australia',
-    score: 90,
-    status: 'active',
-  },
-  {
-    id:'234234',
-    name: 'Lucy White',
-    platform: 'LinkedIn',
-    email: 'lucy.white@example.com',
-    country: 'Canada',
-    score: 60,
-    status: 'inactive',
-  },
-  {
-    id:'234324',
-    name: 'Mark Grey',
-    platform: 'TikTok',
-    email: 'mark.grey@example.com',
-    country: 'USA',
-    score: 95,
-    status: 'active',
-  },
-];
-
 const Page: FC = () => {
+  const { userInfo } = useAuthContext();
+  const [influencers, setInfluencers] = useState<Creator[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  const handleGetListInfluencerImported = async (): Promise<void> => {
+    setLoading(true);
+    try {
+      const res = await getInfluencerImported( 100, 1);
+      setInfluencers(res?.data?.paginatedInfluencersData || []);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    handleGetListInfluencerImported();
+  }, []);
+
   return (
     <div>
       <div className='flex w-full justify-end mb-5'>
-      <Button type='primary'><CloudArrowDownIcon width={20} /> Import CSV</Button>
+        <Link to='/manager/creator/import-influencer'>
+          <Button
+            className='bg-gray-100 mt-3 hover:bg-gray-400 border-gray-100'
+            type='text'
+          >
+            <div className='flex items-center gap-1'>
+              <CloudArrowDownIcon width={20} className='mr-1' />
+              Import CSV
+            </div>
+          </Button>
+        </Link>
       </div>
-    <Table<Creator> columns={creatorColumns} dataSource={data} />
+
+
+        <div>
+          {/* Table */}
+          <Spin spinning={loading}>
+          <Table<Creator>
+            columns={creatorColumns}
+            dataSource={influencers}
+            locale={{
+              emptyText: (
+                <div className='flex items-center flex-col h-[70vh] justify-center'>
+                  <img className='w-[390px] object-contain' src={NoCSV} alt='no csv' />
+                  <Link to='/manager/creator/import-influencer'>
+                    <Button
+                      className='bg-gray-100 mt-3 hover:bg-gray-400 border-gray-100'
+                      type='text'
+                      >
+                      <div className='flex items-center gap-1'>
+                        <CloudArrowDownIcon width={20} className='mr-1' />
+                        Import CSV
+                      </div>
+                    </Button>
+                  </Link>
+                </div>
+              )
+            }}
+            />
+            </Spin>
+        </div>
+    
     </div>
-  )
-}
+  );
+};
 
 export default Page;

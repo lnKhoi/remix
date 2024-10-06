@@ -10,6 +10,7 @@ import {
   ToastContainer,
 } from 'react-toastify';
 import { getCampaigns } from '~/apis/campaign';
+import NoCampaigns from '~/assets/no-campaign.png';
 import CampaignCard from '~/components/campaign/campaignCard';
 import { Button } from '~/components/ui/button';
 import { InputSearch } from '~/components/ui/input-search';
@@ -65,18 +66,26 @@ function page() {
       <div className='mt-5 flex items-end justify-between'>
         <InputSearch placeholder='Campaign name' className='w-[300px] h-[36px] ' />
         <div className='flex items-center gap-3'>
-          <button className='bg-[#F3F4F6] px-3 justify-between flex items-center px hover:bg-[#D1D5DB] transition-all text-sm h-[36px] w-[123px] font-semibold rounded-[9px] text-[#1F2937]'>
+          <button className='bg-[#F3F4F6] px-3 justify-between flex items-center px hover:bg-[#D1D5DB] transition-all text-sm h-[36px] w-[105px] font-normal rounded-[9px] text-[#1F2937]'>
             All Status
             <ChevronUpDownIcon width={16} />
           </button>
-          <button className='bg-[#F3F4F6] hover:bg-[#D1D5DB] transition-all flex items-center justify-center gap-1 text-sm h-[36px] w-[87px] font-semibold rounded-[9px] text-[#1F2937]'>
+          <button className='bg-[#F3F4F6] hover:bg-[#D1D5DB] transition-all flex items-center justify-center gap-1 text-sm h-[36px] w-[87px] font-normal rounded-[9px] text-[#1F2937]'>
             <AdjustmentsHorizontalIcon width={16} />  Filter
           </button>
-          <button className='bg-[#F3F4F6] hover:bg-[#D1D5DB] transition-all flex items-center justify-center gap-1 text-sm h-[36px] w-[87px] font-semibold rounded-[9px] text-[#1F2937]'>
+          <button className='bg-[#F3F4F6] hover:bg-[#D1D5DB] transition-all flex items-center justify-center gap-1 text-sm h-[36px] w-[87px] font-normal rounded-[9px] text-[#1F2937]'>
             <CloudArrowDownIcon width={16} />  Export
           </button>
         </div>
       </div>
+      {campaigns.length === 0 && (
+        <div className='flex items-center flex-col gap-3 justify-center w-full h-[calc(100vh-200px)]'>
+          <img src={NoCampaigns} className='w-[370px]' />
+          <Link to='/manager/campaign/add-campaign'>
+            <Button className='h-[36px]' ><PlusIcon width={20} /> Add Campaign</Button>
+          </Link>
+        </div>
+      )}
       <div className='grid 2xl:grid-cols-4 xl:grid-cols-3 md:grid-cols-2 grid-cols-1  gap-5 mt-5'>
         {campaigns.map((c) => (
           <CampaignCard onReload={handleReloadCampagins} key={c.id} campaign={c} />
