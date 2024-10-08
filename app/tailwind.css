@@ -177,3 +177,8 @@
 .ant-slider-track {
   background-color: theme('colors.blue.500') !important;
 }
+
+.custom-input .ant-select div{
+  background-color: theme('colors.gray.100') !important;
+  border-color: transparent !important;
+}
