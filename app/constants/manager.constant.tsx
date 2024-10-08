@@ -1,13 +1,15 @@
 import {
   ArchiveBoxIcon,
-  ArrowLeftEndOnRectangleIcon,
   ChartBarIcon,
+  Cog6ToothIcon,
+  CreditCardIcon,
   DocumentChartBarIcon,
   EyeIcon,
   FireIcon,
   HomeIcon,
   PencilSquareIcon,
   TrashIcon,
+  UserCircleIcon,
   UserIcon,
   UserPlusIcon,
 } from '@heroicons/react/24/outline';
@@ -40,11 +42,12 @@ export const navItems = [
       icon: ChartBarIcon,
       label: "Analytics",
     },
-    {
-      to: "#",
-      icon: ArrowLeftEndOnRectangleIcon,
-      label: "Logout",
-    },
+  ];
+
+  export const profileTab = [
+    { to: "/manager/my-profile", icon: UserCircleIcon, label: "My Profile" },
+    { to: "/manager/settings", icon: Cog6ToothIcon, label: "Setting" },
+    { to: "/manager/payment-method", icon: CreditCardIcon, label: "Payment Methods" },
   ];
 
   export const campaignMenuItems = [
