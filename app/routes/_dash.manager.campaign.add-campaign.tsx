@@ -60,7 +60,7 @@ const CampaignForm = () => {
   const age = Form.useWatch('age', form)
 
   const onFinish = async (values: Campaign): Promise<void> => {
-    // setLoading(true)
+    setLoading(true)
     const payload = {
       ...values,
       discount: Number(values.discount),
