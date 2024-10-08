@@ -16,6 +16,7 @@ import {
   InputNumber,
   Radio,
   Select,
+  Slider,
 } from 'antd';
 import dayjs from 'dayjs';
 import {
@@ -63,7 +64,7 @@ const CampaignForm = () => {
   const [selectedSocials, setSelectedSocials] = useState<string[]>([]);
 
   const { id } = useParams()
-  const minAge = Form.useWatch('minAge', form)
+  const age = Form.useWatch('age', form)
 
   const onFinish = async (values: Campaign): Promise<void> => {
     setLoading(true)
@@ -73,7 +74,8 @@ const CampaignForm = () => {
       campaignOverview: content,
       deadline: dayjs(values.deadline).toISOString(),
       discountType: discountType,
-      socialMedia: selectedSocials
+      socialMedia: selectedSocials,
+      age:age
     }
 
     await updateCampaign(payload as Campaign,id as string)
@@ -99,25 +101,29 @@ const CampaignForm = () => {
 
   const handleGetCampaignDetails = async (): Promise<void> => {
     await getCampaignDetails(id as string).then((res) => {
-      const campagin: Campaign = res.data
+      const campaign: Campaign = res.data
 
-      setSelectedSocials(campagin?.socialMedia)
-      setContent(campagin.campaignOverview)
+      setSelectedSocials(campaign?.socialMedia)
+      setContent(campaign.campaignOverview)
 
-      if (campagin) {
+      console.log(campaign.age?.[0],campaign.age?.[1])
+      if (campaign) {
         form.setFieldsValue({
-          ...campagin,
-          deadline: dayjs(campagin.deadline), 
+          ...campaign,
+          deadline: dayjs(campaign.deadline), 
+          age:campaign.age
         });
       }
 
     })
   }
 
-  useEffect(() => { handleGetCampaignDetails() }, [])
+  useEffect(() => { 
+    handleGetCampaignDetails()
+   }, [])
 
   return (
-    <div className='custom-select'>
+    <div className='custom-select custom-form'>
       <ToastContainer />
       <Breadcrumb
         className='fixed h-[40px] w-full '
@@ -152,8 +158,8 @@ const CampaignForm = () => {
               label="Campaign Budget"
               name="budget"
               rules={[{ required: true, message: BUDGET_REQUIRED }]}
+              extra='The allocated for an Influencer'
             >
-              {/* <span className='transform -translate-y-1 text-sm text-gray-500'>The allocated for an Influencer</span> */}
               <InputNumber
                 prefix="$"
                 suffix='USD'
@@ -164,6 +170,7 @@ const CampaignForm = () => {
             <Form.Item
               className='w-1/2'
               label="Maximum Participants"
+              extra='Max Influencer participating in a Campaign'
               name="maximumParticipants"
               rules={[{ required: true, message: MAXIMUM_PARTICIPANT }]}
             >
@@ -210,28 +217,17 @@ const CampaignForm = () => {
               format={DATE_TIME_FORMAT_V2} />
           </Form.Item>
 
+          <Form.Item className=' items-center w-full' name='age' label='Age' rules={[{ required: true, message: REQUIRED }]} >
+          <div className='flex items-center '>
+            <span className='pr-2'>{age?.[0]}</span>
+              <Slider value={age}  defaultValue={age} onChange={(value: number[]) => form.setFieldsValue({ age: value })}
+                className='w-full' range={{ draggableTrack: true }} />
+              <span className='pl-2'> {age?.[1]}</span>
+          </div>
+            </Form.Item>
           {/* Age */}
-          <div className='grid grid-cols-4 gap-3'>
-            <Form.Item
-              label="Min Age"
-              name="minAge"
-              rules={[{ required: true, message: REQUIRED }]}
-            >
-              <InputNumber
-                min={0}
-                style={{ width: '100%' }}
-              />
-            </Form.Item>
-            <Form.Item
-              label="Max Age"
-              name="maxAge"
-              rules={[{ required: true, message: REQUIRED }]}
-            >
-              <InputNumber
-                min={minAge + 1}
-                style={{ width: '100%' }}
-              />
-            </Form.Item>
+          <div className='grid grid-cols-2 gap-3'>
+   
             {/* Gender */}
             <Form.Item
               label="Gender"

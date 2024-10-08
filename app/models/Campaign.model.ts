@@ -5,8 +5,7 @@ export type Campaign = {
     deadline: string; 
     id?:string,
     budget: number;
-    minAge: number; 
-    maxAge: number;
+    age?:number []
     gender: 'male' | 'female' | 'all'; 
     discountType: 'percentage' | 'fixed'; 
     status: CampaignStatus

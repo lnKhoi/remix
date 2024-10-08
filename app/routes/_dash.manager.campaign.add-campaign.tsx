@@ -1,7 +1,10 @@
 import 'react-quill/dist/quill.snow.css';
 import 'react-toastify/dist/ReactToastify.css';
 
-import React, { useState } from 'react';
+import React, {
+  useEffect,
+  useState,
+} from 'react';
 
 import {
   Breadcrumb,
@@ -13,6 +16,7 @@ import {
   InputNumber,
   Radio,
   Select,
+  Slider,
 } from 'antd';
 import dayjs from 'dayjs';
 import {
@@ -53,10 +57,10 @@ const CampaignForm = () => {
   const [discountType, setDiscountType] = useState<string>('percentage')
   const [selectedSocials, setSelectedSocials] = useState<string[]>([]);
 
-  const minAge = Form.useWatch('minAge', form)
+  const age = Form.useWatch('age', form)
 
   const onFinish = async (values: Campaign): Promise<void> => {
-    setLoading(true)
+    // setLoading(true)
     const payload = {
       ...values,
       discount: Number(values.discount),
@@ -65,6 +69,7 @@ const CampaignForm = () => {
       discountType: discountType,
       socialMedia: selectedSocials
     }
+
 
     await createCampaign(payload as Campaign)
       .then((res) => {
@@ -90,8 +95,12 @@ const CampaignForm = () => {
     setContent(content)
   }
 
+  useEffect(() => {
+    form.setFieldsValue({ age: [20, 32] })
+  }, [])
+
   return (
-    <div className='custom-select'>
+    <div className='custom-select custom-form'>
       <ToastContainer />
       <Breadcrumb
         className='fixed h-[40px] w-full '
@@ -100,13 +109,13 @@ const CampaignForm = () => {
           { title: <p className='text-gray-800'>Add Campaign</p> },
         ]}
       />
-      <div className='w-[750px] mx-auto'>
-        <h2 className='text-gray-900 mt-[52px] mb-5 text-lg font-medium text-center'>Add Campaign</h2>
+      <div className='w-[700px] mx-auto'>
+        <h2 className='text-gray-900 mt-[52px] mb-5  text-lg font-medium text-left'>Add Campaign</h2>
         <Form
           form={form}
           layout="vertical"
           onFinish={onFinish}
-          style={{ maxWidth: '600px', margin: 'auto' }}
+          style={{ margin: 'auto' }}
         >
 
           {/* Campaign Name */}
@@ -115,6 +124,7 @@ const CampaignForm = () => {
             name="name"
             rules={[{ required: true, message: CAMPAIGN_REQUIRED }]}
           >
+
             <Input />
           </Form.Item>
 
@@ -126,9 +136,10 @@ const CampaignForm = () => {
               label="Campaign Budget"
               name="budget"
               rules={[{ required: true, message: BUDGET_REQUIRED }]}
+              extra="The allocated for an Influencer"
             >
-              {/* <span className='transform -translate-y-1 text-sm text-gray-500'>The allocated for an Influencer</span> */}
               <InputNumber
+                name='budget'
                 prefix="$"
                 suffix='USD'
                 min={0}
@@ -140,8 +151,8 @@ const CampaignForm = () => {
               label="Maximum Participants"
               name="maximumParticipants"
               rules={[{ required: true, message: MAXIMUM_PARTICIPANT }]}
+              extra="Max Influencers participating in a Campaign"
             >
-              {/* <span className='transform -translate-y-1 text-sm text-gray-500'>The allocated for an Influencer</span> */}
               <InputNumber
                 min={0}
                 style={{ width: '100%' }}
@@ -184,29 +195,17 @@ const CampaignForm = () => {
               showTime
               format={DATE_TIME_FORMAT_V2} />
           </Form.Item>
-
+          <Form.Item className=' items-center w-full' name='age' label='Age' rules={[{ required: true, message: REQUIRED }]} >
+            <div className='flex items-center '>
+              <span className='pr-2'>{age?.[0] || 20}</span>
+              <Slider defaultValue={[20, 32]} onChange={(value: number[]) => form.setFieldsValue({ age: value })}
+                className='w-full' range={{ draggableTrack: true }} />
+              <span className='pl-2'> {age?.[1] || 32}</span>
+            </div>
+          </Form.Item>
           {/* Age */}
-          <div className='grid grid-cols-4 gap-3'>
-            <Form.Item
-              label="Min Age"
-              name="minAge"
-              rules={[{ required: true, message: REQUIRED }]}
-            >
-              <InputNumber
-                min={0}
-                style={{ width: '100%' }}
-              />
-            </Form.Item>
-            <Form.Item
-              label="Max Age"
-              name="maxAge"
-              rules={[{ required: true, message: REQUIRED }]}
-            >
-              <InputNumber
-                min={minAge + 1}
-                style={{ width: '100%' }}
-              />
-            </Form.Item>
+          <div className='grid grid-cols-2 gap-3'>
+
             {/* Gender */}
             <Form.Item
               label="Gender"

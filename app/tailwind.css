@@ -146,3 +146,34 @@
 .ant-tabs-tab {
   color: #6B7280 !important;
 }
+
+/* CUSTOMIZE THE FORM ANTD */
+
+.custom-form input {
+  height: 36px !important;
+  /* background-color: theme('colors.gray.100') !important; */
+  /* border-color: transparent ; */
+}
+
+.ant-input-number-affix-wrapper {
+  /* background-color: theme('colors.gray.100') !important; */
+  /* border-color: transparent ; */
+}
+
+.ant-select {
+  height: 36px !important;
+}
+
+.ant-select-selector {
+  height: 36px !important;
+}
+
+.ant-picker  {
+  /* background-color: theme('colors.gray.100'); */
+  /* border-color: transparent; */
+  height: 36px !important;
+}
+
+.ant-slider-track {
+  background-color: theme('colors.blue.500') !important;
+}
