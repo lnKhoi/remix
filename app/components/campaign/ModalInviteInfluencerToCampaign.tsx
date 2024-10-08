@@ -9,13 +9,21 @@ import {
   Button,
   Checkbox,
   Modal,
+  Popover,
   Segmented,
+  Select,
+  Slider,
 } from 'antd';
 import { toast } from 'react-toastify';
 import {
   getListInfluencerInviteInCampaign,
   inviteInfluencerToCampaign,
 } from '~/apis/campaign';
+import { countries } from '~/constants/countries.constant';
+import {
+  genders,
+  socials,
+} from '~/constants/creator.constant';
 import { INVITED_INFLUENCERS } from '~/constants/messages.constant';
 import { Creator } from '~/models/User.model';
 
@@ -35,7 +43,8 @@ function ModalInviteInfluencerToCampaign({ onClose, open, campaignId }: ModalInv
     const [alignValue, setAlignValue] = useState<Align>('Influencer');
     const [selectAll, setSelectAll] = useState<boolean>(false)
     const [influencers, setInfluencers] = useState<Creator[]>([])
-    const [loading,setLoading] = useState<boolean>(false)
+    const [modal, setModal] = useState<boolean>(false)
+    const [loading, setLoading] = useState<boolean>(false)
     const [selectedInfluencers, setSelectedInfluencers] = useState<string[]>([])
 
     const handleSelectAll = (): void => {
@@ -56,13 +65,13 @@ function ModalInviteInfluencerToCampaign({ onClose, open, campaignId }: ModalInv
     };
 
     const handleGetInfluencers = async () => {
-        await getListInfluencerInviteInCampaign(campaignId as string,100, 1)
-        .then((res) => setInfluencers(res?.data?.creatorsWithInvitationStatus))
+        await getListInfluencerInviteInCampaign(campaignId as string, 100, 1)
+            .then((res) => setInfluencers(res?.data?.creatorsWithInvitationStatus))
     }
 
     const handleInviteInfluencers = async (): Promise<void> => {
         setLoading(true)
-        await inviteInfluencerToCampaign(campaignId,selectedInfluencers as string[])
+        await inviteInfluencerToCampaign(campaignId, selectedInfluencers as string[])
             .then(() => {
                 toast.success(INVITED_INFLUENCERS)
             })
@@ -70,7 +79,7 @@ function ModalInviteInfluencerToCampaign({ onClose, open, campaignId }: ModalInv
             .finally(() => setLoading(false))
     }
 
-    useEffect(() => { handleGetInfluencers()}, [])
+    useEffect(() => { handleGetInfluencers() }, [])
 
     useEffect(() => {
         selectedInfluencers.length === influencers.length && selectedInfluencers.length > 0
@@ -105,9 +114,75 @@ function ModalInviteInfluencerToCampaign({ onClose, open, campaignId }: ModalInv
                                 <Checkbox checked={selectAll} onChange={handleSelectAll} >Select All</Checkbox>
                                 <span className='text-gray-600'>Selected ({selectedInfluencers.length})</span>
                             </div>
-                            <button className='bg-[#F3F4F6] hover:bg-[#D1D5DB] transition-all flex items-center justify-center gap-1 text-sm h-[35px] w-[85px] font-semibold rounded-[7px] text-[#1F2937]'>
-                                <AdjustmentsHorizontalIcon width={16} />  Filter
-                            </button>
+                            <Popover
+                                content={
+                                    <div className='w-[368px] custom-input flex flex-col gap-1'>
+                                        <div>
+                                            <span className='text-sm text-gray-800 font-medium'>Age</span>
+                                            <div className='flex items-center gap-2'>
+                                                <span className='text-xs text-gray-500'>20</span>
+                                                <Slider range={{ draggableTrack: true }} defaultValue={[20, 32]} className='w-full' />
+                                                <span className='text-xs text-gray-500'>24</span></div>
+                                        </div>
+
+                                        <div>
+                                            <span className='text-sm text-gray-800 font-medium'>Gender</span>
+                                            <div className='flex items-center gap-2 mt-2'>
+                                                {genders.map(g => (
+                                                    <div key={g} className='h-[34px] px-3 bg-gray-200 text-sm cursor-pointer font-medium flex items-center justify-center rounded-lg capitalize'>
+                                                        {g}
+                                                    </div>
+                                                ))}
+                                            </div>
+                                            <div className='mt-3 flex flex-col gap-2'>
+                                                <span className='text-sm text-gray-800 font-medium'>Location</span>
+                                                <Select
+                                                    placeholder="Select a country"
+                                                    showSearch
+                                                    allowClear
+                                                    optionFilterProp="label"
+                                                >
+                                                    {countries.map((country) => (
+                                                        <Select.Option key={country.value} value={country.label}>
+                                                            <span role="img" aria-label={country.label} className="mr-2">
+                                                                {country.flag}
+                                                            </span>
+                                                            {country.label}
+                                                        </Select.Option>
+                                                    ))}
+                                                </Select>
+                                            </div>
+                                            <div className='mt-3'>
+                                                <span className='text-sm text-gray-800 font-medium'>Social Media</span>
+                                                <div className='flex items-center gap-2 mt-2'>
+                                                    {socials.map(s => (
+                                                        <div key={s.name} className='h-[34px] px-3 bg-gray-200 text-sm cursor-pointer font-medium flex items-center justify-center rounded-lg capitalize'>
+                                                            {s.name}
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
+
+                                            <div className='flex w-full items-center gap-2 mt-5 justify-end'>
+                                                <Button onClick={() => setModal(false)} type='default' >Reset</Button>
+                                                <Button type='primary' >Apply</Button>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                                }
+                                title=""
+                                placement='bottom'
+                                trigger="click"
+                                open={modal}
+                                onOpenChange={() => setModal(!modal)}
+                            >
+
+                                <button className='bg-[#F3F4F6] hover:bg-[#D1D5DB] transition-all flex items-center justify-center gap-1 text-sm h-[35px] w-[85px] font-semibold rounded-[7px] text-[#1F2937]'>
+                                    <AdjustmentsHorizontalIcon width={16} />  Filter
+                                </button>
+                            </Popover>
                         </div>
                         <div className='h-[330px] mb-8 mt-4 pr-2 overflow-y-scroll w-full flex flex-col gap-3'>
                             {influencers.map(i => (
@@ -116,9 +191,7 @@ function ModalInviteInfluencerToCampaign({ onClose, open, campaignId }: ModalInv
                         </div>
                     </div>
                 )}
-
             </div>
-
         </Modal>
     )
 }

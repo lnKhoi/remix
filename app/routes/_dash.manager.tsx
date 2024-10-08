@@ -77,7 +77,7 @@ function page() {
               style={{ borderRight: 0, width: 220, }}
             >
               {profileTab.map(m => (
-                <Link to={m.to}>
+                // <Link to={m.to}>
                   <Menu.Item key={m.to} >
                     <div
                       className='flex relative w-full -ml-4'
@@ -88,7 +88,7 @@ function page() {
                       </div>
                     </div>
                   </Menu.Item>
-                </Link>
+                // </Link>
 
               ))}
             </Menu>
