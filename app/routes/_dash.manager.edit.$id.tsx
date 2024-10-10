@@ -148,7 +148,7 @@ const CampaignForm = () => {
         ]}
       />
       <div className='w-[750px] mx-auto'>
-        <h2 className='text-gray-900 mt-[52px] mb-5 text-lg font-medium text-center'>Edit Campaign</h2>
+        <h2 className='text-gray-900 mt-[52px] mb-5 text-lg font-medium text-left'>Edit Campaign</h2>
         <Form
           form={form}
           layout="vertical"
