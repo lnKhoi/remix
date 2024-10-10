@@ -41,6 +41,10 @@ import { DATE_TIME_FORMAT_V2 } from '~/constants/time.constant';
 import { Campaign } from '~/models/Campaign.model';
 import Editor from '~/plugins/editor';
 
+import {
+  FilmIcon,
+  Squares2X2Icon,
+} from '@heroicons/react/24/outline';
 import { MetaFunction } from '@remix-run/cloudflare';
 import { Link } from '@remix-run/react';
 
@@ -58,6 +62,10 @@ const CampaignForm = () => {
   const [selectedSocials, setSelectedSocials] = useState<string[]>([]);
 
   const age = Form.useWatch('age', form)
+  const budget = Form.useWatch('budget', form);
+  const contentFormat = Form.useWatch('contentFormat',form)
+  const maximumParticipants = Form.useWatch('maximumParticipants', form);
+
 
   const onFinish = async (values: Campaign): Promise<void> => {
     setLoading(true)
@@ -69,7 +77,6 @@ const CampaignForm = () => {
       discountType: discountType,
       socialMedia: selectedSocials
     }
-
 
     await createCampaign(payload as Campaign)
       .then((res) => {
@@ -99,6 +106,14 @@ const CampaignForm = () => {
     form.setFieldsValue({ age: [20, 32] })
   }, [])
 
+  useEffect(() => {
+    if (budget && maximumParticipants) {
+      const totalBudget = budget * maximumParticipants;
+      form.setFieldsValue({ totalBudget });
+    }
+  }, [budget, maximumParticipants]);
+
+
   return (
     <div className='custom-select custom-form'>
       <ToastContainer />
@@ -124,22 +139,38 @@ const CampaignForm = () => {
             name="name"
             rules={[{ required: true, message: CAMPAIGN_REQUIRED }]}
           >
-
             <Input />
           </Form.Item>
+          <div>
+            <Form.Item
+              className='w-full'
+              label="Campaign Budget"
+              name="totalBudget"
+              rules={[{ required: true, message: BUDGET_REQUIRED }]}
+              extra="The allocated for a Influencer"
+            >
+              <InputNumber
+                name='budget'
+                prefix="$"
+                disabled
+                suffix='USD'
+                min={0}
+                style={{ width: '100%' }}
+              />
+            </Form.Item>
+          </div>
 
           {/* Campaign Budget */}
 
           <div className='flex items-center gap-3 justify-between'>
             <Form.Item
               className='w-1/2'
-              label="Campaign Budget"
+              label="Per-Influencer Budget"
               name="budget"
               rules={[{ required: true, message: BUDGET_REQUIRED }]}
-              extra="The allocated for an Influencer"
+              extra="The amount allowcated to each influencer"
             >
               <InputNumber
-                name='budget'
                 prefix="$"
                 suffix='USD'
                 min={0}
@@ -152,11 +183,41 @@ const CampaignForm = () => {
               name="maximumParticipants"
               rules={[{ required: true, message: MAXIMUM_PARTICIPANT }]}
               extra="Max Influencers participating in a Campaign"
+
             >
               <InputNumber
                 min={0}
                 style={{ width: '100%' }}
               />
+            </Form.Item>
+          </div>
+
+          {/* Content Format */}
+          <div>
+            <Form.Item
+              className='w-1/2'
+              label="Content Format"
+              name="contentFormat"
+              rules={[{ required: true, message: REQUIRED }]}
+            >
+              <Checkbox.Group>
+              <div className='flex gap-3 items-center'>
+                <div className={`flex gap-5 cursor-pointer border h-[44px] ${contentFormat?.includes('post') ? 'border-blue-600' : 'border-gray-200'} items-center p-3 rounded-xl justify-between`}>
+                  <div className='flex gap-2'>
+                    <Squares2X2Icon width={20} height={20} />
+                    <span>Post</span>
+                  </div>
+                  <Checkbox value='post' />
+                </div>
+                <div className={`flex gap-5 cursor-pointer border h-[44px] items-center p-3  ${contentFormat?.includes('reel') ? 'border-blue-600' : 'border-gray-200'} rounded-xl justify-between`}>
+                  <div className='flex gap-2'>
+                    <FilmIcon width={20} height={20} />
+                    <span>Reel</span>
+                  </div>
+                  <Checkbox value='reel' />
+                </div>
+              </div>
+              </Checkbox.Group>
             </Form.Item>
           </div>
 

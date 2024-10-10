@@ -5,7 +5,6 @@ import {
 import Fb from '~/assets/facebook.svg';
 import Ig from '~/assets/insta.svg';
 import Tiktok from '~/assets/tiktok.svg';
-import Yb from '~/assets/youtube.svg';
 import TagColor from '~/components/ui/tagColor';
 import { getColorInfluencerContent } from '~/helpers/campaign.helper';
 import {
@@ -81,10 +80,10 @@ export const socials = [
     name: 'instagram',
     icon: Ig
   },
-  {
-    name: 'youtube',
-    icon: Yb
-  },
+  // {
+  //   name: 'youtube',
+  //   icon: Yb
+  // },
   {
     name: 'tiktok',
     icon: Tiktok

@@ -44,6 +44,10 @@ import { DATE_TIME_FORMAT_V2 } from '~/constants/time.constant';
 import { Campaign } from '~/models/Campaign.model';
 import Editor from '~/plugins/editor';
 
+import {
+  FilmIcon,
+  Squares2X2Icon,
+} from '@heroicons/react/24/outline';
 import { MetaFunction } from '@remix-run/cloudflare';
 import {
   Link,
@@ -65,6 +69,9 @@ const CampaignForm = () => {
 
   const { id } = useParams()
   const age = Form.useWatch('age', form)
+  const budget = Form.useWatch('budget', form);
+  const contentFormat = Form.useWatch('contentFormat',form)
+  const maximumParticipants = Form.useWatch('maximumParticipants', form);
 
   const onFinish = async (values: Campaign): Promise<void> => {
     setLoading(true)
@@ -122,6 +129,14 @@ const CampaignForm = () => {
     handleGetCampaignDetails()
    }, [])
 
+   useEffect(() => {
+    if (budget && maximumParticipants) {
+      const totalBudget = budget * maximumParticipants;
+      form.setFieldsValue({ totalBudget });
+    }
+  }, [budget, maximumParticipants]);
+
+
   return (
     <div className='custom-select custom-form'>
       <ToastContainer />
@@ -133,12 +148,12 @@ const CampaignForm = () => {
         ]}
       />
       <div className='w-[750px] mx-auto'>
-        <h2 className='text-gray-900 mt-[52px] mb-5 text-lg font-medium text-center'>Edit Campaign</h2>
+        <h2 className='text-gray-900 mt-[52px] mb-5 text-lg font-medium text-left'>Edit Campaign</h2>
         <Form
           form={form}
           layout="vertical"
           onFinish={onFinish}
-          style={{ maxWidth: '600px', margin: 'auto' }}
+          style={{ margin: 'auto' }}
         >
 
           {/* Campaign Name */}
@@ -149,16 +164,34 @@ const CampaignForm = () => {
           >
             <Input />
           </Form.Item>
+          <div>
+            <Form.Item
+              className='w-full'
+              label="Campaign Budget"
+              name="totalBudget"
+              rules={[{ required: true, message: BUDGET_REQUIRED }]}
+              extra="The allocated for a Influencer"
+            >
+              <InputNumber
+                name='budget'
+                prefix="$"
+                disabled
+                suffix='USD'
+                min={0}
+                style={{ width: '100%' }}
+              />
+            </Form.Item>
+          </div>
 
           {/* Campaign Budget */}
 
           <div className='flex items-center gap-3 justify-between'>
             <Form.Item
               className='w-1/2'
-              label="Campaign Budget"
+              label="Per-Influencer Budget"
               name="budget"
               rules={[{ required: true, message: BUDGET_REQUIRED }]}
-              extra='The allocated for an Influencer'
+              extra="The amount allowcated to each influencer"
             >
               <InputNumber
                 prefix="$"
@@ -170,17 +203,47 @@ const CampaignForm = () => {
             <Form.Item
               className='w-1/2'
               label="Maximum Participants"
-              extra='Max Influencer participating in a Campaign'
               name="maximumParticipants"
               rules={[{ required: true, message: MAXIMUM_PARTICIPANT }]}
+              extra="Max Influencers participating in a Campaign"
+
             >
-              {/* <span className='transform -translate-y-1 text-sm text-gray-500'>The allocated for an Influencer</span> */}
               <InputNumber
                 min={0}
                 style={{ width: '100%' }}
               />
             </Form.Item>
           </div>
+
+          {/* Content Format */}
+          <div>
+            <Form.Item
+              className='w-1/2'
+              label="Content Format"
+              name="contentFormat"
+              rules={[{ required: true, message: REQUIRED }]}
+            >
+              <Checkbox.Group>
+              <div className='flex gap-3 items-center'>
+                <div className={`flex gap-5 cursor-pointer border h-[44px] ${contentFormat?.includes('post') ? 'border-blue-600' : 'border-gray-200'} items-center p-3 rounded-xl justify-between`}>
+                  <div className='flex gap-2'>
+                    <Squares2X2Icon width={20} height={20} />
+                    <span>Post</span>
+                  </div>
+                  <Checkbox value='post' />
+                </div>
+                <div className={`flex gap-5 cursor-pointer border h-[44px] items-center p-3  ${contentFormat?.includes('reel') ? 'border-blue-600' : 'border-gray-200'} rounded-xl justify-between`}>
+                  <div className='flex gap-2'>
+                    <FilmIcon width={20} height={20} />
+                    <span>Reel</span>
+                  </div>
+                  <Checkbox value='reel' />
+                </div>
+              </div>
+              </Checkbox.Group>
+            </Form.Item>
+          </div>
+
           {/* Social media */}
           <div className='mb-6'>
             <h6 className='text-sm text-gray-800 font-medium' >Social Media</h6>
@@ -216,18 +279,17 @@ const CampaignForm = () => {
               showTime
               format={DATE_TIME_FORMAT_V2} />
           </Form.Item>
-
           <Form.Item className=' items-center w-full' name='age' label='Age' rules={[{ required: true, message: REQUIRED }]} >
-          <div className='flex items-center '>
-            <span className='pr-2'>{age?.[0]}</span>
-              <Slider value={age}  defaultValue={age} onChange={(value: number[]) => form.setFieldsValue({ age: value })}
+            <div className='flex items-center '>
+              <span className='pr-2'>{age?.[0] || 20}</span>
+              <Slider defaultValue={[20, 32]} onChange={(value: number[]) => form.setFieldsValue({ age: value })}
                 className='w-full' range={{ draggableTrack: true }} />
-              <span className='pl-2'> {age?.[1]}</span>
-          </div>
-            </Form.Item>
+              <span className='pl-2'> {age?.[1] || 32}</span>
+            </div>
+          </Form.Item>
           {/* Age */}
           <div className='grid grid-cols-2 gap-3'>
-   
+
             {/* Gender */}
             <Form.Item
               label="Gender"
@@ -281,7 +343,7 @@ const CampaignForm = () => {
               </Form.Item>
             </div>
             <Select
-            className='mt-[5px] '
+              className='mt-[5px] '
               style={{ width: 150 }}
               onChange={(v) => setDiscountType(v)}
               defaultValue={discountType}
@@ -297,7 +359,7 @@ const CampaignForm = () => {
           </div>
 
           {/* Submit Button */}
-          <div className='flex justify-end h-[35px] mb-8  items-center'>
+          <div className='flex  justify-end h-[35px]   items-center'>
             <div className='h-full flex items-center'>
               <Form.Item name='status' initialValue='active' style={{ margin: 0 }}>
                 <Radio.Group>
