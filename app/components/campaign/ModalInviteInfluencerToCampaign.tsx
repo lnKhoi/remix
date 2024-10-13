@@ -8,6 +8,7 @@ import React, {
 import {
   Button,
   Checkbox,
+  Input,
   Modal,
   Popover,
   Segmented,
@@ -21,7 +22,7 @@ import {
 } from '~/apis/campaign';
 import { countries } from '~/constants/countries.constant';
 import {
-  genders,
+  genderFilterOptions,
   socials,
 } from '~/constants/creator.constant';
 import { INVITED_INFLUENCERS } from '~/constants/messages.constant';
@@ -39,6 +40,17 @@ type ModalInviteInfluencerToCampaign = {
     campaignId: string
 }
 
+export type Filter = {
+    age: number[];
+    gender: string[];
+    location: string;
+    socialMedias: string[];
+    minFollow: string
+    maxFollow: string
+};
+
+const initialFilter = { age: [0, 100], gender: [], location: '', socialMedias: [], minFollow: '', maxFollow: '' }
+
 function ModalInviteInfluencerToCampaign({ onClose, open, campaignId }: ModalInviteInfluencerToCampaign) {
     const [alignValue, setAlignValue] = useState<Align>('Influencer');
     const [selectAll, setSelectAll] = useState<boolean>(false)
@@ -46,6 +58,8 @@ function ModalInviteInfluencerToCampaign({ onClose, open, campaignId }: ModalInv
     const [modal, setModal] = useState<boolean>(false)
     const [loading, setLoading] = useState<boolean>(false)
     const [selectedInfluencers, setSelectedInfluencers] = useState<string[]>([])
+
+    const [filter, setFilter] = useState<Filter>(initialFilter);
 
     const handleSelectAll = (): void => {
         setSelectAll(!selectAll);
@@ -64,8 +78,8 @@ function ModalInviteInfluencerToCampaign({ onClose, open, campaignId }: ModalInv
         }
     };
 
-    const handleGetInfluencers = async () => {
-        await getListInfluencerInviteInCampaign(campaignId as string, 100, 1)
+    const handleGetInfluencers = async (filter: Filter) => {
+        await getListInfluencerInviteInCampaign(campaignId as string, 100, 1, filter)
             .then((res) => setInfluencers(res?.data?.creatorsWithInvitationStatus))
     }
 
@@ -79,13 +93,36 @@ function ModalInviteInfluencerToCampaign({ onClose, open, campaignId }: ModalInv
             .finally(() => setLoading(false))
     }
 
-    useEffect(() => { handleGetInfluencers() }, [])
+    useEffect(() => { handleGetInfluencers(filter) }, [])
 
     useEffect(() => {
         selectedInfluencers.length === influencers.length && selectedInfluencers.length > 0
             ? setSelectAll(true)
             : setSelectAll(false)
     }, [selectedInfluencers])
+
+    const handleSelectSocial = (id: string): void => {
+        setFilter((prevFilter) => ({
+            ...prevFilter,
+            socialMedias: prevFilter.socialMedias.includes(id)
+                ? prevFilter.socialMedias.filter((socialId) => socialId !== id)
+                : [...prevFilter.socialMedias, id],
+        }));
+    };
+
+    const handleSelectGender = (id: string) => {
+        setFilter((prevFilter) => ({
+            ...prevFilter,
+            gender: prevFilter.gender.includes(id)
+                ? prevFilter.gender.filter((gender) => gender !== id)
+                : [...prevFilter.gender, id],
+        }));
+    }
+
+    const handleResetFilter = (): void => {
+        setFilter(initialFilter)
+        handleGetInfluencers(initialFilter)
+    }
 
     return (
         <Modal width={650} title='' open={open} onCancel={() => onClose(false)} footer={[
@@ -121,15 +158,19 @@ function ModalInviteInfluencerToCampaign({ onClose, open, campaignId }: ModalInv
                                             <span className='text-sm text-gray-800 font-medium'>Age</span>
                                             <div className='flex items-center gap-2'>
                                                 <span className='text-xs text-gray-500'>20</span>
-                                                <Slider range={{ draggableTrack: true }} defaultValue={[20, 32]} className='w-full' />
+                                                <Slider onChange={(value: number[]) => setFilter({ ...filter, age: value })}
+                                                    range={{ draggableTrack: true }} defaultValue={[20, 32]} className='w-full' />
                                                 <span className='text-xs text-gray-500'>24</span></div>
                                         </div>
 
                                         <div>
                                             <span className='text-sm text-gray-800 font-medium'>Gender</span>
                                             <div className='flex items-center gap-2 mt-2'>
-                                                {genders.map(g => (
-                                                    <div key={g} className='h-[34px] px-3 bg-gray-200 text-sm cursor-pointer font-medium flex items-center justify-center rounded-lg capitalize'>
+                                                {genderFilterOptions.map(g => (
+                                                    <div
+                                                        onClick={() => handleSelectGender(g)}
+                                                        key={g}
+                                                        className={`h-[34px] px-3 ${!filter.gender.includes(g) ? 'bg-gray-200 text-gray-800' : 'bg-blue-600 text-white'} text-sm cursor-pointer font-medium flex items-center justify-center rounded-lg capitalize`}>
                                                         {g}
                                                     </div>
                                                 ))}
@@ -138,9 +179,11 @@ function ModalInviteInfluencerToCampaign({ onClose, open, campaignId }: ModalInv
                                                 <span className='text-sm text-gray-800 font-medium'>Location</span>
                                                 <Select
                                                     placeholder="Select a country"
+                                                    value={filter.location}
                                                     showSearch
                                                     allowClear
                                                     optionFilterProp="label"
+                                                    onChange={(l) => setFilter({ ...filter, location: l })}
                                                 >
                                                     {countries.map((country) => (
                                                         <Select.Option key={country.value} value={country.label}>
@@ -156,19 +199,30 @@ function ModalInviteInfluencerToCampaign({ onClose, open, campaignId }: ModalInv
                                                 <span className='text-sm text-gray-800 font-medium'>Social Media</span>
                                                 <div className='flex items-center gap-2 mt-2'>
                                                     {socials.map(s => (
-                                                        <div key={s.name} className='h-[34px] px-3 bg-gray-200 text-sm cursor-pointer font-medium flex items-center justify-center rounded-lg capitalize'>
+                                                        <div
+                                                            key={s.name}
+                                                            onClick={() => handleSelectSocial(s.name)}
+                                                            className={`h-[34px] px-3 text-sm cursor-pointer ${filter.socialMedias.includes(s.name) ? 'bg-blue-500 text-white' : 'bg-gray-200  text-gray-800'} 
+                                                             font-medium flex items-center justify-center rounded-lg capitalize`}>
                                                             {s.name}
                                                         </div>
                                                     ))}
                                                 </div>
                                             </div>
+                                            <div className='mt-3'>
+                                                <span className='text-sm text-gray-800 font-medium'>Follower Count</span>
+                                                <div className='flex items-center gap-2 mt-2'>
+                                                    <Input onChange={(v) => setFilter({ ...filter, minFollow: v.target.value })} placeholder='Miximum' />
+                                                    <Input onChange={(v) => setFilter({ ...filter, maxFollow: v.target.value })} placeholder='Maximum' />
+                                                </div>
+                                            </div>
+
 
                                             <div className='flex w-full items-center gap-2 mt-5 justify-end'>
-                                                <Button onClick={() => setModal(false)} type='default' >Reset</Button>
-                                                <Button type='primary' >Apply</Button>
+                                                <Button onClick={handleResetFilter} type='default' >Reset</Button>
+                                                <Button onClick={() => handleGetInfluencers(filter)} type='primary' >Apply</Button>
                                             </div>
                                         </div>
-
 
                                     </div>
                                 }
@@ -178,9 +232,8 @@ function ModalInviteInfluencerToCampaign({ onClose, open, campaignId }: ModalInv
                                 open={modal}
                                 onOpenChange={() => setModal(!modal)}
                             >
-
                                 <button className='bg-[#F3F4F6] hover:bg-[#D1D5DB] transition-all flex items-center justify-center gap-1 text-sm h-[35px] w-[85px] font-semibold rounded-[7px] text-[#1F2937]'>
-                                    <AdjustmentsHorizontalIcon width={16} />  Filter
+                                    <AdjustmentsHorizontalIcon width={16} /> Filter
                                 </button>
                             </Popover>
                         </div>

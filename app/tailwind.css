@@ -113,12 +113,12 @@
   background-color: white !important;
 }
 
-/* .ant-input {
-  border-color: theme('colors.gray.200') !important;
-  background-color: #F3F4F6 !important;
-  border-color: #F3F4F6 !important;
-  height: 36px ;
-} */
+.ant-input {
+  /* border-color: theme('colors.gray.200') !important; */
+  /* background-color: #F3F4F6 !important; */
+  /* border-color: #F3F4F6 !important; */
+  height: 36px !important;
+}
 
 .ant-table-thead tr th {
   background-color: #F3F4F6 !important;
@@ -154,12 +154,17 @@
   /* background-color: theme('colors.gray.100') !important; */
   /* border-color: transparent ; */
 }
-
-.ant-input-number-affix-wrapper {
-  /* background-color: theme('colors.gray.100') !important; */
-  /* border-color: transparent ; */
+.ant-form-item-control-input-content {
+  height: 36px !important;
 }
 
+
+
+.ant-input-affix-wrapper {
+  height: 36px ;
+  display: flex;
+  align-items: center;
+}
 .ant-select {
   height: 36px !important;
 }
@@ -178,7 +183,32 @@
   background-color: theme('colors.blue.500') !important;
 }
 
-.custom-input .ant-select div{
+.custom-input .ant-select div, .custom-input input{
   background-color: theme('colors.gray.100') !important;
   border-color: transparent !important;
+  height: 36px !important;
+  border: none;
+}
+
+.hide-toolbar .ql-toolbar {
+  display: none !important;
+}
+
+.hide-toolbar .ql-container {
+  border: none !important;
+}
+
+.ql-toolbar {
+  background-color: theme('colors.gray.100') !important;
+}
+
+.quill .ql-toolbar{
+  border-top-right-radius: 12px !important;
+  border-top-left-radius: 12px !important;
+  border:1px solid  theme('colors.gray.200') !important;
+}
+.quill .ql-container {
+  border-bottom-left-radius: 12px !important;
+  border-bottom-right-radius: 12px !important;
+  border:1px solid  theme('colors.gray.200') !important;
 }

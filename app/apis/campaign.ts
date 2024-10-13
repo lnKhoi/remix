@@ -1,3 +1,4 @@
+import { Filter } from '~/components/campaign/ModalInviteInfluencerToCampaign';
 import { Campaign } from '~/models/Campaign.model';
 
 import {
@@ -31,8 +32,8 @@ export const getInfluencerInviteInCampaign = (limit: number, page: 1) => {
     return getData(`/api/v1/brand/imported-influencers?limit=${limit}&page=${page}`)
 }
 
-export const getListInfluencerInviteInCampaign = (camaignId: string, limit: number, page: 1) => {
-    return getData(`/api/v1/brand/${camaignId}/creators-for-inviting?limit=${limit}&page=${page}`)
+export const getListInfluencerInviteInCampaign = (camaignId: string, limit: number, page: 1,filter:Filter) => {
+    return getData(`/api/v1/brand/${camaignId}/creators-for-inviting?limit=${limit}&page=${page}&genders=${filter.gender}&socialMedias=${filter.socialMedias}&location=${filter.location}&followerCount=${(filter?.minFollow !=='' && filter?.maxFollow !=='') ? filter?.minFollow + ',' + filter?.maxFollow : ''}&age=${filter.age?.[0] !== 0 ? (filter?.age?.[0] + ',' + filter?.age?.[1]) : ''}`)
 }
 
 export const inviteInfluencerToCampaign = (camaignId: string, creatorIds: string[]) => {
