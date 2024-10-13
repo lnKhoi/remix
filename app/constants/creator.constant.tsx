@@ -158,3 +158,5 @@ export const influencersParticipantsColumns = ({
 ];
 
 export const genders = ['male','female','other','all']
+
+export const genderFilterOptions = ['male','female','other']

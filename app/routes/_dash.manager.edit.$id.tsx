@@ -113,7 +113,6 @@ const CampaignForm = () => {
       setSelectedSocials(campaign?.socialMedia)
       setContent(campaign.campaignOverview)
 
-      console.log(campaign.age?.[0],campaign.age?.[1])
       if (campaign) {
         form.setFieldsValue({
           ...campaign,
@@ -162,7 +161,7 @@ const CampaignForm = () => {
             name="name"
             rules={[{ required: true, message: CAMPAIGN_REQUIRED }]}
           >
-            <Input />
+            <Input maxLength={150} showCount />
           </Form.Item>
           <div>
             <Form.Item
@@ -195,6 +194,7 @@ const CampaignForm = () => {
             >
               <InputNumber
                 prefix="$"
+                maxLength={10}
                 suffix='USD'
                 min={0}
                 style={{ width: '100%' }}
@@ -209,7 +209,8 @@ const CampaignForm = () => {
 
             >
               <InputNumber
-                min={0}
+                min={1}
+                maxLength={2}
                 style={{ width: '100%' }}
               />
             </Form.Item>
@@ -279,15 +280,17 @@ const CampaignForm = () => {
               showTime
               format={DATE_TIME_FORMAT_V2} />
           </Form.Item>
+              {/* Age */}
+              <h2 className='text-sm text-gray-800 font-normal mb-3'>Campaign Demographic</h2>
           <Form.Item className=' items-center w-full' name='age' label='Age' rules={[{ required: true, message: REQUIRED }]} >
             <div className='flex items-center '>
               <span className='pr-2'>{age?.[0] || 20}</span>
-              <Slider defaultValue={[20, 32]} onChange={(value: number[]) => form.setFieldsValue({ age: value })}
+              <Slider value={age} onChange={(value: number[]) => form.setFieldsValue({ age: value })}
                 className='w-full' range={{ draggableTrack: true }} />
               <span className='pl-2'> {age?.[1] || 32}</span>
             </div>
           </Form.Item>
-          {/* Age */}
+
           <div className='grid grid-cols-2 gap-3'>
 
             {/* Gender */}
@@ -314,7 +317,7 @@ const CampaignForm = () => {
                 placeholder="Select a country"
                 showSearch
                 allowClear
-                optionFilterProp="label"
+                optionFilterProp="children" 
               >
                 {countries.map((country) => (
                   <Select.Option key={country.value} value={country.label}>
@@ -337,6 +340,7 @@ const CampaignForm = () => {
               >
                 <InputNumber
                   min={0}
+                  prefix={discountType ==='percentage' ? '%' : '$'}
                   max={discountType === 'percentage' ? 100 : 100000000000000}
                   className='w-full'
                 />

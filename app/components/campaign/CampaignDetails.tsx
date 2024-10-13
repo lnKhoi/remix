@@ -35,9 +35,11 @@ function CampaignDetails({ campaign }: CampaignDetailsProps) {
             <img key={s} src={socialMediaIcons[s]} alt={s} />
           ))}
         </div>
-        <div className='w-full'>
+        <div className='w-full hide-toolbar'>
           <h6 className='text-gray-800 text-[20px] mt-6 mb-5 font-semibold'>Campaign Overview</h6>
-          <Editor value={campaign?.campaignOverview as string} />
+         {campaign?.campaignOverview && (
+           <Editor value={campaign?.campaignOverview as string} />
+         )}
         </div>
       </div>
       <div className='w-[32%] border border-gray-200 rounded-xl p-5 h-[350px]'>
