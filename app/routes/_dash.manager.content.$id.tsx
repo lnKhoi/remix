@@ -14,7 +14,7 @@ import {
   message,
   Modal,
 } from 'antd';
-import dayjs from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import {
   toast,
@@ -24,6 +24,7 @@ import {
   getContentDetails,
   reviewContent,
 } from '~/apis/campaign';
+import { approveContent } from '~/apis/content';
 import Approve from '~/assets/approve.png';
 import Reject from '~/assets/reject.png';
 import TagColor from '~/components/ui/tagColor';
@@ -58,7 +59,10 @@ type ModalType = 'confirm-posting-date' | 'reject-influencer-request' | 'approve
 const ContentDetails = () => {
   const { id } = useParams()
   const navigation = useNavigate()
+
   const [reason, setReason] = useState<string>('')
+  const [loading,setLoading] = useState<boolean>(false)
+  const [submitTime, setSubmitTime] = useState<Dayjs | null>(null)
   const [messageApi, contextHolder] = message.useMessage();
   const [content, setContent] = useState<Content | null>(null)
 
@@ -73,11 +77,17 @@ const ContentDetails = () => {
   }, [])
 
   const handleApproveContent = async (): Promise<void> => {
-    await reviewContent(content?.campaignId as string, content?.id as string, '', true)
+    setLoading(true)
+    const date = dayjs(submitTime).toISOString()
+
+    await approveContent(content?.campaignId as string, content?.id as string, true, date, reason)
       .then(() => {
         handleGetContentDetails()
         toast.success('Content has been approved successfully')
+        setModalType('')
       })
+      .catch((err) => toast.error(err.message))
+      .finally(() => setLoading(false))
   }
 
   const handleReject = async (): Promise<void> => {
@@ -145,7 +155,7 @@ const ContentDetails = () => {
         {/* Review */}
         <div className='flex flex-col gap-5 w-[300px]'>
           {/* Influencer Requested */}
-          <div className='border border-blue-500 rounded-xl p-4'>
+          {/* <div className='border border-blue-500 rounded-xl p-4'>
             <h5 className='text-sm text-gray-800 font-medium'>Influencer requested</h5>
             <p className='mt-5 text-sm font-normal text-gray-500'>Submission date:</p>
             <p className='text-sm text-gray-500 font-medium'>22/09/2024</p>
@@ -155,7 +165,7 @@ const ContentDetails = () => {
               <Button onClick={() => setModalType('reject-influencer-request')} className='w-1/2' type='default' >Reject</Button>
               <Button onClick={() => setModalType('approve-influencer-request')} className='w-1/2' type='primary' >Approve</Button>
             </div>
-          </div>
+          </div> */}
           <div className='w-[300px] border border-gray-100 rounded-xl shadow-sm'>
             <p className='p-4 text-sm text-gray-800 '>Please review the attached content for approval. Looking forward to your feedback!</p>
             <div className='w-full px-4 pb-4 pt-2 flex items-center gap-2 '>
@@ -287,6 +297,7 @@ const ContentDetails = () => {
         {/* Modal Posting Date */}
         <Modal
           width={355}
+          confirmLoading={loading}
           onOk={handleApproveContent}
           open={modalType === 'confirm-posting-date'}
           onCancel={() => setModalType('')} title=''>
@@ -297,6 +308,7 @@ const ContentDetails = () => {
           <div className='flex flex-col gap-2'>
             <span className=' text-sm font-semibold text-gray-800  text-left'>Posting Date</span>
             <DatePicker
+              onChange={(e) => setSubmitTime(e)}
               disabledDate={(current) => { return current && current < dayjs().endOf('day'); }}
               style={{ width: '100%' }}
               showTime
