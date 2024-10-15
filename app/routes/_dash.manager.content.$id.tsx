@@ -61,7 +61,7 @@ const ContentDetails = () => {
   const navigation = useNavigate()
 
   const [reason, setReason] = useState<string>('')
-  const [loading,setLoading] = useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>(false)
   const [submitTime, setSubmitTime] = useState<Dayjs | null>(null)
   const [messageApi, contextHolder] = message.useMessage();
   const [content, setContent] = useState<Content | null>(null)
@@ -117,7 +117,6 @@ const ContentDetails = () => {
       />
       <div className='mx-auto w-full mt-16 justify-center flex items-start gap-7'>
         <div>
-
           <div className='w-[700px] border border-gray-200 shadow-sm rounded-xl '>
             <div className='flex border-b border-b-gray-200 items-center justify-between'>
               <div className='flex items-center p-4 gap-2'>
@@ -217,25 +216,31 @@ const ContentDetails = () => {
           </div>
 
           {/* Link website */}
-          <div className='w-[300px] border border-gray-100 rounded-xl shadow-sm'>
-            <div className='flex items-start p-4 gap-3'>
-              <LinkIcon width={20} height={20} className='text-gray-500' />
-              <div className='flex flex-col gap-1 w-full'>
-                <p className='text-sm font-normal text-gray-500'>Link website</p>
-                <CopyToClipboard onCopy={() => messageApi.success('Coppied to clipboard!')} text='abcdfsdfsd'>
-                  <div className='flex cursor-pointer items-center gap-2 justify-between w-full'>
-                    <p className='text-gray-800 text-sm'>Https://shoptify.com.abc</p>
-                    <DocumentDuplicateIcon width={20} height={20} className='text-gray-500' />
-                  </div>
-                </CopyToClipboard>
+          {content?.trackingUrl && (
+            <div className='w-[300px] border border-gray-100 rounded-xl shadow-sm'>
+              <div className='flex items-start p-4 gap-3'>
+                <LinkIcon width={20} height={20} className='text-gray-500' />
+                <div className='flex flex-col gap-1 w-full'>
+                  <p className='text-sm font-normal text-gray-500'>Link website</p>
+                  <CopyToClipboard
+                    onCopy={() => messageApi.success('Copied to clipboard!')}
+                    text={content?.trackingUrl}
+                  >
+                    <div className='flex cursor-pointer items-center gap-2 justify-between w-full'>
+                      <p className='text-gray-800 text-sm overflow-hidden text-ellipsis whitespace-nowrap'>{content?.trackingUrl}</p>
+                      <DocumentDuplicateIcon width={20} height={20} className='text-gray-500' />
+                    </div>
+                  </CopyToClipboard>
+                </div>
+              </div>
+
+              <div className='bg-gray-100 flex gap-3 items-center p-4 justify-center'>
+                <ExclamationCircleIcon width={20} className='text-gray-600' />
+                <p className='w-[224px] text-sm text-gray-800'>Product link will be attached once the content is approved and sent to the influencer.</p>
               </div>
             </div>
+          )}
 
-            <div className='bg-gray-100  flex gap-3 items-center p-4 justify-center'>
-              <ExclamationCircleIcon width={20} className='text-gray-600' />
-              <p className='w-[224px] text-sm text-gray-800'>Product link will be attached once the content is approved and sent to the influencer.</p>
-            </div>
-          </div>
         </div>
 
         {/* Modal Reject content*/}
