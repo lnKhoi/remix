@@ -37,6 +37,7 @@ export type User = {
   name: string;
   brand_id: string;
   brand: Brand;
+  avatarUrl:string
 }
 
 export type GoogleAccount = {

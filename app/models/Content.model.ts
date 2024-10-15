@@ -14,5 +14,7 @@ export type Content ={
     deletedAt: string | null;
     creator:User
     createdAt: string;
+    post_due?:string,
+    trackingUrl?:string,
     updatedAt: string;
   }
