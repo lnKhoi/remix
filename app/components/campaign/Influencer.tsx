@@ -17,7 +17,10 @@ import {
 import NoInfluencer from '~/assets/no-influencer.png';
 import { influencersParticipantsColumns } from '~/constants/creator.constant';
 import { Campaign } from '~/models/Campaign.model';
-import { InfluencerInCampaign } from '~/models/User.model';
+import {
+  Creator,
+  InfluencerInCampaign,
+} from '~/models/User.model';
 
 import {
   AdjustmentsHorizontalIcon,
@@ -28,6 +31,7 @@ import {
 } from '@heroicons/react/24/outline';
 
 import { InputSearch } from '../ui/input-search';
+import ModalViewInfluencerProfile from './ModalViewInfluencerProfile';
 
 const items: TabsProps['items'] = [
   { key: '', label: 'Influencer Participants' },
@@ -46,7 +50,10 @@ type InfluencerProps = {
 
 function Influencer({ campaign }: InfluencerProps) {
   const [tab, setTab] = useState<'' | 'brand_declined_influencer'>('')
-  const [influencers,setInfluencers] = useState<InfluencerInCampaign[]>([])
+  const [influencers, setInfluencers] = useState<InfluencerInCampaign[]>([])
+  const [selectedInfluencer, setSelectedInfluencer] = useState<Creator | null>(null);
+  const [isDrawerVisible, setIsDrawerVisible] = useState(false);
+
 
   const handleGetInfluencersInCampaign = async () => {
     await getInfluencerParticipantsInCampaign(tab, campaign?.id as string, 100, 1)
@@ -57,22 +64,29 @@ function Influencer({ campaign }: InfluencerProps) {
     handleGetInfluencersInCampaign()
   }, [tab])
 
-  const handleApprove = async (influencerId: string):Promise<void> => {
-    await brandUpdateInvitationStatus(campaign?.id as string,influencerId,true)
-    .then(() => {
-      handleGetInfluencersInCampaign()
-    })   
+  const handleApprove = async (influencerId: string): Promise<void> => {
+    await brandUpdateInvitationStatus(campaign?.id as string, influencerId, true)
+      .then(() => {
+        handleGetInfluencersInCampaign()
+      })
   }
 
-  const handleReject = async (influencerId: string):Promise<void> => {
-    await brandUpdateInvitationStatus(campaign?.id as string,influencerId,false)
-    .then(() => {
-      handleGetInfluencersInCampaign()
-    })  
+  const handleReject = async (influencerId: string): Promise<void> => {
+    await brandUpdateInvitationStatus(campaign?.id as string, influencerId, false)
+      .then(() => {
+        handleGetInfluencersInCampaign()
+      })
   }
 
-  
-  console.log(influencers)
+
+  // Handle row click to open the drawer
+  const handleRowClick = (record: Creator) => {
+    setSelectedInfluencer(record); // Store the selected influencer data
+    setIsDrawerVisible(true); // Open the drawer
+  };
+
+
+
   return (
     <div>
       <Tabs defaultActiveKey="" items={items} onChange={(e) => setTab(e as any)} />
@@ -100,27 +114,34 @@ function Influencer({ campaign }: InfluencerProps) {
       </div>
       {/* Influeners Table */}
       <div className='mt-6'>
-      <Table<InfluencerInCampaign>
-            rowSelection={{ type: 'checkbox', ...rowSelection }}
-            columns={influencersParticipantsColumns({ handleApprove, handleReject })} // Pass the handlers
-            dataSource={influencers}
-            locale={{emptyText: (
+        <Table<InfluencerInCampaign>
+          onRow={(record) => ({
+            onClick: () => handleRowClick(record),
+          })}
+          rowSelection={{ type: 'checkbox', ...rowSelection }}
+          columns={influencersParticipantsColumns({ handleApprove, handleReject })}
+          dataSource={influencers}
+          locale={{
+            emptyText: (
               <div className='w-full flex flex-col items-center justify-center'>
-            <img src={NoInfluencer} alt="no data" />
-            <Button
-              // onClick={() => setModalInvite(true)}
-              className='bg-gray-100 mt-3 hover:bg-gray-400 border-gray-100'
-              type='text'
-            >
-              <div className='flex items-center gap-1'>
-                <UserPlusIcon className='bg-gray-100' width={20} />
-                Invite Influencer
+                <img src={NoInfluencer} alt="no data" />
+                <Button
+                  // onClick={() => setModalInvite(true)}
+                  className='bg-gray-100 mt-3 hover:bg-gray-400 border-gray-100'
+                  type='text'
+                >
+                  <div className='flex items-center gap-1'>
+                    <UserPlusIcon className='bg-gray-100' width={20} />
+                    Invite Influencer
+                  </div>
+                </Button>
               </div>
-            </Button>
-          </div>
-            )}}
-          />
-       
+            )
+          }}
+        />
+
+        <ModalViewInfluencerProfile onClose={() => setIsDrawerVisible(false)} open={isDrawerVisible} />
+
 
       </div>
     </div>
