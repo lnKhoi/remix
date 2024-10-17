@@ -123,7 +123,7 @@ function CampaignCard({ campaign, onReload }: CampaignCardProps) {
             </div>
             <div className='flex items-center'>
                 {campaign.joinedCreators?.length === 0 && (
-                    <button className='bg-[#F3F4F6] hover:bg-[#D1D5DB] transition-all flex items-center justify-center gap-1 text-sm h-[36px] w-[87px] font-semibold rounded-[8px] text-[#1F2937]'>
+                    <button onClick={() => setIsModal(true)} className='bg-[#F3F4F6] hover:bg-[#D1D5DB] transition-all flex items-center justify-center gap-1 text-sm h-[36px] w-[87px] font-semibold rounded-[8px] text-[#1F2937]'>
                         <UserPlusIcon width={16} />  Invite
                     </button>
                 )}

@@ -93,7 +93,7 @@ type Align = 'Influencer' | 'Others'
               .finally(() => setLoading(false))
       }
   
-      useEffect(() => { handleGetInfluencers(filter) }, [])
+      useEffect(() => { handleGetInfluencers(filter) }, [alignValue])
   
       useEffect(() => {
           selectedInfluencers.length === influencers.length && selectedInfluencers.length > 0
