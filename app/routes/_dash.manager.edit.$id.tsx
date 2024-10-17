@@ -136,6 +136,7 @@ const CampaignForm = () => {
   }, [budget, maximumParticipants]);
 
 
+  console.log(age)
   return (
     <div className='custom-select custom-form'>
       <ToastContainer />
@@ -284,10 +285,10 @@ const CampaignForm = () => {
               <h2 className='text-sm text-gray-800 font-normal mb-3'>Campaign Demographic</h2>
           <Form.Item className=' items-center w-full' name='age' label='Age' rules={[{ required: true, message: REQUIRED }]} >
             <div className='flex items-center '>
-              <span className='pr-2'>{age?.[0] || 20}</span>
+              <span className='pr-2'>{age?.[0]}</span>
               <Slider value={age} onChange={(value: number[]) => form.setFieldsValue({ age: value })}
                 className='w-full' range={{ draggableTrack: true }} />
-              <span className='pl-2'> {age?.[1] || 32}</span>
+              <span className='pl-2'> {age?.[1]}</span>
             </div>
           </Form.Item>
 

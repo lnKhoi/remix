@@ -194,8 +194,31 @@ const CampaignForm = () => {
             </Form.Item>
           </div>
 
-          {/* Content Format */}
-          <div>
+       
+
+          {/* Social media */}
+          <div className='mb-6'>
+            <h6 className='text-sm text-gray-800 font-medium' >Social Media</h6>
+            <p className='text-sm text-gray-500 mb-5'>Place content posted for</p>
+            <div className='mt-5 flex items-center gap-3'>
+              {socials.map(s => (
+                <div
+                  onClick={() => handleSelectSocial(s.name)}
+                  className={`w-[120px] cursor-pointer relative h-[120px] rounded-xl border flex items-center justify-center ${selectedSocials.includes(s.name) ? 'border-blue-500' : 'border-gray-200'
+                    }`}>
+                  <Checkbox checked={selectedSocials.includes(s.name)}
+                    className='absolute top-3 left-3' />
+                  <div className='flex flex-col gap-1 items-center justify-center'>
+                    <img src={s.icon} alt="facebook" />
+                    <span className='text-[12px capitalize text-gray-700'>{s.name}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+             {/* Content Format */}
+             <div>
             <Form.Item
               className='w-1/2'
               label="Content Format"
@@ -221,27 +244,6 @@ const CampaignForm = () => {
               </div>
               </Checkbox.Group>
             </Form.Item>
-          </div>
-
-          {/* Social media */}
-          <div className='mb-6'>
-            <h6 className='text-sm text-gray-800 font-medium' >Social Media</h6>
-            <p className='text-sm text-gray-500 mb-5'>Place content posted for</p>
-            <div className='mt-5 flex items-center gap-3'>
-              {socials.map(s => (
-                <div
-                  onClick={() => handleSelectSocial(s.name)}
-                  className={`w-[120px] cursor-pointer relative h-[120px] rounded-xl border flex items-center justify-center ${selectedSocials.includes(s.name) ? 'border-blue-500' : 'border-gray-200'
-                    }`}>
-                  <Checkbox checked={selectedSocials.includes(s.name)}
-                    className='absolute top-3 left-3' />
-                  <div className='flex flex-col gap-1 items-center justify-center'>
-                    <img src={s.icon} alt="facebook" />
-                    <span className='text-[12px capitalize text-gray-700'>{s.name}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
           </div>
 
           {/* Campaign Deadline */}

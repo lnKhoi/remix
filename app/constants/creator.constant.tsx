@@ -139,7 +139,7 @@ export const influencersParticipantsColumns = ({
         record.status == 'accepted_invitation' && (
           <div className="flex gap-2">
             <button
-              className="text-blue-600 px-3 py-1 rounded"
+              className="text-blue-600 hover:bg-gray-200 rounded-md transition-all px-3 py-1"
               onClick={() => handleApprove(record.creator.id)}
             >
               Approve

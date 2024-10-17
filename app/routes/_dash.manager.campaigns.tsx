@@ -1,10 +1,12 @@
 import 'react-toastify/dist/ReactToastify.css';
 
 import React, {
+  ChangeEvent,
   useEffect,
   useState,
 } from 'react';
 
+import debounce from 'lodash/debounce';
 import {
   toast,
   ToastContainer,
@@ -32,22 +34,28 @@ export const meta: MetaFunction = () => {
 }
 
 function page() {
+  const [search,setSearch] = useState<string>('')
   const [campaigns, setCampagins] = useState<Campaign[]>([])
   const [params, setParams] = useState<{ page: number, limit: number }>({ page: 1, limit: 10 })
 
   const handleGetCampaigns = async (): Promise<void> => {
-    await getCampaigns(params.limit, params.page)
+    await getCampaigns(params.limit, params.page,search)
       .then(res => setCampagins(res?.data?.data))
       .catch(err => toast.error(err?.message))
   }
 
   useEffect(() => {
     handleGetCampaigns()
-  }, [])
+  }, [search])
 
   const handleReloadCampagins = (): void => {
     handleGetCampaigns()
   }
+
+  const handleSearchCampaigns = debounce(
+    (e: ChangeEvent<HTMLInputElement>): void => {
+      setSearch(e.target.value);
+    }, 500);
 
   return (
     <div>
@@ -64,7 +72,7 @@ function page() {
         </Link>
       </div>
       <div className='mt-5 flex items-end justify-between'>
-        <InputSearch placeholder='Campaign name' className='w-[300px] h-[36px] ' />
+        <InputSearch onChange={(e) =>handleSearchCampaigns(e)} placeholder='Campaign name' className='w-[300px] h-[36px] ' />
         <div className='flex items-center gap-3'>
           <button className='bg-[#F3F4F6] px-3 justify-between flex items-center px hover:bg-[#D1D5DB] transition-all text-sm h-[36px] w-[105px] font-normal rounded-[9px] text-[#1F2937]'>
             All Status

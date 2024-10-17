@@ -12,8 +12,8 @@ export const createCampaign = (payload: Campaign) => {
     return postData('/api/v1/campaign', payload)
 }
 
-export const getCampaigns = (limit: number, page: number) => {
-    return getData(`/api/v1/campaign?limit=${limit}&page=${page}`)
+export const getCampaigns = (limit: number, page: number,search:string) => {
+    return getData(`/api/v1/campaign?limit=${limit}&page=${page}&keyword=${search}`)
 }
 
 export const getCampaignDetails = (id: string) => {

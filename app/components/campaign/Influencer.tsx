@@ -33,11 +33,6 @@ import {
 import { InputSearch } from '../ui/input-search';
 import ModalViewInfluencerProfile from './ModalViewInfluencerProfile';
 
-const items: TabsProps['items'] = [
-  { key: '', label: 'Influencer Participants' },
-  { key: 'brand_declined_influencer', label: 'Influencer Rejected' },
-];
-
 const rowSelection: TableProps<InfluencerInCampaign>['rowSelection'] = {
   onChange: (selectedRowKeys: React.Key[], selectedRows: InfluencerInCampaign[]) => {
     console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
@@ -47,6 +42,11 @@ const rowSelection: TableProps<InfluencerInCampaign>['rowSelection'] = {
 type InfluencerProps = {
   campaign: Campaign | null
 }
+
+const items: TabsProps['items'] = [
+  { key: '', label: <div>Applicants</div>  },
+  { key: 'brand_declined_influencer', label: 'Rejected Applicants' },
+];
 
 function Influencer({ campaign }: InfluencerProps) {
   const [tab, setTab] = useState<'' | 'brand_declined_influencer'>('')
@@ -80,9 +80,9 @@ function Influencer({ campaign }: InfluencerProps) {
 
 
   // Handle row click to open the drawer
-  const handleRowClick = (record: Creator) => {
-    setSelectedInfluencer(record); // Store the selected influencer data
-    setIsDrawerVisible(true); // Open the drawer
+  const handleRowClick = (record) => {
+    setSelectedInfluencer(record); 
+    setIsDrawerVisible(true); 
   };
 
 
