@@ -97,7 +97,7 @@ function ModalViewInfluencerProfile({ onClose, open }: ModalViewInfluencerProfil
                         {/* Social Media Stats */}
                         <h2 className="text-lg font-semibold mt-10">Social Media</h2>
                         <div className="grid grid-cols-3 gap-4 mt-5">
-                            {socials.map((platform) => (
+                            {socials.slice(1,2).map((platform) => (
                                 <div
                                     key={platform.name}
                                     className="bg-gray-100 p-6 h-[128px] rounded-lg shadow flex flex-col gap-4 items-start"

@@ -83,6 +83,7 @@
     "lodash": "^4.17.21",
     "lucide-react": "^0.441.0",
     "morgan": "^1.10.0",
+    "ngrok": "^5.0.0-beta.2",
     "papaparse": "^5.4.1",
     "react": "18.3.0-canary-2f8f77602-20240229",
     "react-copy-to-clipboard": "^5.1.0",

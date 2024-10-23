@@ -87,8 +87,6 @@ function CampaignCard({ campaign, onReload }: CampaignCardProps) {
         </Menu>
       );
     
- 
-
     return (
         <div className='h-[300px] cursor-pointer p-5 border flex flex-col justify-between border-gray-200 hover:shadow-lg transition-shadow rounded-[20px] shadow-md'>
             <div className='items-center flex justify-between'>

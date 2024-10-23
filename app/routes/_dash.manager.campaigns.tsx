@@ -14,6 +14,7 @@ import {
 import { getCampaigns } from '~/apis/campaign';
 import NoCampaigns from '~/assets/no-campaign.png';
 import CampaignCard from '~/components/campaign/campaignCard';
+import ReviewCard from '~/components/custom/skeletons/CampaignCard';
 import { Button } from '~/components/ui/button';
 import { InputSearch } from '~/components/ui/input-search';
 import { Campaign } from '~/models/Campaign.model';
@@ -34,14 +35,17 @@ export const meta: MetaFunction = () => {
 }
 
 function page() {
-  const [search,setSearch] = useState<string>('')
+  const [search, setSearch] = useState<string>('')
+  const [loading, setLoading] = useState<boolean>(false)
   const [campaigns, setCampagins] = useState<Campaign[]>([])
   const [params, setParams] = useState<{ page: number, limit: number }>({ page: 1, limit: 10 })
 
   const handleGetCampaigns = async (): Promise<void> => {
-    await getCampaigns(params.limit, params.page,search)
+    setLoading(true)
+    await getCampaigns(params.limit, params.page, search)
       .then(res => setCampagins(res?.data?.data))
       .catch(err => toast.error(err?.message))
+      .finally(() => setLoading(false))
   }
 
   useEffect(() => {
@@ -72,7 +76,7 @@ function page() {
         </Link>
       </div>
       <div className='mt-5 flex items-end justify-between'>
-        <InputSearch onChange={(e) =>handleSearchCampaigns(e)} placeholder='Campaign name' className='w-[300px] h-[36px] ' />
+        <InputSearch onChange={(e) => handleSearchCampaigns(e)} placeholder='Campaign name' className='w-[300px] h-[36px] ' />
         <div className='flex items-center gap-3'>
           <button className='bg-[#F3F4F6] px-3 justify-between flex items-center px hover:bg-[#D1D5DB] transition-all text-sm h-[36px] w-[105px] font-normal rounded-[9px] text-[#1F2937]'>
             All Status
@@ -86,19 +90,30 @@ function page() {
           </button>
         </div>
       </div>
-      {campaigns.length === 0 && (
-        <div className='flex items-center flex-col gap-3 justify-center w-full h-[calc(100vh-200px)]'>
-          <img src={NoCampaigns} className='w-[370px]' />
-          <Link to='/manager/campaign/add-campaign'>
-            <Button className='h-[36px]' ><PlusIcon width={20} /> Add Campaign</Button>
-          </Link>
+
+      {loading
+        ? <div className='grid 2xl:grid-cols-4 xl:grid-cols-3 md:grid-cols-2 grid-cols-1  gap-5 mt-5'>
+          {[0, 1, 2, 3, 4, 5].map((s) => <ReviewCard key={s} />)}
         </div>
-      )}
-      <div className='grid 2xl:grid-cols-4 xl:grid-cols-3 md:grid-cols-2 grid-cols-1  gap-5 mt-5'>
-        {campaigns.map((c) => (
-          <CampaignCard onReload={handleReloadCampagins} key={c.id} campaign={c} />
-        ))}
-      </div>
+        : <div>
+          {campaigns.length === 0 && (
+            <div className='flex items-center flex-col gap-3 justify-center w-full h-[calc(100vh-200px)]'>
+              <img src={NoCampaigns} className='w-[370px]' />
+              <Link to='/manager/campaign/add-campaign'>
+                <Button className='h-[36px]' ><PlusIcon width={20} /> Add Campaign</Button>
+              </Link>
+            </div>
+          )}
+          <div className='grid 2xl:grid-cols-4 xl:grid-cols-3 md:grid-cols-2 grid-cols-1  gap-5 mt-5'>
+            {campaigns.map((c) => (
+              <CampaignCard onReload={handleReloadCampagins} key={c.id} campaign={c} />
+            ))}
+          </div>
+        </div>
+
+      }
+
+
     </div>
   )
 }
