@@ -35,7 +35,6 @@ import {
 } from '~/constants/messages.constant';
 import { useAuthContext } from '~/contexts/auth.context';
 import { GoogleAccount } from '~/models/User.model';
-import { shopifyAuth } from '~/sdks/shopify';
 import {
   authenticator,
   getSession,
@@ -111,7 +110,6 @@ export default function Page() {
 
   return (
     <div className="w-full mx-auto h-[100vh] flex items-center bg-white justify-center">
-       <Button onClick={shopifyAuth}>Connect Shopify</Button>
       <ToastContainer />
       <div className="mx-asuto flex flex-col items-center w-[460px]">
         <img src={Logo} alt="logo" className="mb-[30px]" />
