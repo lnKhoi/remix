@@ -194,7 +194,7 @@ const ContentDetails = () => {
           )}
           {/* Link Content */}
           <div className='w-[300px] border border-gray-200 rounded-xl shadow-sm'>
-            <div className='flex items-start p-4 gap-3'>
+            {/* <div className='flex items-start p-4 gap-3'>
               <LinkIcon width={20} height={20} className='text-gray-500' />
               <div className='flex flex-col gap-1 w-full'>
                 <p className='text-sm font-normal text-gray-500'>Link content</p>
@@ -205,8 +205,8 @@ const ContentDetails = () => {
                   </div>
                 </CopyToClipboard>
               </div>
-            </div>
-            <div className='flex items-start  px-3  pb-3 gap-3'>
+            </div> */}
+            <div className='flex items-start pt-4  px-3  pb-3 gap-3'>
               <CalendarDateRangeIcon width={20} height={20} className='text-gray-500' />
               <div className='flex flex-col gap-1 w-full'>
                 <p className='text-sm font-normal text-gray-500'>Posting date</p>

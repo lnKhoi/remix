@@ -82,7 +82,7 @@ function Influencer({ campaign }: InfluencerProps) {
   // Handle row click to open the drawer
   const handleRowClick = (record) => {
     setSelectedInfluencer(record); 
-    setIsDrawerVisible(true); 
+    // setIsDrawerVisible(true); 
   };
 
 

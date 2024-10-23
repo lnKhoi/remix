@@ -70,7 +70,6 @@ export const loader: LoaderFunction = async ({ request }) => {
 
 export default function Page() {
   const { updateUserInfo } = useAuthContext()
-  // const [userType, setUserType] = useState<UserType>( 'creator');
   const navigate = useNavigate();
   const [loading, setLoading] = useState<boolean>(false)
   const user: GoogleAccount = useLoaderData()
@@ -106,7 +105,7 @@ export default function Page() {
         updateUserInfo(res.data)
         navigate('/')
       }
-    })
+    }).catch((err) => toast.error(err?.message))
   }
 
   return (

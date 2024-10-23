@@ -8,7 +8,6 @@ import React, {
 import {
   Button,
   Checkbox,
-  Input,
   Modal,
   Popover,
   Segmented,
@@ -20,6 +19,7 @@ import {
   getListInfluencerInviteInCampaign,
   inviteInfluencerToCampaign,
 } from '~/apis/campaign';
+import { filterFollowerOptions } from '~/constants/campaign.constant';
 import { countries } from '~/constants/countries.constant';
 import {
   genderFilterOptions,
@@ -155,7 +155,7 @@ type Align = 'Influencer' | 'Others'
                                   content={
                                       <div className='w-[368px] custom-input flex flex-col gap-1'>
                                           <div>
-                                              <span className='text-sm text-gray-800 font-medium'>Age</span>
+                                              <span className='text-sm text-gray-800 font-medium'>Age Audience</span>
                                               <div className='flex items-center gap-2'>
                                                   <span className='text-xs text-gray-500'>{filter.age?.[0]}</span>
                                                   <Slider onChange={(value: number[]) => setFilter({ ...filter, age: value })}
@@ -209,12 +209,24 @@ type Align = 'Influencer' | 'Others'
                                                       ))}
                                                   </div>
                                               </div>
-                                              <div className='mt-3'>
-                                                  <span className='text-sm text-gray-800 font-medium'>Follower Count</span>
-                                                  <div className='flex items-center gap-2 mt-2'>
-                                                      <Input onChange={(v) => setFilter({ ...filter, minFollow: v.target.value })} placeholder='Miximum' />
-                                                      <Input onChange={(v) => setFilter({ ...filter, maxFollow: v.target.value })} placeholder='Maximum' />
-                                                  </div>
+                                              <div className='mt-3 flex flex-col'>
+                                                  <span className='text-sm text-gray-800  mb-2 font-medium'>Follower Count</span>
+                                                  <Select
+                                                      placeholder="Number of followers"
+                                                    //   value={filter.location}
+                                                      allowClear
+                                                      defaultValue={'1'}
+                                                      optionFilterProp="children"
+                                                    //   onChange={(l) => setFilter({ ...filter, location: l })}
+                                                  >
+                                                      {filterFollowerOptions.map((f) => (
+                                                          <Select.Option key={f.value} value={f.label}>
+                                                              <span role="img" aria-label={f.label} className="mr-2">
+                                                              </span>
+                                                              {f.label}
+                                                          </Select.Option>
+                                                      ))}
+                                                  </Select>
                                               </div>
   
   

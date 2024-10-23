@@ -16,6 +16,8 @@ import { Creator } from '~/models/User.model';
 
 import { CheckIcon } from '@radix-ui/react-icons';
 
+import ModalViewInfluencerProfile from './ModalViewInfluencerProfile';
+
 type InviteCardProps = {
     influencer: Creator
     checked: boolean
@@ -26,6 +28,7 @@ type InviteCardProps = {
 function InviteCard({ influencer, checked, onSelect, campaignId }: InviteCardProps) {
     const [invited, setInvited] = useState<boolean>(false)
     const [loading, setLoading] = useState<boolean>(false)
+    const [isModal,setIsModal] = useState<boolean>(false)
 
     const handleCheckboxChange = (e: CheckboxChangeEvent) => {
         onSelect(influencer.id as string, e.target.checked);
@@ -47,6 +50,7 @@ function InviteCard({ influencer, checked, onSelect, campaignId }: InviteCardPro
        setInvited(influencer?.alreadyInvited as boolean)
     },[influencer?.alreadyInvited])
 
+   
     return (
         <div className='p-4 rounded-md flex items-center justify-between border border-[#ESE7EB]'>
             <div className='w-full'>
@@ -55,8 +59,8 @@ function InviteCard({ influencer, checked, onSelect, campaignId }: InviteCardPro
                         onChange={(e) => handleCheckboxChange(e)}
                         checked={checked} ></Checkbox>
                     <div className='flex items-center justify-between w-full'>
-                        <div className='flex items-start relative gap-4'>
-                            <Avatar src="https://api.dicebear.com/7.x/miniavs/svg?seed=1" />
+                        <div className='flex cursor-pointer items-start relative gap-4'>
+                            <Avatar onClick={() => setIsModal(true)}src="https://api.dicebear.com/7.x/miniavs/svg?seed=1" />
                             <div>
                                 <h5 className='text-[#1F2937] text-sm'>{influencer.name}</h5>
                                 <span className='text-[#6B7280] text-sm'>{influencer.email}</span>
@@ -78,11 +82,10 @@ function InviteCard({ influencer, checked, onSelect, campaignId }: InviteCardPro
                                 <Button type='text' className='bg-gray-200 h-[28px]'>{influencer.gender}</Button>
                                 <Button type='text' className='bg-gray-200 h-[28px]'>{influencer.country}</Button> */}
                             </div>
-                          
-
                         </div>
                     </div>
                 </div>
+                <ModalViewInfluencerProfile open={isModal} onClose={() => setIsModal(false)} />
 
             </div>
 

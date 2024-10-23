@@ -29,6 +29,8 @@ const Page: FC = () => {
   const { userInfo } = useAuthContext();
   const [influencers, setInfluencers] = useState<Creator[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [selectedInfluencer, setSelectedInfluencer] = useState<Creator | null>(null); // Store clicked row data
+  const [isDrawerVisible, setIsDrawerVisible] = useState(false); // Control drawer visibility
 
   const handleGetListInfluencerImported = async (): Promise<void> => {
     setLoading(true);
@@ -43,6 +45,12 @@ const Page: FC = () => {
   useEffect(() => {
     handleGetListInfluencerImported();
   }, []);
+
+  // Handle row click to open the drawer
+  const handleRowClick = (record: Creator) => {
+    setSelectedInfluencer(record); // Store the selected influencer data
+    setIsDrawerVisible(true); // Open the drawer
+  };
 
 
   return (
@@ -62,6 +70,9 @@ const Page: FC = () => {
         <Table<Creator>
           columns={creatorColumns}
           dataSource={influencers}
+          onRow={(record) => ({
+            onClick: () => handleRowClick(record), // Handle row click
+          })}
           locale={{
             emptyText: (
               <div className='flex items-center flex-col h-[70vh] justify-center'>
