@@ -10,6 +10,7 @@ import {
   Checkbox,
   Modal,
   Popover,
+  Radio,
   Segmented,
   Select,
   Slider,
@@ -19,14 +20,15 @@ import {
   getListInfluencerInviteInCampaign,
   inviteInfluencerToCampaign,
 } from '~/apis/campaign';
-import { filterFollowerOptions } from '~/constants/campaign.constant';
 import { countries } from '~/constants/countries.constant';
 import {
+  ageAudience,
   genderFilterOptions,
   socials,
 } from '~/constants/creator.constant';
 import { INVITED_INFLUENCERS } from '~/constants/messages.constant';
 import { Creator } from '~/models/User.model';
+import { formatNumber } from '~/utils/formatNumber';
 
 import { AdjustmentsHorizontalIcon } from '@heroicons/react/24/outline';
 
@@ -45,11 +47,11 @@ type Align = 'Influencer' | 'Others'
       gender: string[];
       location: string;
       socialMedias: string[];
-      minFollow: string
-      maxFollow: string
+      minFollow: number
+      maxFollow: number
   };
   
-  const initialFilter = { age: [0, 100], gender: [], location: '', socialMedias: [], minFollow: '', maxFollow: '' }
+  const initialFilter = { age: [0, 100], gender: [], location: '', socialMedias: [], minFollow: 0, maxFollow: 1500000 }
   
   function ModalInviteInfluencerToCampaign({ onClose, open, campaignId }: ModalInviteInfluencerToCampaign) {
       const [alignValue, setAlignValue] = useState<Align>('Influencer');
@@ -156,15 +158,23 @@ type Align = 'Influencer' | 'Others'
                                       <div className='w-[368px] custom-input flex flex-col gap-1'>
                                           <div>
                                               <span className='text-sm text-gray-800 font-medium'>Age Audience</span>
-                                              <div className='flex items-center gap-2'>
+                                              <div>
+                                                  <Radio.Group onChange={(e) => setFilter({ ...filter, age: e.target.value })}>
+                                                      <div className='grid w-[330px] mt-2 grid-cols-2 gap-2'>
+                                                          {ageAudience.map(a => (
+                                                              <Radio key={a.label} value={a.value} >{a.label}</Radio>
+                                                          ))}
+                                                      </div>
+                                                  </Radio.Group>
+                                              </div>
+                                              {/* <div className='flex items-center gap-2'>
                                                   <span className='text-xs text-gray-500'>{filter.age?.[0]}</span>
                                                   <Slider onChange={(value: number[]) => setFilter({ ...filter, age: value })}
                                                       range={{ draggableTrack: true }} value={filter.age} className='w-full' />
-                                                  <span className='text-xs text-gray-500'>{filter?.age?.[1]}</span></div>
+                                                  <span className='text-xs text-gray-500'>{filter?.age?.[1]}</span></div> */}
                                           </div>
-  
-                                          <div>
-                                              <span className='text-sm text-gray-800 font-medium'>Gender</span>
+                                          <div className='mt-3'>
+                                              <span className='text-sm text-gray-800 font-medium'>Gender  Audience</span>
                                               <div className='flex items-center gap-2 mt-2'>
                                                   {genderFilterOptions.map(g => (
                                                       <div
@@ -175,8 +185,22 @@ type Align = 'Influencer' | 'Others'
                                                       </div>
                                                   ))}
                                               </div>
-                                              <div className='mt-3 flex flex-col gap-2'>
-                                                  <span className='text-sm text-gray-800 font-medium'>Location</span>
+                                              <div className='mt-4'>
+                                                  <span className='text-sm text-gray-800 font-medium'>Social Media Platform</span>
+                                                  <div className='flex items-center gap-2 mt-2'>
+                                                      {socials.map(s => (
+                                                          <div
+                                                              key={s.name}
+                                                              onClick={() => handleSelectSocial(s.name)}
+                                                              className={`h-[34px] px-3 text-sm cursor-pointer ${filter.socialMedias.includes(s.name) ? 'bg-blue-500 text-white' : 'bg-gray-200  text-gray-800'} 
+                                                                 font-medium flex items-center justify-center rounded-lg capitalize`}>
+                                                              {s.name}
+                                                          </div>
+                                                      ))}
+                                                  </div>
+                                              </div>
+                                              <div className='mt-[18px] flex flex-col gap-2'>
+                                                  <span className='text-sm text-gray-800 font-medium'>Location Audience</span>
                                                   <Select
                                                       placeholder="Select a country"
                                                       value={filter.location}
@@ -195,44 +219,19 @@ type Align = 'Influencer' | 'Others'
                                                       ))}
                                                   </Select>
                                               </div>
-                                              <div className='mt-3'>
-                                                  <span className='text-sm text-gray-800 font-medium'>Social Media</span>
-                                                  <div className='flex items-center gap-2 mt-2'>
-                                                      {socials.map(s => (
-                                                          <div
-                                                              key={s.name}
-                                                              onClick={() => handleSelectSocial(s.name)}
-                                                              className={`h-[34px] px-3 text-sm cursor-pointer ${filter.socialMedias.includes(s.name) ? 'bg-blue-500 text-white' : 'bg-gray-200  text-gray-800'} 
-                                                               font-medium flex items-center justify-center rounded-lg capitalize`}>
-                                                              {s.name}
-                                                          </div>
-                                                      ))}
-                                                  </div>
+                                              <div className='mt-4'>
+                                                  <span className='text-sm text-gray-800 font-medium'>Follower Count</span>
+                                                  <div className='flex items-center gap-2'>
+                                                      <span className='text-xs text-gray-500'>{formatNumber(filter.minFollow)}</span>
+                                                      <Slider max={5000000} step={500000}
+                                                       onChange={(value: number[]) => setFilter({ ...filter, minFollow: value[0], maxFollow: value[1] })}
+                                                          range={{ draggableTrack: true }} defaultValue={[filter.minFollow, filter.maxFollow]} className='w-full' />
+                                                      <span className='text-xs text-gray-500'>{formatNumber(filter.maxFollow)}</span></div>
                                               </div>
-                                              <div className='mt-3 flex flex-col'>
-                                                  <span className='text-sm text-gray-800  mb-2 font-medium'>Follower Count</span>
-                                                  <Select
-                                                      placeholder="Number of followers"
-                                                    //   value={filter.location}
-                                                      allowClear
-                                                      defaultValue={'1'}
-                                                      optionFilterProp="children"
-                                                    //   onChange={(l) => setFilter({ ...filter, location: l })}
-                                                  >
-                                                      {filterFollowerOptions.map((f) => (
-                                                          <Select.Option key={f.value} value={f.label}>
-                                                              <span role="img" aria-label={f.label} className="mr-2">
-                                                              </span>
-                                                              {f.label}
-                                                          </Select.Option>
-                                                      ))}
-                                                  </Select>
-                                              </div>
-  
   
                                               <div className='flex w-full items-center gap-2 mt-5 justify-end'>
                                                   <Button onClick={handleResetFilter} type='default' >Reset</Button>
-                                                  <Button onClick={() => {handleGetInfluencers(filter);setModal(false)}} type='primary' >Apply</Button>
+                                                  <Button onClick={() => { handleGetInfluencers(filter); setModal(false) }} type='primary' >Apply</Button>
                                               </div>
                                           </div>
   
@@ -244,9 +243,9 @@ type Align = 'Influencer' | 'Others'
                                   open={modal}
                                   onOpenChange={() => setModal(!modal)}
                               >
-                                      <button className='bg-[#F3F4F6] hover:bg-[#D1D5DB] transition-all flex items-center justify-center gap-1 text-sm h-[35px] w-[85px] font-semibold rounded-[7px] text-[#1F2937]'>
-                                          <AdjustmentsHorizontalIcon width={16} /> Filter
-                                      </button>
+                                  <button className='bg-[#F3F4F6] hover:bg-[#D1D5DB] transition-all flex items-center justify-center gap-1 text-sm h-[35px] w-[85px] font-semibold rounded-[7px] text-[#1F2937]'>
+                                      <AdjustmentsHorizontalIcon width={16} /> Filter
+                                  </button>
                               </Popover>
                           </div>
                           <div className='h-[330px] mb-8 mt-4 pr-2 overflow-y-scroll w-full flex flex-col gap-3'>
@@ -262,4 +261,3 @@ type Align = 'Influencer' | 'Others'
   }
   
   export default ModalInviteInfluencerToCampaign
-  
