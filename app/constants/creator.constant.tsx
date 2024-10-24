@@ -159,4 +159,23 @@ export const influencersParticipantsColumns = ({
 
 export const genders = ['male','female','other','all']
 
-export const genderFilterOptions = ['male','female','other']
+export const genderFilterOptions = ['male','female']
+
+export const ageAudience = [
+  {
+    label:'18 - 24',
+    value:[18,24]
+  },
+  {
+    label:'25 - 32',
+    value:[25,32]
+  },
+  {
+    label:'33 - 40',
+    value:[33,40]
+  },
+  {
+    label:'41 - 50',
+    value:[41,50]
+  },
+]

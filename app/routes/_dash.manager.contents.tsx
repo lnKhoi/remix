@@ -1,19 +1,10 @@
 import tiktokCover from '~/assets/tiktok-cover.jpeg';
 import { Badge } from '~/components/ui/badge';
-import { Button } from '~/components/ui/button';
 import {
   Card,
   CardContent,
   CardFooter,
 } from '~/components/ui/card';
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '~/components/ui/dropdown-menu';
 
 import { Link } from '@remix-run/react';
 
@@ -46,51 +37,7 @@ export default function ContentManagment() {
         </header>
         <main className="flex min-h-[calc(100vh_-_theme(spacing.16))] flex-1 flex-col gap-4 p-4 md:gap-8 md:p-10">
           <div className="max-w-6xl mx-auto w-full flex items-center gap-4 justify-end">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="outline"
-                  className="flex-1 justify-between max-w-60"
-                >
-                  <span>Filter by Campaign</span>
-                  <ChevronDownIcon className="w-4 h-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" className="w-full">
-                <DropdownMenuLabel>Select Campaign</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuCheckboxItem checked>
-                  Summer Collection
-                </DropdownMenuCheckboxItem>
-                <DropdownMenuCheckboxItem>
-                  Holiday Promo
-                </DropdownMenuCheckboxItem>
-                <DropdownMenuCheckboxItem>
-                  Back to School
-                </DropdownMenuCheckboxItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="outline"
-                  className="flex-1 justify-between max-w-60"
-                >
-                  <span>Filter by Influencer</span>
-                  <ChevronDownIcon className="w-4 h-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" className="w-full">
-                <DropdownMenuLabel>Select Influencer</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuCheckboxItem checked>
-                  @jaredpalmer
-                </DropdownMenuCheckboxItem>
-                <DropdownMenuCheckboxItem>@shadcn</DropdownMenuCheckboxItem>
-                <DropdownMenuCheckboxItem>@maxleiter</DropdownMenuCheckboxItem>
-                <DropdownMenuCheckboxItem>@shuding_</DropdownMenuCheckboxItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+       
           </div>
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 max-w-6xl w-full mx-auto">
             <Card className="overflow-hidden">
