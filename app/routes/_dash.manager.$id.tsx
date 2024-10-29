@@ -6,7 +6,6 @@ import React, {
 } from 'react';
 
 import {
-  Badge,
   Breadcrumb,
   Button,
   Segmented,
@@ -105,7 +104,8 @@ function page() {
             {
               label: (
                 <div className='flex items-center'>
-                  Content <Badge color='#EF4444' size='small' className='ml-1' count={14}></Badge>
+                  Content 
+                  {/* <Badge color='#EF4444' size='small' className='ml-1' count={14}></Badge> */}
                 </div>
               ),
               value: 'Content',
