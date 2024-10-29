@@ -24,7 +24,10 @@ import {
   getContentDetails,
   reviewContent,
 } from '~/apis/campaign';
-import { approveContent } from '~/apis/content';
+import {
+  approveContent,
+  publishContent,
+} from '~/apis/content';
 import Approve from '~/assets/approve.png';
 import Reject from '~/assets/reject.png';
 import TagColor from '~/components/ui/tagColor';
@@ -104,6 +107,14 @@ const ContentDetails = () => {
 
   }
 
+  const handlePostContentToProfileInfluent = () => {
+    setLoading(true)
+    publishContent(content?.id as string,'instagram',)
+    .then((res) => toast.success('Content has been posted!'))
+    .catch((err) => toast.error(`Posting Failed! ${err?.message}`))
+    .finally(() => setLoading(false))
+  }
+
   return (
     <div className='custom-select'>
       {contextHolder}
@@ -154,20 +165,9 @@ const ContentDetails = () => {
         {/* Review */}
         <div className='flex flex-col gap-5 w-[300px]'>
           {/* Influencer Requested */}
-          {/* <div className='border border-blue-500 rounded-xl p-4'>
-            <h5 className='text-sm text-gray-800 font-medium'>Influencer requested</h5>
-            <p className='mt-5 text-sm font-normal text-gray-500'>Submission date:</p>
-            <p className='text-sm text-gray-500 font-medium'>22/09/2024</p>
-            <p className='text-sm mt-3 text-gray-500 font-medium'>Reason</p>
-            <p className='text-sm mt-2 text-gray-800 font-normal'>It is along established fact that a reader will be distracted by the readable content of a page when looking at its layout.</p>
-            <div className='mt-10 flex items-center gap-2'>
-              <Button onClick={() => setModalType('reject-influencer-request')} className='w-1/2' type='default' >Reject</Button>
-              <Button onClick={() => setModalType('approve-influencer-request')} className='w-1/2' type='primary' >Approve</Button>
-            </div>
-          </div> */}
           <div className='w-[300px] border border-gray-100 rounded-xl shadow-sm'>
             <p className='p-4 text-sm text-gray-800 '>Please review the attached content for approval. Looking forward to your feedback!</p>
-            <div className='w-full px-4 pb-4 pt-2 flex items-center gap-2 '>
+            <div className='w-full px-4 pb-4 flex items-center gap-2 '>
               {content?.approved === 'pending' ? (
                 <>
                   <Button onClick={() => setModalType('reject-content')} className='w-1/2' type='default' >Reject</Button>
@@ -193,27 +193,20 @@ const ContentDetails = () => {
             </div>
           )}
           {/* Link Content */}
-          <div className='w-[300px] border border-gray-200 rounded-xl shadow-sm'>
-            {/* <div className='flex items-start p-4 gap-3'>
-              <LinkIcon width={20} height={20} className='text-gray-500' />
-              <div className='flex flex-col gap-1 w-full'>
-                <p className='text-sm font-normal text-gray-500'>Link content</p>
-                <CopyToClipboard onCopy={() => messageApi.success('Coppied to clipboard!')} text='abcdfsdfsd'>
-                  <div className='flex cursor-pointer items-center gap-2 justify-between w-full'>
-                    <p className='text-gray-800 text-sm'>Https://shoptify.com.abc</p>
-                    <DocumentDuplicateIcon width={20} height={20} className='text-gray-500' />
-                  </div>
-                </CopyToClipboard>
+          {content?.approved === 'approved' && (
+            <div className='w-[300px] border border-gray-200 rounded-xl shadow-sm'>
+              <div className='flex items-start pt-4  px-3  pb-3 gap-3'>
+                <CalendarDateRangeIcon width={20} height={20} className='text-gray-500' />
+                <div className='flex flex-col gap-1 w-full'>
+                  <p className='text-sm font-normal text-gray-500'>Posting date</p>
+                  <p className='text-gray-800 text-sm'>{dayjs(content.post_due).format(DATE_TIME_FORMAT_V2)}</p>
+                </div>
               </div>
-            </div> */}
-            <div className='flex items-start pt-4  px-3  pb-3 gap-3'>
-              <CalendarDateRangeIcon width={20} height={20} className='text-gray-500' />
-              <div className='flex flex-col gap-1 w-full'>
-                <p className='text-sm font-normal text-gray-500'>Posting date</p>
-                <p className='text-gray-800 text-sm'>20/09/2024</p>
+              <div onClick={handlePostContentToProfileInfluent} className='w-full px-5 pb-4'>
+                <Button loading={loading} disabled={loading} className='w-full' type='primary'>Post</Button>
               </div>
             </div>
-          </div>
+          )}
 
           {/* Link website */}
           {content?.trackingUrl && (

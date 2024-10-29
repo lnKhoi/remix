@@ -1,48 +1,45 @@
-import HighchartsReact from 'highcharts-react-official';
-import highstock from 'highcharts/highstock';
+// RevenueChart.js
+import React from 'react';
 
-const options = {
+import Highcharts from 'highcharts';
+import HighchartsReact from 'highcharts-react-official';
+
+const LineChart = () => {
+  const chartOptions = {
     chart: {
-        height: 280,
+      type: "column",
+      height: 185,
     },
     title: {
-        text: '',
+      text: "",
     },
-    xAxis: {
-        title: {
-            text: '',
-        },
-        type: 'category',
-        categories: ['Aug 17', '18', '19', '20', '21', '22', '23', '24'],
+    yAxis: {
+      title: {
+        text: "",
+      },
     },
-    yAxis: [
-        {
-            title: {
-                text: '',
-            },
-        },
-    ],
+    legend: {
+      enabled: false,
+    },
+    tooltip: {
+      shared: true,
+      valuePrefix: "$",
+    },
     series: [
-        {
-            data: [
-                29.9,
-                71.5,
-                106.4,
-                129.2,
-                144.0,
-                176.0,
-                135.6,
-                148.5,
-            ]
-        }
+      {
+        data: Array.from({ length: 31 }, () =>
+          Math.floor(Math.random() * 500 + 50)
+        ),
+        color: "#1D4ED8",
+      },
+    ],
+  };
 
-    ]
+  return (
+    <div className="w-full h-full">
+      <HighchartsReact highcharts={Highcharts} options={chartOptions} />
+    </div>
+  );
 };
 
-export default function LineChart() {
-    return (
-        <div>
-            <HighchartsReact options={options} highcharts={highstock} />
-        </div>
-    );
-}
+export default LineChart;

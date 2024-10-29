@@ -10,3 +10,8 @@ export const importCSV = (file:FormData) => {
 export const getInfluencerImported = (limit: number, page: number) => {
     return getData(`/api/v1/brand/imported-influencers?limit=${limit}&page=${page}`)
 }
+
+export const getInfluencerDetails = (id:string) => {
+  return getData(`/api/v1/creator/${id}`)
+}
+

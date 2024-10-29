@@ -16,7 +16,6 @@ import {
   InputNumber,
   Radio,
   Select,
-  Slider,
 } from 'antd';
 import dayjs from 'dayjs';
 import {
@@ -69,13 +68,14 @@ const CampaignForm = () => {
   const [selectedSocials, setSelectedSocials] = useState<string[]>([]);
 
   const { id } = useParams()
-  const age = Form.useWatch('age', form)
   const budget = Form.useWatch('budget', form);
   const contentFormat = Form.useWatch('contentFormat', form)
   const maximumParticipants = Form.useWatch('maximumParticipants', form);
 
   const onFinish = async (values: Campaign): Promise<void> => {
     setLoading(true)
+    const ageRange = form.getFieldValue('age').split('-').map(Number);
+
     const payload = {
       ...values,
       discount: Number(values.discount),
@@ -83,7 +83,7 @@ const CampaignForm = () => {
       deadline: dayjs(values.deadline).toISOString(),
       discountType: discountType,
       socialMedia: selectedSocials,
-      age: age
+      age: ageRange
     }
 
     await updateCampaign(payload as Campaign, id as string)
@@ -115,10 +115,11 @@ const CampaignForm = () => {
       setContent(campaign.campaignOverview)
 
       if (campaign) {
+        const formattedAge = `${campaign?.age?.[0]}-${campaign?.age?.[1]}`;
         form.setFieldsValue({
           ...campaign,
           deadline: dayjs(campaign.deadline),
-          age: campaign.age
+          age: formattedAge
         });
       }
 
@@ -136,7 +137,7 @@ const CampaignForm = () => {
     }
   }, [budget, maximumParticipants]);
 
-
+  
   return (
     <div className='custom-select custom-form'>
       <ToastContainer />
@@ -166,27 +167,8 @@ const CampaignForm = () => {
             >
               <Input maxLength={150} showCount />
             </Form.Item>
-            <div>
-              <Form.Item
-                className='w-full'
-                label="Influencer Budget"
-                name="totalBudget"
-                rules={[{ required: true, message: BUDGET_REQUIRED }]}
-                extra="Total funds allocated for the campaign's influencer"
-              >
-                <InputNumber
-                  name='budget'
-                  prefix="$"
-                  disabled
-                  suffix='USD'
-                  min={0}
-                  style={{ width: '100%' }}
-                />
-              </Form.Item>
-            </div>
 
             {/* Campaign Budget */}
-
             <div className='flex items-center gap-3 justify-between'>
               <Form.Item
                 className='w-1/2'
@@ -214,6 +196,24 @@ const CampaignForm = () => {
                 <InputNumber
                   min={1}
                   maxLength={2}
+                  style={{ width: '100%' }}
+                />
+              </Form.Item>
+            </div>
+            <div>
+              <Form.Item
+                className='w-full'
+                label="Influencer Budget"
+                name="totalBudget"
+                rules={[{ required: true, message: BUDGET_REQUIRED }]}
+                extra="Total funds allocated for the campaign's influencer"
+              >
+                <InputNumber
+                  name='budget'
+                  prefix="$"
+                  disabled
+                  suffix='USD'
+                  min={0}
                   style={{ width: '100%' }}
                 />
               </Form.Item>
@@ -285,30 +285,34 @@ const CampaignForm = () => {
             </Form.Item>
             {/* Age */}
             <h2 className='text-sm text-gray-800 font-normal mb-3'>Campaign Demographic</h2>
-            <Form.Item className=' items-center w-full' name='age' label='Age' rules={[{ required: true, message: REQUIRED }]} >
-              <div className='flex items-center '>
-                <span className='pr-2'>{age?.[0]}</span>
-                <Slider value={age} onChange={(value: number[]) => form.setFieldsValue({ age: value })}
-                  className='w-full' range={{ draggableTrack: true }} />
-                <span className='pl-2'> {age?.[1]}</span>
-              </div>
-            </Form.Item>
-
-            <div className='grid grid-cols-2 gap-3'>
-
-              {/* Gender */}
-              <Form.Item
-                label="Gender"
-                name="gender"
-                rules={[{ required: true, message: PLEASE_SELECT_GENDER }]}
-              >
-                <Select placeholder="Select gender">
-                  <Option value="male">Male</Option>
-                  <Option value="female">Female</Option>
-                  <Option value="other">Other</Option>
-                  <Option value="all">All</Option>
-                </Select>
+            <div className='flex items-center'>
+              <Form.Item className=' items-center w-full gap-20' name='age' label='Age' rules={[{ required: true, message: REQUIRED }]} >
+                  <Radio.Group defaultValue={'18-24'} >
+                    <div className='grid gap-2 grid-cols-2'>
+                    <Radio value="18-24">18 - 24</Radio>
+                    <Radio value="25-32">25 - 32</Radio>
+                    <Radio value="33-40">33 - 40</Radio>
+                    <Radio value="41-50">41 - 50</Radio>
+                    </div>
+                  </Radio.Group>
               </Form.Item>
+              {/* Gender */}
+              <div className='w-full'>
+                <Form.Item
+                  label="Gender"
+                  name="gender"
+                  rules={[{ required: true, message: PLEASE_SELECT_GENDER }]}
+                >
+                  <Select placeholder="Select gender">
+                    <Option value="male">Male</Option>
+                    <Option value="female">Female</Option>
+                    <Option value="all">All</Option>
+                  </Select>
+                </Form.Item>
+              </div>
+            </div>
+
+            <div className='w-full mt-2 gap-3'>
 
               {/* Location */}
               <Form.Item
@@ -319,7 +323,10 @@ const CampaignForm = () => {
                 <Select
                   placeholder="Select a country"
                   showSearch
+                  mode='multiple'
                   allowClear
+                  maxTagCount={3} 
+                  maxTagPlaceholder={(omittedValues) => `...and ${omittedValues.length} more`} 
                   optionFilterProp="children"
                 >
                   {countries.map((country) => (
@@ -359,14 +366,14 @@ const CampaignForm = () => {
             </div>
 
             {/* Editor */}
-            <div className='mt-4  border-t border-gray-200 mb-8 pt-6'>
+            <div className='mt-4 border-t border-gray-200 mb-8 pt-6'>
               <h6 className='text-sm text-gray-800 font-medium' >Campaign Overview</h6>
               <p className='text-sm text-gray-500 mb-5'>A summary or description of campaign's goals and strategy.</p>
               <Editor value={content} onChange={(value) => handleChangeContent(value)} />
             </div>
 
             {/* Submit Button */}
-            <div className='flex  justify-end h-[35px]   items-center'>
+            <div className='flex justify-end h-[35px] items-center'>
               <div className='h-full flex items-center'>
                 <Form.Item name='status' initialValue='active' style={{ margin: 0 }}>
                   <Radio.Group>

@@ -117,7 +117,7 @@ export const influencersParticipantsColumns = ({
   {
     title: 'Participants',
     dataIndex: 'Participants',
-    render: () => <a>Invite</a>,
+    render: () => <a>Invite </a>,
   },
   {
     title: 'Instagram',

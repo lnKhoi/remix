@@ -15,7 +15,7 @@ const PieChart: React.FC<PieChartProps> = ({ data }) => {
     chart: {
       type: 'pie',
       height: 150,
-      width:190
+      width:285
     },
     title: {
       text: undefined, // No title on top

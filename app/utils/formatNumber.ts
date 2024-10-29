@@ -6,3 +6,19 @@ export const formatNumber = (num: number) => {
     }
     return num.toString();
 };
+
+export type IGGender = 'M' | 'F' | 'U'
+
+export const formatGender = (gender: IGGender) => {
+    switch (gender) {
+        case 'M':
+            return 'Male'
+        case 'F':
+            return 'Female'
+        case 'M':
+        case 'U':
+            return 'Unisex'
+        default:
+            break;
+    }
+}
