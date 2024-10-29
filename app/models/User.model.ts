@@ -66,12 +66,30 @@ export type GoogleAccount = {
   };
 }
 
+export type Demographic = {
+  detail:string,
+  valueCount:number,
+  valuePercentage:number
+}
+
 export type Creator = {
   id?:string,
   name?: string,
   age?:number,
   platform?: string,
+  expertises?:string [],
+  instagramTotalLikes?:number
+  category?:string []
   email?: string,
+  portfolios?:InstagramPost[]
+  connectedSocialMedias?:string []
+  biography?:string
+  instagramFollowsCount?:number
+  demographicAges?:Demographic[]
+  demographicGenders?:Demographic[]
+  demographicCities?:Demographic[]
+  instagramMediaCount?:number
+  instagramFollowersNumber?:number
   country?: string,
   gender?:string,
   score?: number
@@ -80,11 +98,34 @@ export type Creator = {
   alreadyInvited?:boolean
 }
 
-export type InfluencerContentStatus = 'waiting_to_apply' | "accepted_invitation" | 'joined_campaign'
+export type InstagramPost =  {
+  id: string;
+  caption: string;
+  media_type: "CAROUSEL_ALBUM" | "IMAGE" | "VIDEO"; 
+  media_url: string;
+  share_count?:string,
+  permalink: string;
+  timestamp: string;
+  like_count: number;
+  comments_count: number;
+}
+
+export type InfluencerContentStatus = 'waiting_to_apply' | "accepted_invitation" | 'joined_campaign' | 'brand_declined_influencer'
 
 export type InfluencerInCampaign = {
   creator:Brand,
   campaignId:string,
   status: InfluencerContentStatus
 
+}
+
+export type InfluencerPerformance = {
+  name:string,
+  email:string,
+  totalImpression:number,
+  conversionRate:number,
+  engagementRate:number,
+  roi:number,
+  likes:number,
+  reach:number
 }

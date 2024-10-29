@@ -110,10 +110,7 @@ function page() {
             ))}
           </div>
         </div>
-
       }
-
-
     </div>
   )
 }

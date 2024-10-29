@@ -47,8 +47,8 @@ type Align = 'Influencer' | 'Others'
       gender: string[];
       location: string;
       socialMedias: string[];
-      minFollow: number
-      maxFollow: number
+      minFollow: number | string
+      maxFollow: number | string
   };
   
   const initialFilter = { age: [0, 100], gender: [], location: '', socialMedias: [], minFollow: 0, maxFollow: 1500000 }
@@ -167,14 +167,9 @@ type Align = 'Influencer' | 'Others'
                                                       </div>
                                                   </Radio.Group>
                                               </div>
-                                              {/* <div className='flex items-center gap-2'>
-                                                  <span className='text-xs text-gray-500'>{filter.age?.[0]}</span>
-                                                  <Slider onChange={(value: number[]) => setFilter({ ...filter, age: value })}
-                                                      range={{ draggableTrack: true }} value={filter.age} className='w-full' />
-                                                  <span className='text-xs text-gray-500'>{filter?.age?.[1]}</span></div> */}
                                           </div>
                                           <div className='mt-3'>
-                                              <span className='text-sm text-gray-800 font-medium'>Gender  Audience</span>
+                                              <span className='text-sm text-gray-800 font-medium'>Gender Audience</span>
                                               <div className='flex items-center gap-2 mt-2'>
                                                   {genderFilterOptions.map(g => (
                                                       <div
@@ -222,11 +217,11 @@ type Align = 'Influencer' | 'Others'
                                               <div className='mt-4'>
                                                   <span className='text-sm text-gray-800 font-medium'>Follower Count</span>
                                                   <div className='flex items-center gap-2'>
-                                                      <span className='text-xs text-gray-500'>{formatNumber(filter.minFollow)}</span>
+                                                      <span className='text-xs text-gray-500'>{formatNumber(filter.minFollow as number)}</span>
                                                       <Slider max={5000000} step={500000}
                                                        onChange={(value: number[]) => setFilter({ ...filter, minFollow: value[0], maxFollow: value[1] })}
-                                                          range={{ draggableTrack: true }} defaultValue={[filter.minFollow, filter.maxFollow]} className='w-full' />
-                                                      <span className='text-xs text-gray-500'>{formatNumber(filter.maxFollow)}</span></div>
+                                                          range={{ draggableTrack: true }} defaultValue={[filter.minFollow as number, filter.maxFollow as number]} className='w-full' />
+                                                      <span className='text-xs text-gray-500'>{formatNumber(filter.maxFollow as number)}</span></div>
                                               </div>
   
                                               <div className='flex w-full items-center gap-2 mt-5 justify-end'>

@@ -76,7 +76,7 @@ function InviteCard({ influencer, checked, onSelect, campaignId }: InviteCardPro
                                     : <Button loading={loading} className='h-[28px]' onClick={handleInviteInfluencer} type='primary'>Invite</Button>
                                 }
                             </div>
-                        <div className='hidden w-full flex items-end border-dashed border-t border-t-gray-200 justify-between'>
+                        <div className='hidden w-full  items-end border-dashed border-t border-t-gray-200 justify-between'>
                             <div className='flex items-start mt-4  h-[28px] gap-2'>
                                 {/* <Button type='text' className='bg-gray-200 h-[28px]'>Age: {influencer.age}</Button>
                                 <Button type='text' className='bg-gray-200 h-[28px]'>{influencer.gender}</Button>
@@ -85,8 +85,9 @@ function InviteCard({ influencer, checked, onSelect, campaignId }: InviteCardPro
                         </div>
                     </div>
                 </div>
-                <ModalViewInfluencerProfile open={isModal} onClose={() => setIsModal(false)} />
-
+                {isModal && (
+                    <ModalViewInfluencerProfile id={influencer.id} open={isModal} onClose={() => setIsModal(false)} />
+                )}
             </div>
 
         </div>

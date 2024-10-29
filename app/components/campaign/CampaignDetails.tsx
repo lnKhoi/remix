@@ -15,7 +15,7 @@ type CampaignDetailsProps = {
   campaign: Campaign | null
 }
 
-const socialMediaIcons: { [key: string]: string } = {
+export const socialMediaIcons: { [key: string]: string } = {
   facebook: facebookIcon,
   instagram: instagramIcon,
   youtube: youtubeIcon,

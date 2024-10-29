@@ -80,8 +80,8 @@ function Influencer({ campaign }: InfluencerProps) {
 
 
   // Handle row click to open the drawer
-  const handleRowClick = (record) => {
-    setSelectedInfluencer(record); 
+  const handleRowClick = (record: InfluencerInCampaign | Creator) => {
+    setSelectedInfluencer(record as Creator); 
     // setIsDrawerVisible(true); 
   };
 
@@ -139,10 +139,7 @@ function Influencer({ campaign }: InfluencerProps) {
             )
           }}
         />
-
         <ModalViewInfluencerProfile onClose={() => setIsDrawerVisible(false)} open={isDrawerVisible} />
-
-
       </div>
     </div>
   )
