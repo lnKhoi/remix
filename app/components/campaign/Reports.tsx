@@ -1,4 +1,7 @@
-import React, { useState } from 'react';
+import React, {
+  useEffect,
+  useState,
+} from 'react';
 
 import {
   Avatar,
@@ -7,9 +10,11 @@ import {
   Table,
 } from 'antd';
 import CountUp from 'react-countup';
+import { getInstagramStatistics } from '~/apis/campaign';
 import UserAvatar from '~/assets/avatar.jpeg';
 import { influencerPerformanceColumns } from '~/constants/report.constant';
 import { Campaign } from '~/models/Campaign.model';
+import { ReportCampaign } from '~/models/report.model';
 import { InfluencerPerformance } from '~/models/User.model';
 
 import { ChevronUpDownIcon } from '@heroicons/react/24/outline';
@@ -88,6 +93,7 @@ function Reports({ campaign }: ReportsProps) {
     },
   ];
 
+  const [campaignReport,setCampaignReport] = useState<null | ReportCampaign>(null)
   const [modal, setModal] = useState<boolean>(false)
   const [selectedInfluencer, setSelectedInfluencer] = useState<InfluencerPerformance | null>(null)
 
@@ -96,27 +102,35 @@ function Reports({ campaign }: ReportsProps) {
     setSelectedInfluencer(influencer)
   }
 
+  const handleGetIGReport =  () => {
+    getInstagramStatistics(campaign?.id as string)
+    .then(res => setCampaignReport(res.data))
+  }
+
+  useEffect(() => {
+    handleGetIGReport()
+  },[])
+
   return (
     <div className='w-full'>
       <div className='my-6 px-4 py-3 border border-gray-200 rounded-xl'>
         <h6 className='text-2xl font-semibold'>Revenue</h6>
        <p className='text-xs text-gray-500 mt-2'>Total</p>
        <p className='font-semibold text-[30px] text-gray-800 my-3'>$12.243</p>
-
       <LineChart/>
       </div>
       <div className='grid xl:grid-cols-7 grid-cols-3 gap-4'>
         <div className='border justify-around border-gray-200 hover:shadow-md cursor-pointer transition-shadow 2xl:p-5 p-4 rounded-2xl flex items-start flex-col h-[109px]'>
           <h5 className=' text-gray-800 text-xs'>Total Impression</h5>
           <span className='text-2xl font-bold'>
-            <CountUp end={234423} />
+            <CountUp end={campaignReport?.totalImpressions || 0} />
           </span>
         </div>
 
         <div className='border justify-around border-gray-200 hover:shadow-md cursor-pointer transition-shadow 2xl:p-5 p-4 rounded-2xl flex items-start flex-col h-[109px]'>
           <h5 className=' text-gray-800 text-xs'>Engagement Rate</h5>
           <span className='text-2xl font-bold'>
-            <CountUp end={12} />%
+            <CountUp end={campaignReport?.engagementRate || 0} />%
           </span>
         </div>
         <div className='border justify-around border-gray-200 hover:shadow-md cursor-pointer transition-shadow 2xl:p-5 p-4 rounded-2xl flex items-start flex-col h-[109px]'>

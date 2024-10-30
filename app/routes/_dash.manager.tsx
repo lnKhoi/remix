@@ -19,6 +19,7 @@ import {
   Link,
   Outlet,
   useLocation,
+  useNavigate,
 } from '@remix-run/react';
 
 const { Header, Sider, Content } = Layout;
@@ -28,7 +29,12 @@ function page() {
   const [modal, setModal] = useState<boolean>(false)
 
   const param = useLocation()
+  const navigate = useNavigate()
 
+  const handleViewInfo = (to:string) => {
+     navigate(to)
+     setModal(false)
+  }
 
   return (
     <Layout style={{ height: '100vh' }}>
@@ -77,18 +83,16 @@ function page() {
               style={{ borderRight: 0, width: 220, }}
             >
               {profileTab.map(m => (
-                // <Link to={m.to}>
-                  <Menu.Item key={m.to} >
+                  <Menu.Item key={m.label} >
                     <div
                       className='flex relative w-full -ml-4'
-                      onClick={() => m.label === 'Logout' ? handleLogout() : null}>
+                      onClick={() => m.label === 'Logout' ? handleLogout() : handleViewInfo(m.to)}>
                       <div className='flex items-center gap-2'>
                         <m.icon className="h-4 w-4" />
                         {m.label}
                       </div>
                     </div>
                   </Menu.Item>
-                // </Link>
 
               ))}
             </Menu>

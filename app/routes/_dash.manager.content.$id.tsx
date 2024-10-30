@@ -104,7 +104,6 @@ const ContentDetails = () => {
   }
 
   const handleConfirmInfluencerRequest = () => {
-
   }
 
   const handlePostContentToProfileInfluent = () => {
@@ -114,6 +113,8 @@ const ContentDetails = () => {
     .catch((err) => toast.error(`Posting Failed! ${err?.message}`))
     .finally(() => setLoading(false))
   }
+
+  const contentPreview = 'https://ebo.vn/static/uploads/editor/100247_content-is-king.png'
 
   return (
     <div className='custom-select'>
@@ -150,7 +151,11 @@ const ContentDetails = () => {
               </div>
             </div>
             <div className='px-4 pt-2 pb-4'>
-              <img className='w-[120px] h-[120px] rounded-lg object-cover' src="https://chipchipweb.com/media/data/images/140705-noi-dung-chi-tiep-thi-khong-mang-lai-hieu-qua-Digilever.jpg" alt="content" />
+              <div className='flex items-center gap-2'>
+              {content?.urls.map(url => (
+                <img className='w-[120px] h-[120px] rounded-lg object-cover' src={url || contentPreview} alt="content" />
+              ))}
+              </div>
               <p className='text-sm font-normal text-gray-500 mt-4'>{content?.caption} </p>
             </div>
           </div>
