@@ -4,8 +4,8 @@ export type Content ={
     id: string;
     campaignId: string;
     creatorId: string;
-    url: string;
-    approved: 'pending' | 'approved' | 'rejected'; 
+    urls: string[];
+    approved: 'pending' | 'approved' | 'rejected' |'posted'
     approvedBy: string | null;
     reason: string | null;
     caption: string;

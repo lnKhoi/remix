@@ -1,9 +1,12 @@
 import axios, { InternalAxiosRequestConfig } from 'axios';
 
+export const API_LOCAL = 'http://localhost:8787'
+export const API_DEV = 'https://spiral-platform-dev.tech-80a.workers.dev'
+
 const axiosClient = axios.create({
-    baseURL: 'https://spiral-platform-dev.lava-art-group.workers.dev',
+    baseURL: API_DEV,
     timeout: 20000,
-    headers: { contentType: "application/json","ngrok-skip-browser-warning": "true", },
+    headers: { contentType: "application/json", "ngrok-skip-browser-warning": "true", },
 });
 
 axiosClient.interceptors.request.use(
@@ -105,7 +108,3 @@ const patchData = async (url: string, data = {}) => {
 export { deleteData, getData, patchData, postData, putData };
 
 export default axiosClient;
-
-
-// https://3ebb-1-54-153-12.ngrok-free.app/api/v1/user/me
-//'https://1504-1-54-153-12.ngrok-free.app/api/v1/user/me'

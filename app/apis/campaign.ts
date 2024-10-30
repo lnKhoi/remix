@@ -65,5 +65,9 @@ export const reviewContent = (campaignId:string,contentId:string,reason?:string,
 }
 
 export const getMedia = (campaignId:string,filename:string) => {
-    return getData(`http://localhost:8787/api/v1/content/media/${filename}`)
+    return getData(`/api/v1/content/media/${filename}`)
+}
+
+export const getInstagramStatistics = (campaignId:string) => {
+    return getData(`api/v1/campaign/${campaignId}/instagram-statistics?from=2021-08-01&to=2025-01-01`)
 }

@@ -28,7 +28,8 @@ function ContentCard({ content }: ContentCardProps) {
     return (
         <div className='rounded-2xl cursor-pointer border border-gray-200 hover:shadow-md transition-shadow'>
             {contextHolder}
-            <img className='2xl:h-[400px] xl:h-[280px] lg:h-[240px] rounded-t-2xl w-full object-cover' src={'https://cdn.sanity.io/images/d2mgkh8z/production/0c631faedcef755c01d1c8082e044ce7488018e6-4000x2244.jpg?w=1000'} alt="content preview" />
+            <img className='2xl:h-[400px] xl:h-[280px] lg:h-[240px] rounded-t-2xl w-full object-cover' 
+            src={content?.urls?.[0]} alt="content preview" />
             <div className='pt-4 px-4 pb-2 flex flex-col justify-around h-[230px]'>
                 <div className='flex items-center gap-3'>
                     <img className='w-[36px] rounded-[50%] h-[36px] object-cover'
@@ -54,7 +55,7 @@ function ContentCard({ content }: ContentCardProps) {
                         </span>
                     </div>
                     <div className='flex items-center gap-2'>
-                        {content.approved === 'approved' && (
+                        {( content.approved ==='posted' ) && (
                             <CopyToClipboard
                                 onCopy={() => messageApi.success('Copied to clipboard!')}
                                 text={content.trackingUrl || ''}
