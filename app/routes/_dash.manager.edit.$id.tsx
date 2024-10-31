@@ -26,8 +26,11 @@ import {
   getCampaignDetails,
   updateCampaign,
 } from '~/apis/campaign';
+import {
+  getDiscountCodeShopify,
+  getShopId,
+} from '~/apis/shopify';
 import TotalBudgetBox from '~/components/campaign/TotalBudgetBox';
-import { discountOptions } from '~/constants/campaign.constant';
 import { countries } from '~/constants/countries.constant';
 import { socials } from '~/constants/creator.constant';
 import {
@@ -42,6 +45,7 @@ import {
 } from '~/constants/messages.constant';
 import { DATE_TIME_FORMAT_V2 } from '~/constants/time.constant';
 import { Campaign } from '~/models/Campaign.model';
+import { DiscountCode } from '~/models/shopify.model';
 import Editor from '~/plugins/editor';
 
 import {
@@ -64,13 +68,14 @@ const CampaignForm = () => {
   const [form] = Form.useForm();
   const [content, setContent] = useState('')
   const [loading, setLoading] = useState<boolean>(false)
-  const [discountType, setDiscountType] = useState<string>('percentage')
   const [selectedSocials, setSelectedSocials] = useState<string[]>([]);
+  const [discountCodes, setDiscountCodes] = useState<DiscountCode[]>([])
 
   const { id } = useParams()
   const budget = Form.useWatch('budget', form);
   const contentFormat = Form.useWatch('contentFormat', form)
   const maximumParticipants = Form.useWatch('maximumParticipants', form);
+  const discount = Form.useWatch('discountCode', form)
 
   const onFinish = async (values: Campaign): Promise<void> => {
     setLoading(true)
@@ -78,12 +83,11 @@ const CampaignForm = () => {
 
     const payload = {
       ...values,
-      discount: Number(values.discount),
+      age: ageRange,
+      discountValue: Number(values.discountValue),
       campaignOverview: content,
       deadline: dayjs(values.deadline).toISOString(),
-      discountType: discountType,
-      socialMedia: selectedSocials,
-      age: ageRange
+      socialMedia: selectedSocials
     }
 
     await updateCampaign(payload as Campaign, id as string)
@@ -122,12 +126,12 @@ const CampaignForm = () => {
           age: formattedAge
         });
       }
-
     })
   }
 
   useEffect(() => {
     handleGetCampaignDetails()
+    handleGetShopifyId()
   }, [])
 
   useEffect(() => {
@@ -137,7 +141,16 @@ const CampaignForm = () => {
     }
   }, [budget, maximumParticipants]);
 
-  
+  const handleGetShopifyId = () => {
+    getShopId().then(res => {
+      handleGetDiscountCode(res?.data?.[0]?.id)
+    })
+  }
+
+  const handleGetDiscountCode = (shopId: string) => {
+    getDiscountCodeShopify(shopId).then((res) => setDiscountCodes(res.data))
+  }
+
   return (
     <div className='custom-select custom-form'>
       <ToastContainer />
@@ -151,7 +164,7 @@ const CampaignForm = () => {
       <div className='flex items-start gap-6 w-full mt-14 mx-auto justify-center'>
         {/* Campaign Form */}
         <div className='w-[650px]'>
-          <h2 className='text-gray-900 mt-14 mb-5 text-lg font-medium text-left'></h2>
+          <h2 className='text-2xl font-medium mb-5'>Add Campaign</h2>
           <Form
             form={form}
             layout="vertical"
@@ -165,7 +178,7 @@ const CampaignForm = () => {
               name="name"
               rules={[{ required: true, message: CAMPAIGN_REQUIRED }]}
             >
-              <Input maxLength={150} showCount />
+              <Input placeholder='Enter campain name' className='bg-gray-100 border-none hover:bg-gray-100' maxLength={150} showCount />
             </Form.Item>
 
             {/* Campaign Budget */}
@@ -179,6 +192,8 @@ const CampaignForm = () => {
               >
                 <InputNumber
                   prefix="$"
+                  placeholder='0.00'
+                  className='bg-gray-100 border-none'
                   maxLength={10}
                   suffix='USD'
                   min={0}
@@ -194,7 +209,9 @@ const CampaignForm = () => {
 
               >
                 <InputNumber
+                  className='bg-gray-100 hover:bg-gray-200 border-none'
                   min={1}
+                  placeholder='0'
                   maxLength={2}
                   style={{ width: '100%' }}
                 />
@@ -210,7 +227,9 @@ const CampaignForm = () => {
               >
                 <InputNumber
                   name='budget'
+                  placeholder='0.00'
                   prefix="$"
+                  className='bg-gray-100 hover:bg-gray-100 cursor-not-allowed border-none'
                   disabled
                   suffix='USD'
                   min={0}
@@ -241,7 +260,7 @@ const CampaignForm = () => {
             </div>
 
             {/* Content Format */}
-            <div>
+            <div className='border-b pb-4 border-b-gray-200'>
               <Form.Item
                 className='w-1/2'
                 label="Content Format"
@@ -270,12 +289,15 @@ const CampaignForm = () => {
             </div>
 
             {/* Campaign Deadline */}
+            <h2 className='text-lg mb-4 font-semibold mt-6'>Campaign Deadline</h2>
             <Form.Item
-              label="Campaign Deadline"
+              label=""
               name="deadline"
               rules={[{ required: true, message: PLEASE_SELECT_DEADLINE }]}
             >
               <DatePicker
+                placeholder='dd/mm/yyyy'
+                className='bg-gray-100 border-none hover:bg-gray-100'
                 disabledDate={(current) => {
                   return current && current < dayjs().endOf('day');
                 }}
@@ -284,17 +306,19 @@ const CampaignForm = () => {
                 format={DATE_TIME_FORMAT_V2} />
             </Form.Item>
             {/* Age */}
-            <h2 className='text-sm text-gray-800 font-normal mb-3'>Campaign Demographic</h2>
+            <h2 className='text-lg  font-semibold text-gray-800 mb-4 mt-6 border-t border-t-gray-200 pt-8'>
+              Campaign Demographic
+            </h2>
             <div className='flex items-center'>
               <Form.Item className=' items-center w-full gap-20' name='age' label='Age' rules={[{ required: true, message: REQUIRED }]} >
-                  <Radio.Group defaultValue={'18-24'} >
-                    <div className='grid gap-2 grid-cols-2'>
+                <Radio.Group>
+                  <div className='grid gap-2 grid-cols-2'>
                     <Radio value="18-24">18 - 24</Radio>
                     <Radio value="25-32">25 - 32</Radio>
                     <Radio value="33-40">33 - 40</Radio>
                     <Radio value="41-50">41 - 50</Radio>
-                    </div>
-                  </Radio.Group>
+                  </div>
+                </Radio.Group>
               </Form.Item>
               {/* Gender */}
               <div className='w-full'>
@@ -303,7 +327,7 @@ const CampaignForm = () => {
                   name="gender"
                   rules={[{ required: true, message: PLEASE_SELECT_GENDER }]}
                 >
-                  <Select placeholder="Select gender">
+                  <Select className="custom-select" placeholder="Select gender">
                     <Option value="male">Male</Option>
                     <Option value="female">Female</Option>
                     <Option value="all">All</Option>
@@ -325,8 +349,8 @@ const CampaignForm = () => {
                   showSearch
                   mode='multiple'
                   allowClear
-                  maxTagCount={3} 
-                  maxTagPlaceholder={(omittedValues) => `...and ${omittedValues.length} more`} 
+                  maxTagCount={3}
+                  maxTagPlaceholder={(omittedValues) => `...and ${omittedValues.length} more`}
                   optionFilterProp="children"
                 >
                   {countries.map((country) => (
@@ -341,33 +365,36 @@ const CampaignForm = () => {
               </Form.Item>
             </div>
             {/* Discount */}
-            <div className='flex items-center'>
+            <div className='flex flex-col pt-8 items-start mt-6 border-t border-t-gray-200'>
+              <p className='text-lg font-semibold'>Discount</p>
               <div className='w-full'>
                 <Form.Item
-                  label="Discount"
-                  name="discount"
+                  label=""
+
                   rules={[{ required: true, message: DISCOUNT_REQUIRED }]}
                 >
-                  <InputNumber
-                    min={0}
-                    prefix={discountType === 'percentage' ? '%' : '$'}
-                    max={discountType === 'percentage' ? 100 : 100000000000000}
-                    className='w-full'
+                  <Select
+                    value={discount}
+                    placeholder="Select option"
+                    className="mt-[5px] w-full"
+                    onSelect={(value, option) => {
+                      form.setFieldValue('discountType', option.discountType)
+                      form.setFieldValue('discountCode', option.label)
+                    }}
+                    options={discountCodes.map((c) => ({
+                      value: c.value,
+                      label: c.title,
+                      discountType: c.value_type,
+                    }))}
                   />
                 </Form.Item>
               </div>
-              <Select
-                className='mt-[5px] '
-                style={{ width: 150 }}
-                onChange={(v) => setDiscountType(v)}
-                defaultValue={discountType}
-                options={discountOptions}
-              />
+
             </div>
 
             {/* Editor */}
-            <div className='mt-4 border-t border-gray-200 mb-8 pt-6'>
-              <h6 className='text-sm text-gray-800 font-medium' >Campaign Overview</h6>
+            <div className='mt-4 border-t border-gray-200 mb-6 pt-6'>
+              <h6 className='text-lg text-gray-800 font-semibold' >Campaign Overview</h6>
               <p className='text-sm text-gray-500 mb-5'>A summary or description of campaign's goals and strategy.</p>
               <Editor value={content} onChange={(value) => handleChangeContent(value)} />
             </div>
@@ -390,6 +417,21 @@ const CampaignForm = () => {
                   </Button>
                 </Form.Item>
               </div>
+              <Form.Item
+                label=""
+                className='hidden'
+                name="discountCode"
+              ></Form.Item>
+              <Form.Item
+                className='hidden'
+                label=""
+                name="discountValue"
+              ></Form.Item>
+              <Form.Item
+                className='hidden'
+                label=""
+                name="discountType"
+              ></Form.Item>
             </div>
           </Form>
         </div>

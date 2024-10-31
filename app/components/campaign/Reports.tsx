@@ -11,6 +11,10 @@ import {
 } from 'antd';
 import CountUp from 'react-countup';
 import { getInstagramStatistics } from '~/apis/campaign';
+import {
+  getCampaignConversionRate,
+  getCampaignROI,
+} from '~/apis/reports';
 import UserAvatar from '~/assets/avatar.jpeg';
 import { influencerPerformanceColumns } from '~/constants/report.constant';
 import { Campaign } from '~/models/Campaign.model';
@@ -24,75 +28,75 @@ import LineChart from '../custom/charts/LineChart';
 type ReportsProps = {
   campaign: Campaign | null
 }
+const data = [
+  {
+    key: '1',
+    name: 'Alice Johnson',
+    engagementRate: 28,
+    address: 'Los Angeles No. 5 Sunset Boulevard',
+  },
+  {
+    key: '2',
+    name: 'Bob Martin',
+    engagementRate: 45,
+    conversionRate: 37.2,
+  },
+  {
+    key: '3',
+    name: 'Charlie Davis',
+    engagementRate: 30,
+    conversionRate: 22.8,
+    address: 'Chicago No. 8 Oak Street',
+  },
+  {
+    key: '4',
+    name: 'David Harris',
+    engagementRate: 20,
+    conversionRate: 11.1,
+  },
+  {
+    key: '5',
+    name: 'Eve Lewis',
+    engagementRate: 35,
+    conversionRate: 40.5,
+  },
+  {
+    key: '6',
+    name: 'Frank Clark',
+    engagementRate: 22,
+    address: 'San Francisco No. 10 Golden Gate',
+  },
+  {
+    key: '7',
+    name: 'Grace Lee',
+    engagementRate: 50,
+    conversionRate: 55.4,
+    address: 'Houston No. 3 Space Center',
+  },
+  {
+    key: '8',
+    name: 'Henry Young',
+    engagementRate: 18,
+    conversionRate: 9.3,
+  },
+  {
+    key: '9',
+    name: 'Ivy Scott',
+    engagementRate: 40,
+    conversionRate: 28.9,
+    address: 'Miami No. 7 Ocean Drive',
+  },
+  {
+    key: '10',
+    name: 'Jack King',
+    engagementRate: 32,
+    conversionRate: 15.2,
+  },
+];
 
 function Reports({ campaign }: ReportsProps) {
-
-  const data = [
-    {
-      key: '1',
-      name: 'Alice Johnson',
-      engagementRate: 28,
-      address: 'Los Angeles No. 5 Sunset Boulevard',
-    },
-    {
-      key: '2',
-      name: 'Bob Martin',
-      engagementRate: 45,
-      conversionRate: 37.2,
-    },
-    {
-      key: '3',
-      name: 'Charlie Davis',
-      engagementRate: 30,
-      conversionRate: 22.8,
-      address: 'Chicago No. 8 Oak Street',
-    },
-    {
-      key: '4',
-      name: 'David Harris',
-      engagementRate: 20,
-      conversionRate: 11.1,
-    },
-    {
-      key: '5',
-      name: 'Eve Lewis',
-      engagementRate: 35,
-      conversionRate: 40.5,
-    },
-    {
-      key: '6',
-      name: 'Frank Clark',
-      engagementRate: 22,
-      address: 'San Francisco No. 10 Golden Gate',
-    },
-    {
-      key: '7',
-      name: 'Grace Lee',
-      engagementRate: 50,
-      conversionRate: 55.4,
-      address: 'Houston No. 3 Space Center',
-    },
-    {
-      key: '8',
-      name: 'Henry Young',
-      engagementRate: 18,
-      conversionRate: 9.3,
-    },
-    {
-      key: '9',
-      name: 'Ivy Scott',
-      engagementRate: 40,
-      conversionRate: 28.9,
-      address: 'Miami No. 7 Ocean Drive',
-    },
-    {
-      key: '10',
-      name: 'Jack King',
-      engagementRate: 32,
-      conversionRate: 15.2,
-    },
-  ];
-
+  const [totalConversionRate,setTotalConversionRate] = useState<number>(0)
+  const [totalROI,setTotalROI] = useState<number>(0)
   const [campaignReport,setCampaignReport] = useState<null | ReportCampaign>(null)
   const [modal, setModal] = useState<boolean>(false)
   const [selectedInfluencer, setSelectedInfluencer] = useState<InfluencerPerformance | null>(null)
@@ -102,10 +106,18 @@ function Reports({ campaign }: ReportsProps) {
     setSelectedInfluencer(influencer)
   }
 
-  const handleGetIGReport =  () => {
-    getInstagramStatistics(campaign?.id as string)
-    .then(res => setCampaignReport(res.data))
-  }
+  const handleGetIGReport = async () => {
+    const [igStats, roi, conversionRate] = await Promise.all([
+       getInstagramStatistics(campaign?.id as string),
+       getCampaignROI(campaign?.id as string),
+       getCampaignConversionRate(campaign?.id as string),
+    ]);
+ 
+    setCampaignReport(igStats.data);
+    setTotalROI(roi?.data?.roi);
+    setTotalConversionRate(conversionRate?.data?.roi);
+ };
+ 
 
   useEffect(() => {
     handleGetIGReport()
@@ -136,13 +148,13 @@ function Reports({ campaign }: ReportsProps) {
         <div className='border justify-around border-gray-200 hover:shadow-md cursor-pointer transition-shadow 2xl:p-5 p-4 rounded-2xl flex items-start flex-col h-[109px]'>
           <h5 className=' text-gray-800 text-xs'>Conversion Rate</h5>
           <span className='text-2xl font-bold'>
-            <CountUp end={23} />%
+            <CountUp end={totalConversionRate} />%
           </span>
         </div>
         <div className='border justify-around border-gray-200 hover:shadow-md cursor-pointer transition-shadow 2xl:p-5 p-4 rounded-2xl flex items-start flex-col h-[109px]'>
           <h5 className=' text-gray-800 text-xs'>ROI</h5>
           <span className='text-2xl font-bold'>
-            <CountUp end={15} />%
+            <CountUp end={totalROI} />%
           </span>
         </div>
 
