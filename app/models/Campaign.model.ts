@@ -15,6 +15,8 @@ export type Campaign = {
     campaignOverview: string; 
     isDeleted?: boolean; 
     joinedCreators?:User []
+    discountValue?:number,
+    discountCode?:number
     deletedAt?: string; 
   }
 

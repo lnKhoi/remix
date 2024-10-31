@@ -85,8 +85,6 @@ function Influencer({ campaign }: InfluencerProps) {
     // setIsDrawerVisible(true); 
   };
 
-
-
   return (
     <div>
       <Tabs defaultActiveKey="" items={items} onChange={(e) => setTab(e as any)} />
@@ -139,7 +137,9 @@ function Influencer({ campaign }: InfluencerProps) {
             )
           }}
         />
+        {isDrawerVisible && (
         <ModalViewInfluencerProfile onClose={() => setIsDrawerVisible(false)} open={isDrawerVisible} />
+        )}
       </div>
     </div>
   )

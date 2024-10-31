@@ -106,6 +106,21 @@
   padding: 0 13px !important;
 }
 
+input::placeholder {
+  color: #6B7280 !important ;
+}
+
+.custom-select .ant-select-selector {
+  background-color: #F3F4F6 !important; /* Similar to bg-gray-100 */
+  border: none !important;
+}
+
+
+.custom-select .ant-select-selector:hover {
+  background-color: #F3F4F6 !important; /* Lighter shade for hover */
+}
+
+
 .quill {
   border-radius: 12px !important;
 }
