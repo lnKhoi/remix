@@ -108,13 +108,14 @@ const ContentDetails = () => {
 
   const handlePostContentToProfileInfluent = () => {
     setLoading(true)
-    publishContent(content?.id as string,'instagram',)
-    .then((res) => toast.success('Content has been posted!'))
-    .catch((err) => toast.error(`Posting Failed! ${err?.message}`))
-    .finally(() => setLoading(false))
+    publishContent(content?.id as string, 'instagram',)
+      .then((res) => toast.success('Content has been posted!'))
+      .catch((err) => toast.error(`Posting Failed! ${err?.message}`))
+      .finally(() => setLoading(false))
   }
 
   const contentPreview = 'https://ebo.vn/static/uploads/editor/100247_content-is-king.png'
+  const videoExtensions = ['mov', 'mp4'];
 
   return (
     <div className='custom-select'>
@@ -152,9 +153,28 @@ const ContentDetails = () => {
             </div>
             <div className='px-4 pt-2 pb-4'>
               <div className='flex items-center gap-2'>
-              {content?.urls.map(url => (
-                <img className='w-[120px] h-[120px] rounded-lg object-cover' src={url || contentPreview} alt="content" />
-              ))}
+                {content?.urls.map((url, index) => {
+                  const isVideo = videoExtensions.includes(url.slice(-3)); 
+
+                  return isVideo ? (
+                    <video
+                      key={index} 
+                      autoPlay
+                      loop
+                      muted
+                      controls
+                      className='w-[120px] h-[120px] rounded-lg object-cover'
+                      src={url}
+                    />
+                  ) : (
+                    <img
+                      key={index} 
+                      className='w-[120px] h-[120px] rounded-lg object-cover'
+                      src={url || contentPreview}
+                      alt="content"
+                    />
+                  );
+                })}
               </div>
               <p className='text-sm font-normal text-gray-500 mt-4'>{content?.caption} </p>
             </div>

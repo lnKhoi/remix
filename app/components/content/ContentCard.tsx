@@ -23,17 +23,29 @@ type ContentCardProps = {
 function ContentCard({ content }: ContentCardProps) {
     const [messageApi, contextHolder] = message.useMessage();
 
+    const videoExtensions = ['mov', 'mp4'];
+    const isVideo = content?.urls?.[0] ? videoExtensions.includes(content.urls[0].slice(-3)) : false;
+
+
     const defaultAvatar = 'https://www.svgrepo.com/show/384676/account-avatar-profile-user-6.svg'
 
+
+    console.log(content)
     return (
         <div className='rounded-2xl cursor-pointer border border-gray-200 hover:shadow-md transition-shadow'>
             {contextHolder}
-            <img className='2xl:h-[400px] xl:h-[280px] lg:h-[240px] rounded-t-2xl w-full object-cover' 
-            src={content?.urls?.[0]} alt="content preview" />
+            {isVideo
+                ? <video
+                    autoPlay
+                    loop
+                    muted className='2xl:h-[400px] xl:h-[280px] lg:h-[240px] rounded-t-2xl w-full object-cover' src={content?.urls?.[0]}></video>
+                : <img className='2xl:h-[400px] xl:h-[280px] lg:h-[240px] rounded-t-2xl w-full object-cover'
+                    src={content?.urls?.[0]} alt="content preview" />
+            }
             <div className='pt-4 px-4 pb-2 flex flex-col justify-around h-[230px]'>
                 <div className='flex items-center gap-3'>
                     <img className='w-[36px] rounded-[50%] h-[36px] object-cover'
-                     src={content?.creator?.avatarUrl || defaultAvatar} alt="avatar" />
+                        src={content?.creator?.avatarUrl || defaultAvatar} alt="avatar" />
                     <div className='flex flex-col'>
                         <h6 className='text-sm text-gray-800'>{content?.creator?.name}</h6>
                         <p className='text-sm text-gray-500 '>{content.creator.email}</p>
@@ -45,7 +57,7 @@ function ContentCard({ content }: ContentCardProps) {
                 <div className='h-[28px] rounded-lg bg-blue-100 text-xs text-blue-700 w-[158px]  items-center justify-center flex'>
                     Create date: {dayjs(content.createdAt).format(DATE_TIME_FORMAT)}
                 </div>
-                <div className='flex items-center mt-1 justify-between'>
+                <div className='flex items-center justify-between'>
                     <div style={{ backgroundColor: getColorStatusContent(content?.approved as ContentStatus)?.background }}
                         className={`inline-flex items-center px-4   gap-1 rounded-[50px] h-[28px]`}>
                         <div style={{ backgroundColor: getColorStatusContent(content?.approved as ContentStatus)?.color }}
@@ -55,7 +67,7 @@ function ContentCard({ content }: ContentCardProps) {
                         </span>
                     </div>
                     <div className='flex items-center gap-2'>
-                        {( content.approved ==='posted' ) && (
+                        {(content.approved === 'posted') && (
                             <CopyToClipboard
                                 onCopy={() => messageApi.success('Copied to clipboard!')}
                                 text={content.trackingUrl || ''}
