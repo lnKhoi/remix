@@ -51,7 +51,7 @@ function CampaignDetails({ campaign }: CampaignDetailsProps) {
         <h6 className='font-semibold text-gray-800 mb-3 mt-4'>Discount</h6>
         <div className='h-[48px] w-full rounded-xl flex gap-2 items-center p-3 bg-rose-100'>
           <TicketIcon className='text-rose-500 w-[20px]' />
-          <span className='font-semibold text-gray-800'>{campaign?.discount} {campaign?.discountType === 'percentage' ? '%' : '$'} Discount </span>
+          <span className='font-semibold text-gray-800'>{campaign?.discountValue} {campaign?.discountType === 'percentage' ? '%' : '$'} Discount </span>
         </div>
         <h6 className='font-semibold text-gray-800 mb-3 mt-4'>Campaign Budget</h6>
         <div className='h-[28px] inline-flex rounded-lg text-gray-700 text-[12px]  gap-2 items-center  justify-center bg-gray-200 py-[6px] px-3'>
