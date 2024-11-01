@@ -109,7 +109,10 @@ const ContentDetails = () => {
   const handlePostContentToProfileInfluent = () => {
     setLoading(true)
     publishContent(content?.id as string, 'instagram',)
-      .then((res) => toast.success('Content has been posted!'))
+      .then((res) =>{ 
+        toast.success('Content has been posted!')
+        handleGetContentDetails()
+      })
       .catch((err) => toast.error(`Posting Failed! ${err?.message}`))
       .finally(() => setLoading(false))
   }
