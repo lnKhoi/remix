@@ -95,9 +95,15 @@ const data = [
 ];
 
 function Reports({ campaign }: ReportsProps) {
-  const [totalConversionRate,setTotalConversionRate] = useState<number>(0)
-  const [totalROI,setTotalROI] = useState<number>(0)
-  const [campaignReport,setCampaignReport] = useState<null | ReportCampaign>(null)
+  const [reportData,setReportData] = useState<ReportCampaign>({
+    conversionRate:0,
+    totalClicks:0,
+    totalRevenue:0,
+    totalImpressions:0,
+    engagementRate:0,
+    roi:0,
+  })
+
   const [modal, setModal] = useState<boolean>(false)
   const [selectedInfluencer, setSelectedInfluencer] = useState<InfluencerPerformance | null>(null)
 
@@ -113,12 +119,15 @@ function Reports({ campaign }: ReportsProps) {
        getCampaignConversionRate(campaign?.id as string),
     ]);
  
-    setCampaignReport(igStats.data);
-    setTotalROI(roi?.data?.roi);
-    setTotalConversionRate(conversionRate?.data?.roi);
+    setReportData({...reportData,
+      roi:roi?.data?.roi,
+      totalClicks:conversionRate?.data?.totalClicks,
+      conversionRate:conversionRate?.data?.conversionRate,
+      totalImpressions:igStats?.data?.engagementRate,
+      totalRevenue:roi.data?.totalRevenue,
+    })
  };
  
-
   useEffect(() => {
     handleGetIGReport()
   },[])
@@ -128,52 +137,54 @@ function Reports({ campaign }: ReportsProps) {
       <div className='my-6 px-4 py-3 border border-gray-200 rounded-xl'>
         <h6 className='text-2xl font-semibold'>Revenue</h6>
        <p className='text-xs text-gray-500 mt-2'>Total</p>
-       <p className='font-semibold text-[30px] text-gray-800 my-3'>$12.243</p>
+       <p className='font-semibold text-[30px] text-gray-800 my-3'>$
+       <CountUp decimals={reportData?.totalRevenue === 0 ? 0 : 2} end={reportData?.totalRevenue} />
+       </p>
       <LineChart/>
       </div>
       <div className='grid xl:grid-cols-7 grid-cols-3 gap-4'>
         <div className='border justify-around border-gray-200 hover:shadow-md cursor-pointer transition-shadow 2xl:p-5 p-4 rounded-2xl flex items-start flex-col h-[109px]'>
           <h5 className=' text-gray-800 text-xs'>Total Impression</h5>
           <span className='text-2xl font-bold'>
-            <CountUp end={campaignReport?.totalImpressions || 0} />
+            <CountUp end={reportData.totalImpressions || 0} />
           </span>
         </div>
 
         <div className='border justify-around border-gray-200 hover:shadow-md cursor-pointer transition-shadow 2xl:p-5 p-4 rounded-2xl flex items-start flex-col h-[109px]'>
           <h5 className=' text-gray-800 text-xs'>Engagement Rate</h5>
           <span className='text-2xl font-bold'>
-            <CountUp end={campaignReport?.engagementRate || 0} />%
+            <CountUp decimals={reportData?.engagementRate == 0 ? 0 : 1}  end={reportData?.engagementRate || 0} />%
           </span>
         </div>
         <div className='border justify-around border-gray-200 hover:shadow-md cursor-pointer transition-shadow 2xl:p-5 p-4 rounded-2xl flex items-start flex-col h-[109px]'>
           <h5 className=' text-gray-800 text-xs'>Conversion Rate</h5>
           <span className='text-2xl font-bold'>
-            <CountUp end={totalConversionRate} />%
+            <CountUp decimals={reportData?.conversionRate == 0 ? 0 : 1} end={reportData?.conversionRate} />%
           </span>
         </div>
         <div className='border justify-around border-gray-200 hover:shadow-md cursor-pointer transition-shadow 2xl:p-5 p-4 rounded-2xl flex items-start flex-col h-[109px]'>
           <h5 className=' text-gray-800 text-xs'>ROI</h5>
           <span className='text-2xl font-bold'>
-            <CountUp end={totalROI} />%
+            <CountUp decimals={reportData?.roi === 0 ? 0 :1} end={reportData?.roi} />%
           </span>
         </div>
 
         <div className='border justify-around border-gray-200 hover:shadow-md cursor-pointer transition-shadow 2xl:p-5 p-4 rounded-2xl flex items-start flex-col h-[109px]'>
           <h5 className=' text-gray-800 text-xs'>Total Clicks</h5>
           <span className='text-2xl font-bold'>
-            <CountUp end={15} />%
+            <CountUp end={reportData?.totalClicks} />
           </span>
         </div>
         <div className='border justify-around border-gray-200 hover:shadow-md cursor-pointer transition-shadow 2xl:p-5 p-4 rounded-2xl flex items-start flex-col h-[109px]'>
           <h5 className=' text-gray-800 text-xs'>Cost Per Click</h5>
           <span className='text-2xl font-bold'>
-            <CountUp end={15} />%
+            <CountUp end={0} />%
           </span>
         </div>
          <div className='border justify-around border-gray-200 hover:shadow-md cursor-pointer transition-shadow 2xl:p-5 p-4 rounded-2xl flex items-start flex-col h-[109px]'>
           <h5 className=' text-gray-800 text-xs'>Cost Per Conversion</h5>
           <span className='text-2xl font-bold'>
-            <CountUp end={15} />%
+            <CountUp end={0} />%
           </span>
         </div>
       </div>
