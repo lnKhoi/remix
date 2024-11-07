@@ -1,7 +1,7 @@
 import axios, { InternalAxiosRequestConfig } from 'axios';
 
 export const API_LOCAL = 'http://localhost:8787'
-export const API_DEV = 'https://spiral-platform-dev.tech-80a.workers.dev'
+export const API_DEV = 'https://dev.spiral.tego.global'
 
 const axiosClient = axios.create({
     baseURL: API_DEV,

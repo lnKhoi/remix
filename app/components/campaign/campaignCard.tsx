@@ -11,6 +11,7 @@ import {
 import dayjs from 'dayjs';
 import { toast } from 'react-toastify';
 import { deleteCampaign } from '~/apis/campaign';
+import DefaultAvatar from '~/assets/avatar.jpeg';
 import { campaignMenuItems } from '~/constants/manager.constant';
 import {
   DELETE_CAMPAGIN_SUCCESS,
@@ -50,7 +51,7 @@ function CampaignCard({ campaign, onReload }: CampaignCardProps) {
                 navigate(`/manager/edit/${campaign.id}`)
                 break;
             case 'delete':
-                campaign.joinedCreators?.length as number > 0 ? handleDeleteCampaign() : null
+                campaign.joinedCreators?.length as number <= 0 ? handleDeleteCampaign() : null
                 break;
             default:
                 break;
@@ -67,26 +68,26 @@ function CampaignCard({ campaign, onReload }: CampaignCardProps) {
 
     const menu = (
         <Menu onClick={(e) => handleMenuClick(e.key)}>
-          {campaignMenuItems.map((item) => {
-            const isDisabled = (item.key === 'delete' || item.key ==='edit') && (campaign.joinedCreators?.length as number) > 0;
-            
-            return (
-              <Menu.Item 
-                disabled={isDisabled}
-                key={item.key}
-              >
-                <div className="flex gap-2 items-center">
-                  {cloneElement(item.icon, {
-                    color: isDisabled ? '#A0A0A0' : '#1F2937' 
-                  })}
-                  {item.label}
-                </div>
-              </Menu.Item>
-            );
-          })}
+            {campaignMenuItems.map((item) => {
+                const isDisabled = (item.key === 'delete' || item.key === 'edit') && (campaign.joinedCreators?.length as number) > 0;
+
+                return (
+                    <Menu.Item
+                        disabled={isDisabled}
+                        key={item.key}
+                    >
+                        <div className="flex gap-2 items-center">
+                            {cloneElement(item.icon, {
+                                color: isDisabled ? '#A0A0A0' : '#1F2937'
+                            })}
+                            {item.label}
+                        </div>
+                    </Menu.Item>
+                );
+            })}
         </Menu>
-      );
-    
+    );
+
     return (
         <div className='h-[300px] cursor-pointer p-5 border flex flex-col justify-between border-gray-200 hover:shadow-lg transition-shadow rounded-[20px] shadow-md'>
             <div className='items-center flex justify-between'>
@@ -135,9 +136,8 @@ function CampaignCard({ campaign, onReload }: CampaignCardProps) {
                     }}
                 >
                     {campaign.joinedCreators?.map(u => (
-                        <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
+                        <Avatar className='w-[36px] object-cover' src={u?.avatarUrl || DefaultAvatar} />
                     ))}
-
                 </Avatar.Group>
             </div>
             {isModal && (

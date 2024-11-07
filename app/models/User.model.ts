@@ -77,6 +77,7 @@ export type Creator = {
   name?: string,
   age?:number,
   platform?: string,
+  avatarUrl?:string
   expertises?:string [],
   instagramTotalLikes?:number
   category?:string []
@@ -113,7 +114,7 @@ export type InstagramPost =  {
 export type InfluencerContentStatus = 'waiting_to_apply' | "accepted_invitation" | 'joined_campaign' | 'brand_declined_influencer'
 
 export type InfluencerInCampaign = {
-  creator:Brand,
+  creator:Creator,
   campaignId:string,
   status: InfluencerContentStatus
 
