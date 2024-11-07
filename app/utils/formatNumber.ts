@@ -22,3 +22,17 @@ export const formatGender = (gender: IGGender) => {
             break;
     }
 }
+
+
+// Input: khoilam_2342asdf
+// Output: khoilam
+export function formatName(input: string) {
+    // Remove the part after the underscore
+    let name = input?.split('_')[0];
+
+    // Capitalize each word while keeping accents
+    return name
+        ?.split(' ')
+        ?.map(word => word?.charAt(0)?.toUpperCase() + word?.slice(1).toLowerCase())
+        ?.join(' ');
+}

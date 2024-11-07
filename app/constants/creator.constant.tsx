@@ -2,6 +2,7 @@ import {
   TableColumnsType,
   TableProps,
 } from 'antd';
+import DefaultAvatar from '~/assets/avatar.jpeg';
 import Fb from '~/assets/facebook.svg';
 import Ig from '~/assets/insta.svg';
 import Tiktok from '~/assets/tiktok.svg';
@@ -107,7 +108,7 @@ export const influencersParticipantsColumns = ({
       <div className="flex items-center gap-2">
         <img
           className="w-[30px] h-[30px] rounded-[50%] object-cover"
-          src="https://img.freepik.com/free-psd/3d-illustration-person-with-sunglasses_23-2149436188.jpg?size=338&ext=jpg&ga=GA1.1.2008272138.1727740800&semt=ais_hybrid"
+          src={record.creator.avatarUrl || DefaultAvatar} 
           alt="avatar"
         />
         {record.creator.name}
@@ -140,13 +141,13 @@ export const influencersParticipantsColumns = ({
           <div className="flex gap-2">
             <button
               className="text-blue-600 hover:bg-gray-200 rounded-md transition-all px-3 py-1"
-              onClick={() => handleApprove(record.creator.id)}
+              onClick={() => handleApprove(record.creator.id as string)}
             >
               Approve
             </button>
             <button
               className="text-red-500 px-3 py-1 rounded"
-              onClick={() => handleReject(record.creator.id)}
+              onClick={() => handleReject(record.creator.id as string)}
             >
               Reject
             </button>
