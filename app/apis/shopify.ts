@@ -1,4 +1,7 @@
-import { getData } from './axiosClient';
+import {
+  getData,
+  postData,
+} from './axiosClient';
 
 export const connectShopify = (shopName:string) => {
     return getData(`/api/v1/auth/shopifyLogin?shop=${shopName}.myshopify.com`)
@@ -10,4 +13,12 @@ export const getDiscountCodeShopify = (shopId:string) => {
 
 export const getShopId = () => {
     return getData(`/api/v1/brand/shops`)
+}
+
+export const getProducts = (shopId:string) => {
+    return getData(`/api/v1/shop/shopify/${shopId}/products`)
+}
+
+export const createDiscount = (shopId:string,value:any) => {
+    return postData(`/api/v1/shop/shopify/${shopId}/create-discount`,value)
 }

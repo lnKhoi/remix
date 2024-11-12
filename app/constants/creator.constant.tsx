@@ -13,6 +13,7 @@ import {
   InfluencerContentStatus,
   InfluencerInCampaign,
 } from '~/models/User.model';
+import { formatName } from '~/utils/formatNumber';
 
 export const creatorColumns: TableProps<Creator>['columns'] = [
   {
@@ -111,7 +112,7 @@ export const influencersParticipantsColumns = ({
           src={record.creator.avatarUrl || DefaultAvatar} 
           alt="avatar"
         />
-        {record.creator.name}
+         {formatName(record?.creator?.name as string)}
       </div>
     ),
   },
