@@ -127,7 +127,7 @@ function CampaignCard({ campaign, onReload }: CampaignCardProps) {
                     </button>
                 )}
                 <Avatar.Group
-                    className='h-[36px]'
+                    className='h-[36px] w-[36px]'
                     size="large"
                     max={{
                         count: 4,
@@ -136,7 +136,7 @@ function CampaignCard({ campaign, onReload }: CampaignCardProps) {
                     }}
                 >
                     {campaign.joinedCreators?.map(u => (
-                        <Avatar className='w-[36px] object-cover' src={u?.avatarUrl || DefaultAvatar} />
+                        <Avatar className='w-[36px] h-[36px] object-cover' src={u?.avatarUrl || DefaultAvatar} />
                     ))}
                 </Avatar.Group>
             </div>

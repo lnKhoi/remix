@@ -26,17 +26,13 @@ import {
   getCampaignDetails,
   updateCampaign,
 } from '~/apis/campaign';
-import {
-  getDiscountCodeShopify,
-  getShopId,
-} from '~/apis/shopify';
+import Discount from '~/components/campaign/Discount';
 import TotalBudgetBox from '~/components/campaign/TotalBudgetBox';
 import { countries } from '~/constants/countries.constant';
 import { socials } from '~/constants/creator.constant';
 import {
   BUDGET_REQUIRED,
   CAMPAIGN_REQUIRED,
-  DISCOUNT_REQUIRED,
   LOCATION_REQUIRED,
   MAXIMUM_PARTICIPANT,
   PLEASE_SELECT_DEADLINE,
@@ -45,7 +41,6 @@ import {
 } from '~/constants/messages.constant';
 import { DATE_TIME_FORMAT_V2 } from '~/constants/time.constant';
 import { Campaign } from '~/models/Campaign.model';
-import { DiscountCode } from '~/models/shopify.model';
 import Editor from '~/plugins/editor';
 
 import {
@@ -69,13 +64,11 @@ const CampaignForm = () => {
   const [content, setContent] = useState('')
   const [loading, setLoading] = useState<boolean>(false)
   const [selectedSocials, setSelectedSocials] = useState<string[]>([]);
-  const [discountCodes, setDiscountCodes] = useState<DiscountCode[]>([])
 
   const { id } = useParams()
   const budget = Form.useWatch('budget', form);
   const contentFormat = Form.useWatch('contentFormat', form)
   const maximumParticipants = Form.useWatch('maximumParticipants', form);
-  const discount = Form.useWatch('discountCode', form)
 
   const onFinish = async (values: Campaign): Promise<void> => {
     setLoading(true)
@@ -123,15 +116,17 @@ const CampaignForm = () => {
         form.setFieldsValue({
           ...campaign,
           deadline: dayjs(campaign.deadline),
-          age: formattedAge
+          age: formattedAge,
+          // discountValue:String(campaign.discountValue)
         });
       }
     })
   }
 
+  console.log(form.getFieldsValue())
+
   useEffect(() => {
     handleGetCampaignDetails()
-    handleGetShopifyId()
   }, [])
 
   useEffect(() => {
@@ -140,16 +135,6 @@ const CampaignForm = () => {
       form.setFieldsValue({ totalBudget });
     }
   }, [budget, maximumParticipants]);
-
-  const handleGetShopifyId = () => {
-    getShopId().then(res => {
-      handleGetDiscountCode(res?.data?.[0]?.id)
-    })
-  }
-
-  const handleGetDiscountCode = (shopId: string) => {
-    getDiscountCodeShopify(shopId).then((res) => setDiscountCodes(res.data))
-  }
 
   return (
     <div className='custom-select custom-form'>
@@ -365,32 +350,7 @@ const CampaignForm = () => {
               </Form.Item>
             </div>
             {/* Discount */}
-            <div className='flex flex-col pt-8 items-start mt-6 border-t border-t-gray-200'>
-              <p className='text-lg font-semibold'>Discount</p>
-              <div className='w-full'>
-                <Form.Item
-                  label=""
-
-                  rules={[{ required: true, message: DISCOUNT_REQUIRED }]}
-                >
-                  <Select
-                    value={discount}
-                    placeholder="Select option"
-                    className="mt-[5px] w-full"
-                    onSelect={(value, option) => {
-                      form.setFieldValue('discountType', option.discountType)
-                      form.setFieldValue('discountCode', option.label)
-                    }}
-                    options={discountCodes.map((c) => ({
-                      value: c.value,
-                      label: c.title,
-                      discountType: c.value_type,
-                    }))}
-                  />
-                </Form.Item>
-              </div>
-
-            </div>
+           <Discount form={form} />
 
             {/* Editor */}
             <div className='mt-4 border-t border-gray-200 mb-6 pt-6'>
