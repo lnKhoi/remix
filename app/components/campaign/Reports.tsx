@@ -14,6 +14,8 @@ import { getInstagramStatistics } from '~/apis/campaign';
 import {
   getCampaignConversionRate,
   getCampaignROI,
+  getCostPerClicks,
+  getCostPerConversion,
 } from '~/apis/reports';
 import UserAvatar from '~/assets/avatar.jpeg';
 import { influencerPerformanceColumns } from '~/constants/report.constant';
@@ -102,6 +104,8 @@ function Reports({ campaign }: ReportsProps) {
     totalImpressions:0,
     engagementRate:0,
     roi:0,
+    costPerConversion:0,
+    costPerClicks:0
   })
 
   const [modal, setModal] = useState<boolean>(false)
@@ -113,18 +117,23 @@ function Reports({ campaign }: ReportsProps) {
   }
 
   const handleGetIGReport = async () => {
-    const [igStats, roi, conversionRate] = await Promise.all([
+    const [igStats, roi, conversionRate,costPerConversion,costperClicks] = await Promise.all([
        getInstagramStatistics(campaign?.id as string),
        getCampaignROI(campaign?.id as string),
        getCampaignConversionRate(campaign?.id as string),
+       getCostPerConversion(campaign?.id as string),
+       getCostPerClicks(campaign?.id as string)
     ]);
- 
+
     setReportData({...reportData,
       roi:roi?.data?.roi,
       totalClicks:conversionRate?.data?.totalClicks,
       conversionRate:conversionRate?.data?.conversionRate,
-      totalImpressions:igStats?.data?.engagementRate,
+      totalImpressions:igStats?.data?.totalImpressions,
+      engagementRate:igStats?.data?.engagementRate,
       totalRevenue:roi.data?.totalRevenue,
+      costPerConversion:costPerConversion?.data?.costPerConversion,
+      costPerClicks:costperClicks?.data?.costPerClick
     })
  };
  
@@ -178,13 +187,13 @@ function Reports({ campaign }: ReportsProps) {
         <div className='border justify-around border-gray-200 hover:shadow-md cursor-pointer transition-shadow 2xl:p-5 p-4 rounded-2xl flex items-start flex-col h-[109px]'>
           <h5 className=' text-gray-800 text-xs'>Cost Per Click</h5>
           <span className='text-2xl font-bold'>
-            <CountUp end={0} />%
+            <CountUp end={reportData?.costPerClicks} />%
           </span>
         </div>
          <div className='border justify-around border-gray-200 hover:shadow-md cursor-pointer transition-shadow 2xl:p-5 p-4 rounded-2xl flex items-start flex-col h-[109px]'>
           <h5 className=' text-gray-800 text-xs'>Cost Per Conversion</h5>
           <span className='text-2xl font-bold'>
-            <CountUp end={0} />%
+            <CountUp end={reportData.costPerConversion} />%
           </span>
         </div>
       </div>

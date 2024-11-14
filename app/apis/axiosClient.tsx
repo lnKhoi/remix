@@ -5,7 +5,7 @@ export const API_DEV = 'https://dev.spiral.tego.global'
 
 const axiosClient = axios.create({
     baseURL: API_DEV,
-    timeout: 20000,
+    timeout: 200000,
     headers: { contentType: "application/json", "ngrok-skip-browser-warning": "true", },
 });
 
