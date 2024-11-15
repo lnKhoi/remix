@@ -7,4 +7,5 @@ export type ReportCampaign = {
     costPerConversion: number;
     costPerClicks: number; 
     roi: number; 
+    influencers: []
 };

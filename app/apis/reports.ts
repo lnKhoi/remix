@@ -15,3 +15,11 @@ export const getCostPerConversion = (camaignId: string) => {
 export const getCostPerClicks = (camaignId: string) => {
     return getData(`/api/v1/report/cost-per-click?campaignId=${camaignId}`)
 }
+
+export const getInfluencerInReport = (campaignId:string) => {
+    return getData(`/api/v1/campaign/${campaignId}/instagram-statistics-list-influencers`)
+}
+
+export const getIGAudienceOfInfluencer = (campaignId:string,creatorId:string) => {
+    return getData(`/api/v1/campaign/${campaignId}/instagram-statistics/${creatorId}`)
+}

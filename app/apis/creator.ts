@@ -15,3 +15,10 @@ export const getInfluencerDetails = (id:string) => {
   return getData(`/api/v1/creator/${id}`)
 }
 
+export const getInfluencerConversion = (campaignId:string,creatorId:string) => {
+  return getData(`/api/v1/report/${campaignId}/${creatorId}/conversion-rate`)
+}
+
+export const getInfluencerTotalClick = (campaignId:string,creatorId:string) => {
+  return getData(`/api/v1/report/${campaignId}/${creatorId}/total-clicks`)
+}
