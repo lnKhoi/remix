@@ -12,6 +12,8 @@ const axiosClient = axios.create({
 axiosClient.interceptors.request.use(
     (config: InternalAxiosRequestConfig) => {
         const token = localStorage.getItem("remix_us_tk");
+
+        
         if (token && config.headers) {
             config.headers["Authorization"] = `Bearer ${token}`;
         }

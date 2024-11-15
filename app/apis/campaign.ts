@@ -69,5 +69,5 @@ export const getMedia = (campaignId:string,filename:string) => {
 }
 
 export const getInstagramStatistics = (campaignId:string) => {
-    return getData(`api/v1/campaign/${campaignId}/instagram-statistics?from=2021-08-01&to=2025-01-01`)
+    return getData(`api/v1/campaign/${campaignId}/instagram-statistics-total?from=2021-08-01&to=2025-01-01`)
 }
