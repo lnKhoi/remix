@@ -66,11 +66,9 @@ const CampaignForm = () => {
 
   const onFinish = async (values: Campaign): Promise<void> => {
     setLoading(true)
-    const ageRange = form.getFieldValue('age').split('-').map(Number);
 
     const payload = {
       ...values,
-      age: ageRange,
       discountValue: Number(values.discountValue),
       campaignOverview: content,
       deadline: dayjs(values.deadline).toISOString(),
@@ -267,16 +265,22 @@ const CampaignForm = () => {
               Campaign Demographic
             </h2>
             <div className='flex items-center'>
-              <Form.Item className=' items-center w-full gap-20' name='age' label='Age' rules={[{ required: true, message: REQUIRED }]} >
-                <Radio.Group>
+              <Form.Item
+                className='items-center w-full gap-20'
+                name='ages'
+                label='Age'
+                rules={[{ required: true, message: REQUIRED }]}
+              >
+                <Checkbox.Group>
                   <div className='grid gap-2 grid-cols-2'>
-                    <Radio value="18-24">18 - 24</Radio>
-                    <Radio value="25-32">25 - 32</Radio>
-                    <Radio value="33-40">33 - 40</Radio>
-                    <Radio value="41-50">41 - 50</Radio>
+                    <Checkbox value="18-24">18 - 24</Checkbox>
+                    <Checkbox value="25-32">25 - 32</Checkbox>
+                    <Checkbox value="33-40">33 - 40</Checkbox>
+                    <Checkbox value="41-50">41 - 50</Checkbox>
                   </div>
-                </Radio.Group>
+                </Checkbox.Group>
               </Form.Item>
+
               {/* Gender */}
               <div className='w-full'>
                 <Form.Item

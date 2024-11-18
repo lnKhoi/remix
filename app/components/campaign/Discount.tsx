@@ -60,10 +60,6 @@ const Discount = ({ form }: DiscountProps) => {
         handleGetShopifyId()
     }, [])
 
-
-    console.log(discountCodes)
-
-    
     return (
         <div className="flex flex-col pt-8 items-start mt-6 border-t border-t-gray-200">
             <ToastContainer />

@@ -2,6 +2,7 @@ import { User } from './User.model';
 
 export type Campaign = {
     name: string; 
+    ages:string []
     deadline: string; 
     id?:string,
     budget: number;
