@@ -13,6 +13,7 @@ import {
   Input,
   message,
   Modal,
+  TimePicker,
 } from 'antd';
 import dayjs, { Dayjs } from 'dayjs';
 import CopyToClipboard from 'react-copy-to-clipboard';
@@ -109,7 +110,7 @@ const ContentDetails = () => {
   const handlePostContentToProfileInfluent = () => {
     setLoading(true)
     publishContent(content?.id as string, 'instagram',)
-      .then((res) =>{ 
+      .then((res) => {
         toast.success('Content has been posted!')
         handleGetContentDetails()
       })
@@ -157,11 +158,11 @@ const ContentDetails = () => {
             <div className='px-4 pt-2 pb-4'>
               <div className='flex items-center gap-2'>
                 {content?.urls.map((url, index) => {
-                  const isVideo = videoExtensions.includes(url.slice(-3)); 
+                  const isVideo = videoExtensions.includes(url.slice(-3));
 
                   return isVideo ? (
                     <video
-                      key={index} 
+                      key={index}
                       autoPlay
                       loop
                       muted
@@ -171,7 +172,7 @@ const ContentDetails = () => {
                     />
                   ) : (
                     <img
-                      key={index} 
+                      key={index}
                       className='w-[120px] h-[120px] rounded-lg object-cover'
                       src={url || contentPreview}
                       alt="content"
@@ -196,7 +197,7 @@ const ContentDetails = () => {
           <div className='w-[300px] border border-gray-100 rounded-xl shadow-sm'>
             <p className='p-4 text-sm text-gray-800 '>Please review the attached content for approval. Looking forward to your feedback!</p>
             <div className='w-full px-4 pb-4 flex items-center gap-2 '>
-              {content?.approved === 'pending' ? (
+              {content?.approved == 'pending' ? (
                 <>
                   <Button onClick={() => setModalType('reject-content')} className='w-1/2' type='default' >Reject</Button>
                   <Button onClick={() => setModalType('confirm-posting-date')} className='w-1/2' type='primary' >Approve</Button>
@@ -301,6 +302,7 @@ const ContentDetails = () => {
             <p className='text-sm text-gray-600 -mt-4'>Are you sure you want to reject this request?</p>
           </div>
         </Modal>
+
         {/* Modal Approve Influencer Requeset */}
         <Modal
           width={355}
@@ -331,14 +333,25 @@ const ContentDetails = () => {
             <h2 className='text-xl font-semibold text-gray-800'>Posting Date</h2>
             <p className='text-sm text-center text-gray-800 mt-1'>The date content goes live on influender's social media platforms.</p>
           </div>
-          <div className='flex flex-col gap-2'>
+          <div className='flex flex-col gap-2 pb-3'>
             <span className=' text-sm font-semibold text-gray-800  text-left'>Posting Date</span>
             <DatePicker
-              onChange={(e) => setSubmitTime(e)}
+              onChange={(date) => setSubmitTime((prev) => {
+                const time = prev ? prev : dayjs(); // Default to current time if no previous time
+                return dayjs(date).set('hour', time.hour()).set('minute', time.minute());
+              })}
               disabledDate={(current) => { return current && current < dayjs().endOf('day'); }}
               style={{ width: '100%' }}
-              showTime
               format={DATE_TIME_FORMAT_V2} />
+            <span className=' text-sm font-semibold text-gray-800 mt-3 text-left'>Time</span>
+            <TimePicker
+              onChange={(time) => setSubmitTime((prev) => {
+                const date = prev ? prev : dayjs(); // Default to current date if no previous date
+                return dayjs(date).set('hour', time.hour()).set('minute', time.minute());
+              })}
+              style={{ width: '100%' }}
+              format="HH:mm"
+            />
           </div>
         </Modal>
 
