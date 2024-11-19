@@ -9,7 +9,6 @@ import {
   FormInstance,
   Select,
 } from 'antd';
-import { ToastContainer } from 'react-toastify';
 import {
   getDiscountCodeShopify,
   getProducts,
@@ -62,7 +61,7 @@ const Discount = ({ form }: DiscountProps) => {
 
     return (
         <div className="flex flex-col pt-8 items-start mt-6 border-t border-t-gray-200">
-            <ToastContainer />
+            {/* <ToastContainer /> */}
             {/* Discounts */}
             <p className="text-lg font-semibold">Discount</p>
             <div className="w-full flex items-start justify-between gap-5">

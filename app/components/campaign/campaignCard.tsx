@@ -20,6 +20,7 @@ import {
 import { DATE_TIME_FORMAT_V2 } from '~/constants/time.constant';
 import { getColorStatusCampaign } from '~/helpers/campaign.helper';
 import { Campaign } from '~/models/Campaign.model';
+import { abbreviateLastName } from '~/utils/formatNumber';
 
 import {
   CalendarDaysIcon,
@@ -104,7 +105,7 @@ function CampaignCard({ campaign, onReload }: CampaignCardProps) {
                 </Dropdown>
             </div>
             <div className='mt-4f'>
-                <h5 className='text-sm text-[#1F2937] font-medium'>{campaign.name}</h5>
+                <h5 className='text-sm text-[#1F2937] font-medium'>{abbreviateLastName(campaign.name,40)}</h5>
                 <div className='flex items-center gap-1'>
                     <CalendarDaysIcon width={16} color='#6B7280' />
                     <p className='mt-1 text-sm text-[#6B7280]'>{dayjs(campaign.deadline).format(DATE_TIME_FORMAT_V2)}</p>

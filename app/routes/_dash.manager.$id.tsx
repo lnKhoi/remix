@@ -22,6 +22,7 @@ import ModalInviteInfluencerToCampaign
   from '~/components/campaign/ModalInviteInfluencerToCampaign';
 import Reports from '~/components/campaign/Reports';
 import { Campaign } from '~/models/Campaign.model';
+import { abbreviateLastName } from '~/utils/formatNumber';
 
 import { UserPlusIcon } from '@heroicons/react/24/outline';
 import {
@@ -76,7 +77,7 @@ function page() {
             className='w-[200px]'
             items={[
               { title: <Link to={'/manager/campaigns'}>Campaigns</Link> },
-              { title: <p className='text-gray-800'>{campaign?.name}</p> },
+              { title: <p className='text-gray-800'>{abbreviateLastName(campaign?.name as string,17)}</p> },
             ]}
           />
 

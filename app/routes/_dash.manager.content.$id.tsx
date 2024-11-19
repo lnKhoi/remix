@@ -32,7 +32,10 @@ import {
 import Approve from '~/assets/approve.png';
 import Reject from '~/assets/reject.png';
 import TagColor from '~/components/ui/tagColor';
-import { DATE_TIME_FORMAT_V2 } from '~/constants/time.constant';
+import {
+  DATE_TIME_FORMAT,
+  DATE_TIME_FORMAT_V2,
+} from '~/constants/time.constant';
 import {
   ContentStatus,
   getColorStatusContent,
@@ -342,7 +345,7 @@ const ContentDetails = () => {
               })}
               disabledDate={(current) => { return current && current < dayjs().endOf('day'); }}
               style={{ width: '100%' }}
-              format={DATE_TIME_FORMAT_V2} />
+              format={DATE_TIME_FORMAT} />
             <span className=' text-sm font-semibold text-gray-800 mt-3 text-left'>Time</span>
             <TimePicker
               onChange={(time) => setSubmitTime((prev) => {
