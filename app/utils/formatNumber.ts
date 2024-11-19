@@ -36,3 +36,24 @@ export function formatName(input: string) {
         ?.map(word => word?.charAt(0)?.toUpperCase() + word?.slice(1).toLowerCase())
         ?.join(' ');
 }
+
+
+// Example usage
+// const url = "https://abc.jpg";
+// console.log(checkMediaType(url)); // Output: 'image'
+
+export function abbreviateLastName(name: string, maxLength: number): string {
+    if(!name) return ''
+    const parts = name?.trim()?.split(" ");
+    const abbreviatedName = parts?.length > 2 
+        ? `${parts?.slice(0, -1)?.join(" ")} ${parts?.at(-1)?.[0] || ''}...`
+        : name;
+    
+    return abbreviatedName.length > maxLength
+        ? `${abbreviatedName?.slice(0, maxLength - 3)}...`
+        : abbreviatedName;
+}
+
+// Example usage
+// console.log(abbreviateLastName("cathy pieerse land", 20)); 
+// Output: "cathy pieerse l..."
