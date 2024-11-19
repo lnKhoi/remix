@@ -25,6 +25,7 @@ import {
 import { createCampaign } from '~/apis/campaign';
 import Discount from '~/components/campaign/Discount';
 import TotalBudgetBox from '~/components/campaign/TotalBudgetBox';
+import { contentFormatOptions } from '~/constants/campaign.constant';
 import { countries } from '~/constants/countries.constant';
 import { socials } from '~/constants/creator.constant';
 import {
@@ -40,10 +41,6 @@ import { DATE_TIME_FORMAT_V2 } from '~/constants/time.constant';
 import { Campaign } from '~/models/Campaign.model';
 import Editor from '~/plugins/editor';
 
-import {
-  FilmIcon,
-  Squares2X2Icon,
-} from '@heroicons/react/24/outline';
 import { MetaFunction } from '@remix-run/cloudflare';
 import { Link } from '@remix-run/react';
 
@@ -62,7 +59,6 @@ const CampaignForm = () => {
   const budget = Form.useWatch('budget', form);
   const contentFormat = Form.useWatch('contentFormat', form)
   const maximumParticipants = Form.useWatch('maximumParticipants', form);
-
 
   const onFinish = async (values: Campaign): Promise<void> => {
     setLoading(true)
@@ -105,6 +101,8 @@ const CampaignForm = () => {
       form.setFieldsValue({ totalBudget });
     }
   }, [budget, maximumParticipants]);
+
+
 
   return (
     <div className='custom-select custom-form'>
@@ -215,31 +213,36 @@ const CampaignForm = () => {
             </div>
 
             {/* Content Format */}
-            <div className='border-b pb-4 border-b-gray-200'>
+            <div className="border-b pb-4 border-b-gray-200">
               <Form.Item
-                className='w-1/2'
+                className="w-1/2"
                 label="Content Format"
                 name="contentFormat"
                 rules={[{ required: true, message: REQUIRED }]}
               >
-                <Checkbox.Group>
-                  <div className='flex gap-3 items-center'>
-                    <div className={`flex gap-5 cursor-pointer border h-[44px] ${contentFormat?.includes('post') ? 'border-blue-600' : 'border-gray-200'} items-center p-3 rounded-xl justify-between`}>
-                      <div className='flex gap-2'>
-                        <Squares2X2Icon width={20} height={20} />
-                        <span>Post</span>
+                <div className="flex gap-3 items-center">
+                  {contentFormatOptions.map((c) => (
+                    <div
+                      key={c.value}
+                      className={`flex gap-5 cursor-pointer border h-[44px] ${contentFormat?.includes(c.value) ? "border-blue-600" : "border-gray-200"
+                        } items-center p-3 rounded-xl justify-between`}
+                      onClick={() => {
+                        const newValue = contentFormat?.includes(c.value) ? [] : [c.value];
+                        form.setFieldsValue({ contentFormat: newValue });
+                      }}
+                    >
+                      <div className="flex gap-2">
+                        {c.icon}
+                        <span>{c.label}</span>
                       </div>
-                      <Checkbox value='post' />
+                      <Checkbox
+                        checked={contentFormat?.includes(c.value)}
+                        value={c.value}
+                        style={{ pointerEvents: "none" }} // Prevent direct checkbox click propagation
+                      />
                     </div>
-                    <div className={`flex gap-5 cursor-pointer border h-[44px] items-center p-3  ${contentFormat?.includes('reel') ? 'border-blue-600' : 'border-gray-200'} rounded-xl justify-between`}>
-                      <div className='flex gap-2'>
-                        <FilmIcon width={20} height={20} />
-                        <span>Reel</span>
-                      </div>
-                      <Checkbox value='reel' />
-                    </div>
-                  </div>
-                </Checkbox.Group>
+                  ))}
+                </div>
               </Form.Item>
             </div>
 
