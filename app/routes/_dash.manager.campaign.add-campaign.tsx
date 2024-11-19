@@ -60,8 +60,6 @@ const CampaignForm = () => {
   const contentFormat = Form.useWatch('contentFormat', form)
   const maximumParticipants = Form.useWatch('maximumParticipants', form);
 
-
-  console.log(contentFormat)
   const onFinish = async (values: Campaign): Promise<void> => {
     setLoading(true)
 
