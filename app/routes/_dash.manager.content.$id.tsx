@@ -16,6 +16,7 @@ import {
   TimePicker,
 } from 'antd';
 import dayjs, { Dayjs } from 'dayjs';
+import { LightbulbIcon } from 'lucide-react';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import {
   toast,
@@ -74,6 +75,7 @@ const ContentDetails = () => {
   const [content, setContent] = useState<Content | null>(null)
 
   const [modalType, setModalType] = useState<ModalType>('')
+  const minDateTime = dayjs(content?.updatedAt).add(48, 'hour'); 
 
   const handleGetContentDetails = async () => {
     await getContentDetails(id as string).then((res) => setContent(res.data))
@@ -235,8 +237,15 @@ const ContentDetails = () => {
                 </div>
               </div>
               <div onClick={handlePostContentToProfileInfluent} className='w-full px-5 pb-4'>
-                <Button loading={loading} disabled={loading} className='w-full' type='primary'>Post</Button>
+                <Button loading={loading} disabled={loading} className='w-full' type='primary'>Post to social</Button>
               </div>
+              <div className='bg-gray-100  flex gap-3 items-start p-4 justify-center'>
+              <LightbulbIcon width={20} className='text-blue-500' />
+              <div className='flex flex-col'>
+                <span className='text-sm text-gray-800 font-medium'>Note:</span>
+                <p className='w-[224px] text-sm  text-gray-800'> Influencers must review and confirm 24 hours before posting. If there is no response, the content will be auto-confirmed</p>
+              </div>
+            </div>
             </div>
           )}
 
@@ -253,7 +262,7 @@ const ContentDetails = () => {
                   >
                     <div className='flex cursor-pointer items-center gap-2 justify-between w-full'>
                       <p className='text-gray-800 text-sm overflow-hidden text-ellipsis whitespace-nowrap'>{content?.trackingUrl}</p>
-                      <DocumentDuplicateIcon width={20} height={20} className='text-gray-500' />
+                      <DocumentDuplicateIcon width={20} height={20} className='text-gray-500 min-w-[20px]' />
                     </div>
                   </CopyToClipboard>
                 </div>
@@ -337,25 +346,50 @@ const ContentDetails = () => {
             <p className='text-sm text-center text-gray-800 mt-1'>The date content goes live on influender's social media platforms.</p>
           </div>
           <div className='flex flex-col gap-2 pb-3'>
-            <span className=' text-sm font-semibold text-gray-800  text-left'>Posting Date</span>
-            <DatePicker
-              onChange={(date) => setSubmitTime((prev) => {
-                const time = prev ? prev : dayjs(); // Default to current time if no previous time
-                return dayjs(date).set('hour', time.hour()).set('minute', time.minute());
-              })}
-              disabledDate={(current) => { return current && current < dayjs().endOf('day'); }}
-              style={{ width: '100%' }}
-              format={DATE_TIME_FORMAT} />
-            <span className=' text-sm font-semibold text-gray-800 mt-3 text-left'>Time</span>
-            <TimePicker
-              onChange={(time) => setSubmitTime((prev) => {
-                const date = prev ? prev : dayjs(); // Default to current date if no previous date
-                return dayjs(date).set('hour', time.hour()).set('minute', time.minute());
-              })}
-              style={{ width: '100%' }}
-              format="HH:mm"
-            />
-          </div>
+  <span className='text-sm font-semibold text-gray-800 text-left'>Posting Date</span>
+  <DatePicker
+    onChange={(date) =>
+      setSubmitTime((prev) => {
+        const time = prev ? prev : dayjs(); // Default to current time if no previous time
+        return dayjs(date).set('hour', time.hour()).set('minute', time.minute());
+      })
+    }
+    disabledDate={(current) => current && current < minDateTime.startOf('day')} // Disable dates before minDateTime
+    style={{ width: '100%' }}
+    format={DATE_TIME_FORMAT}
+  />
+  <span className='text-sm font-semibold text-gray-800 mt-3 text-left'>Time</span>
+  <TimePicker
+    onChange={(time) =>
+      setSubmitTime((prev) => {
+        const date = prev ? prev : dayjs(); // Default to current date if no previous date
+        return dayjs(date).set('hour', time.hour()).set('minute', time.minute());
+      })
+    }
+    disabledHours={() => {
+      // Disable hours before minDateTime if the selected day is the same as minDateTime
+      const selectedDate = submitTime ? dayjs(submitTime) : null;
+      if (selectedDate && selectedDate.isSame(minDateTime, 'day')) {
+        return [...Array(24).keys()].filter((hour) => hour < minDateTime.hour());
+      }
+      return [];
+    }}
+    disabledMinutes={(selectedHour) => {
+      // Disable minutes if the selected hour is the same as minDateTime's hour
+      const selectedDate = submitTime ? dayjs(submitTime) : null;
+      if (
+        selectedDate &&
+        selectedDate.isSame(minDateTime, 'day') &&
+        selectedHour === minDateTime.hour()
+      ) {
+        return [...Array(60).keys()].filter((minute) => minute < minDateTime.minute());
+      }
+      return [];
+    }}
+    style={{ width: '100%' }}
+    format="HH:mm"
+  />
+</div>
         </Modal>
 
       </div>
