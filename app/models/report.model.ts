@@ -1,11 +1,23 @@
+import { Creator } from './User.model';
+
 export type ReportCampaign = {
     totalImpressions: number;
     engagementRate: number;
-    totalClicks: number; 
+    totalClicks: number;
     conversionRate: number;
     totalRevenue: number;
     costPerConversion: number;
-    costPerClicks: number; 
-    roi: number; 
-    influencers: []
+    costPerClicks: number;
+    roi: number;
+    influencers: InfluencerInReport[]
 };
+
+export type InfluencerInReport = {
+    creatorId: string;
+    totalImpressions: number;
+    totalFollowers: number;
+    totalInteractions: number;
+    engagementRate: number;
+    conversionRate: number;
+    creator: Creator;
+}

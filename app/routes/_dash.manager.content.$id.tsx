@@ -75,7 +75,7 @@ const ContentDetails = () => {
   const [content, setContent] = useState<Content | null>(null)
 
   const [modalType, setModalType] = useState<ModalType>('')
-  const minDateTime = dayjs(content?.updatedAt).add(48, 'hour'); 
+  const minDateTime = dayjs(dayjs()).add(48, 'hour'); 
 
   const handleGetContentDetails = async () => {
     await getContentDetails(id as string).then((res) => setContent(res.data))
