@@ -137,7 +137,7 @@ function CampaignCard({ campaign, onReload }: CampaignCardProps) {
                     }}
                 >
                     {campaign.joinedCreators?.map(u => (
-                        <Avatar className='w-[36px] h-[36px] object-cover' src={u?.avatarUrl || DefaultAvatar} />
+                        <Avatar className='w-[36px] min-w-[36px] h-[36px] object-cover' src={u?.avatarUrl || DefaultAvatar} />
                     ))}
                 </Avatar.Group>
             </div>

@@ -237,3 +237,7 @@ input::placeholder {
   border-bottom-right-radius: 12px !important;
   border:1px solid  theme('colors.gray.200') !important;
 }
+
+#ages_help {
+  margin-top: 20px;
+}
