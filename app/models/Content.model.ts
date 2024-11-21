@@ -5,7 +5,7 @@ export type Content ={
     campaignId: string;
     creatorId: string;
     urls: string[];
-    approved: 'pending' | 'approved' | 'rejected' |'posted'
+    approved: 'pending' | 'approved' | 'rejected' |'posted' | 'influencer-approved'
     approvedBy: string | null;
     reason: string | null;
     caption: string;

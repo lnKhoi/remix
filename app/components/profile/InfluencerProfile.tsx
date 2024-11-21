@@ -10,10 +10,9 @@ import {
 } from 'antd';
 import CountUp from 'react-countup';
 import {
-  getInfluencerConversion,
-  getInfluencerTotalClick,
-} from '~/apis/creator';
-import { getIGAudienceOfInfluencer } from '~/apis/reports';
+  getIGAudienceOfInfluencer,
+  getRevenueOfInfluencer,
+} from '~/apis/reports';
 
 import { ChevronUpDownIcon } from '@heroicons/react/24/outline';
 
@@ -28,17 +27,18 @@ function InfluencerProfile({ open, onClose, campaignId, inluencerId }: Influence
     const [report, setReport] = useState({ conversionRate: 0, totalClicks: 0,influencerAudience:null })
 
     const handleGetIGReport = async () => {
-        const [conversionRate, totalClicks,influencerAudience] = await Promise.all([
-            getInfluencerConversion(campaignId, inluencerId),
-            getInfluencerTotalClick(campaignId, inluencerId),
-            getIGAudienceOfInfluencer(campaignId,inluencerId)
+        const [influencerAudience,revenue] = await Promise.all([
+            getIGAudienceOfInfluencer(campaignId,inluencerId),
+            getRevenueOfInfluencer(campaignId,inluencerId)
         ]);
 
         setReport({
             ...report,
-            conversionRate: conversionRate?.data?.conversionRate,
-            totalClicks: totalClicks?.data?.totalClicks,
-            influencerAudience:influencerAudience?.data
+            conversionRate: revenue?.data?.conversionRate,
+            totalClicks: revenue?.data?.totalClicks,
+            influencerAudience:influencerAudience?.data,
+            revenue:revenue?.data?.totalRevenue,
+
         })
     };
 
@@ -46,7 +46,7 @@ function InfluencerProfile({ open, onClose, campaignId, inluencerId }: Influence
         handleGetIGReport()
     }, [])
 
-    console.log(report.influencerAudience)
+    console.log(report)
     
 
     return (
@@ -55,7 +55,7 @@ function InfluencerProfile({ open, onClose, campaignId, inluencerId }: Influence
                 <Avatar src={report?.influencerAudience?.creator?.avatarUrl} className='w-[128px] h-[128px] rounded-[50%]' />
                 <div className='flex flex-col'>
                     <p className='text-2xl font-semibold'>{report?.influencerAudience?.creator?.name}</p>
-                    <span className='text-sm mt-[2px] font-normal text-gray-500'>khoilam.dev@gmail.com</span>
+                    <span className='text-sm mt-[2px] font-normal text-gray-500'>{report?.influencerAudience?.creator?.email}</span>
                     <Button className='h-[36px] mt-3 w-[86px]' type='primary'>Live Posts</Button>
                 </div>
             </div>
@@ -70,7 +70,7 @@ function InfluencerProfile({ open, onClose, campaignId, inluencerId }: Influence
             </div>
             <div className='mt-5 grid grid-cols-3 gap-5'>
                 <div className='rounded-2xl bg-gray-100 h-[93px] p-4'>
-                    <p className='text-2xl font-semibold'>---</p>
+                    <p className='text-2xl font-semibold'>{report?.revenue}</p>
                     <p className='mt-3 text-gray-500 text-sm font-medium'>Revenue</p>
                 </div>
                 <div className='rounded-2xl bg-gray-100 h-[93px] p-4'>
@@ -78,19 +78,19 @@ function InfluencerProfile({ open, onClose, campaignId, inluencerId }: Influence
                     <p className='mt-3 text-gray-500 text-sm font-medium'>Total Impressions</p>
                 </div>
                 <div className='rounded-2xl bg-gray-100 h-[93px] p-4'>
-                    <CountUp className='text-2xl font-semibold' end={report?.conversionRate} />
+                    <CountUp className='text-2xl font-semibold' end={report?.conversionRate || '---'} />
                     <p className='mt-3 text-gray-500 text-sm font-medium'>Conversion Rate</p>
                 </div>
                 <div className='rounded-2xl bg-gray-100 h-[93px] p-4'>
-                    <p className='text-2xl font-semibold'>{report?.influencerAudience?.engagementRate?.toFixed(2)}%</p>
+                    <p className='text-2xl font-semibold'>{(report?.influencerAudience?.engagementRate?.toFixed(2)) || '---'}</p>
                     <p className='mt-3 text-gray-500 text-sm font-medium'>Engagement Rate</p>
                 </div>
                 <div className='rounded-2xl bg-gray-100 h-[93px] p-4'>
-                    <CountUp className='text-2xl font-semibold' end={report?.totalClicks} />
+                    <CountUp className='text-2xl font-semibold' end={report?.totalClicks || '---'} />
                     <p className='mt-3 text-gray-500 text-sm font-medium'>Clicks</p>
                 </div>
                 <div className='rounded-2xl bg-gray-100 h-[93px] p-4'>
-                    <p className='text-2xl font-semibold'>{report.influencerAudience?.totalLikes}</p>
+                    <p className='text-2xl font-semibold'>{report.influencerAudience?.totalLikes || '---'}</p>
                     <p className='mt-3 text-gray-500 text-sm font-medium'>Likes</p>
                 </div>
             </div>

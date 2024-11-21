@@ -227,7 +227,7 @@ const ContentDetails = () => {
             </div>
           )}
           {/* Link Content */}
-          {content?.approved === 'approved' && (
+          {content?.approved === 'influencer-approved' && (
             <div className='w-[300px] border border-gray-200 rounded-xl shadow-sm'>
               <div className='flex items-start pt-4  px-3  pb-3 gap-3'>
                 <CalendarDateRangeIcon width={20} height={20} className='text-gray-500' />
@@ -237,7 +237,7 @@ const ContentDetails = () => {
                 </div>
               </div>
               <div onClick={handlePostContentToProfileInfluent} className='w-full px-5 pb-4'>
-                <Button loading={loading} disabled={loading} className='w-full' type='primary'>Post to social</Button>
+                <Button  loading={loading} disabled={loading} className='w-full' type='primary'>Post to social</Button>
               </div>
               <div className='bg-gray-100  flex gap-3 items-start p-4 justify-center'>
               <LightbulbIcon width={20} className='text-blue-500' />

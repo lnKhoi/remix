@@ -2,6 +2,7 @@ import {
   Avatar,
   TableProps,
 } from 'antd';
+import { InfluencerInReport } from '~/models/report.model';
 
 import { EyeIcon } from '@heroicons/react/24/outline';
 
@@ -10,11 +11,11 @@ export const influencerPerformanceColumns: TableProps['columns'] = [
       title: 'Name',
       dataIndex: 'name',
       key: 'name',
-      render: (text) => <div className='flex items-center gap-3'>
-        <Avatar src='https://areajugones.sport.es/wp-content/uploads/2023/10/avatar-frontiers-of-pandora-1560x880.jpg.webp'  className='w-[36px] h-[36px] rounded-[50%]' />
+      render: (text:any,record:InfluencerInReport) => <div className='flex items-center gap-3'>
+        <Avatar src={record.creator?.avatarUrl}  className='w-[36px] h-[36px] rounded-[50%]' />
         <div className='flex flex-col'>
-          <p className='text-sm font-medium text-gray-800'>{text}</p>
-          <p className='text-sm font-normal text-gray-500'>khoilam.dev@gmail.com</p>
+          <p className='text-sm font-medium text-gray-800'>{record.creator.name}</p>
+          <p className='text-sm font-normal text-gray-500'>{record.creator.email}</p>
         </div>
       </div>
     },
