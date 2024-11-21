@@ -17,7 +17,7 @@ export const getCostPerClicks = (camaignId: string) => {
 }
 
 export const getInfluencerInReport = (campaignId:string) => {
-    return getData(`/api/v1/campaign/${campaignId}/instagram-statistics-list-influencers`)
+    return getData(`/api/v1/campaign/${campaignId}/instagram-statistics-list-influencers?from=2024-11-19&to=2025-11-20`)
 }
 
 export const getIGAudienceOfInfluencer = (campaignId:string,creatorId:string) => {

@@ -25,72 +25,6 @@ type ReportsProps = {
   campaign: Campaign | null
 }
 
-const data = [
-  {
-    key: '1',
-    name: 'Alice Johnson',
-    engagementRate: 28,
-    address: 'Los Angeles No. 5 Sunset Boulevard',
-  },
-  {
-    key: '2',
-    name: 'Bob Martin',
-    engagementRate: 45,
-    conversionRate: 37.2,
-  },
-  {
-    key: '3',
-    name: 'Charlie Davis',
-    engagementRate: 30,
-    conversionRate: 22.8,
-    address: 'Chicago No. 8 Oak Street',
-  },
-  {
-    key: '4',
-    name: 'David Harris',
-    engagementRate: 20,
-    conversionRate: 11.1,
-  },
-  {
-    key: '5',
-    name: 'Eve Lewis',
-    engagementRate: 35,
-    conversionRate: 40.5,
-  },
-  {
-    key: '6',
-    name: 'Frank Clark',
-    engagementRate: 22,
-    address: 'San Francisco No. 10 Golden Gate',
-  },
-  {
-    key: '7',
-    name: 'Grace Lee',
-    engagementRate: 50,
-    conversionRate: 55.4,
-    address: 'Houston No. 3 Space Center',
-  },
-  {
-    key: '8',
-    name: 'Henry Young',
-    engagementRate: 18,
-    conversionRate: 9.3,
-  },
-  {
-    key: '9',
-    name: 'Ivy Scott',
-    engagementRate: 40,
-    conversionRate: 28.9,
-    address: 'Miami No. 7 Ocean Drive',
-  },
-  {
-    key: '10',
-    name: 'Jack King',
-    engagementRate: 32,
-    conversionRate: 15.2,
-  },
-];
-
 function Reports({ campaign }: ReportsProps) {
   const [reportData, setReportData] = useState<ReportCampaign>({
     conversionRate: 0,
@@ -140,7 +74,7 @@ function Reports({ campaign }: ReportsProps) {
     handleGetIGReport()
   }, [])
 
-  console.log(reportData.influencers)
+  // console.log(reportData.influencers)
 
   return (
     <div className='w-full'>
