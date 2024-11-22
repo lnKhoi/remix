@@ -209,7 +209,7 @@ const ContentDetails = () => {
                 </>
               ) : (
                 <TagColor
-                  status={content?.approved as string}
+                  status={getColorStatusContent(content?.approved as ContentStatus)?.status as string}
                   color={getColorStatusContent(content?.approved as ContentStatus)?.color as ContentStatus}
                   background={getColorStatusContent(content?.approved as ContentStatus)?.background as ContentStatus} />
               )}

@@ -12,6 +12,7 @@ import {
   getColorStatusContent,
 } from '~/helpers/campaign.helper';
 import { Content } from '~/models/Content.model';
+import { abbreviateLastName } from '~/utils/formatNumber';
 
 import { LinkIcon } from '@heroicons/react/24/outline';
 import { Link } from '@remix-run/react';
@@ -50,7 +51,7 @@ function ContentCard({ content }: ContentCardProps) {
                     </div>
                 </div>
                 <p className='text-gray-500 mt-2 text-sm leading-5 '>
-                    {content.caption?.length > 130 ? content?.caption.slice(0, 130) + '...' : content.caption}
+                 {abbreviateLastName(content.caption,200)}
                 </p>
                 <div className='h-[28px] rounded-lg bg-blue-100 text-xs text-blue-700 w-[158px]  items-center justify-center flex'>
                     Create date: {dayjs(content.createdAt).format(DATE_TIME_FORMAT)}
