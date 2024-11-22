@@ -14,18 +14,25 @@ export const getColorStatusCampaign = (status: CampaignStatus) => {
     }
 }
 
-export type ContentStatus = 'pending' | 'approved' | 'rejected' | 'posted'
+export type ContentStatus = 'pending' | 'approved' | 'rejected' | 'posted' | 'influencer-approved' | 'processing' | 'influencer-rejected'
 
 export const getColorStatusContent = (status: ContentStatus) => {
     switch (status) {
         case 'approved':
             return { color: '#0F766E', background: '#CCFBF1', status: 'Approved' }
+        case 'influencer-approved':
+            return { color: '#0F766E', background: '#CCFBF1', status: 'Ready to post' }
         case 'posted':
             return { color: '#0F766E', background: '#CCFBF1', status: 'Posted' }
         case "pending":
             return { color: '#374151', background: '#E5E7EB', status: 'Not Reviewed Yet' }
+        case "processing":
+            return { color: '#374151', background: '#E5E7EB', status: 'Processing' }
         case 'rejected':
             return { color: '#B91C1C', background: '#FEE2E2', status: 'Rejected' }
+        case 'influencer-rejected':
+            return { color: '#B91C1C', background: '#FEE2E2', status: 'Influencer Rejected' }
+
         default:
             break;
     }
