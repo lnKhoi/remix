@@ -34,7 +34,7 @@ export const meta: MetaFunction = () => {
   return [{ title: 'Campaigns' }]
 }
 
-function page() {
+function Campaigns() {
   const [search, setSearch] = useState<string>('')
   const [loading, setLoading] = useState<boolean>(false)
   const [campaigns, setCampagins] = useState<Campaign[]>([])
@@ -93,10 +93,10 @@ function page() {
 
       {loading
         ? <div className='grid 2xl:grid-cols-4 xl:grid-cols-3 md:grid-cols-2 grid-cols-1  gap-5 mt-5'>
-          {Array.from({length:16}).map((s,idx) => <ReviewCard key={idx} />)}
+          {Array?.from({length:16}).map((s,idx) => <ReviewCard key={idx} />)}
         </div>
         : <div>
-          {campaigns.length === 0 && (
+          {campaigns?.length === 0 && (
             <div className='flex items-center flex-col gap-3 justify-center w-full h-[calc(100vh-200px)]'>
               <img src={NoCampaigns} className='w-[370px]' />
               <Link to='/manager/campaign/add-campaign'>
@@ -105,7 +105,7 @@ function page() {
             </div>
           )}
           <div className='grid 2xl:grid-cols-4 xl:grid-cols-3 md:grid-cols-2 grid-cols-1  gap-5 mt-5'>
-            {campaigns.map((c) => (
+            {campaigns?.map((c) => (
               <CampaignCard onReload={handleReloadCampagins} key={c.id} campaign={c} />
             ))}
           </div>
@@ -115,4 +115,4 @@ function page() {
   )
 }
 
-export default page
+export default Campaigns
