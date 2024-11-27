@@ -1,7 +1,11 @@
-import { SignupPayload } from '~/models/User.model';
+import {
+  Brand,
+  SignupPayload,
+} from '~/models/User.model';
 
 import {
   getData,
+  patchData,
   postData,
 } from './axiosClient';
 
@@ -51,4 +55,8 @@ export const login3rdParty = (role: string, email: string, name: string, phone: 
 
 export const resendOTP = (payload: { email: string }) => {
   return postData('/api/v1/auth/resend-otp/reset-password', payload)
+}
+
+export const updateUserInfo = (payload:Brand) => {
+  return patchData(`/api/v1/brand/update`,payload)
 }

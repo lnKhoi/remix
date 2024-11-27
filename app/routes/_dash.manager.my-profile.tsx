@@ -9,7 +9,6 @@ import {
 import { ToastContainer } from 'react-toastify';
 import MyProfile from '~/components/profile/MyProfile';
 import ProfileDetails from '~/components/profile/ProfileDetails';
-import { Campaign } from '~/models/Campaign.model';
 
 import {
   Link,
@@ -25,9 +24,7 @@ type Tab = 'Profile Details' | 'Billing' | 'Intergration'
 
 function page() {
   const { id } = useParams();
-  const [tab, setTab] = useState<Tab>('Intergration');
-  const [campaign, setCampaign] = useState<Campaign | null>(null);
-
+  const [tab, setTab] = useState<Tab>('Profile Details');
 
 
   const getCampaignTab = () => {

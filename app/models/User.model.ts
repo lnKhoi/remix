@@ -16,27 +16,29 @@ export type SignupPayload = {
 }
 
 export type Brand = {
-  id: string;
-  name: string;
-  phone: string;
-  industry: string[];
-  category: string[]
-  created_at: number;
-  updated_at: number;
-  deleted_at: number | null;
+  name?: string;
+  id?: string;
+  phone?: string;
+  industry?: string[];
+  category?: string[]
+  created_at?: number;
+  updated_at?: number;
+  timezone?:string
+  deleted_at?: number | null;
 }
 
 export type User = {
-  id: string;
-  created_at: number;
-  updated_at: number;
-  deleted_at: number | null;
-  email: string;
-  role: 'MANAGER' | 'CREATOR';
-  picture: string | null;
-  name: string;
-  brand_id: string;
-  brand: Brand;
+  id?: string;
+  created_at?: number;
+  updated_at?: number;
+  deleted_at?: number | null;
+  email?: string;
+  role?: 'MANAGER' | 'CREATOR';
+  picture?: string | null;
+  name?: string;
+  brand_id?: string;
+  brand?: Brand;
+  timezone?:string
   avatarUrl:string
 }
 

@@ -241,3 +241,8 @@ input::placeholder {
 #ages_help {
   margin-top: 20px;
 }
+
+.css-13cymwt-control {
+  background-color: theme('colors.gray.100') !important; 
+  border-radius: 6px !important;
+}
