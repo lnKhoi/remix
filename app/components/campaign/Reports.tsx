@@ -35,7 +35,8 @@ function Reports({ campaign }: ReportsProps) {
     roi: 0,
     costPerConversion: 0,
     costPerClicks: 0,
-    influencers: []
+    influencers: [],
+    totalCost:0
   })
 
   const [modal, setModal] = useState<boolean>(false)
@@ -47,7 +48,7 @@ function Reports({ campaign }: ReportsProps) {
   }
 
   const handleGetIGReport = async () => {
-    const [igStats, roi, conversionRate, costPerConversion, costperClicks,influencers] = await Promise.all([
+    const [igStats, roi, conversionRate, costPerConversion, costperClicks, influencers] = await Promise.all([
       getInstagramStatistics(campaign?.id as string),
       getCampaignROI(campaign?.id as string),
       getCampaignConversionRate(campaign?.id as string),
@@ -66,7 +67,8 @@ function Reports({ campaign }: ReportsProps) {
       totalRevenue: roi.data?.totalRevenue,
       costPerConversion: costPerConversion?.data?.costPerConversion,
       costPerClicks: costperClicks?.data?.costPerClick,
-      influencers:influencers?.data?.data
+      influencers: influencers?.data?.data,
+      totalCost:roi?.data?.totalCost
     })
   };
 
@@ -78,15 +80,28 @@ function Reports({ campaign }: ReportsProps) {
 
   return (
     <div className='w-full'>
-      <div className='my-6 px-4 py-3 border border-gray-200 rounded-xl'>
-        <h6 className='text-2xl font-semibold'>Revenue</h6>
-        <p className='text-xs text-gray-500 mt-2'>Total</p>
-        <p className='font-semibold text-[30px] text-gray-800 my-3'>$
-          <CountUp decimals={reportData?.totalRevenue === 0 ? 0 : 2} end={reportData?.totalRevenue} />
-        </p>
-        <LineChart />
+      <div className='my-6 px-4 py-4 border border-gray-200 rounded-xl'>
+        <div className='flex items-center gap-4'>
+          <div className='p-4 rounded-xl bg-gray-100 w-[220px] h-[135px]'>
+            <h6 className='text-2xl font-semibold'>Revenue</h6>
+            <p className='text-xs text-gray-500 mt-2'>Total</p>
+            <p className='font-semibold text-[30px] text-gray-800 mt-2'>$
+              <CountUp decimals={reportData?.totalRevenue === 0 ? 0 : 2} end={reportData?.totalRevenue} />
+            </p>
+          </div>
+          <div className='p-4 rounded-xl bg-gray-100 w-[220px] h-[135px]'>
+            <h6 className='text-2xl font-semibold'>Cost</h6>
+            <p className='text-xs text-gray-500 mt-2'>Total campaign budget</p>
+            <p className='font-semibold text-[30px] text-gray-800 mt-2'>$
+              <CountUp end={reportData.totalCost as number} decimals={2} />
+            </p>
+          </div>
+        </div>
+        <div className='mt-5'>
+          <LineChart />
+        </div>
       </div>
-      <div className='grid xl:grid-cols-7 grid-cols-3 gap-4'>
+      <div className='grid xl:grid-cols-8 grid-cols-4 gap-4'>
         <div className='border justify-around border-gray-200 hover:shadow-md cursor-pointer transition-shadow 2xl:p-5 p-4 rounded-2xl flex items-start flex-col h-[109px]'>
           <h5 className=' text-gray-800 text-xs'>Total Impression</h5>
           <span className='text-2xl font-bold'>
@@ -100,6 +115,14 @@ function Reports({ campaign }: ReportsProps) {
             <CountUp decimals={reportData?.engagementRate == 0 ? 0 : 1} end={reportData?.engagementRate || 0} />%
           </span>
         </div>
+
+        <div className='border justify-around border-gray-200 hover:shadow-md cursor-pointer transition-shadow 2xl:p-5 p-4 rounded-2xl flex items-start flex-col h-[109px]'>
+          <h5 className=' text-gray-800 text-xs'>Click Through Rate (CTR)</h5>
+          <span className='text-2xl font-bold'>
+            <CountUp end={0} />%
+          </span>
+        </div>
+
         <div className='border justify-around border-gray-200 hover:shadow-md cursor-pointer transition-shadow 2xl:p-5 p-4 rounded-2xl flex items-start flex-col h-[109px]'>
           <h5 className=' text-gray-800 text-xs'>Conversion Rate</h5>
           <span className='text-2xl font-bold'>
@@ -136,12 +159,12 @@ function Reports({ campaign }: ReportsProps) {
       <h2 className='mt-6 text-2xl font-medium text-gray-800'>Influencer Performance</h2>
       <p className='text-sm mt-1 text-gray-700'>Manage your content and view their sales performance.</p>
       <div className='mt-6'>
-        <Table 
-        onRow={(record) => ({
-          onClick: () => handleViewInfluencerProfile(record as InfluencerPerformance),
-        })}
-         columns={influencerPerformanceColumns} 
-         dataSource={reportData?.influencers} />
+        <Table
+          onRow={(record) => ({
+            onClick: () => handleViewInfluencerProfile(record as InfluencerPerformance),
+          })}
+          columns={influencerPerformanceColumns}
+          dataSource={reportData?.influencers} />
       </div>
       {modal && (
         <InfluencerProfile
@@ -150,7 +173,6 @@ function Reports({ campaign }: ReportsProps) {
           onClose={() => setModal(false)}
           open={modal} />
       )}
-
     </div>
   )
 }
