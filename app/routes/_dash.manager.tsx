@@ -123,8 +123,8 @@ function UserProfilePopover({
               src="https://api.dicebear.com/7.x/miniavs/svg?seed=1"
             />
             <div className="flex w-[100px] flex-col">
-              <h6 className="text-gray-900 font-medium">{userInfo.name}</h6>
-              <p className="text-gray-500 text-sm">{userInfo.email}</p>
+              <h6 className="text-gray-900 font-medium">{userInfo?.name}</h6>
+              <p className="text-gray-500 text-sm">{userInfo?.email}</p>
             </div>
           </div>
           <Menu style={{ borderRight: 0, width: 220 }}>
@@ -165,9 +165,9 @@ function UserProfilePopover({
           src="https://api.dicebear.com/7.x/miniavs/svg?seed=1"
         />
         <div className="flex w-[100px] flex-col">
-          <h6 className="text-gray-900 font-medium">{userInfo.name}</h6>
+          <h6 className="text-gray-900 font-medium">{userInfo?.name}</h6>
           <p className="text-gray-500 text-sm">
-            {userInfo.email.slice(0, 15)}...
+            {userInfo?.email?.slice(0, 15)}...
           </p>
         </div>
       </div>
