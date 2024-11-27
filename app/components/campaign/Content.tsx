@@ -76,7 +76,6 @@ function Content({ campaign }: ContentProps) {
         {filteredContent?.map(c => (
           <ContentCard content={c} key={c.id} />
         ))}
-
       </div>
     </div>
   )

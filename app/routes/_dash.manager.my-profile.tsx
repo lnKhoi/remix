@@ -8,6 +8,7 @@ import {
 } from 'antd';
 import { ToastContainer } from 'react-toastify';
 import MyProfile from '~/components/profile/MyProfile';
+import ProfileDetails from '~/components/profile/ProfileDetails';
 import { Campaign } from '~/models/Campaign.model';
 
 import {
@@ -32,7 +33,7 @@ function page() {
   const getCampaignTab = () => {
     switch (tab) {
       case 'Profile Details':
-        return <></>
+        return <ProfileDetails/>
       case 'Billing':
         return <></>
       case 'Intergration':

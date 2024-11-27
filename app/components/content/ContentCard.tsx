@@ -12,7 +12,7 @@ import {
   getColorStatusContent,
 } from '~/helpers/campaign.helper';
 import { Content } from '~/models/Content.model';
-import type { abbreviateLastName } from '~/utils/formatNumber';
+import { abbreviateLastName } from '~/utils/formatNumber';
 
 import { LinkIcon } from '@heroicons/react/24/outline';
 import { Link } from '@remix-run/react';
@@ -26,7 +26,7 @@ function ContentCard({ content }: ContentCardProps) {
 
 
     const videoExtensions = ['mov', 'mp4'];
-    const isVideo = content?.urls?.[0] ? videoExtensions.includes(content.urls[0].slice(-3)) : false;
+    const isVideo = content?.urls?.[0] ? videoExtensions?.includes(content?.urls[0]?.slice(-3)) : false;
 
 
     const defaultAvatar = 'https://www.svgrepo.com/show/384676/account-avatar-profile-user-6.svg'
@@ -48,16 +48,16 @@ function ContentCard({ content }: ContentCardProps) {
                         src={content?.creator?.avatarUrl || defaultAvatar} alt="avatar" />
                     <div className='flex flex-col'>
                         <h6 className='text-sm text-gray-800'>{content?.creator?.name}</h6>
-                        <p className='text-sm text-gray-500 '>{content.creator.email}</p>
+                        <p className='text-sm text-gray-500 '>{content?.creator?.email}</p>
                     </div>
                 </div>
                 <p className='text-gray-500 mt-2 text-sm leading-5 '>
                     {abbreviateLastName(content.caption, 200)}
                 </p>
                 <div className='h-[28px] rounded-lg bg-blue-100 text-xs text-blue-700 w-[158px]  items-center justify-center flex'>
-                    {content.approved == 'posted' ? 'Posting' : 'Create'} date: {dayjs(content.createdAt).format(DATE_TIME_FORMAT)}
+                    {content?.approved == 'posted' ? 'Posting' : 'Create'} date: {dayjs(content?.createdAt)?.format(DATE_TIME_FORMAT)}
                 </div>
-               {content.approved ==='posted' && (
+               {content?.approved ==='posted' && (
                  <div className='flex items-center justify-between gap-2 mt-2 mb-4'>
                  <div className='w-1/2 p-3 h-[80px] flex flex-col justify-between rounded-xl bg-gray-100'>
                      <p className='text-sm text-gray-500 font-medium'>Investment Rate</p>
@@ -79,10 +79,10 @@ function ContentCard({ content }: ContentCardProps) {
                         </span>
                     </div>
                     <div className='flex items-center gap-2'>
-                        {(content.approved === 'posted') && (
+                        {(content?.approved === 'posted') && (
                             <CopyToClipboard
                                 onCopy={() => messageApi.success('Copied to clipboard!')}
-                                text={content.trackingUrl || ''}
+                                text={content?.trackingUrl || ''}
                             >
                                 <div className='h-[30px] w-[30px] cursor-pointer rounded-md bg-gray-200 flex items-center justify-center'>
                                     <LinkIcon width={16} className='text-gray-500' />
