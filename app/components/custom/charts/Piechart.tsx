@@ -14,7 +14,7 @@ const PieChart: React.FC<PieChartProps> = ({ data }) => {
   const options: Highcharts.Options = {
     chart: {
       type: 'pie',
-      height: 150,
+      height: 170,
       width:285
     },
     title: {

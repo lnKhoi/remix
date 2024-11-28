@@ -10,13 +10,13 @@ import Avatar from '~/assets/user-avatar.png';
 import PieChart from '~/components/custom/charts/Piechart';
 import { socials } from '~/constants/creator.constant';
 import { Creator } from '~/models/User.model';
+import { formatName } from '~/utils/formatNumber';
 
 import {
   ChatBubbleOvalLeftIcon,
   PaperAirplaneIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline';
-import { EnvelopeOpenIcon } from '@radix-ui/react-icons';
 
 import { socialMediaIcons } from './CampaignDetails';
 
@@ -67,16 +67,16 @@ function ModalViewInfluencerProfile({ onClose, open, id }: ModalViewInfluencerPr
                     <div className="bg-gradient-to-r mx-auto  z-30 rounded-xl px-6">
                         <div className="flex items-center gap-5">
                             <img
-                                src={Avatar}
+                                src={influencer?.avatarUrl || Avatar}
                                 alt="Profile"
                                 className="w-[108px] transform translate-y-0.5 h-[108px] rounded-full object-cover"
                             />
                             <div className='transform translate-y-8'>
-                                <h1 className="text-2xl font-semibold">Welcome, {influencer?.name}</h1>
-                                <div className='flex items-center gap-1'>
+                                <h1 className="text-2xl font-semibold">Welcome, {formatName(influencer?.name as string)}</h1>
+                                {/* <div className='flex items-center gap-1'>
                                     <EnvelopeOpenIcon className='text-gray-500 w-3 h-3' />
                                     <p className="text-gray-500 text-sm">{influencer?.email}</p>
-                                </div>
+                                </div> */}
                             </div>
                             <div className="ml-auto pr-1 mt-12 flex items-center space-x-2">
                                 {influencer?.connectedSocialMedias?.map(social => (
