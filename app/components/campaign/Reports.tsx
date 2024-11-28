@@ -9,6 +9,7 @@ import { getInstagramStatistics } from '~/apis/campaign';
 import {
   getCampaignConversionRate,
   getCampaignROI,
+  getClickThroughRateInReport,
   getCostPerClicks,
   getCostPerConversion,
   getInfluencerInReport,
@@ -36,7 +37,8 @@ function Reports({ campaign }: ReportsProps) {
     costPerConversion: 0,
     costPerClicks: 0,
     influencers: [],
-    totalCost:0
+    totalCost:0,
+    totalCtr:0
   })
 
   const [modal, setModal] = useState<boolean>(false)
@@ -48,13 +50,14 @@ function Reports({ campaign }: ReportsProps) {
   }
 
   const handleGetIGReport = async () => {
-    const [igStats, roi, conversionRate, costPerConversion, costperClicks, influencers] = await Promise.all([
+    const [igStats, roi, conversionRate, costPerConversion, costperClicks, influencers,ctr] = await Promise.all([
       getInstagramStatistics(campaign?.id as string),
       getCampaignROI(campaign?.id as string),
       getCampaignConversionRate(campaign?.id as string),
       getCostPerConversion(campaign?.id as string),
       getCostPerClicks(campaign?.id as string),
-      getInfluencerInReport(campaign?.id as string)
+      getInfluencerInReport(campaign?.id as string),
+      getClickThroughRateInReport(campaign?.id as string)
     ]);
 
     setReportData({
@@ -68,15 +71,14 @@ function Reports({ campaign }: ReportsProps) {
       costPerConversion: costPerConversion?.data?.costPerConversion,
       costPerClicks: costperClicks?.data?.costPerClick,
       influencers: influencers?.data?.data,
-      totalCost:roi?.data?.totalCost
+      totalCost:roi?.data?.totalCost,
+      totalCtr:ctr?.data?.crt
     })
   };
 
   useEffect(() => {
     handleGetIGReport()
   }, [])
-
-  // console.log(reportData.influencers)
 
   return (
     <div className='w-full'>
@@ -119,7 +121,7 @@ function Reports({ campaign }: ReportsProps) {
         <div className='border justify-around border-gray-200 hover:shadow-md cursor-pointer transition-shadow 2xl:p-5 p-4 rounded-2xl flex items-start flex-col h-[109px]'>
           <h5 className=' text-gray-800 text-xs'>Click Through Rate (CTR)</h5>
           <span className='text-2xl font-bold'>
-            <CountUp end={0} />%
+            <CountUp end={reportData.totalCtr as number} />%
           </span>
         </div>
 
@@ -169,7 +171,7 @@ function Reports({ campaign }: ReportsProps) {
       {modal && (
         <InfluencerProfile
           campaignId={campaign?.id as string}
-          inluencerId={selectedInfluencer?.creator?.id}
+          inluencerId={selectedInfluencer?.creator?.id as string}
           onClose={() => setModal(false)}
           open={modal} />
       )}

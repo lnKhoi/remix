@@ -19,12 +19,12 @@ import { PencilSquareIcon } from '@heroicons/react/24/outline';
 
 const ProfileDetails: FC = () => {
       const [isEditing, setIsEditing] = useState<boolean>(false);
-      const { userInfo } = useAuthContext();
+      const { userInfo ,handleRefreshUserInfo} = useAuthContext();
       const [loading, setLoading] = useState<boolean>(false);
   
       const [selectedTimezone, setSelectedTimezone] = useState<ITimezone | string>(
-          Intl.DateTimeFormat().resolvedOptions().timeZone,
-      );
+        userInfo?.brand?.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone
+    );
   
       const [formData, setFormData] = useState({
           brandName: "",
@@ -42,6 +42,8 @@ const ProfileDetails: FC = () => {
                   phoneNumber: userInfo.brand?.phone || "",
                   industry: "Health care, Construction, Manufacturing",
               });
+
+              setSelectedTimezone(userInfo?.brand?.timezone as string)
           }
       }, [userInfo]);
   
@@ -69,7 +71,9 @@ const ProfileDetails: FC = () => {
           updateUserInfo(payload)
               .then((res) => {
                   setIsEditing(false);
+                  handleRefreshUserInfo()
                   toast.success("Update Brand Info Successfully!");
+
               })
               .catch((err) => toast.warning(err?.message))
               .finally(() => setLoading(false));
@@ -79,7 +83,7 @@ const ProfileDetails: FC = () => {
           const { name, value } = e.target;
           setFormData((prev) => ({ ...prev, [name]: value }));
       };
-  
+
       return (
           <div className="w-full mx-auto bg-white py-5 rounded-2xl border border-gray-200">
               <ToastContainer />

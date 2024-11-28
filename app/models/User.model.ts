@@ -131,4 +131,5 @@ export type InfluencerPerformance = {
   roi:number,
   likes:number,
   reach:number
+  creator?:Creator
 }

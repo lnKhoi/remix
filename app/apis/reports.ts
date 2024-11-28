@@ -27,3 +27,7 @@ export const getIGAudienceOfInfluencer = (campaignId:string,creatorId:string) =>
 export const getRevenueOfInfluencer = (campaignId:string,creatorId:string) => {
     return getData(`/api/v1/report/${campaignId}/${creatorId}/shopify-detail-statistic`)
 }
+
+export const getClickThroughRateInReport = (campaignId:string) => {
+    return getData(`/api/v1/report/${campaignId}/ctr`)
+}
