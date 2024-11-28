@@ -9,6 +9,7 @@ export type ReportCampaign = {
     costPerConversion: number;
     costPerClicks: number;
     roi: number;
+    totalCtr?:number,
     totalCost?:number
     influencers: InfluencerInReport[]
 };

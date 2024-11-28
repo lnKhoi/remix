@@ -227,7 +227,7 @@ const ContentDetails = () => {
             </div>
           )}
           {/* Link Content */}
-          {content?.approved === 'influencer-approved' && (
+          {content?.approved === 'approved' && (
             <div className='w-[300px] border border-gray-200 rounded-xl shadow-sm'>
               <div className='flex items-start pt-4  px-3  pb-3 gap-3'>
                 <CalendarDateRangeIcon width={20} height={20} className='text-gray-500' />
