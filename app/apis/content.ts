@@ -8,3 +8,7 @@ export const approveContent = (campaignId: string, contentId: string, status: bo
 export const publishContent = (contentId: string, flatForm:string) => {
     return postData(`api/v1/content/${contentId}/publish/${flatForm}`)
 }
+
+export const getContentMetrics = (campaignId: string) => {
+    return postData(`api/v1/content/campaign/${campaignId}/live-posts`)
+}

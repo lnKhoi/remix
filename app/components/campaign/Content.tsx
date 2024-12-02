@@ -5,6 +5,7 @@ import React, {
 
 import { Tabs } from 'antd';
 import { getContentsInCampaign } from '~/apis/campaign';
+import { getContentMetrics } from '~/apis/content';
 import { Campaign } from '~/models/Campaign.model';
 import type { Content } from '~/models/Content.model';
 
@@ -22,6 +23,7 @@ type ContentProps = {
 function Content({ campaign }: ContentProps) {
   const [filteredContent, setFilteredContent] = useState<Content[]>([])
   const [contents, setContents] = useState<Content[]>([])
+  const [liveContents,setLiveContents] = useState<Content[]>([])
   const [tab,setTab] = useState<string>('Influencer Contents') 
 
   const handleGetListContents = async () => {
@@ -31,20 +33,23 @@ function Content({ campaign }: ContentProps) {
     })
   }
 
+  const handleGetLiveContents = () => {
+    getContentMetrics(campaign?.id as string).then(res => setLiveContents(res?.data?.data))
+  }
+
   useEffect(() => {
     handleGetListContents()
+    handleGetLiveContents()
   }, [])
 
-  const handleFilterContent = (f: string) => {
-    setTab(f)
-    const filter = contents.filter(e => f == 'Influencer Contents' ? contents : e.approved === 'posted')
-    setFilteredContent(filter)
+  const handleFilterContent = (f: string) :void => {
+    f ==='Influencer Contents' ? setFilteredContent(contents) : setFilteredContent(liveContents)
+    setTab(f)  
   }
 
   return (
     <div className='w-full'>
       <Tabs
-        defaultActiveKey="1"
         onChange={(e) => handleFilterContent(e)}
         items={[
           {

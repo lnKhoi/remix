@@ -249,7 +249,7 @@ function ModalInviteInfluencerToCampaign({ onClose, open, campaignId }: ModalInv
                         <div className='h-[330px] mb-8 mt-4 pr-2 overflow-y-scroll w-full flex flex-col gap-3'>
                             {loading
                                 ? <> {Array.from({ length: 5 }).map((_, index) => (
-                                    <div className="border border-gray-200 rounded-md p-4">
+                                    <div key={index} className="border border-gray-200 rounded-md p-4">
                                         <Skeleton key={index} avatar paragraph={{ rows: 1 }} />
                                     </div>
                                 ))}</>

@@ -1,33 +1,70 @@
 import { getData } from './axiosClient';
+import { FilterDateRange } from './campaign';
 
-export const getCampaignROI = (camaignId: string) => {
-    return getData(`/api/v1/report/${camaignId}/campaign-roi?timeRange=7d`)
-}
+export const getCampaignROI = (campaignId: string, filter: FilterDateRange) => {
+    const dateRangeQuery = filter.dateRange
+        ? `&from=${filter.dateRange[0]}&to=${filter.dateRange[1]}`
+        : '';
 
-export const getCampaignConversionRate = (camaignId: string) => {
-    return getData(`/api/v1/report/${camaignId}/campaign-performance?timeRange=7d`)
-}
+    const url = `/api/v1/report/${campaignId}/campaign-roi?timeRange=${filter.time}${dateRangeQuery}`;
 
-export const getCostPerConversion = (camaignId: string) => {
-    return getData(`/api/v1/report/cost-per-conversion?campaignId=${camaignId}`)
-}
+    return getData(url);
+};
 
-export const getCostPerClicks = (camaignId: string) => {
-    return getData(`/api/v1/report/cost-per-click?campaignId=${camaignId}`)
-}
+export const getCampaignConversionRate = (campaignId: string, filter: FilterDateRange) => {
+    const dateRangeQuery = filter.dateRange
+        ? `&from=${filter.dateRange[0]}&to=${filter.dateRange[1]}`
+        : '';
 
-export const getInfluencerInReport = (campaignId:string) => {
-    return getData(`/api/v1/campaign/${campaignId}/instagram-statistics-list-influencers?from=2023-11-19&to=2025-11-20`)
-}
+    const url = `/api/v1/report/${campaignId}/campaign-performance?timeRange=${filter.time}${dateRangeQuery}`;
 
-export const getIGAudienceOfInfluencer = (campaignId:string,creatorId:string) => {
+    return getData(url);
+};
+
+export const getCostPerConversion = (campaignId: string, filter: FilterDateRange) => {
+    const dateRangeQuery = filter.dateRange
+        ? `&from=${filter.dateRange[0]}&to=${filter.dateRange[1]}`
+        : '';
+
+    const url = `/api/v1/report/cost-per-conversion?campaignId=${campaignId}&timeRange=${filter.time}${dateRangeQuery}`;
+
+    return getData(url);
+};
+
+export const getCostPerClicks = (campaignId: string, filter: FilterDateRange) => {
+    const dateRangeQuery = filter.dateRange
+        ? `&from=${filter.dateRange[0]}&to=${filter.dateRange[1]}`
+        : '';
+
+    const url = `/api/v1/report/cost-per-click?campaignId=${campaignId}&timeRange=${filter.time}${dateRangeQuery}`;
+
+    return getData(url);
+};
+
+export const getInfluencerInReport = (campaignId: string, filter: FilterDateRange) => {
+    const dateRangeQuery = filter.dateRange
+        ? `&from=${filter.dateRange[0]}&to=${filter.dateRange[1]}`
+        : ''; 
+
+    const url = `/api/v1/campaign/${campaignId}/instagram-statistics-list-influencers?timeRange=${filter.time}${dateRangeQuery}`;
+
+    return getData(url);
+};
+
+export const getIGAudienceOfInfluencer = (campaignId: string, creatorId: string) => {
     return getData(`/api/v1/campaign/${campaignId}/instagram-statistics/${creatorId}`)
 }
 
-export const getRevenueOfInfluencer = (campaignId:string,creatorId:string) => {
+export const getRevenueOfInfluencer = (campaignId: string, creatorId: string) => {
     return getData(`/api/v1/report/${campaignId}/${creatorId}/shopify-detail-statistic`)
 }
 
-export const getClickThroughRateInReport = (campaignId:string) => {
-    return getData(`/api/v1/report/${campaignId}/ctr`)
-}
+export const getClickThroughRateInReport = (campaignId: string, filter: FilterDateRange) => {
+    const dateRangeQuery = filter.dateRange
+        ? `&from=${filter.dateRange[0]}&to=${filter.dateRange[1]}`
+        : ''; // No default date range, empty query if no date range
+
+    const url = `/api/v1/report/${campaignId}/ctr?timeRange=${filter.time}${dateRangeQuery}`;
+
+    return getData(url);
+};

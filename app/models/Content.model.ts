@@ -10,7 +10,9 @@ export type Content ={
     reason: string | null;
     caption: string;
     notes: string;
+    engagementRate:number
     isDeleted: boolean;
+    conversionRate:number
     deletedAt: string | null;
     creator:User
     createdAt: string;
