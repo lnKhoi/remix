@@ -1,4 +1,5 @@
 import { Filter } from '~/components/campaign/ModalInviteInfluencerToCampaign';
+import { DateRange } from '~/components/ui/ModalSelectTimeRange';
 import { Campaign } from '~/models/Campaign.model';
 
 import {
@@ -33,7 +34,7 @@ export const getInfluencerInviteInCampaign = (limit: number, page: 1) => {
 }
 
 export const getListInfluencerInviteInCampaign = (camaignId: string, limit: number, page: 1,filter:Filter) => {
-    return getData(`/api/v1/brand/${camaignId}/creators-for-inviting?limit=${limit}&page=${page}&genders=${filter.gender}&socialMedias=${filter.socialMedias}&location=${filter.location ?? ''}&followerCount=${(filter?.minFollow !=='' && filter?.maxFollow !=='') ? filter?.minFollow + ',' + filter?.maxFollow : ''}&age=${filter.age?.[0] !== 0 || filter?.age?.[1] !== 100 ? (filter?.age?.[0] + ',' + filter?.age?.[1]) : ''}`)
+    return getData(`/api/v1/brand/${camaignId}/creators-for-inviting?limit=${limit}&page=${page}&genders=${filter?.gender}&socialMedias=${filter.socialMedias}&location=${filter.location ?? ''}&followerCount=${(filter?.minFollow !=='' && filter?.maxFollow !=='') ? filter?.minFollow + ',' + filter?.maxFollow : ''}&age=${filter.age?.[0] !== 0 || filter?.age?.[1] !== 100 ? (filter?.age?.[0] + ',' + filter?.age?.[1]) : ''}`)
 }
 
 export const inviteInfluencerToCampaign = (camaignId: string, creatorIds: string[]) => {
@@ -68,6 +69,15 @@ export const getMedia = (campaignId:string,filename:string) => {
     return getData(`/api/v1/content/media/${filename}`)
 }
 
-export const getInstagramStatistics = (campaignId:string) => {
-    return getData(`api/v1/campaign/${campaignId}/instagram-statistics-total?from=2021-08-01&to=2025-01-01`)
-}
+export type FilterDateRange = { time: string, dateRange: DateRange }
+
+export const getInstagramStatistics = (campaignId: string, filter: FilterDateRange) => {
+    const dateRangeQuery = filter.dateRange 
+      ? `&from=${filter.dateRange[0]}&to=${filter.dateRange[1]}` 
+      : '';
+  
+    const url = `api/v1/campaign/${campaignId}/instagram-statistics-total?timeRange=${filter.time}${dateRangeQuery}`;
+  
+    return getData(url);
+  };
+  

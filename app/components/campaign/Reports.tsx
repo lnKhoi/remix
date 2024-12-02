@@ -3,7 +3,10 @@ import React, {
   useState,
 } from 'react';
 
-import { Table } from 'antd';
+import {
+  Skeleton,
+  Table,
+} from 'antd';
 import CountUp from 'react-countup';
 import { getInstagramStatistics } from '~/apis/campaign';
 import {
@@ -14,32 +17,26 @@ import {
   getCostPerConversion,
   getInfluencerInReport,
 } from '~/apis/reports';
-import { influencerPerformanceColumns } from '~/constants/report.constant';
+import {
+  influencerPerformanceColumns,
+  initialReport,
+} from '~/constants/report.constant';
 import { Campaign } from '~/models/Campaign.model';
 import { ReportCampaign } from '~/models/report.model';
 import { InfluencerPerformance } from '~/models/User.model';
 
 import LineChart from '../custom/charts/LineChart';
 import InfluencerProfile from '../profile/InfluencerProfile';
+import { DateRange } from '../ui/ModalSelectTimeRange';
 
 type ReportsProps = {
   campaign: Campaign | null
+  filter: { time: string, dateRange: DateRange }
 }
 
-function Reports({ campaign }: ReportsProps) {
-  const [reportData, setReportData] = useState<ReportCampaign>({
-    conversionRate: 0,
-    totalClicks: 0,
-    totalRevenue: 0,
-    totalImpressions: 0,
-    engagementRate: 0,
-    roi: 0,
-    costPerConversion: 0,
-    costPerClicks: 0,
-    influencers: [],
-    totalCost:0,
-    totalCtr:0
-  })
+function Reports({ campaign, filter }: ReportsProps) {
+  const [loading, setLoading] = useState<boolean>(false)
+  const [reportData, setReportData] = useState<ReportCampaign>(initialReport)
 
   const [modal, setModal] = useState<boolean>(false)
   const [selectedInfluencer, setSelectedInfluencer] = useState<InfluencerPerformance | null>(null)
@@ -50,15 +47,16 @@ function Reports({ campaign }: ReportsProps) {
   }
 
   const handleGetIGReport = async () => {
-    const [igStats, roi, conversionRate, costPerConversion, costperClicks, influencers,ctr] = await Promise.all([
-      getInstagramStatistics(campaign?.id as string),
-      getCampaignROI(campaign?.id as string),
-      getCampaignConversionRate(campaign?.id as string),
-      getCostPerConversion(campaign?.id as string),
-      getCostPerClicks(campaign?.id as string),
-      getInfluencerInReport(campaign?.id as string),
-      getClickThroughRateInReport(campaign?.id as string)
-    ]);
+    setLoading(true)
+    const [igStats, roi, conversionRate, costPerConversion, costperClicks, influencers, ctr] = await Promise.all([
+      getInstagramStatistics(campaign?.id as string, filter),
+      getCampaignROI(campaign?.id as string, filter),
+      getCampaignConversionRate(campaign?.id as string, filter),
+      getCostPerConversion(campaign?.id as string, filter),
+      getCostPerClicks(campaign?.id as string, filter),
+      getInfluencerInReport(campaign?.id as string, filter),
+      getClickThroughRateInReport(campaign?.id as string, filter)
+    ]).finally(() => setLoading(false))
 
     setReportData({
       ...reportData,
@@ -71,14 +69,16 @@ function Reports({ campaign }: ReportsProps) {
       costPerConversion: costPerConversion?.data?.costPerConversion,
       costPerClicks: costperClicks?.data?.costPerClick,
       influencers: influencers?.data?.data,
-      totalCost:roi?.data?.totalCost,
-      totalCtr:ctr?.data?.crt
+      totalCost: roi?.data?.totalCost,
+      totalCtr: ctr?.data?.crt
     })
   };
 
   useEffect(() => {
-    handleGetIGReport()
-  }, [])
+    if (filter?.time !== 'custom' || (filter?.dateRange?.[0] && filter?.time === 'custom')) {
+      handleGetIGReport()
+    }
+  }, [filter.time, filter.dateRange])
 
   return (
     <div className='w-full'>
@@ -87,16 +87,23 @@ function Reports({ campaign }: ReportsProps) {
           <div className='p-4 rounded-xl bg-gray-100 w-[220px] h-[135px]'>
             <h6 className='text-2xl font-semibold'>Revenue</h6>
             <p className='text-xs text-gray-500 mt-2'>Total</p>
-            <p className='font-semibold text-[30px] text-gray-800 mt-2'>$
-              <CountUp decimals={reportData?.totalRevenue === 0 ? 0 : 2} end={reportData?.totalRevenue} />
-            </p>
+            {loading
+              ? <Skeleton.Button className='mt-2' active block />
+              : <p className='font-semibold text-[30px] text-gray-800 mt-2'>$
+                <CountUp decimals={reportData?.totalRevenue === 0 ? 0 : 2} end={reportData?.totalRevenue} />
+              </p>
+            }
           </div>
           <div className='p-4 rounded-xl bg-gray-100 w-[220px] h-[135px]'>
             <h6 className='text-2xl font-semibold'>Cost</h6>
             <p className='text-xs text-gray-500 mt-2'>Total campaign budget</p>
-            <p className='font-semibold text-[30px] text-gray-800 mt-2'>$
-              <CountUp end={reportData.totalCost as number} decimals={2} />
-            </p>
+            {loading
+              ? <Skeleton.Button className='mt-2' active block />
+              : <p className='font-semibold text-[30px] text-gray-800 mt-2'>$
+                <CountUp end={reportData.totalCost as number} decimals={2} />
+              </p>
+            }
+
           </div>
         </div>
         <div className='mt-5'>
@@ -106,55 +113,81 @@ function Reports({ campaign }: ReportsProps) {
       <div className='grid xl:grid-cols-8 grid-cols-4 gap-4'>
         <div className='border justify-around border-gray-200 hover:shadow-md cursor-pointer transition-shadow 2xl:p-5 p-4 rounded-2xl flex items-start flex-col h-[109px]'>
           <h5 className=' text-gray-800 text-xs'>Total Impression</h5>
-          <span className='text-2xl font-bold'>
-            <CountUp end={reportData.totalImpressions || 0} />
-          </span>
+          {loading
+            ? <Skeleton.Button active block />
+            : <span className='text-2xl font-bold'>
+              <CountUp end={reportData.totalImpressions || 0} />
+            </span>
+          }
         </div>
-
         <div className='border justify-around border-gray-200 hover:shadow-md cursor-pointer transition-shadow 2xl:p-5 p-4 rounded-2xl flex items-start flex-col h-[109px]'>
           <h5 className=' text-gray-800 text-xs'>Engagement Rate</h5>
-          <span className='text-2xl font-bold'>
-            <CountUp decimals={reportData?.engagementRate == 0 ? 0 : 1} end={reportData?.engagementRate || 0} />%
-          </span>
+          {loading
+            ? <Skeleton.Button active block />
+            : <span className='text-2xl font-bold'>
+              <CountUp decimals={reportData?.engagementRate == 0 ? 0 : 1} end={reportData?.engagementRate || 0} />%
+            </span>
+          }
+
         </div>
 
         <div className='border justify-around border-gray-200 hover:shadow-md cursor-pointer transition-shadow 2xl:p-5 p-4 rounded-2xl flex items-start flex-col h-[109px]'>
           <h5 className=' text-gray-800 text-xs'>Click Through Rate (CTR)</h5>
-          <span className='text-2xl font-bold'>
-            <CountUp end={reportData.totalCtr as number} />%
-          </span>
+          {loading
+            ? <Skeleton.Button active block />
+            : <span className='text-2xl font-bold'>
+              <CountUp end={reportData.totalCtr as number} />%
+            </span>
+          }
         </div>
 
         <div className='border justify-around border-gray-200 hover:shadow-md cursor-pointer transition-shadow 2xl:p-5 p-4 rounded-2xl flex items-start flex-col h-[109px]'>
           <h5 className=' text-gray-800 text-xs'>Conversion Rate</h5>
-          <span className='text-2xl font-bold'>
-            <CountUp decimals={reportData?.conversionRate == 0 ? 0 : 1} end={reportData?.conversionRate} />%
-          </span>
+          {loading
+            ? <Skeleton.Button active block />
+            : <span className='text-2xl font-bold'>
+              <CountUp decimals={reportData?.conversionRate == 0 ? 0 : 1} end={reportData?.conversionRate} />%
+            </span>
+          }
         </div>
         <div className='border justify-around border-gray-200 hover:shadow-md cursor-pointer transition-shadow 2xl:p-5 p-4 rounded-2xl flex items-start flex-col h-[109px]'>
           <h5 className=' text-gray-800 text-xs'>ROI</h5>
-          <span className='text-2xl font-bold'>
-            <CountUp decimals={reportData?.roi === 0 ? 0 : 1} end={reportData?.roi} />%
-          </span>
+          {loading
+            ? <Skeleton.Button active block />
+            : <span className='text-2xl font-bold'>
+              <CountUp decimals={reportData?.roi === 0 ? 0 : 1} end={reportData?.roi} />%
+            </span>
+          }
         </div>
 
         <div className='border justify-around border-gray-200 hover:shadow-md cursor-pointer transition-shadow 2xl:p-5 p-4 rounded-2xl flex items-start flex-col h-[109px]'>
           <h5 className=' text-gray-800 text-xs'>Total Clicks</h5>
-          <span className='text-2xl font-bold'>
-            <CountUp end={reportData?.totalClicks} />
-          </span>
+          {loading
+            ? <Skeleton.Button active block />
+            : <span className='text-2xl font-bold'>
+              <CountUp end={reportData?.totalClicks} />
+            </span>
+          }
         </div>
         <div className='border justify-around border-gray-200 hover:shadow-md cursor-pointer transition-shadow 2xl:p-5 p-4 rounded-2xl flex items-start flex-col h-[109px]'>
           <h5 className=' text-gray-800 text-xs'>Cost Per Click</h5>
-          <span className='text-2xl font-bold'>
-            <CountUp end={reportData?.costPerClicks} />%
-          </span>
+          {loading
+            ? <Skeleton.Button active block />
+            : <span className='text-2xl font-bold'>
+              <CountUp end={reportData?.costPerClicks} />%
+            </span>
+          }
+
         </div>
         <div className='border justify-around border-gray-200 hover:shadow-md cursor-pointer transition-shadow 2xl:p-5 p-4 rounded-2xl flex items-start flex-col h-[109px]'>
           <h5 className=' text-gray-800 text-xs'>Cost Per Conversion</h5>
-          <span className='text-2xl font-bold'>
-            <CountUp end={reportData.costPerConversion} />%
-          </span>
+          {loading
+            ? <Skeleton.Button active block />
+            : <span className='text-2xl font-bold'>
+              <CountUp end={reportData.costPerConversion} />%
+            </span>
+          }
+
         </div>
       </div>
       {/* Influencer Performance */}
