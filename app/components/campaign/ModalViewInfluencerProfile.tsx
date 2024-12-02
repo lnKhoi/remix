@@ -3,7 +3,11 @@ import React, {
   useState,
 } from 'react';
 
-import { Drawer } from 'antd';
+import {
+  Button,
+  Drawer,
+  Skeleton,
+} from 'antd';
 import { HeartIcon } from 'lucide-react';
 import { getInfluencerDetails } from '~/apis/creator';
 import Avatar from '~/assets/user-avatar.png';
@@ -28,22 +32,20 @@ type ModalViewInfluencerProfileProps = {
 
 function ModalViewInfluencerProfile({ onClose, open, id }: ModalViewInfluencerProfileProps) {
     const [influencer, setInfluencer] = useState<Creator | null>(null)
+    const [loading, setLoading] = useState<boolean>(false)
 
     const handleGetInfluencerDemographic = () => {
+        setLoading(true)
         getInfluencerDetails(id as string).then(res => {
             setInfluencer(res.data)
-        })
+        }).finally(() => setLoading(false))
     }
 
-    useEffect(() => {
-      handleGetInfluencerDemographic()
-    }, [id])
+    useEffect(() => { handleGetInfluencerDemographic() }, [id])
 
     const pieData = influencer?.demographicGenders?.map(gender => {
-        return {name: gender.detail,y:  gender.valuePercentage,}
-    }) 
-
-    console.log(influencer)
+        return { name: gender.detail, y: gender.valuePercentage, }
+    })
 
     return (
         <Drawer
@@ -66,21 +68,25 @@ function ModalViewInfluencerProfile({ onClose, open, id }: ModalViewInfluencerPr
                     {/* Profile Header */}
                     <div className="bg-gradient-to-r mx-auto  z-30 rounded-xl px-6">
                         <div className="flex items-center gap-5">
-                            <img
-                                src={influencer?.avatarUrl || Avatar}
-                                alt="Profile"
-                                className="w-[108px] transform translate-y-0.5 h-[108px] rounded-full object-cover"
-                            />
+                            {loading
+                                ? <Skeleton.Avatar active shape='circle' style={{ height: 108, width: 108 }} />
+                                : <img
+                                    src={influencer?.avatarUrl || Avatar}
+                                    alt="Profile"
+                                    className="w-[108px] transform translate-y-0.5 h-[108px] rounded-full object-cover"
+                                />
+                            }
                             <div className='transform translate-y-8'>
-                                <h1 className="text-2xl font-semibold">Welcome, {formatName(influencer?.name as string)}</h1>
-                                {/* <div className='flex items-center gap-1'>
-                                    <EnvelopeOpenIcon className='text-gray-500 w-3 h-3' />
-                                    <p className="text-gray-500 text-sm">{influencer?.email}</p>
-                                </div> */}
+                                <h1 className="text-2xl font-semibold">Welcome,{' '}
+                                    {loading
+                                        ? <Skeleton.Input active size={'small'} />
+                                        : formatName(influencer?.name as string)}
+                                </h1>
                             </div>
                             <div className="ml-auto pr-1 mt-12 flex items-center space-x-2">
+                                <Button onClick={handleGetInfluencerDemographic}>Refresh</Button>
                                 {influencer?.connectedSocialMedias?.map(social => (
-                                       <img key={social} src={socialMediaIcons[social]} alt={social} />
+                                    <img key={social} src={socialMediaIcons[social]} alt={social} />
                                 ))}
                             </div>
                         </div>
@@ -89,23 +95,32 @@ function ModalViewInfluencerProfile({ onClose, open, id }: ModalViewInfluencerPr
                         <div className="grid grid-cols-2 gap-6 mt-12">
                             <div>
                                 <h2 className="text-lg font-semibold mb-3">Biographic</h2>
-                               {influencer?.biography && (
-                                 <div className="text-gray-500 py-2 text-xs rounded-lg bg-gray-100 text-justify px-3 ">
-                                 {influencer?.biography}
-                              </div>
-                               )}
+                                {loading
+                                    ? <Skeleton.Input active size={'small'} />
+                                    : <>
+                                        {influencer?.biography && (
+                                            <div className="text-gray-500 py-2 text-xs rounded-lg bg-gray-100 text-justify px-3 ">
+                                                {influencer?.biography}
+                                            </div>
+                                        )}</>
+                                }
                             </div>
                             <div>
                                 <h2 className="text-lg font-semibold mb-3">Expertise</h2>
                                 <div className="flex flex-wrap gap-2">
-                                    {influencer?.category?.map((item) => (
-                                        <span
-                                            key={item}
-                                            className="bg-gray-100 text-sm px-3 py-1 rounded-md"
-                                        >
-                                            {item}
-                                        </span>
-                                    ))}
+
+                                    {loading
+                                        ? <Skeleton.Input active size={'small'} />
+                                        : <>
+                                            {influencer?.category?.map((item) => (
+                                                <span
+                                                    key={item}
+                                                    className="bg-gray-100 text-sm px-3 py-1 rounded-md"
+                                                >
+                                                    {item}
+                                                </span>
+                                            ))}</>
+                                    }
                                 </div>
                             </div>
                         </div>
@@ -126,15 +141,21 @@ function ModalViewInfluencerProfile({ onClose, open, id }: ModalViewInfluencerPr
                                     </div>
                                     <div className='flex items-start  w-full gap-8'>
                                         <div className='flex flex-col items-start'>
-                                            <p className="text-gray-800 text-sm font-semibold">{influencer?.instagramFollowersNumber || 0}</p>
+                                            <p className="text-gray-800 text-sm font-semibold">
+                                                {loading ? <Skeleton.Button active size={'small'} /> : influencer?.instagramFollowersNumber || 0}
+                                            </p>
                                             <span className='text-xs font-normal text-gray-500'>Followers</span>
                                         </div>
                                         <div className='flex flex-col items-start'>
-                                            <p className="text-gray-800 text-sm font-semibold">{influencer?.instagramMediaCount || 0}</p>
+                                            <p className="text-gray-800 text-sm font-semibold">
+                                                {loading ? <Skeleton.Button active size={'small'} /> : influencer?.instagramMediaCount || 0}
+                                            </p>
                                             <span className='text-xs font-normal text-gray-500'>Posts</span>
                                         </div>
                                         <div className='flex flex-col items-start'>
-                                            <p className="text-gray-800 text-sm font-semibold">{influencer?.instagramTotalLikes || 0}</p>
+                                            <p className="text-gray-800 text-sm font-semibold">
+                                                {loading ? <Skeleton.Button active size={'small'} /> : influencer?.instagramMediaCount || 0}
+                                            </p>
                                             <span className='text-xs font-normal text-gray-500'>Likes</span>
                                         </div>
 
@@ -149,42 +170,58 @@ function ModalViewInfluencerProfile({ onClose, open, id }: ModalViewInfluencerPr
                             {/* Age Range */}
                             <div>
                                 <h3 className="text-sm text-gray-800 font-medium  mb-4">Age Range</h3>
-                                {influencer?.demographicAges?.map((age) => (
-                                    <div key={age.detail} className="flex gap-3 items-center justify-between mb-2">
-                                        <span className='max-w-[45px] min-w-[45px] text-xs text-gray-500 text-end'>{age.detail}</span>
-                                        <div className="min-w-[177px] bg-gray-200 h-4 rounded-md">
-                                            <div
-                                                className="bg-blue-500 h-4 rounded-full"
-                                                style={{ width: `${age.valuePercentage}%` }}
-                                            ></div>
-                                        </div>
-                                        <span className='text-xs text-gray-500'>{age.valuePercentage}%</span>
-                                    </div>
-                                ))}
+                                {loading
+                                    ? <Skeleton.Node active style={{ width: 190 }} />
+                                    : <>
+                                        {influencer?.demographicAges?.map((age) => (
+                                            <div key={age.detail} className="flex gap-3 items-center justify-between mb-2">
+                                                <span className='max-w-[45px] min-w-[45px] text-xs text-gray-500 text-end'>{age.detail}</span>
+                                                <div className="min-w-[177px] bg-gray-200 h-4 rounded-md">
+                                                    <div
+                                                        className="bg-blue-500 h-4 rounded-full"
+                                                        style={{ width: `${age.valuePercentage}%` }}
+                                                    ></div>
+                                                </div>
+                                                <span className='text-xs text-gray-500'>{age.valuePercentage}%</span>
+                                            </div>
+                                        ))}
+                                    </>
+                                }
+
                             </div>
 
                             {/* Location */}
                             <div>
                                 <h3 className="text-sm text-gray-800 font-medium  mb-4">Location</h3>
-                                {influencer?.demographicCities?.map((city) => (
-                                    <div key={city.detail} className="flex gap-3 items-center justify-between mb-2">
-                                        <span className='max-w-[95px] text-xs text-gray-500 min-w-[95px] text-end'>{city.detail}</span>
-                                        <div className="min-w-[177px] bg-gray-200 h-4 rounded-md">
-                                            <div
-                                                className="bg-blue-500 h-4 rounded-full"
-                                                style={{ width: `${city.valuePercentage}%` }}
-                                            ></div>
-                                        </div>
-                                        <span className='text-xs text-gray-500'>{city.valuePercentage}%</span>
-                                    </div>
-                                ))}
+                                {loading
+                                    ? <Skeleton.Node active style={{ width: 190 }} />
+                                    : <>
+                                        {influencer?.demographicCities?.map((city) => (
+                                            <div key={city.detail} className="flex gap-3 items-center justify-between mb-2">
+                                                <span className='max-w-[95px] text-xs text-gray-500 min-w-[95px] text-end'>{city.detail}</span>
+                                                <div className="min-w-[177px] bg-gray-200 h-4 rounded-md">
+                                                    <div
+                                                        className="bg-blue-500 h-4 rounded-full"
+                                                        style={{ width: `${city.valuePercentage}%` }}
+                                                    ></div>
+                                                </div>
+                                                <span className='text-xs text-gray-500'>{city.valuePercentage}%</span>
+                                            </div>
+                                        ))}
+                                    </>
+                                }
+
                             </div>
 
                             {/* Gender */}
                             <div className="flex flex-col items-start justify-center pl-12 w-full">
                                 <h3 className="text-sm text-gray-800 font-medium ">Gender</h3>
                                 <div className='w-full flex items-start  h-full justify-center'>
-                                    {pieData?.length as number > 0 && (<PieChart data={pieData as any}  />)}
+                                    {loading
+                                        ? <Skeleton.Node active style={{ width: 190, marginTop: 14 }} />
+                                        : <>
+                                            {pieData?.length as number > 0 && (<PieChart data={pieData as any} />)}</>}
+
                                 </div>
                             </div>
                         </div>
@@ -193,36 +230,45 @@ function ModalViewInfluencerProfile({ onClose, open, id }: ModalViewInfluencerPr
                         <div className="mt-8 mb-12">
                             <h3 className="text-lg font-semibold mb-4">Portfolio</h3>
                             <div className="grid grid-cols-3 gap-4">
-                                {influencer?.portfolios?.map((item) => (
-                                    <div key={item.id} className="relative">
-                                        <img
-                                            src={item?.media_url}
-                                            alt={`Portfolio ${item}`}
-                                            className="rounded-lg w-[293px] h-[293px] object-cover"
-                                        />
-                                        <div className="flex items-center justify-between mt-2">
-                                            <div className="flex items-center gap-2">
-                                                <div className='flex items-center gap-1'>
-                                                    <HeartIcon width={18} height={18} className='text-gray-500' />
-                                                    <span className='text-sm font-medium text-gray-800'>{item.like_count || 0}</span>
-                                                </div>
-                                                <div className='flex items-center gap-1'>
-                                                    <ChatBubbleOvalLeftIcon width={18} height={18} className='text-gray-500' />
-                                                    <span className='text-sm font-medium text-gray-800'>{item.comments_count || 0}</span>
-                                                </div>
-                                                <div className='flex items-center gap-1'>
-                                                    <PaperAirplaneIcon width={18} height={18} className='text-gray-500' />
-                                                    <span className='text-sm font-medium text-gray-800'>{item.share_count || 0}</span>
+                                {loading
+                                    ? <>
+                                        <Skeleton.Node active style={{ width: '100%', height: 293 }} />
+                                        <Skeleton.Node active style={{ width: '100%', height: 293 }} />
+                                        <Skeleton.Node active style={{ width: '100%', height: 293 }} />
+                                    </>
+                                    : <>
+                                        {influencer?.portfolios?.map((item) => (
+                                            <div key={item.id} className="relative">
+                                                <img
+                                                    src={item?.media_url}
+                                                    alt={`Portfolio ${item}`}
+                                                    className="rounded-lg w-[293px] h-[293px] object-cover"
+                                                />
+                                                <div className="flex items-center justify-between mt-2">
+                                                    <div className="flex items-center gap-2">
+                                                        <div className='flex items-center gap-1'>
+                                                            <HeartIcon width={18} height={18} className='text-gray-500' />
+                                                            <span className='text-sm font-medium text-gray-800'>{item.like_count || 0}</span>
+                                                        </div>
+                                                        <div className='flex items-center gap-1'>
+                                                            <ChatBubbleOvalLeftIcon width={18} height={18} className='text-gray-500' />
+                                                            <span className='text-sm font-medium text-gray-800'>{item.comments_count || 0}</span>
+                                                        </div>
+                                                        <div className='flex items-center gap-1'>
+                                                            <PaperAirplaneIcon width={18} height={18} className='text-gray-500' />
+                                                            <span className='text-sm font-medium text-gray-800'>{item.share_count || 0}</span>
+                                                        </div>
+                                                    </div>
+                                                    <a href={item.permalink} target="_blank">
+                                                        <button className="bg-gray-100 text-gray-800 text-sm font-semibold px-4 py-1 rounded-md">
+                                                            Visit
+                                                        </button>
+                                                    </a>
                                                 </div>
                                             </div>
-                                            <a href={item.permalink} target="_blank">
-                                            <button className="bg-gray-100 text-gray-800 text-sm font-semibold px-4 py-1 rounded-md">
-                                                Visit
-                                            </button>
-                                            </a> 
-                                        </div>
-                                    </div>
-                                ))}
+                                        ))}</>
+                                }
+
                             </div>
                         </div>
                     </div>
