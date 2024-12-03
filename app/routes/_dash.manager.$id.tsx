@@ -9,6 +9,7 @@ import {
   Breadcrumb,
   Button,
   Segmented,
+  Skeleton,
 } from 'antd';
 import {
   toast,
@@ -41,21 +42,24 @@ export const meta: MetaFunction = () => {
 type Tab = 'Campaign Details' | 'Influencer' | 'Content' | 'Reports';
 function page() {
   const { id } = useParams();
+  const [loading, setLoading] = useState<boolean>(false)
   const [tab, setTab] = useState<Tab>('Campaign Details');
   const [modalInvite, setModalInvite] = useState<boolean>(false);
   const [campaign, setCampaign] = useState<Campaign | null>(null);
   const [filter, setFilter] = useState<{ time: string, dateRange: DateRange }>({ time: '7d', dateRange: null })
 
   const handleGetCampaignDetails = async (): Promise<void> => {
+    setLoading(true)
     await getCampaignDetails(id as string)
       .then((res) => setCampaign(res.data))
-      .catch((err) => toast.error(err?.message));
+      .catch((err) => toast.error(err?.message))
+      .finally(() => setLoading(false))
   };
 
   const getCampaignTab = () => {
     switch (tab) {
       case 'Campaign Details':
-        return <CampaignDetails campaign={campaign} />;
+        return <CampaignDetails loading={loading} campaign={campaign} />;
       case 'Influencer':
         return <Influencer campaign={campaign} />;
       case 'Content':
@@ -67,9 +71,9 @@ function page() {
     }
   };
 
-  const handleFilterReport  = (selectedFilter: string, dateRange: DateRange) => {
-      setFilter({ time: selectedFilter, dateRange: dateRange })
-    }
+  const handleFilterReport = (selectedFilter: string, dateRange: DateRange) => {
+    setFilter({ time: selectedFilter, dateRange: dateRange })
+  }
 
   useEffect(() => {
     handleGetCampaignDetails();
@@ -84,7 +88,14 @@ function page() {
             className='w-[200px]'
             items={[
               { title: <Link to={'/manager/campaigns'}>Campaigns</Link> },
-              { title: <p className='text-gray-800'>{abbreviateLastName(campaign?.name as string, 17)}</p> },
+              {
+                title: <>
+                  {loading
+                    ? <Skeleton.Button style={{width:90}} size='small' active />
+                    : <p className='text-gray-800'>{abbreviateLastName(campaign?.name as string, 17)}</p>
+                  }
+                </>
+              },
             ]}
           />
           <Button

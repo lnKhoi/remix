@@ -23,14 +23,16 @@ type ContentProps = {
 function Content({ campaign }: ContentProps) {
   const [filteredContent, setFilteredContent] = useState<Content[]>([])
   const [contents, setContents] = useState<Content[]>([])
-  const [liveContents,setLiveContents] = useState<Content[]>([])
-  const [tab,setTab] = useState<string>('Influencer Contents') 
+  const [liveContents, setLiveContents] = useState<Content[]>([])
+  const [tab, setTab] = useState<string>('Influencer Contents')
+  const [loading, setLoading] = useState<boolean>(false)
 
   const handleGetListContents = async () => {
+    setLoading(true)
     await getContentsInCampaign(campaign?.id as string, 100, 1).then((res) => {
       setContents(res?.data?.data);
       setFilteredContent(res?.data?.data)
-    })
+    }).finally(() => setLoading(false))
   }
 
   const handleGetLiveContents = () => {
@@ -42,9 +44,9 @@ function Content({ campaign }: ContentProps) {
     handleGetLiveContents()
   }, [])
 
-  const handleFilterContent = (f: string) :void => {
-    f ==='Influencer Contents' ? setFilteredContent(contents) : setFilteredContent(liveContents)
-    setTab(f)  
+  const handleFilterContent = (f: string): void => {
+    f === 'Influencer Contents' ? setFilteredContent(contents) : setFilteredContent(liveContents)
+    setTab(f)
   }
 
   return (
@@ -78,8 +80,8 @@ function Content({ campaign }: ContentProps) {
         </div>
       </div>
       <div className='mt-5 grid 2xl:grid-cols-4 xl:grid-cols-3 lg:grid-cols-2 md:grid-cols-1 gap-5'>
-        {filteredContent?.map(c => (
-          <ContentCard content={c} key={c.id} />
+        {(loading ? [1, 2] : filteredContent)?.map((c: any) => (
+          <ContentCard loading={loading} content={c} key={c.id} />
         ))}
       </div>
     </div>

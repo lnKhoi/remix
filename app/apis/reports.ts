@@ -62,9 +62,19 @@ export const getRevenueOfInfluencer = (campaignId: string, creatorId: string) =>
 export const getClickThroughRateInReport = (campaignId: string, filter: FilterDateRange) => {
     const dateRangeQuery = filter.dateRange
         ? `&from=${filter.dateRange[0]}&to=${filter.dateRange[1]}`
-        : ''; // No default date range, empty query if no date range
+        : ''; 
 
     const url = `/api/v1/report/${campaignId}/ctr?timeRange=${filter.time}${dateRangeQuery}`;
+
+    return getData(url);
+};
+
+export const getCpaInReport = (campaignId: string, filter: FilterDateRange) => {
+    const dateRangeQuery = filter.dateRange
+        ? `&from=${filter.dateRange[0]}&to=${filter.dateRange[1]}`
+        : ''; 
+
+    const url = `/api/v1/report/cost-per-acquisition?campaignId=${campaignId}?timeRange=${filter.time}${dateRangeQuery}`;
 
     return getData(url);
 };
