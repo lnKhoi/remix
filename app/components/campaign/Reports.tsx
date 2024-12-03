@@ -15,6 +15,7 @@ import {
   getClickThroughRateInReport,
   getCostPerClicks,
   getCostPerConversion,
+  getCpaInReport,
   getInfluencerInReport,
 } from '~/apis/reports';
 import {
@@ -48,14 +49,16 @@ function Reports({ campaign, filter }: ReportsProps) {
 
   const handleGetIGReport = async () => {
     setLoading(true)
-    const [igStats, roi, conversionRate, costPerConversion, costperClicks, influencers, ctr] = await Promise.all([
+    const [igStats, roi, conversionRate, costPerConversion, costperClicks, influencers, ctr,cpa] = await Promise.all([
       getInstagramStatistics(campaign?.id as string, filter),
       getCampaignROI(campaign?.id as string, filter),
       getCampaignConversionRate(campaign?.id as string, filter),
       getCostPerConversion(campaign?.id as string, filter),
       getCostPerClicks(campaign?.id as string, filter),
       getInfluencerInReport(campaign?.id as string, filter),
-      getClickThroughRateInReport(campaign?.id as string, filter)
+      getClickThroughRateInReport(campaign?.id as string, filter),
+      getCpaInReport(campaign?.id as string,filter)
+
     ]).finally(() => setLoading(false))
 
     setReportData({
@@ -70,7 +73,8 @@ function Reports({ campaign, filter }: ReportsProps) {
       costPerClicks: costperClicks?.data?.costPerClick,
       influencers: influencers?.data?.data,
       totalCost: roi?.data?.totalCost,
-      totalCtr: ctr?.data?.crt
+      totalCtr: ctr?.data?.crt,
+      cpa:cpa?.data?.getCpaInReport
     })
   };
 
@@ -103,7 +107,16 @@ function Reports({ campaign, filter }: ReportsProps) {
                 <CountUp end={reportData.totalCost as number} decimals={2} />
               </p>
             }
-
+          </div>
+          <div className='p-4 rounded-xl bg-gray-100 w-[220px] h-[135px]'>
+            <h6 className='text-2xl font-semibold'>CPA</h6>
+            <p className='text-xs text-gray-500 mt-2'>Making a purchase</p>
+            {loading
+              ? <Skeleton.Button className='mt-2' active block />
+              : <p className='font-semibold text-[30px] text-gray-800 mt-2'>$
+                <CountUp end={reportData.cpa as number} decimals={2} />
+              </p>
+            }
           </div>
         </div>
         <div className='mt-5'>

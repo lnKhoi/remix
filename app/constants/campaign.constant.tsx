@@ -1,4 +1,7 @@
-import { FilmIcon } from 'lucide-react';
+import {
+  FilmIcon,
+  PlusCircleIcon,
+} from 'lucide-react';
 
 import { Squares2X2Icon } from '@heroicons/react/24/outline';
 
@@ -44,6 +47,11 @@ export const contentFormatOptions = [
     icon: <FilmIcon width={20} height={20} />,
     label: 'Reel',
     value: 'reel'
+  },
+  {
+    icon: <PlusCircleIcon width={20} height={20} />,
+    label: 'Story',
+    value: 'story'
   },
 ]
 

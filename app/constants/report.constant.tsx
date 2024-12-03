@@ -52,5 +52,6 @@ export const initialReport  = {
   costPerClicks: 0,
   influencers: [],
   totalCost: 0,
-  totalCtr: 0
+  totalCtr: 0,
+  cpa:0
 }
