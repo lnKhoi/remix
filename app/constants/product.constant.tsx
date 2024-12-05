@@ -1,62 +1,86 @@
 import {
   Avatar,
-  TableProps,
+  Skeleton,
+  TableColumnsType,
 } from 'antd';
+import DefaultAvatar from '~/assets/avatar.jpeg';
 import TagColor from '~/components/ui/tagColor';
+import { Order } from '~/models/shopify.model';
 
-export const productColumn: TableProps['columns'] = [
+export const OrderTrackingColumns = (loading: boolean): TableColumnsType<Order> => [
   {
     title: 'Influencer name',
     dataIndex: 'influencerName',
-    render: (text) => <div className="flex items-center gap-3">
-      <Avatar src='https://attic.sh/y620gx2xcgmcbm9ydnmb3obtgk0u' className="w-9 h-9" />
-      <span className="text-sm font-medium text-gray-800">Ralph Edward</span>
-    </div>
+    render: (_, record: Order) => (
+      <div className="flex items-center gap-3">
+        {loading ? (
+          <div className="flex items-center gap-3">
+            <Skeleton.Avatar active shape="circle" className="w-9 h-9" />
+            <Skeleton.Input active size="small" className="w-24" />
+          </div>
+        ) : (
+          <div className="flex items-center gap-3">
+            <Avatar
+              src={record?.avatar || DefaultAvatar}
+              className="w-9 h-9"
+            />
+            <span className="text-sm font-medium text-gray-800">{record?.creatorName}</span>
+          </div>
+        )}
+      </div>
+    ),
   },
   {
     title: 'Product',
     dataIndex: 'product',
-    render: (text) => <div className="flex items-center gap-3">
-      <img src="https://dmgschoolproject.org/wp-content/uploads/2019/06/DMG-School-glass-blowing-process.jpg" className="w-[42px] h-[42px] rounded-lg object-cover" />
-      <span className="text-sm font-medium text-gray-800">Glasses</span>
-    </div>
-  },
-  {
-    title: 'Price',
-    dataIndex: 'price',
-    render: (text) =>
-      <span className="text-sm font-medium text-gray-800">$26.000</span>
-  },
-  {
-    title: 'Category',
-    dataIndex: 'category',
-    render: (text) =>
-      <span className="text-sm font-medium text-gray-800">Skincare</span>
+    render: (_, record) => (
+      <div className="flex items-center gap-3">
+        {loading ? (
+          <div className="flex items-center gap-3">
+            <Skeleton.Input active size="small" className="w-24" />
+          </div>
+        ) : (
+          <div className="flex items-center gap-3">
+            <img
+              src={record?.productImage}
+              className="w-[42px] h-[42px] rounded-lg object-cover"
+            />
+            <span className="text-sm font-medium text-gray-800">{record?.productName}</span>
+          </div>
+        )}
+      </div>
+    ),
   },
   {
     title: 'Campaigns',
     dataIndex: 'category',
-    render: (text) =>
-      <span className="text-sm font-medium text-gray-800">Savings Season</span>
+    render: (_,record) =>
+      <span className="text-sm font-medium text-gray-800">{record?.campaignName}</span>
   },
   {
     title: 'Status',
     dataIndex: 'hasAccount',
     key: 'hasAccount',
-    render: (text) => {
-      const registered = text === 1
-      return (
-        <TagColor status='Ready to ship' background='#DBEAFE' color='#1D4ED8' />
-      )
-    }
+    render: (_, record) => (
+      <div className="flex items-center gap-3">
+        {loading ? (
+          <Skeleton.Input active size="small" className="w-20" />
+        ) : (
+          <TagColor status={record?.status} background="#DBEAFE" color="#1D4ED8" />
+        )}
+      </div>
+    ),
   },
   {
     title: 'Actions',
-    render: (text) => {
-      return (
-       <div className='text-blue-500 cursor-pointer'>View Details</div>
-      )
-    }
+    render: (_, record) => (
+      <a href={record?.shopifyLink} target="_blank" className="text-blue-500 cursor-pointer">
+        {loading ? (
+          <Skeleton.Input active size="small" className="w-24" />
+        ) : (
+          'View Details'
+        )}
+      </a>
+    ),
   },
 ];
-

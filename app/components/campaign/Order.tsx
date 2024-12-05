@@ -1,36 +1,39 @@
-import React from 'react';
+import React, {
+  useEffect,
+  useState,
+} from 'react';
 
 import { Table } from 'antd';
+import { getOrders } from '~/apis/shopify';
 import { orderColumns } from '~/constants/campaign.constant';
+import { Campaign } from '~/models/Campaign.model';
+import type { Order } from '~/models/shopify.model';
 
-function Order() {
+type OrderProps = {
+    campaign: Campaign | null
+}
 
-    const influencers = [
-        {
-            key: "1",
-        },
-        {
-            key: "2",
-        },
-        {
-            key: "3",
-        },
-        {
-            key: "3",
-        },
-        {
-            key: "3",
-        },
-        {
-            key: "3",
-        },
+function Order({ campaign }: OrderProps) {
+    const [loading, setLoading] = useState<boolean>(false)
+    const [orders, setOrders] = useState<Order[]>([])
 
-    ];
+    const handleGetTrackingOrders = () => {
+        setLoading(true)
+        getOrders(campaign?.id as string).then(res => setOrders(res?.data?.data))
+            .finally(() => setLoading(false))
+    }
+
+    useEffect(() => {
+        handleGetTrackingOrders()
+    }, [])
+
     return (
         <div>
             <Table
-                columns={orderColumns}
-                dataSource={influencers}
+                columns={orderColumns(loading)}
+                dataSource={
+                    loading ? [1, 2, 3, 4, 5] as any : orders
+                }
             />
         </div>
     )

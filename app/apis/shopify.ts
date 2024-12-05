@@ -22,3 +22,11 @@ export const getProducts = (shopId:string) => {
 export const createDiscount = (shopId:string,value:any) => {
     return postData(`/api/v1/shop/shopify/${shopId}/create-discount`,value)
 }
+
+export const getOrders = (campaignId:string) => {
+    return getData(`/api/v1/order?campaignId=${campaignId}`)
+}
+
+export const getOrdersInCampagin = () => {
+    return getData(`/api/v1/order?page=1&limit=15`)
+}

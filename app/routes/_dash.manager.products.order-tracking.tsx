@@ -1,8 +1,13 @@
-import React from 'react';
+import React, {
+  useEffect,
+  useState,
+} from 'react';
 
 import { Table } from 'antd';
+import { getOrdersInCampagin } from '~/apis/shopify';
 import { InputSearch } from '~/components/ui/input-search';
-import { productColumn } from '~/constants/product.constant';
+import { OrderTrackingColumns } from '~/constants/product.constant';
+import { Order } from '~/models/shopify.model';
 
 import {
   AdjustmentsHorizontalIcon,
@@ -10,31 +15,22 @@ import {
 } from '@heroicons/react/24/outline';
 
 function OrderTracking() {
+    const [orders, setOrders] = useState<Order[]>([])
+    const [loading, setLoading] = useState<boolean>(false)
 
     const handleSearchProducts = (e: string) => {
     }
 
-    const influencers = [
-        {
-            key: "1",
-        },
-        {
-            key: "2",
-        },
-        {
-            key: "3",
-        },
-        {
-            key: "3",
-        },
-        {
-            key: "3",
-        },
-        {
-            key: "3",
-        },
+    const handleGetOrdersTracking = () => {
+        setLoading(true)
+        getOrdersInCampagin().then(res => setOrders(res?.data?.data))
+            .finally(() => setLoading(false))
+    }
 
-    ];
+    useEffect(() => {
+        handleGetOrdersTracking()
+    }, [])
+
     return (
         <div>
             <div className='flex mb-5 items-end justify-between'>
@@ -52,8 +48,8 @@ function OrderTracking() {
 
             {/* List Products */}
             <Table
-                columns={productColumn}
-                dataSource={influencers}
+                columns={OrderTrackingColumns(loading)}
+                dataSource={loading ? [1, 2, 3, 4, 5] as any : orders}
             />
         </div>
     )

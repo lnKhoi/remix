@@ -69,7 +69,7 @@ function page() {
       case 'Reports':
         return <Reports filter={filter} campaign={campaign} />;
       case 'Order':
-        return <Order />;
+        return <Order campaign={campaign} />;
       default:
         break;
     }
