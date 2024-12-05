@@ -32,6 +32,7 @@ function ContentCard({ content, loading }: ContentCardProps) {
 
     const defaultAvatar = 'https://www.svgrepo.com/show/384676/account-avatar-profile-user-6.svg'
 
+    console.log(content)
     return (
         <div className='rounded-2xl cursor-pointer border border-gray-200 hover:shadow-md transition-shadow'>
             {contextHolder}
@@ -89,7 +90,6 @@ function ContentCard({ content, loading }: ContentCardProps) {
                         </span>
                     </div>
                     <div className='flex items-center gap-2'>
-                        {(content?.approved === 'posted') && (
                             <CopyToClipboard
                                 onCopy={() => messageApi.success('Copied to clipboard!')}
                                 text={content?.trackingUrl || ''}
@@ -98,7 +98,7 @@ function ContentCard({ content, loading }: ContentCardProps) {
                                     <LinkIcon width={16} className='text-gray-500' />
                                 </div>
                             </CopyToClipboard>
-                        )}
+                    
                         <Link to={`/manager/content/${content?.id}`}>
                             <Button className='bg-gray-100' type='text' >View content</Button>
                         </Link>

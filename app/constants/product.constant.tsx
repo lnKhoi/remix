@@ -59,3 +59,4 @@ export const productColumn: TableProps['columns'] = [
     }
   },
 ];
+

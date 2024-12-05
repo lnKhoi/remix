@@ -341,7 +341,7 @@ const CampaignForm = () => {
                   optionFilterProp="children"
                 >
                   {countries.map((country) => (
-                    <Select.Option key={country.value} value={country.label}>
+                    <Select.Option key={country.value} value={country.value}>
                       <span role="img" aria-label={country.label} className="mr-2">
                         {country.flag}
                       </span>
