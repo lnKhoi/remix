@@ -21,10 +21,12 @@ import Content from '~/components/campaign/Content';
 import Influencer from '~/components/campaign/Influencer';
 import ModalInviteInfluencerToCampaign
   from '~/components/campaign/ModalInviteInfluencerToCampaign';
+import Order from '~/components/campaign/Order';
 import Reports from '~/components/campaign/Reports';
 import ModalSelectTimeRange, {
   DateRange,
 } from '~/components/ui/ModalSelectTimeRange';
+import { campaignDetailsTabs } from '~/constants/campaign.constant';
 import { Campaign } from '~/models/Campaign.model';
 import { abbreviateLastName } from '~/utils/formatNumber';
 
@@ -39,7 +41,7 @@ export const meta: MetaFunction = () => {
   return [{ title: 'Campaign Details' }];
 };
 
-type Tab = 'Campaign Details' | 'Influencer' | 'Content' | 'Reports';
+type Tab = 'Campaign Details' | 'Influencer' | 'Content' | 'Reports' | 'Order';
 function page() {
   const { id } = useParams();
   const [loading, setLoading] = useState<boolean>(false)
@@ -66,6 +68,8 @@ function page() {
         return <Content campaign={campaign} />;
       case 'Reports':
         return <Reports filter={filter} campaign={campaign} />;
+      case 'Order':
+        return <Order />;
       default:
         break;
     }
@@ -91,7 +95,7 @@ function page() {
               {
                 title: <>
                   {loading
-                    ? <Skeleton.Button style={{width:90}} size='small' active />
+                    ? <Skeleton.Button style={{ width: 90 }} size='small' active />
                     : <p className='text-gray-800'>{abbreviateLastName(campaign?.name as string, 17)}</p>
                   }
                 </>
@@ -117,20 +121,7 @@ function page() {
             defaultValue={tab}
             style={{ marginBottom: 8 }}
             onChange={(value) => setTab(value as Tab)}
-            options={[
-              { label: 'Campaign Details', value: 'Campaign Details' },
-              { label: 'Influencer', value: 'Influencer' },
-              {
-                label: (
-                  <div className='flex items-center'>
-                    Content
-                    {/* <Badge color='#EF4444' size='small' className='ml-1' count={14}></Badge> */}
-                  </div>
-                ),
-                value: 'Content',
-              },
-              { label: 'Reports', value: 'Reports' },
-            ]}
+            options={campaignDetailsTabs}
           />
           {/* <ModalSelectTimeRange/> */}
           <div className='fixed z-50 top-[78px] right-[32px]'>

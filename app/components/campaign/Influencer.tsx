@@ -121,7 +121,7 @@ function Influencer({ campaign }: InfluencerProps) {
           columns={influencersParticipantsColumns({ handleApprove, handleReject, loading })}
           dataSource={
             loading
-              ? [1, 2, 3, 4, 5] as any
+              ? [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] as any
               : influencers
           }
         // locale={{

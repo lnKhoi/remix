@@ -250,7 +250,7 @@ function ModalInviteInfluencerToCampaign({ onClose, open, campaignId }: ModalInv
                             {loading
                                 ? <> {Array.from({ length: 5 }).map((_, index) => (
                                     <div key={index} className="border border-gray-200 rounded-md p-4">
-                                        <Skeleton key={index} avatar paragraph={{ rows: 1 }} />
+                                        <Skeleton key={index} active avatar paragraph={{ rows: 1 }} />
                                     </div>
                                 ))}</>
                                 : <> {influencers.map(i => (
