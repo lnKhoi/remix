@@ -101,3 +101,22 @@ export type ProductImage = {
     src: string;
     variant_ids: any[];
 }
+
+export type Order = {
+    campaignId: string;
+    creatorId: string;
+    productId: string;
+    productImage:string,
+    avatar:string
+    orderId: string;
+    created_at: string;
+    updated_at: string;
+    deleted_at: string | null;
+    shopifyLink: string;
+    status: string;
+    giftCardId: string;
+    giftCardCode: string;
+    productName: string;
+    campaignName: string;
+    creatorName: string;
+}
