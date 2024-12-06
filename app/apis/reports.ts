@@ -74,7 +74,7 @@ export const getCpaInReport = (campaignId: string, filter: FilterDateRange) => {
         ? `&from=${filter.dateRange[0]}&to=${filter.dateRange[1]}`
         : ''; 
 
-    const url = `/api/v1/report/cost-per-acquisition?campaignId=${campaignId}?timeRange=${filter.time}${dateRangeQuery}`;
+    const url = `/api/v1/report/cost-per-acquisition?campaignId=${campaignId}&timeRange=${filter.time}${dateRangeQuery}`;
 
     return getData(url);
 };

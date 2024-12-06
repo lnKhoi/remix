@@ -74,9 +74,10 @@ function Reports({ campaign, filter }: ReportsProps) {
       influencers: influencers?.data?.data,
       totalCost: roi?.data?.totalCost,
       totalCtr: ctr?.data?.crt,
-      cpa:cpa?.data?.getCpaInReport
+      cpa:cpa?.data?.costPerAcquisition
     })
   };
+
 
   useEffect(() => {
     if (filter?.time !== 'custom' || (filter?.dateRange?.[0] && filter?.time === 'custom')) {
@@ -174,7 +175,7 @@ function Reports({ campaign, filter }: ReportsProps) {
           {loading
             ? <Skeleton.Button active block />
             : <span className='text-2xl font-bold'>
-              <CountUp end={reportData?.cpa} />%
+              <CountUp end={reportData?.cpa} decimals={2} />%
             </span>
           }
         </div>
