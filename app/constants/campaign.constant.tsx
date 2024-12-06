@@ -68,7 +68,7 @@ export const campaignDetailsTabs = [
   { label: 'Influencer', value: 'Influencer' },
   { label: 'Content', value: 'Content' },
   { label: 'Reports', value: 'Reports' },
-  { label: 'Order', value: 'Order' },
+  { label: 'Order Tracking', value: 'Order' },
 ]
 
 

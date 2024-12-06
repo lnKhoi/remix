@@ -124,9 +124,11 @@ function page() {
             options={campaignDetailsTabs}
           />
           {/* <ModalSelectTimeRange/> */}
-          <div className='fixed z-50 top-[78px] right-[32px]'>
-            <ModalSelectTimeRange onSelect={(time, dates) => handleFilterReport(time, dates)} />
-          </div>
+          {tab === 'Reports' && (
+            <div className='fixed z-50 top-[78px] right-[32px]'>
+              <ModalSelectTimeRange onSelect={(time, dates) => handleFilterReport(time, dates)} />
+            </div>
+          )}
         </div>
         <div className='pt-14'>{getCampaignTab()}</div>
       </div>
