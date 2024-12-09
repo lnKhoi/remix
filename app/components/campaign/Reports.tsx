@@ -191,7 +191,7 @@ function Reports({ campaign, filter }: ReportsProps) {
       {/* Influencer Performance */}
       <h2 className='mt-6 text-2xl font-medium text-gray-800'>Influencer Performance</h2>
       <p className='text-sm mt-1 text-gray-700'>Manage your content and view their sales performance.</p>
-      <div className='mt-6'>
+      <div className='mt-6 cursor-pointer'>
         <Table
           onRow={(record) => ({
             onClick: () => handleViewInfluencerProfile(record as any),
