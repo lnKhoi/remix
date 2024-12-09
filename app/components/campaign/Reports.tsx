@@ -74,10 +74,10 @@ function Reports({ campaign, filter }: ReportsProps) {
       influencers: influencers?.data?.data,
       totalCost: roi?.data?.totalCost,
       totalCtr: ctr?.data?.crt,
-      cpa:cpa?.data?.costPerAcquisition
+      cpa:cpa?.data?.costPerAcquisition,
+      totalPurchases:roi?.data?.totalCost
     })
   };
-
 
   useEffect(() => {
     if (filter?.time !== 'custom' || (filter?.dateRange?.[0] && filter?.time === 'custom')) {
@@ -116,20 +116,29 @@ function Reports({ campaign, filter }: ReportsProps) {
       </div>
       <div className='grid xl:grid-cols-8 grid-cols-4 gap-4'>
         <div className='border justify-around border-gray-200 hover:shadow-md cursor-pointer transition-shadow 2xl:p-5 p-4 rounded-2xl flex items-start flex-col h-[109px]'>
-          <h5 className=' text-gray-800 text-xs'>Total Impression</h5>
-          {loading
-            ? <Skeleton.Button active block />
-            : <span className='text-2xl font-bold'>
-              <CountUp end={reportData.totalImpressions || 0} />
-            </span>
-          }
-        </div>
-        <div className='border justify-around border-gray-200 hover:shadow-md cursor-pointer transition-shadow 2xl:p-5 p-4 rounded-2xl flex items-start flex-col h-[109px]'>
           <h5 className=' text-gray-800 text-xs'>Engagement Rate</h5>
           {loading
             ? <Skeleton.Button active block />
             : <span className='text-2xl font-bold'>
               <CountUp decimals={reportData?.engagementRate == 0 ? 0 : 1} end={reportData?.engagementRate || 0} />%
+            </span>
+          }
+        </div>
+        <div className='border justify-around border-gray-200 hover:shadow-md cursor-pointer transition-shadow 2xl:p-5 p-4 rounded-2xl flex items-start flex-col h-[109px]'>
+          <h5 className=' text-gray-800 text-xs'>Total Clicks</h5>
+          {loading
+            ? <Skeleton.Button active block />
+            : <span className='text-2xl font-bold'>
+              <CountUp end={reportData?.totalClicks} />
+            </span>
+          }
+        </div>
+        <div className='border justify-around border-gray-200 hover:shadow-md cursor-pointer transition-shadow 2xl:p-5 p-4 rounded-2xl flex items-start flex-col h-[109px]'>
+          <h5 className=' text-gray-800 text-xs'>Total Purchases</h5>
+          {loading
+            ? <Skeleton.Button active block />
+            : <span className='text-2xl font-bold'>
+              <CountUp end={reportData.totalPurchases} />
             </span>
           }
         </div>
@@ -160,40 +169,21 @@ function Reports({ campaign, filter }: ReportsProps) {
             </span>
           }
         </div>
-
         <div className='border justify-around border-gray-200 hover:shadow-md cursor-pointer transition-shadow 2xl:p-5 p-4 rounded-2xl flex items-start flex-col h-[109px]'>
-          <h5 className=' text-gray-800 text-xs'>Total Clicks</h5>
+          <h5 className=' text-gray-800 text-xs'>Cost Per Accquisition (CPA)</h5>
           {loading
             ? <Skeleton.Button active block />
             : <span className='text-2xl font-bold'>
-              <CountUp end={reportData?.totalClicks} />
+              $<CountUp end={reportData?.cpa} decimals={2} />
             </span>
           }
         </div>
         <div className='border justify-around border-gray-200 hover:shadow-md cursor-pointer transition-shadow 2xl:p-5 p-4 rounded-2xl flex items-start flex-col h-[109px]'>
-          <h5 className=' text-gray-800 text-xs'>Cost Per Action (CPA)</h5>
+          <h5 className=' text-gray-800 text-xs'>Cost Per Click (CPC)</h5>
           {loading
             ? <Skeleton.Button active block />
             : <span className='text-2xl font-bold'>
-              <CountUp end={reportData?.cpa} decimals={2} />%
-            </span>
-          }
-        </div>
-        <div className='border justify-around border-gray-200 hover:shadow-md cursor-pointer transition-shadow 2xl:p-5 p-4 rounded-2xl flex items-start flex-col h-[109px]'>
-          <h5 className=' text-gray-800 text-xs'>Cost Per Click</h5>
-          {loading
-            ? <Skeleton.Button active block />
-            : <span className='text-2xl font-bold'>
-              <CountUp end={reportData?.costPerClicks} />%
-            </span>
-          }
-        </div>
-        <div className='border justify-around border-gray-200 hover:shadow-md cursor-pointer transition-shadow 2xl:p-5 p-4 rounded-2xl flex items-start flex-col h-[109px]'>
-          <h5 className=' text-gray-800 text-xs'>Cost Per Conversion</h5>
-          {loading
-            ? <Skeleton.Button active block />
-            : <span className='text-2xl font-bold'>
-              <CountUp end={reportData.costPerConversion} />%
+              $<CountUp end={reportData?.costPerClicks} />
             </span>
           }
         </div>

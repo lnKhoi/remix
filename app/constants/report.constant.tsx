@@ -53,5 +53,6 @@ export const initialReport  = {
   influencers: [],
   totalCost: 0,
   totalCtr: 0,
-  cpa:0
+  cpa:0,
+  totalPurchases:0
 }
