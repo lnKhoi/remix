@@ -8,6 +8,7 @@ import {
 } from 'antd';
 import { ToastContainer } from 'react-toastify';
 import MyProfile from '~/components/profile/MyProfile';
+import Payment from '~/components/profile/Payment';
 import ProfileDetails from '~/components/profile/ProfileDetails';
 
 import {
@@ -32,7 +33,7 @@ function page() {
       case 'Profile Details':
         return <ProfileDetails/>
       case 'Billing':
-        return <></>
+        return <Payment/>
       case 'Intergration':
         return <MyProfile/>
       default:
@@ -62,7 +63,7 @@ function page() {
           onChange={(value) => setTab(value as Tab)}
           options={[
             { label: 'Profile Details', value: 'Profile Details' },
-            { label: 'Billing', value: 'Billing' },
+            { label: 'Billing & Payment', value: 'Billing' },
             { label: 'Intergration', value: 'Intergration' },
           ]}
         />

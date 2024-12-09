@@ -57,7 +57,7 @@ function InfluencerProfile({ open, onClose, campaignId, inluencerId }: Influence
             </div>
             <div className='mt-8'>
                 <div className='flex items-center justify-between'>
-                    <p className='text-lg font-semibold'>Over Lifetime</p>
+                    <p className='text-lg font-semibold'>Influencer Performance Over Lifetime</p>
                 </div>
             </div>
             <div className='mt-5 grid grid-cols-3 gap-5'>

@@ -82,14 +82,6 @@ function SidebarMenu({
               >
                 {renderIcon(item.icon)}
                 {item.label}
-                {item.label === "Campaigns" && (
-                  <Badge
-                    color="#3B82F6"
-                    size="small"
-                    count={25}
-                    className="absolute right-0"
-                  />
-                )}
               </div>
             </Link>
           </Menu.Item>
