@@ -148,30 +148,30 @@ export const influencersParticipantsColumns = ({
         </>
       },
     },
-    {
-      title: 'Action',
-      dataIndex: 'action',
-      render: (_, record: InfluencerInCampaign) => {
-        return (
-          record.status == 'accepted_invitation' && (
-            <div className="flex gap-2">
-              <button
-                className="text-blue-600 hover:bg-gray-200 rounded-md transition-all px-3 py-1"
-                onClick={() => handleApprove(record.creator.id as string)}
-              >
-                Approve
-              </button>
-              <button
-                className="text-red-500 px-3 py-1 rounded"
-                onClick={() => handleReject(record.creator.id as string)}
-              >
-                Reject
-              </button>
-            </div>
-          )
-        );
-      },
-    },
+    // {
+    //   title: 'Action',
+    //   dataIndex: 'action',
+    //   render: (_, record: InfluencerInCampaign) => {
+    //     return (
+    //       record.status == 'accepted_invitation' && (
+    //         <div className="flex gap-2">
+    //           <button
+    //             className="text-blue-600 hover:bg-gray-200 rounded-md transition-all px-3 py-1"
+    //             onClick={() => handleApprove(record.creator.id as string)}
+    //           >
+    //             Approve
+    //           </button>
+    //           <button
+    //             className="text-red-500 px-3 py-1 rounded"
+    //             onClick={() => handleReject(record.creator.id as string)}
+    //           >
+    //             Reject
+    //           </button>
+    //         </div>
+    //       )
+    //     );
+    //   },
+    // },
   ];
 
 export const genders = ['male', 'female', 'other', 'all']

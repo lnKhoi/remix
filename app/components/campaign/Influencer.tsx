@@ -79,7 +79,6 @@ function Influencer({ campaign }: InfluencerProps) {
       })
   }
 
-
   // Handle row click to open the drawer
   const handleRowClick = (record: InfluencerInCampaign | Creator) => {
     setSelectedInfluencer(record as Creator);
@@ -112,7 +111,7 @@ function Influencer({ campaign }: InfluencerProps) {
         </div>
       </div>
       {/* Influeners Table */}
-      <div className='mt-6'>
+      <div className='mt-6 cursor-pointer'>
         <Table<InfluencerInCampaign>
           onRow={(record) => ({
             onClick: () => handleRowClick(record),
@@ -124,23 +123,6 @@ function Influencer({ campaign }: InfluencerProps) {
               ? [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] as any
               : influencers
           }
-        // locale={{
-        //   emptyText: (
-        //     <div className='w-full flex flex-col items-center justify-center'>
-        //       <img src={NoInfluencer} alt="no data" />
-        //       <Button
-        //         // onClick={() => setModalInvite(true)}
-        //         className='bg-gray-100 mt-3 hover:bg-gray-400 border-gray-100'
-        //         type='text'
-        //       >
-        //         <div className='flex items-center gap-1'>
-        //           <UserPlusIcon className='bg-gray-100' width={20} />
-        //           Invite Influencer
-        //         </div>
-        //       </Button>
-        //     </div>
-        //   )
-        // }}
         />
         {isDrawerVisible && (
           <ModalViewInfluencerProfile onClose={() => setIsDrawerVisible(false)} open={isDrawerVisible} />

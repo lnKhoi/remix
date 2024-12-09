@@ -49,7 +49,7 @@ function Reports({ campaign, filter }: ReportsProps) {
 
   const handleGetIGReport = async () => {
     setLoading(true)
-    const [igStats, roi, conversionRate, costPerConversion, costperClicks, influencers, ctr,cpa] = await Promise.all([
+    const [igStats, roi, conversionRate, costPerConversion, costperClicks, influencers, ctr, cpa] = await Promise.all([
       getInstagramStatistics(campaign?.id as string, filter),
       getCampaignROI(campaign?.id as string, filter),
       getCampaignConversionRate(campaign?.id as string, filter),
@@ -57,7 +57,7 @@ function Reports({ campaign, filter }: ReportsProps) {
       getCostPerClicks(campaign?.id as string, filter),
       getInfluencerInReport(campaign?.id as string, filter),
       getClickThroughRateInReport(campaign?.id as string, filter),
-      getCpaInReport(campaign?.id as string,filter)
+      getCpaInReport(campaign?.id as string, filter)
 
     ]).finally(() => setLoading(false))
 
@@ -74,8 +74,8 @@ function Reports({ campaign, filter }: ReportsProps) {
       influencers: influencers?.data?.data,
       totalCost: roi?.data?.totalCost,
       totalCtr: ctr?.data?.crt,
-      cpa:cpa?.data?.costPerAcquisition,
-      totalPurchases:roi?.data?.totalCost
+      cpa: cpa?.data?.costPerAcquisition,
+      totalPurchases: roi?.data?.totalCost
     })
   };
 
@@ -191,10 +191,10 @@ function Reports({ campaign, filter }: ReportsProps) {
       {/* Influencer Performance */}
       <h2 className='mt-6 text-2xl font-medium text-gray-800'>Influencer Performance</h2>
       <p className='text-sm mt-1 text-gray-700'>Manage your content and view their sales performance.</p>
-      <div className='mt-6'>
+      <div className='mt-6 cursor-pointer'>
         <Table
           onRow={(record) => ({
-            onClick: () => handleViewInfluencerProfile(record as InfluencerPerformance),
+            onClick: () => handleViewInfluencerProfile(record as any),
           })}
           columns={influencerPerformanceColumns}
           dataSource={reportData?.influencers} />

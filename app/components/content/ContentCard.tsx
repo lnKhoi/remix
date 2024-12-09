@@ -32,7 +32,6 @@ function ContentCard({ content, loading }: ContentCardProps) {
 
     const defaultAvatar = 'https://www.svgrepo.com/show/384676/account-avatar-profile-user-6.svg'
 
-    console.log(content)
     return (
         <div className='rounded-2xl cursor-pointer border border-gray-200 hover:shadow-md transition-shadow'>
             {contextHolder}

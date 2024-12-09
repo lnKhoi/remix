@@ -55,9 +55,10 @@ export const getIGAudienceOfInfluencer = (campaignId: string, creatorId: string)
     return getData(`/api/v1/campaign/${campaignId}/instagram-statistics/${creatorId}`)
 }
 
-export const getRevenueOfInfluencer = (campaignId: string, creatorId: string) => {
-    return getData(`/api/v1/report/${campaignId}/${creatorId}/shopify-detail-statistic`)
+export const getRevenueOfInfluencer = (creatorId: string) => {
+    return getData(`/api/v1/report/${creatorId}/shopify-detail-statistic`)
 }
+
 
 export const getClickThroughRateInReport = (campaignId: string, filter: FilterDateRange) => {
     const dateRangeQuery = filter.dateRange

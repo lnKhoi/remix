@@ -17,12 +17,17 @@ export type ReportCampaign = {
 };
 
 export type InfluencerInReport = {
-    creatorId: string;
-    totalImpressions: number;
-    totalFollowers: number;
-    totalInteractions: number;
-    engagementRate: number;
-    totalPurchases:number
-    conversionRate: number;
-    creator: Creator;
+    creatorId?: string;
+    totalImpressions?: number;
+    totalFollowers?: number;
+    revenue?:number
+    totalInteractions?: number;
+    engagementRate?: number;
+    totalPurchases?:number
+    totalOrders?:number
+    costPerClick?:number
+    totalRevenue?:number
+    conversionRate?: number;
+    totalClicks?:number
+    creator?: Creator;
 }
