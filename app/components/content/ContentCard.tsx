@@ -71,11 +71,11 @@ function ContentCard({ content, loading }: ContentCardProps) {
                     <div className='flex items-center justify-between gap-2 mt-2 mb-4'>
                         <div className='w-1/2 p-3 h-[80px] flex flex-col justify-between rounded-xl bg-gray-100'>
                             <p className='text-sm text-gray-500 font-medium'>Conversion Rate</p>
-                            <p className='mt-2 text-gray-800 font-semibold text-[18px]'>% {content?.conversionRate}</p>
+                            <p className='mt-2 text-gray-800 font-semibold text-[18px]'>{content?.conversionRate?.toFixed(2)} %</p>
                         </div>
                         <div className='w-1/2 p-3 h-[80px] rounded-xl bg-gray-100'>
                             <p className='text-sm text-gray-500 font-medium'>Engagement Rate</p>
-                            <p className='mt-2 text-gray-800 font-semibold text-[18px]'>% {content?.engagementRate}</p>
+                            <p className='mt-2 text-gray-800 font-semibold text-[18px]'>{content?.engagementRate?.toFixed(2)} %</p>
                         </div>
                     </div>
                 )}
@@ -89,15 +89,15 @@ function ContentCard({ content, loading }: ContentCardProps) {
                         </span>
                     </div>
                     <div className='flex items-center gap-2'>
-                            <CopyToClipboard
-                                onCopy={() => messageApi.success('Copied to clipboard!')}
-                                text={content?.trackingUrl || ''}
-                            >
-                                <div className='h-[30px] w-[30px] cursor-pointer rounded-md bg-gray-200 flex items-center justify-center'>
-                                    <LinkIcon width={16} className='text-gray-500' />
-                                </div>
-                            </CopyToClipboard>
-                    
+                        <CopyToClipboard
+                            onCopy={() => messageApi.success('Copied to clipboard!')}
+                            text={content?.trackingUrl || ''}
+                        >
+                            <div className='h-[30px] w-[30px] cursor-pointer rounded-md bg-gray-200 flex items-center justify-center'>
+                                <LinkIcon width={16} className='text-gray-500' />
+                            </div>
+                        </CopyToClipboard>
+
                         <Link to={`/manager/content/${content?.id}`}>
                             <Button className='bg-gray-100' type='text' >View content</Button>
                         </Link>

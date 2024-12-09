@@ -75,7 +75,7 @@ function Reports({ campaign, filter }: ReportsProps) {
       totalCost: roi?.data?.totalCost,
       totalCtr: ctr?.data?.crt,
       cpa: cpa?.data?.costPerAcquisition,
-      totalPurchases: roi?.data?.totalCost
+      totalPurchases: conversionRate?.data?.buyCount
     })
   };
 
