@@ -245,12 +245,12 @@ const ContentDetails = () => {
 
               <div className='flex flex-col gap-5 w-[300px]'>
                 <div className='flex flex-col gap-5 w-[300px] border border-gray-100 rounded-xl'>
-                  <Skeleton.Node style={{ marginTop: 16, marginLeft: 16, marginRight: 16, width: '90%', height: 60 }} />
+                  <Skeleton.Node active style={{ marginTop: 16, marginLeft: 16, marginRight: 16, width: '90%', height: 60 }} />
                   <div className='w-full justify-between px-4 flex items-center '>
-                    <Skeleton.Button style={{ height: 28, borderRadius: 50 }} />
-                    <Skeleton.Button style={{ height: 28 }} />
+                    <Skeleton.Button active style={{ height: 28, borderRadius: 50 }} />
+                    <Skeleton.Button active style={{ height: 28 }} />
                   </div>
-                  <Skeleton.Node style={{ width: '100%', height: 70 }} />
+                  <Skeleton.Node active style={{ width: '100%', height: 70 }} />
                 </div>
               </div>
               :
@@ -309,8 +309,8 @@ const ContentDetails = () => {
               <div className='w-[300px] border border-gray-100 rounded-xl shadow-sm'>
                 <div className='flex items-start p-4 gap-3'>
                   <div className='flex flex-col gap-1 w-full'>
-                    <Skeleton.Button style={{ width: 100, height: 16 }} />
-                    <Skeleton.Button style={{ width: 200, height: 16 }} />
+                    <Skeleton.Button active style={{ width: 100, height: 16 }} />
+                    <Skeleton.Button active style={{ width: 200, height: 16 }} />
                   </div>
                 </div>
               </div>
