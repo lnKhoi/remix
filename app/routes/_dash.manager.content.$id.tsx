@@ -107,7 +107,7 @@ const ContentDetails = () => {
         toast.success('Content has been reject successfully')
       })
   }
-
+  //
   const handleConfirmInfluencerRequest = () => {
   }
 
