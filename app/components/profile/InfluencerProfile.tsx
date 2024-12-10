@@ -5,14 +5,16 @@ import React, {
 
 import {
   Avatar,
+  Button,
   Modal,
 } from 'antd';
+import CountUp from 'react-countup';
 import {
   getIGAudienceOfInfluencer,
   getRevenueOfInfluencer,
 } from '~/apis/reports';
-import { initialInfluencerOverLifeTime } from '~/constants/report.constant';
-import { InfluencerInReport } from '~/models/report.model';
+
+import { ChevronUpDownIcon } from '@heroicons/react/24/outline';
 
 type InfluencerProfileProps = {
     open: boolean,
@@ -22,23 +24,21 @@ type InfluencerProfileProps = {
 }
 
 function InfluencerProfile({ open, onClose, campaignId, inluencerId }: InfluencerProfileProps) {
-
-    const [report, setReport] = useState<InfluencerInReport>(initialInfluencerOverLifeTime)
+    const [report, setReport] = useState({ conversionRate: 0, totalClicks: 0,influencerAudience:null })
 
     const handleGetIGReport = async () => {
-        const [influencerAudience, revenue] = await Promise.all([
-            getIGAudienceOfInfluencer(campaignId, inluencerId),
-            getRevenueOfInfluencer(inluencerId)
+        const [influencerAudience,revenue] = await Promise.all([
+            getIGAudienceOfInfluencer(campaignId,inluencerId),
+            getRevenueOfInfluencer(campaignId,inluencerId)
         ]);
 
         setReport({
             ...report,
             conversionRate: revenue?.data?.conversionRate,
             totalClicks: revenue?.data?.totalClicks,
-            creator: influencerAudience?.data,
-            revenue: revenue?.data?.totalRevenue,
-            costPerClick: revenue?.data?.costPerClick,
-            totalPurchases: revenue?.data?.orderCount
+            influencerAudience:influencerAudience?.data,
+            revenue:revenue?.data?.totalRevenue,
+
         })
     };
 
@@ -46,40 +46,52 @@ function InfluencerProfile({ open, onClose, campaignId, inluencerId }: Influence
         handleGetIGReport()
     }, [])
 
+    console.log(report)
+    
+
     return (
         <Modal footer={null} width={650} open={open} onCancel={() => onClose()}>
             <div className='flex items-center gap-5'>
-                <Avatar src={report?.creator?.creator?.avatarUrl} className='w-[128px] h-[128px] rounded-[50%]' />
+                <Avatar src={report?.influencerAudience?.creator?.avatarUrl} className='w-[128px] h-[128px] rounded-[50%]' />
                 <div className='flex flex-col'>
-                    <p className='text-2xl font-semibold'>{report?.creator?.creator?.name}</p>
-                    <span className='text-sm mt-[2px] font-normal text-gray-500'>{report?.creator?.creator?.email}</span>
+                    <p className='text-2xl font-semibold'>{report?.influencerAudience?.creator?.name}</p>
+                    <span className='text-sm mt-[2px] font-normal text-gray-500'>{report?.influencerAudience?.creator?.email}</span>
+                    <Button className='h-[36px] mt-3 w-[86px]' type='primary'>Live Posts</Button>
                 </div>
             </div>
             <div className='mt-8'>
                 <div className='flex items-center justify-between'>
-                    <p className='text-lg font-semibold'>Influencer Performance Over Lifetime</p>
+                    <p className='text-lg font-semibold'>Post Performance</p>
+                    <button className='bg-gray-100 px-3 justify-between flex items-center px hover:bg-gray-300 transition-all text-sm h-[36px] w-[144px] font-normal rounded-[9px] text-gray-800'>
+                        All Status
+                        <ChevronUpDownIcon width={16} />
+                    </button>
                 </div>
             </div>
             <div className='mt-5 grid grid-cols-3 gap-5'>
                 <div className='rounded-2xl bg-gray-100 h-[93px] p-4'>
-                    <p className='text-2xl font-semibold'>${report?.revenue}</p>
+                    <p className='text-2xl font-semibold'>{report?.revenue}</p>
                     <p className='mt-3 text-gray-500 text-sm font-medium'>Revenue</p>
                 </div>
                 <div className='rounded-2xl bg-gray-100 h-[93px] p-4'>
-                    <p className='text-2xl font-semibold'>{report.totalClicks}</p>
-                    <p className='mt-3 text-gray-500 text-sm font-medium'>Click</p>
+                    <p className='text-2xl font-semibold'>{report.influencerAudience?.totalImpressions?.toFixed(2)}%</p>
+                    <p className='mt-3 text-gray-500 text-sm font-medium'>Total Impressions</p>
                 </div>
                 <div className='rounded-2xl bg-gray-100 h-[93px] p-4'>
-                    <p className='text-2xl font-semibold'>${report?.costPerClick?.toFixed(2)}</p>
-                    <p className='mt-3 text-gray-500 text-sm font-medium'>CPC (Cost Per Click)</p>
-                </div>
-                <div className='rounded-2xl bg-gray-100 h-[93px] p-4'>
-                    <p className='text-2xl font-semibold'>{report?.totalPurchases}</p>
-                    <p className='mt-3 text-gray-500 text-sm font-medium'>Purchases</p>
-                </div>
-                <div className='rounded-2xl bg-gray-100 h-[93px] p-4'>
-                    <p className='text-2xl font-semibold'>{report?.conversionRate?.toFixed(2)}%</p>
+                    <CountUp className='text-2xl font-semibold' end={report?.conversionRate || '---'} />
                     <p className='mt-3 text-gray-500 text-sm font-medium'>Conversion Rate</p>
+                </div>
+                <div className='rounded-2xl bg-gray-100 h-[93px] p-4'>
+                    <p className='text-2xl font-semibold'>{(report?.influencerAudience?.engagementRate?.toFixed(2)) || '---'}</p>
+                    <p className='mt-3 text-gray-500 text-sm font-medium'>Engagement Rate</p>
+                </div>
+                <div className='rounded-2xl bg-gray-100 h-[93px] p-4'>
+                    <CountUp className='text-2xl font-semibold' end={report?.totalClicks || '---'} />
+                    <p className='mt-3 text-gray-500 text-sm font-medium'>Clicks</p>
+                </div>
+                <div className='rounded-2xl bg-gray-100 h-[93px] p-4'>
+                    <p className='text-2xl font-semibold'>{report.influencerAudience?.totalLikes || '---'}</p>
+                    <p className='mt-3 text-gray-500 text-sm font-medium'>Likes</p>
                 </div>
             </div>
         </Modal>

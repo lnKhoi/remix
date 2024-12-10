@@ -55,27 +55,16 @@ export const getIGAudienceOfInfluencer = (campaignId: string, creatorId: string)
     return getData(`/api/v1/campaign/${campaignId}/instagram-statistics/${creatorId}`)
 }
 
-export const getRevenueOfInfluencer = (creatorId: string) => {
-    return getData(`/api/v1/report/${creatorId}/shopify-detail-statistic`)
+export const getRevenueOfInfluencer = (campaignId: string, creatorId: string) => {
+    return getData(`/api/v1/report/${campaignId}/${creatorId}/shopify-detail-statistic`)
 }
-
 
 export const getClickThroughRateInReport = (campaignId: string, filter: FilterDateRange) => {
     const dateRangeQuery = filter.dateRange
         ? `&from=${filter.dateRange[0]}&to=${filter.dateRange[1]}`
-        : ''; 
+        : ''; // No default date range, empty query if no date range
 
     const url = `/api/v1/report/${campaignId}/ctr?timeRange=${filter.time}${dateRangeQuery}`;
-
-    return getData(url);
-};
-
-export const getCpaInReport = (campaignId: string, filter: FilterDateRange) => {
-    const dateRangeQuery = filter.dateRange
-        ? `&from=${filter.dateRange[0]}&to=${filter.dateRange[1]}`
-        : ''; 
-
-    const url = `/api/v1/report/cost-per-acquisition?campaignId=${campaignId}&timeRange=${filter.time}${dateRangeQuery}`;
 
     return getData(url);
 };

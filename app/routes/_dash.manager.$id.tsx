@@ -9,7 +9,6 @@ import {
   Breadcrumb,
   Button,
   Segmented,
-  Skeleton,
 } from 'antd';
 import {
   toast,
@@ -21,12 +20,10 @@ import Content from '~/components/campaign/Content';
 import Influencer from '~/components/campaign/Influencer';
 import ModalInviteInfluencerToCampaign
   from '~/components/campaign/ModalInviteInfluencerToCampaign';
-import Order from '~/components/campaign/Order';
 import Reports from '~/components/campaign/Reports';
 import ModalSelectTimeRange, {
   DateRange,
 } from '~/components/ui/ModalSelectTimeRange';
-import { campaignDetailsTabs } from '~/constants/campaign.constant';
 import { Campaign } from '~/models/Campaign.model';
 import { abbreviateLastName } from '~/utils/formatNumber';
 
@@ -41,43 +38,38 @@ export const meta: MetaFunction = () => {
   return [{ title: 'Campaign Details' }];
 };
 
-type Tab = 'Campaign Details' | 'Influencer' | 'Content' | 'Reports' | 'Order';
+type Tab = 'Campaign Details' | 'Influencer' | 'Content' | 'Reports';
 function page() {
   const { id } = useParams();
-  const [loading, setLoading] = useState<boolean>(false)
   const [tab, setTab] = useState<Tab>('Campaign Details');
   const [modalInvite, setModalInvite] = useState<boolean>(false);
   const [campaign, setCampaign] = useState<Campaign | null>(null);
   const [filter, setFilter] = useState<{ time: string, dateRange: DateRange }>({ time: '7d', dateRange: null })
 
   const handleGetCampaignDetails = async (): Promise<void> => {
-    setLoading(true)
     await getCampaignDetails(id as string)
       .then((res) => setCampaign(res.data))
-      .catch((err) => toast.error(err?.message))
-      .finally(() => setLoading(false))
+      .catch((err) => toast.error(err?.message));
   };
 
   const getCampaignTab = () => {
     switch (tab) {
       case 'Campaign Details':
-        return <CampaignDetails loading={loading} campaign={campaign} />;
+        return <CampaignDetails campaign={campaign} />;
       case 'Influencer':
         return <Influencer campaign={campaign} />;
       case 'Content':
         return <Content campaign={campaign} />;
       case 'Reports':
         return <Reports filter={filter} campaign={campaign} />;
-      case 'Order':
-        return <Order campaign={campaign} />;
       default:
         break;
     }
   };
 
-  const handleFilterReport = (selectedFilter: string, dateRange: DateRange) => {
-    setFilter({ time: selectedFilter, dateRange: dateRange })
-  }
+  const handleFilterReport  = (selectedFilter: string, dateRange: DateRange) => {
+      setFilter({ time: selectedFilter, dateRange: dateRange })
+    }
 
   useEffect(() => {
     handleGetCampaignDetails();
@@ -92,14 +84,7 @@ function page() {
             className='w-[200px]'
             items={[
               { title: <Link to={'/manager/campaigns'}>Campaigns</Link> },
-              {
-                title: <>
-                  {loading
-                    ? <Skeleton.Button style={{ width: 90 }} size='small' active />
-                    : <p className='text-gray-800'>{abbreviateLastName(campaign?.name as string, 17)}</p>
-                  }
-                </>
-              },
+              { title: <p className='text-gray-800'>{abbreviateLastName(campaign?.name as string, 17)}</p> },
             ]}
           />
           <Button
@@ -121,14 +106,25 @@ function page() {
             defaultValue={tab}
             style={{ marginBottom: 8 }}
             onChange={(value) => setTab(value as Tab)}
-            options={campaignDetailsTabs}
+            options={[
+              { label: 'Campaign Details', value: 'Campaign Details' },
+              { label: 'Influencer', value: 'Influencer' },
+              {
+                label: (
+                  <div className='flex items-center'>
+                    Content
+                    {/* <Badge color='#EF4444' size='small' className='ml-1' count={14}></Badge> */}
+                  </div>
+                ),
+                value: 'Content',
+              },
+              { label: 'Reports', value: 'Reports' },
+            ]}
           />
           {/* <ModalSelectTimeRange/> */}
-          {tab === 'Reports' && (
-            <div className='fixed z-50 top-[78px] right-[32px]'>
-              <ModalSelectTimeRange onSelect={(time, dates) => handleFilterReport(time, dates)} />
-            </div>
-          )}
+          <div className='fixed z-50 top-[78px] right-[32px]'>
+            <ModalSelectTimeRange onSelect={(time, dates) => handleFilterReport(time, dates)} />
+          </div>
         </div>
         <div className='pt-14'>{getCampaignTab()}</div>
       </div>

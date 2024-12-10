@@ -43,12 +43,11 @@ const ModalCreateDiscount = ({ products, shopId, open, onClose }: ModalCreateDis
 
     const handleFinish = (values: any) => {
         setLoading(true)
-
         const payload = {
             ...values,
             value: discountType === 'free_shipping' ? 100 : values.value,
-            startsAt: dayjs(values.startsAt).toISOString(),
-            endsAt: dayjs(values.endsAt).toISOString()
+            startsAt: dayjs(values.startDate).toISOString(),
+            endsAt: dayjs(values.endDate).toISOString()
         }
 
         createDiscount(shopId, payload)

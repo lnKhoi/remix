@@ -42,10 +42,7 @@ import { Campaign } from '~/models/Campaign.model';
 import Editor from '~/plugins/editor';
 
 import { MetaFunction } from '@remix-run/cloudflare';
-import {
-  Link,
-  useNavigate,
-} from '@remix-run/react';
+import { Link } from '@remix-run/react';
 
 export const meta: MetaFunction = () => {
   return [{ title: 'Create Campaign' }]
@@ -59,7 +56,6 @@ const CampaignForm = () => {
   const [loading, setLoading] = useState<boolean>(false)
   const [selectedSocials, setSelectedSocials] = useState<string[]>([]);
 
-  const navigate = useNavigate()
   const budget = Form.useWatch('budget', form);
   const contentFormat = Form.useWatch('contentFormat', form)
   const maximumParticipants = Form.useWatch('maximumParticipants', form);
@@ -81,7 +77,6 @@ const CampaignForm = () => {
         form.resetFields()
         setSelectedSocials([])
         setContent('')
-        navigate('/manager/campaigns')
       })
       .catch(err => toast.error(err?.message))
       .finally(() => setLoading(false))
@@ -106,6 +101,7 @@ const CampaignForm = () => {
       form.setFieldsValue({ totalBudget });
     }
   }, [budget, maximumParticipants]);
+
 
 
   return (
@@ -322,7 +318,7 @@ const CampaignForm = () => {
                   optionFilterProp="children"
                 >
                   {countries.map((country) => (
-                    <Select.Option key={country.value} value={country.value}>
+                    <Select.Option key={country.value} value={country.label}>
                       <span role="img" aria-label={country.label} className="mr-2">
                         {country.flag}
                       </span>
