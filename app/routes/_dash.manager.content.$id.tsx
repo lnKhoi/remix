@@ -188,6 +188,7 @@ const ContentDetails = () => {
                     />
                   );
                 })}
+
               </div>
               <p className='text-sm font-normal text-gray-500 mt-4'>{content?.caption} </p>
             </div>
@@ -203,6 +204,7 @@ const ContentDetails = () => {
         {/* Review */}
         <div className='flex flex-col gap-5 w-[300px]'>
           {/* Influencer Requested */}
+
           <div className='w-[300px] border border-gray-100 rounded-xl shadow-sm'>
             <p className='p-4 text-sm text-gray-800 '>Please review the attached content for approval. Looking forward to your feedback!</p>
             <div className='w-full justify-between px-4 pb-4 flex items-center gap-2 '>
@@ -226,6 +228,7 @@ const ContentDetails = () => {
               <p className='w-[224px] text-sm text-gray-800'>Content approval time within 48 hours from submission for review</p>
             </div>
           </div>
+
           {/* Reason */}
           {content?.approved === 'rejected' && (
             <div className='p-4 border w-[300px] border-gray-200 rounded-xl flex flex-col gap-4'>
@@ -251,6 +254,7 @@ const ContentDetails = () => {
           )}
 
           {/* Link website */}
+
           {content?.trackingUrl && (
             <div className='w-[300px] border border-gray-100 rounded-xl shadow-sm'>
               <div className='flex items-start p-4 gap-3'>
@@ -268,6 +272,7 @@ const ContentDetails = () => {
                   </CopyToClipboard>
                 </div>
               </div>
+
             </div>
           )}
         </div>
