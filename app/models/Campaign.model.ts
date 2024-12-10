@@ -18,6 +18,7 @@ export type Campaign = {
     joinedCreators?:User []
     discountValue?:number,
     discountCode?:number
+    contentFormat?:string[]
     deletedAt?: string; 
   }
 
