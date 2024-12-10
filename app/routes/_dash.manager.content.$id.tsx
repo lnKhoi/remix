@@ -10,6 +10,7 @@ import {
   Breadcrumb,
   Button,
   DatePicker,
+  Drawer,
   Input,
   message,
   Modal,
@@ -31,6 +32,7 @@ import {
 } from '~/apis/content';
 import Approve from '~/assets/approve.png';
 import Reject from '~/assets/reject.png';
+import ModalPreviewContent from '~/components/content/ModalPreviewContent';
 import TagColor from '~/components/ui/tagColor';
 import {
   DATE_TIME_FORMAT,
@@ -41,6 +43,7 @@ import {
   getColorStatusContent,
 } from '~/helpers/campaign.helper';
 import { Content } from '~/models/Content.model';
+import Editor from '~/plugins/editor';
 
 import {
   CalendarDateRangeIcon,
@@ -69,6 +72,7 @@ const ContentDetails = () => {
 
   const [reason, setReason] = useState<string>('')
   const [loading, setLoading] = useState<boolean>(false)
+  const [isPreview, setIsPreview] = useState<boolean>(false)
   const [submitTime, setSubmitTime] = useState<Dayjs | null>(null)
   const [messageApi, contextHolder] = message.useMessage();
   const [content, setContent] = useState<Content | null>(null)
@@ -150,6 +154,7 @@ const ContentDetails = () => {
                   {dayjs(content?.createdAt).format('DD/MM/YYYY')}
                   <ChevronUpDownIcon width={16} />
                 </button>
+                <Button onClick={() => setIsPreview(true)} className='bg-gray-100'>Preview</Button>
               </div>
             </div>
             <div className='flex p-4 items-start mt-1 gap-3'>
@@ -213,7 +218,7 @@ const ContentDetails = () => {
                   background={getColorStatusContent(content?.approved as ContentStatus)?.background as ContentStatus} />
               )}
               {content?.approved === 'posted' && (
-                <Button className='bg-gray-100 border-none'>View Post</Button>
+                <Button onClick={() => window.open(content?.permalink, '_blank')} className='bg-gray-100'>View Post</Button>
               )}
             </div>
             <div className='bg-gray-100  flex gap-3 items-center p-4 justify-center'>
@@ -225,7 +230,7 @@ const ContentDetails = () => {
           {content?.approved === 'rejected' && (
             <div className='p-4 border w-[300px] border-gray-200 rounded-xl flex flex-col gap-4'>
               <span className='text-sm font-medium text-gray-800'>Reason</span>
-              <p className='text-sm font-medium text-gray-800'>{content?.reason}</p>
+              <Editor showToolbar={false} value={content?.reason as string} />
             </div>
           )}
           {/* Link Content */}
@@ -263,31 +268,28 @@ const ContentDetails = () => {
                   </CopyToClipboard>
                 </div>
               </div>
-
-
             </div>
           )}
-
         </div>
 
         {/* Modal Reject content*/}
-        <Modal
-          width={355}
-          open={modalType === 'reject-content'}
-          onCancel={() => setModalType('')} title=''
-          footer={() =>
-            <div className='w-full mt-7 flex items-center justify-between'>
-              <Button onClick={() => setModalType('')} className='w-[49%]'>Cancel</Button>
-              <Button onClick={handleReject} className='text-white bg-red-500  w-[49%]' >Reject</Button>
+        <Drawer
+          footer={
+            <div className="float-right gap-3 flex items-end  justify-between">
+              <Button onClick={() => setModalType('')} >Cancel</Button>
+              <Button onClick={handleReject} type="primary">Reject</Button>
             </div>
           }
+          width={600}
+          title="Reject"
+          open={modalType === 'reject-content'}
+          onClose={() => setModalType('')}
         >
-          <div className='flex items-center flex-col justify-center'>
-            <h2 className='text-xl font-semibold text-gray-800'>Reject</h2>
-            <p className='text-sm text-center text-gray-800 mt-1'>Please let us know your reason for rejecting the post</p>
-            <TextArea rows={4} onChange={(e) => setReason(e.target.value)} className='mt-5' placeholder='Reason...' />
-          </div>
-        </Modal>
+          <p className="text-sm font-normal my-5 mx-2 text-gray-500">
+            Please let us know your reason for rejecting the post
+          </p>
+          <Editor value={reason} onChange={(value) => setReason(value)} />
+        </Drawer>
 
         {/* Modal Reject Influencer request */}
         <Modal
@@ -343,11 +345,11 @@ const ContentDetails = () => {
             <DatePicker
               onChange={(date) =>
                 setSubmitTime((prev) => {
-                  const time = prev ? prev : dayjs(); // Default to current time if no previous time
+                  const time = prev ? prev : dayjs();
                   return dayjs(date).set('hour', time.hour()).set('minute', time.minute());
                 })
               }
-              disabledDate={(current) => current && current < minDateTime.startOf('day')} // Disable dates before minDateTime
+              disabledDate={(current) => current && current < minDateTime.startOf('day')}
               style={{ width: '100%' }}
               format={DATE_TIME_FORMAT}
             />
@@ -355,12 +357,11 @@ const ContentDetails = () => {
             <TimePicker
               onChange={(time) =>
                 setSubmitTime((prev) => {
-                  const date = prev ? prev : dayjs(); // Default to current date if no previous date
+                  const date = prev ? prev : dayjs();
                   return dayjs(date).set('hour', time.hour()).set('minute', time.minute());
                 })
               }
               disabledHours={() => {
-                // Disable hours before minDateTime if the selected day is the same as minDateTime
                 const selectedDate = submitTime ? dayjs(submitTime) : null;
                 if (selectedDate && selectedDate.isSame(minDateTime, 'day')) {
                   return [...Array(24).keys()].filter((hour) => hour < minDateTime.hour());
@@ -385,6 +386,8 @@ const ContentDetails = () => {
           </div>
         </Modal>
 
+        {/* Modal Preview Content */}
+        <ModalPreviewContent content={content as Content} open={isPreview} onClose={() => setIsPreview(false)} />
       </div>
     </div>
 

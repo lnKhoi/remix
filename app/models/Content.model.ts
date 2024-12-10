@@ -1,3 +1,4 @@
+import { Campaign } from './Campaign.model';
 import { User } from './User.model';
 
 export type Content ={
@@ -11,6 +12,8 @@ export type Content ={
     caption: string;
     notes: string;
     engagementRate:number
+    campaign:Campaign
+    permalink?:string
     isDeleted: boolean;
     conversionRate:number
     deletedAt: string | null;
