@@ -31,6 +31,7 @@ export const navItems: NavItem[] = [
     to: "/manager/campaigns",
     icon: FireIcon,
     label: "Campaigns",
+    badge: 6,
   },
   {
     to: "/manager/creators",

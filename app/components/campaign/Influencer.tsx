@@ -1,10 +1,10 @@
 import React, {
-  Key,
   useEffect,
   useState,
 } from 'react';
 
 import {
+  Button,
   Table,
   TableProps,
   Tabs,
@@ -14,6 +14,7 @@ import {
   brandUpdateInvitationStatus,
   getInfluencerParticipantsInCampaign,
 } from '~/apis/campaign';
+import NoInfluencer from '~/assets/no-influencer.png';
 import { influencersParticipantsColumns } from '~/constants/creator.constant';
 import { Campaign } from '~/models/Campaign.model';
 import {
@@ -25,6 +26,7 @@ import {
   AdjustmentsHorizontalIcon,
   CheckCircleIcon,
   ChevronUpDownIcon,
+  UserPlusIcon,
   XCircleIcon,
 } from '@heroicons/react/24/outline';
 
@@ -32,7 +34,7 @@ import { InputSearch } from '../ui/input-search';
 import ModalViewInfluencerProfile from './ModalViewInfluencerProfile';
 
 const rowSelection: TableProps<InfluencerInCampaign>['rowSelection'] = {
-  onChange: (selectedRowKeys: Key[], selectedRows: InfluencerInCampaign[]) => {
+  onChange: (selectedRowKeys: React.Key[], selectedRows: InfluencerInCampaign[]) => {
     console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
   },
 };
@@ -42,7 +44,7 @@ type InfluencerProps = {
 }
 
 const items: TabsProps['items'] = [
-  { key: '', label: <div>Applicants</div> },
+  { key: '', label: <div>Applicants</div>  },
   { key: 'brand_declined_influencer', label: 'Rejected Applicants' },
 ];
 
@@ -50,15 +52,12 @@ function Influencer({ campaign }: InfluencerProps) {
   const [tab, setTab] = useState<'' | 'brand_declined_influencer'>('')
   const [influencers, setInfluencers] = useState<InfluencerInCampaign[]>([])
   const [selectedInfluencer, setSelectedInfluencer] = useState<Creator | null>(null);
-  const [isDrawerVisible, setIsDrawerVisible] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(false)
+  const [isDrawerVisible, setIsDrawerVisible] = useState(false);
 
 
   const handleGetInfluencersInCampaign = async () => {
-    setLoading(true)
     await getInfluencerParticipantsInCampaign(tab, campaign?.id as string, 100, 1)
       .then((res) => setInfluencers(res?.data?.data))
-      .finally(() => setLoading(false))
   }
 
   useEffect(() => {
@@ -79,9 +78,10 @@ function Influencer({ campaign }: InfluencerProps) {
       })
   }
 
+
   // Handle row click to open the drawer
   const handleRowClick = (record: InfluencerInCampaign | Creator) => {
-    setSelectedInfluencer(record as Creator);
+    setSelectedInfluencer(record as Creator); 
     // setIsDrawerVisible(true); 
   };
 
@@ -111,21 +111,34 @@ function Influencer({ campaign }: InfluencerProps) {
         </div>
       </div>
       {/* Influeners Table */}
-      <div className='mt-6 cursor-pointer'>
+      <div className='mt-6'>
         <Table<InfluencerInCampaign>
           onRow={(record) => ({
             onClick: () => handleRowClick(record),
           })}
           rowSelection={{ type: 'checkbox', ...rowSelection }}
-          columns={influencersParticipantsColumns({ handleApprove, handleReject, loading })}
-          dataSource={
-            loading
-              ? [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] as any
-              : influencers
-          }
+          columns={influencersParticipantsColumns({ handleApprove, handleReject })}
+          dataSource={influencers}
+          locale={{
+            emptyText: (
+              <div className='w-full flex flex-col items-center justify-center'>
+                <img src={NoInfluencer} alt="no data" />
+                <Button
+                  // onClick={() => setModalInvite(true)}
+                  className='bg-gray-100 mt-3 hover:bg-gray-400 border-gray-100'
+                  type='text'
+                >
+                  <div className='flex items-center gap-1'>
+                    <UserPlusIcon className='bg-gray-100' width={20} />
+                    Invite Influencer
+                  </div>
+                </Button>
+              </div>
+            )
+          }}
         />
         {isDrawerVisible && (
-          <ModalViewInfluencerProfile onClose={() => setIsDrawerVisible(false)} open={isDrawerVisible} />
+        <ModalViewInfluencerProfile onClose={() => setIsDrawerVisible(false)} open={isDrawerVisible} />
         )}
       </div>
     </div>
