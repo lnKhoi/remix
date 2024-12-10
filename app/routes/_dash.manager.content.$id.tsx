@@ -13,6 +13,7 @@ import {
   Input,
   message,
   Modal,
+  Skeleton,
   TimePicker,
 } from 'antd';
 import dayjs, { Dayjs } from 'dayjs';
@@ -77,7 +78,9 @@ const ContentDetails = () => {
   const minDateTime = dayjs(dayjs()).add(48, 'hour');
 
   const handleGetContentDetails = async () => {
-    await getContentDetails(id as string).then((res) => setContent(res.data))
+    setLoading(true)
+    await getContentDetails(id as string).then((res) => setContent(res.data)).finally(() =>
+      setLoading(false))
   }
 
   useEffect(() => {
@@ -141,50 +144,89 @@ const ContentDetails = () => {
           <div className='w-[700px] border border-gray-200 shadow-sm rounded-xl '>
             <div className='flex border-b border-b-gray-200 items-center justify-between'>
               <div className='flex items-center p-4 gap-2'>
-                <Square3Stack3DIcon width={20} className='text-gray-800' />
-                <p>Deliverables</p>
+                {
+                  loading ?
+                    <Skeleton.Button active style={{ height: 25, width: 100, marginLeft: 20, }} />
+                    :
+                    <>
+                      <Square3Stack3DIcon width={20} className='text-gray-800' />
+                      <p>Deliverables</p>
+                    </>
+                }
               </div>
               <div className='flex p-4 items-center justify-between gap-3'>
-                <p>Version</p>
-                <button className='bg-[#F3F4F6] px-3 justify-between flex items-center px hover:bg-[#D1D5DB] transition-all text-sm h-[36px] w-[125px] font-normal rounded-[9px] text-[#1F2937]'>
-                  {dayjs(content?.createdAt).format('DD/MM/YYYY')}
-                  <ChevronUpDownIcon width={16} />
-                </button>
+                {
+                  loading ?
+                    <Skeleton.Button active style={{ height: 25, width: 100, marginLeft: 20, padding: 3 }} />
+                    :
+                    <>
+                      <p>Version</p>
+                      <button className='bg-[#F3F4F6] px-3 justify-between flex items-center px hover:bg-[#D1D5DB] transition-all text-sm h-[36px] w-[125px] font-normal rounded-[9px] text-[#1F2937]'>
+                        {dayjs(content?.createdAt).format('DD/MM/YYYY')}
+                        <ChevronUpDownIcon width={16} />
+                      </button>
+                    </>
+                }
               </div>
             </div>
             <div className='flex p-4 items-start mt-1 gap-3'>
-              <img className='w-[36px] h-[36px] rounded-[50%] object-cover' src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTw7QkfjQ7yvMpDiPlgagN_hYtCrd2acymT1TDim7Kyt-WSAFhtXgHeZ_W0y_MAnxXtJqM&usqp=CAU" alt="avatar" />
-              <div className='flex flex-col items-start'>
-                <p className='text-sm font-medium text-gray-800'>{content?.creator.name}</p>
-                <p className='text-gray-500 text-sm font-normal'>Submission date : {dayjs(content?.createdAt).format(DATE_TIME_FORMAT_V2)}</p>
-              </div>
+              {
+                loading ?
+                  <>
+                    <Skeleton.Avatar active shape='circle' style={{ width: 36, height: 36 }} />
+                    <div className='flex flex-col items-start'>
+                      <Skeleton.Button active style={{ width: 80, height: 20 }} />
+                      <Skeleton.Button active style={{ width: 200, height: 18 }} />
+                    </div>
+                  </> :
+                  <>
+                    <img className='w-[36px] h-[36px] rounded-[50%] object-cover' src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTw7QkfjQ7yvMpDiPlgagN_hYtCrd2acymT1TDim7Kyt-WSAFhtXgHeZ_W0y_MAnxXtJqM&usqp=CAU" alt="avatar" />
+                    <div className='flex flex-col items-start'>
+                      <p className='text-sm font-medium text-gray-800'>{content?.creator.name}</p>
+                      <p className='text-gray-500 text-sm font-normal'>Submission date : {dayjs(content?.createdAt).format(DATE_TIME_FORMAT_V2)}</p>
+                    </div>
+                  </>
+              }
             </div>
             <div className='px-4 pt-2 pb-4'>
               <div className='flex items-center gap-2'>
-                {content?.urls.map((url, index) => {
-                  const isVideo = videoExtensions.includes(url.slice(-3));
+                {
+                  loading ?
 
-                  return isVideo ? (
-                    <video
-                      key={index}
-                      autoPlay
-                      loop
-                      muted
-                      controls
-                      className='w-[120px] h-[120px] rounded-lg object-cover'
-                      src={url}
-                    />
-                  ) : (
-                    <img
-                      key={index}
-                      className='w-[120px] h-[120px] rounded-lg object-cover'
-                      src={url || contentPreview}
-                      alt="content"
-                    />
-                  );
-                })}
+                    <Skeleton.Image active style={{ width: 120, height: 120, borderRadius: 8, }} />
+                    :
+                    <>
+                      {content?.urls.map((url, index) => {
+                        const isVideo = videoExtensions.includes(url.slice(-3));
+
+                        return isVideo ? (
+                          <video
+                            key={index}
+                            autoPlay
+                            loop
+                            muted
+                            controls
+                            className='w-[120px] h-[120px] rounded-lg object-cover'
+                            src={url}
+                          />
+                        ) : (
+                          <img
+                            key={index}
+                            className='w-[120px] h-[120px] rounded-lg object-cover'
+                            src={url || contentPreview}
+                            alt="content"
+                          />
+                        );
+                      })}
+                    </>
+                }
               </div>
-              <p className='text-sm font-normal text-gray-500 mt-4'>{content?.caption} </p>
+              {
+                loading ?
+                  <Skeleton.Button active style={{ width: 320, height: 16, marginTop: 16 }} />
+                  :
+                  <p className='text-sm font-normal text-gray-500 mt-4'>{content?.caption} </p>
+              }
             </div>
           </div>
           {/* Note */}
@@ -198,29 +240,45 @@ const ContentDetails = () => {
         {/* Review */}
         <div className='flex flex-col gap-5 w-[300px]'>
           {/* Influencer Requested */}
-          <div className='w-[300px] border border-gray-100 rounded-xl shadow-sm'>
-            <p className='p-4 text-sm text-gray-800 '>Please review the attached content for approval. Looking forward to your feedback!</p>
-            <div className='w-full justify-between px-4 pb-4 flex items-center gap-2 '>
-              {content?.approved == 'pending' ? (
-                <>
-                  <Button onClick={() => setModalType('reject-content')} className='w-1/2' type='default' >Reject</Button>
-                  <Button onClick={() => setModalType('confirm-posting-date')} className='w-1/2' type='primary' >Approve</Button>
-                </>
-              ) : (
-                <TagColor
-                  status={getColorStatusContent(content?.approved as ContentStatus)?.status as string}
-                  color={getColorStatusContent(content?.approved as ContentStatus)?.color as ContentStatus}
-                  background={getColorStatusContent(content?.approved as ContentStatus)?.background as ContentStatus} />
-              )}
-              {content?.approved === 'posted' && (
-                <Button className='bg-gray-100 border-none'>View Post</Button>
-              )}
-            </div>
-            <div className='bg-gray-100  flex gap-3 items-center p-4 justify-center'>
-              <ExclamationCircleIcon width={20} className='text-gray-500' />
-              <p className='w-[224px] text-sm text-gray-800'>Content approval time within 48 hours from submission for review</p>
-            </div>
-          </div>
+          {
+            loading ?
+
+              <div className='flex flex-col gap-5 w-[300px]'>
+                <div className='flex flex-col gap-5 w-[300px] border border-gray-100 rounded-xl'>
+                  <Skeleton.Node style={{ marginTop: 16, marginLeft: 16, marginRight: 16, width: '90%', height: 60 }} />
+                  <div className='w-full justify-between px-4 flex items-center '>
+                    <Skeleton.Button style={{ height: 28, borderRadius: 50 }} />
+                    <Skeleton.Button style={{ height: 28 }} />
+                  </div>
+                  <Skeleton.Node style={{ width: '100%', height: 70 }} />
+                </div>
+              </div>
+              :
+              <div className='w-[300px] border border-gray-100 rounded-xl shadow-sm'>
+                <p className='p-4 text-sm text-gray-800 '>Please review the attached content for approval. Looking forward to your feedback!</p>
+                <div className='w-full justify-between px-4 pb-4 flex items-center gap-2 '>
+                  {content?.approved == 'pending' ? (
+                    <>
+                      <Button onClick={() => setModalType('reject-content')} className='w-1/2' type='default' >Reject</Button>
+                      <Button onClick={() => setModalType('confirm-posting-date')} className='w-1/2' type='primary' >Approve</Button>
+                    </>
+                  ) : (
+                    <TagColor
+                      status={getColorStatusContent(content?.approved as ContentStatus)?.status as string}
+                      color={getColorStatusContent(content?.approved as ContentStatus)?.color as ContentStatus}
+                      background={getColorStatusContent(content?.approved as ContentStatus)?.background as ContentStatus} />
+                  )}
+                  {content?.approved === 'posted' && (
+                    <Button className='bg-gray-100 border-none'>View Post</Button>
+                  )}
+                </div>
+                <div className='bg-gray-100  flex gap-3 items-center p-4 justify-center'>
+                  <ExclamationCircleIcon width={20} className='text-gray-500' />
+                  <p className='w-[224px] text-sm text-gray-800'>Content approval time within 48 hours from submission for review</p>
+                </div>
+              </div>
+          }
+
           {/* Reason */}
           {content?.approved === 'rejected' && (
             <div className='p-4 border w-[300px] border-gray-200 rounded-xl flex flex-col gap-4'>
@@ -246,27 +304,41 @@ const ContentDetails = () => {
           )}
 
           {/* Link website */}
-          {content?.trackingUrl && (
-            <div className='w-[300px] border border-gray-100 rounded-xl shadow-sm'>
-              <div className='flex items-start p-4 gap-3'>
-                <LinkIcon width={20} height={20} className='text-gray-500' />
-                <div className='flex flex-col gap-1 w-full'>
-                  <p className='text-sm font-normal text-gray-500'>Link website</p>
-                  <CopyToClipboard
-                    onCopy={() => messageApi.success('Copied to clipboard!')}
-                    text={content?.trackingUrl}
-                  >
-                    <div className='flex cursor-pointer items-center gap-2 justify-between w-full'>
-                      <p className='text-gray-800 text-sm overflow-hidden text-ellipsis whitespace-nowrap'>{content?.trackingUrl}</p>
-                      <DocumentDuplicateIcon width={20} height={20} className='text-gray-500 min-w-[20px]' />
-                    </div>
-                  </CopyToClipboard>
+          {
+            loading ?
+              <div className='w-[300px] border border-gray-100 rounded-xl shadow-sm'>
+                <div className='flex items-start p-4 gap-3'>
+                  <div className='flex flex-col gap-1 w-full'>
+                    <Skeleton.Button style={{ width: 100, height: 16 }} />
+                    <Skeleton.Button style={{ width: 200, height: 16 }} />
+                  </div>
                 </div>
               </div>
+              : <>
+                {content?.trackingUrl && (
+                  <div className='w-[300px] border border-gray-100 rounded-xl shadow-sm'>
+                    <div className='flex items-start p-4 gap-3'>
+                      <LinkIcon width={20} height={20} className='text-gray-500' />
+                      <div className='flex flex-col gap-1 w-full'>
+                        <p className='text-sm font-normal text-gray-500'>Link website</p>
+                        <CopyToClipboard
+                          onCopy={() => messageApi.success('Copied to clipboard!')}
+                          text={content?.trackingUrl}
+                        >
+                          <div className='flex cursor-pointer items-center gap-2 justify-between w-full'>
+                            <p className='text-gray-800 text-sm overflow-hidden text-ellipsis whitespace-nowrap'>{content?.trackingUrl}</p>
+                            <DocumentDuplicateIcon width={20} height={20} className='text-gray-500 min-w-[20px]' />
+                          </div>
+                        </CopyToClipboard>
+                      </div>
+                    </div>
 
 
-            </div>
-          )}
+                  </div>
+                )}
+              </>
+          }
+
 
         </div>
 
