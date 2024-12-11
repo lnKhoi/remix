@@ -20,9 +20,7 @@ import {
   login,
   login3rdParty,
 } from '~/apis/auth';
-import Fb_icon from '~/assets/facebook.svg';
 import Gg_icon from '~/assets/google.svg';
-import Is_icon from '~/assets/insta.svg';
 import Logo from '~/assets/logo.svg';
 import { Button } from '~/components/ui/button';
 import { CardDescription } from '~/components/ui/card';
@@ -192,20 +190,20 @@ export default function Page() {
                       </CardDescription>
 
                       {/* Social Login Buttons */}
-                      <Button type='button' variant="outline" className="w-full">
+                      {/* <Button type='button' variant="outline" className="w-full">
                         <img className="mr-1" src={Fb_icon} alt="Facebook" />
                         Login with Facebook
-                      </Button>
+                      </Button> */}
                       <a href="/auth/google">
                         <Button type='button' variant="outline" className="w-full">
                           <img className="mr-1" src={Gg_icon} alt="Google" />
                           Login with Google
                         </Button>
                       </a>
-                      <Button type='button' variant="outline" className="w-full">
+                      {/* <Button type='button' variant="outline" className="w-full">
                         <img className="mr-1" src={Is_icon} alt="Instagram" />
                         Login with Instagram
-                      </Button>
+                      </Button> */}
                     </div>
 
                     <div className="mt-4 text-center text-sm">

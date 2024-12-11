@@ -4,9 +4,7 @@ import {
   TableProps,
 } from 'antd';
 import DefaultAvatar from '~/assets/avatar.jpeg';
-import Fb from '~/assets/facebook.svg';
 import Ig from '~/assets/insta.svg';
-import Tiktok from '~/assets/tiktok.svg';
 import TagColor from '~/components/ui/tagColor';
 import { getColorInfluencerContent } from '~/helpers/campaign.helper';
 import {
@@ -75,10 +73,10 @@ export const influencerColumn: TableProps<Creator>['columns'] = [
 
 
 export const socials = [
-  {
-    name: 'facebook',
-    icon: Fb
-  },
+  // {
+  //   name: 'facebook',
+  //   icon: Fb
+  // },
   {
     name: 'instagram',
     icon: Ig
@@ -87,10 +85,10 @@ export const socials = [
   //   name: 'youtube',
   //   icon: Yb
   // },
-  {
-    name: 'tiktok',
-    icon: Tiktok
-  }
+  // {
+  //   name: 'tiktok',
+  //   icon: Tiktok
+  // }
 ]
 
 type ColumnsProps = {

@@ -89,7 +89,7 @@ function Influencer({ campaign }: InfluencerProps) {
     <div>
       <Tabs defaultActiveKey="" items={items} onChange={(e) => setTab(e as any)} />
       <div className='mt-2 flex items-end justify-between'>
-        <div className='flex items-center gap-2'>
+        <div className='flex hidden items-center gap-2'>
           <InputSearch placeholder='Influencer name' className='w-[300px] mt-[1px] h-[36px] ' />
           <button className='bg-[#F3F4F6] px-3 justify-between flex items-center px hover:bg-gray-200 transition-all text-sm h-[36px] w-[105px] font-normal rounded-[9px] text-gray-400'>
             <XCircleIcon className='text-gray-400' width={16} />
@@ -100,7 +100,7 @@ function Influencer({ campaign }: InfluencerProps) {
             Approve all
           </button>
         </div>
-        <div className='flex items-center gap-3'>
+        <div className='flex hidden items-center gap-3'>
           <button className='bg-[#F3F4F6] px-3 justify-between flex items-center px hover:bg-[#D1D5DB] transition-all text-sm h-[35px] w-[123px] font-normal rounded-[9px] text-[#1F2937]'>
             All Status
             <ChevronUpDownIcon width={16} />
@@ -111,7 +111,7 @@ function Influencer({ campaign }: InfluencerProps) {
         </div>
       </div>
       {/* Influeners Table */}
-      <div className='mt-6 cursor-pointer'>
+      <div className='mt-2 cursor-pointer'>
         <Table<InfluencerInCampaign>
           onRow={(record) => ({
             onClick: () => handleRowClick(record),
