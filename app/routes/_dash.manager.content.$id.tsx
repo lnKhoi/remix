@@ -170,6 +170,7 @@ const ContentDetails = () => {
                         {dayjs(content?.createdAt).format('DD/MM/YYYY')}
                         <ChevronUpDownIcon width={16} />
                       </button>
+                      <Button onClick={() => setIsPreview(true)} className='bg-gray-100'>Preview</Button>
                     </>
                 }
               </div>
