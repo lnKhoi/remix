@@ -66,7 +66,7 @@ function Content({ campaign }: ContentProps) {
       />
       <div className='flex items-center justify-between'>
         <h5 className='text-xl text-gray-800'>{tab} ({filteredContent?.length})</h5>
-        <div className='flex items-center gap-3'>
+        <div className='flex items-center hidden gap-3'>
           <button className='bg-[#F3F4F6] px-3 justify-between flex items-center px hover:bg-[#D1D5DB] transition-all text-sm h-[36px] w-[105px] font-normal rounded-[9px] text-[#1F2937]'>
             All Status
             <ChevronUpDownIcon width={16} />

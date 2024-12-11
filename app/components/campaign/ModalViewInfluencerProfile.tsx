@@ -10,6 +10,7 @@ import {
 } from 'antd';
 import { HeartIcon } from 'lucide-react';
 import { getInfluencerDetails } from '~/apis/creator';
+import instagramIcon from '~/assets/insta.svg';
 import Avatar from '~/assets/user-avatar.png';
 import PieChart from '~/components/custom/charts/Piechart';
 import { socials } from '~/constants/creator.constant';
@@ -21,8 +22,6 @@ import {
   PaperAirplaneIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline';
-
-import { socialMediaIcons } from './CampaignDetails';
 
 type ModalViewInfluencerProfileProps = {
     open: boolean
@@ -85,9 +84,10 @@ function ModalViewInfluencerProfile({ onClose, open, id }: ModalViewInfluencerPr
                             </div>
                             <div className="ml-auto pr-1 mt-12 flex items-center space-x-2">
                                 <Button onClick={handleGetInfluencerDemographic}>Refresh</Button>
-                                {influencer?.connectedSocialMedias?.map(social => (
-                                    <img key={social} src={socialMediaIcons[social]} alt={social} />
-                                ))}
+                                {/* {influencer?.connectedSocialMedias?.map(social => (
+                                    <img key={social} src={'instagramIcon'} alt={social} />
+                                ))} */}
+                                <img src={instagramIcon} alt="instagram" />
                             </div>
                         </div>
 
