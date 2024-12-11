@@ -39,13 +39,13 @@ function Campaigns() {
   const [search, setSearch] = useState<string>('')
   const [loading, setLoading] = useState<string>('')
   const [campaigns, setCampagins] = useState<Campaign[]>([])
-  const [params, setParams] = useState<{ page: number, limit: number }>({ page: 1, limit: 2 })
+  const [params, setParams] = useState<{ page: number, limit: number }>({ page: 1, limit: 10 })
   const [totalCampaign, setTotalCampaign] = useState<number>(0)
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   const handleGetCampaigns = async (): Promise<void> => {
     loading === '' ? setLoading('loading') : setLoading('load-more')
-    setParams((prev) => ({ ...prev, limit: prev.limit + 1 }));
+    setParams((prev) => ({ ...prev, limit: prev.limit + 10 }));
     await getCampaigns(params.limit, params.page, search)
       .then(res => {
         setCampagins(res?.data?.data)
