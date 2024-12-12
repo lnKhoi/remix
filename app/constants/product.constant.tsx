@@ -6,6 +6,9 @@ import {
 import DefaultAvatar from '~/assets/avatar.jpeg';
 import TagColor from '~/components/ui/tagColor';
 import { Order } from '~/models/shopify.model';
+import { abbreviateLastName } from '~/utils/formatNumber';
+
+import { Link } from '@remix-run/react';
 
 export const OrderTrackingColumns = (loading: boolean): TableColumnsType<Order> => [
   {
@@ -32,13 +35,10 @@ export const OrderTrackingColumns = (loading: boolean): TableColumnsType<Order> 
   },
   {
     title: 'Product',
-    dataIndex: 'product',
     render: (_, record) => (
       <div className="flex items-center gap-3">
         {loading ? (
-          <div className="flex items-center gap-3">
-            <Skeleton.Input active size="small" className="w-24" />
-          </div>
+          <Skeleton.Input active size="small" className="w-24" />
         ) : (
           <div className="flex items-center gap-3">
             <img
@@ -52,10 +52,26 @@ export const OrderTrackingColumns = (loading: boolean): TableColumnsType<Order> 
     ),
   },
   {
+    title: 'Product Cost',
+    render: (_, record) =>
+      <>
+        {loading ? <Skeleton.Input active size="small" className="w-24" /> : <span className="text-sm font-medium text-gray-800">${record?.productPrice?.toFixed(2)}</span>}
+      </>
+  },
+  {
+    title: 'Shipping Fee',
+    render: (_, record) =>
+      <>
+        {loading ? <Skeleton.Input active size="small" className="w-24" /> : <span className="text-sm font-medium text-gray-800">${record?.shippingFee?.toFixed(2)}</span>}
+      </>
+  },
+  {
     title: 'Campaigns',
-    dataIndex: 'category',
-    render: (_,record) =>
-      <span className="text-sm font-medium text-gray-800">{record?.campaignName}</span>
+    render: (_, record) =>
+      <>
+        {loading ? <Skeleton.Input active size="small" className="w-24" /> : <span className="text-sm font-medium text-gray-800">{abbreviateLastName(record?.campaignName, 20)}</span>}
+      </>
+
   },
   {
     title: 'Status',
@@ -74,13 +90,15 @@ export const OrderTrackingColumns = (loading: boolean): TableColumnsType<Order> 
   {
     title: 'Actions',
     render: (_, record) => (
-      <a href={record?.shopifyLink} target="_blank" className="text-blue-500 cursor-pointer">
-        {loading ? (
-          <Skeleton.Input active size="small" className="w-24" />
-        ) : (
-          'View Details'
-        )}
-      </a>
+      <Link to={`/manager/${record.campaignId}`}>
+        <p onClick={() => localStorage.setItem('campaignTab','Order')} className="text-blue-500 cursor-pointer">
+          {loading ? (
+            <Skeleton.Input active size="small" className="w-24" />
+          ) : (
+            'View Details'
+          )}
+        </p>
+      </Link>
     ),
   },
 ];
