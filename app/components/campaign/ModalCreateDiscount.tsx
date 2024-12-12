@@ -28,11 +28,12 @@ type ModalCreateDiscountProps = {
     shopId: string
     open: boolean
     onClose: () => void
+    onrefresh: () => void
 }
 
 type TargetOption = 'all' | 'entitled'
 
-const ModalCreateDiscount = ({ products, shopId, open, onClose }: ModalCreateDiscountProps) => {
+const ModalCreateDiscount = ({ products, shopId, open, onClose,onrefresh }: ModalCreateDiscountProps) => {
     const [targetOptions, setTargetOptions] = useState<TargetOption>('all');
     const [discountPrefix, setDiscountPrefix] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(false)
@@ -55,8 +56,11 @@ const ModalCreateDiscount = ({ products, shopId, open, onClose }: ModalCreateDis
             .then(() => {
                 toast.success('Create Discount Success!')
                 form.resetFields()
+                onClose()
+                onrefresh()
+
             })
-            .catch((err => `Create Discount Failed - ${err.message}`))
+            .catch((err =>  toast.error(`Create Discount Failed - ${err?.message}`)))
             .finally(() => setLoading(false))
     };
 
