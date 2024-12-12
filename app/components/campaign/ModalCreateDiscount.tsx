@@ -28,18 +28,18 @@ type ModalCreateDiscountProps = {
     shopId: string
     open: boolean
     onClose: () => void
+    onrefresh: () => void
 }
 
 type TargetOption = 'all' | 'entitled'
 
-const ModalCreateDiscount = ({ products, shopId, open, onClose }: ModalCreateDiscountProps) => {
+const ModalCreateDiscount = ({ products, shopId, open, onClose,onrefresh }: ModalCreateDiscountProps) => {
     const [targetOptions, setTargetOptions] = useState<TargetOption>('all');
     const [discountPrefix, setDiscountPrefix] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(false)
 
     const [form] = Form.useForm();
     const discountType = Form.useWatch('discountType')
-
 
     const handleFinish = (values: any) => {
         setLoading(true)
@@ -53,10 +53,12 @@ const ModalCreateDiscount = ({ products, shopId, open, onClose }: ModalCreateDis
 
         createDiscount(shopId, payload)
             .then(() => {
+                onrefresh()
                 toast.success('Create Discount Success!')
                 form.resetFields()
+                onClose()
             })
-            .catch((err => `Create Discount Failed - ${err.message}`))
+            .catch((err => toast.error(`Create Discount Failed! ${err?.message}`)))
             .finally(() => setLoading(false))
     };
 

@@ -20,10 +20,7 @@ import {
   Product,
 } from '~/models/shopify.model';
 
-import {
-  ArrowPathIcon,
-  PlusIcon,
-} from '@heroicons/react/24/outline';
+import { PlusIcon } from '@heroicons/react/24/outline';
 
 import ModalCreateDiscount from './ModalCreateDiscount';
 
@@ -72,7 +69,7 @@ const Discount = ({ form }: DiscountProps) => {
                     rules={[{ required: true, message: DISCOUNT_REQUIRED }]}
                 >
                     <Select
-                   
+                        style={{maxWidth:540}}
                         placeholder="Select option"
                         className="mt-[5px] w-full"
                         onSelect={(value, option) => {
@@ -82,16 +79,12 @@ const Discount = ({ form }: DiscountProps) => {
                             }
                         }}
                         options={discountCodes?.map((c) => ({
-                            value: c?.value,
+                            value: c?.title,
                             label: c?.title,
                             discountType: c?.value_type,
                         }))}
                     />
                 </Form.Item>
-                <ArrowPathIcon
-                    onClick={() => handleGetShopifyId()}
-                    className="w-5 text-gray-700 cursor-pointer mt-4"
-                />
             </div>
             <div onClick={() => setModal(true)} className="text-blue-500 cursor-pointer flex items-center gap-1 text-sm">
                 <PlusIcon
@@ -131,7 +124,7 @@ const Discount = ({ form }: DiscountProps) => {
 
             {/* Modal Create Discount */}
             {modal && (
-                <ModalCreateDiscount open={modal} onClose={() => setModal(false)} shopId={shopId} products={products} />
+                <ModalCreateDiscount onrefresh={handleGetShopifyId} open={modal} onClose={() => setModal(false)} shopId={shopId} products={products} />
             )}
         </div>
     );

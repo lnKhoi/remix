@@ -108,6 +108,8 @@ const CampaignForm = () => {
   }, [budget, maximumParticipants]);
 
 
+  console.log(form.getFieldsValue())
+
   return (
     <div className='custom-select custom-form'>
       <ToastContainer />
