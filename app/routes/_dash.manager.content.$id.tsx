@@ -74,6 +74,7 @@ const ContentDetails = () => {
   const [reason, setReason] = useState<string>('')
   const [loading, setLoading] = useState<string>('')
   const [isPreview, setIsPreview] = useState<boolean>(false)
+  const [isViewReason, setIsViewReason] = useState<boolean>(false)
   const [submitTime, setSubmitTime] = useState<Dayjs | null>(null)
   const [messageApi, contextHolder] = message.useMessage();
   const [content, setContent] = useState<Content | null>(null)
@@ -246,7 +247,6 @@ const ContentDetails = () => {
         {/* Review */}
         <div className='flex flex-col gap-5 w-[300px]'>
           {/* Influencer Requested */}
-
           {
             loading === 'loading' ?
 
@@ -290,7 +290,8 @@ const ContentDetails = () => {
           {content?.approved === 'rejected' && (
             <div className='p-4 border w-[300px] border-gray-200 rounded-xl flex flex-col gap-4'>
               <span className='text-sm font-medium text-gray-800'>Reason</span>
-              <Editor showToolbar={false} value={content?.reason as string} />
+              <p className='text-sm font-normal text-gray-800'>Inconsistent Brand Values: If the influencer's content doesn't align with the brand's core values, messaging, or target audience, </p>
+              <Button onClick={() => setIsViewReason(true)} className='w-[100px] bg-gray-100 border-none'>View Details</Button>
             </div>
           )}
           {/* Link Content */}
@@ -464,6 +465,16 @@ const ContentDetails = () => {
 
         {/* Modal Preview Content */}
         <ModalPreviewContent content={content as Content} open={isPreview} onClose={() => setIsPreview(false)} />
+        <Drawer
+          footer={
+            <div className='flex items-center justify-end mr-7'><Button onClick={() => setIsViewReason(false)}>Close</Button></div>
+          }
+          title='Reason'
+          width={650}
+          open={isViewReason}
+          onClose={() => setIsViewReason(false)}>
+          <Editor showToolbar={false} value={content?.reason as string} />
+        </Drawer>
       </div>
     </div>
 
