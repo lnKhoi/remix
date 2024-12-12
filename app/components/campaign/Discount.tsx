@@ -20,10 +20,7 @@ import {
   Product,
 } from '~/models/shopify.model';
 
-import {
-  ArrowPathIcon,
-  PlusIcon,
-} from '@heroicons/react/24/outline';
+import { PlusIcon } from '@heroicons/react/24/outline';
 
 import ModalCreateDiscount from './ModalCreateDiscount';
 
@@ -68,30 +65,27 @@ const Discount = ({ form }: DiscountProps) => {
                 <Form.Item
                     className="w-full"
                     label=""
-                    name="discountValue"
+                    name="removed"
                     rules={[{ required: true, message: DISCOUNT_REQUIRED }]}
                 >
                     <Select
-                   
                         placeholder="Select option"
                         className="mt-[5px] w-full"
                         onSelect={(value, option) => {
                             if (form) {
                                 form.setFieldValue('discountType', option.discountType);
                                 form.setFieldValue('discountCode', option.label);
+                                form.setFieldValue('discountValue', option.discountValue);
                             }
                         }}
                         options={discountCodes?.map((c) => ({
-                            value: c?.value,
+                            value: c?.value + c.title + c.value_type,
                             label: c?.title,
                             discountType: c?.value_type,
+                            discountValue:c?.value
                         }))}
                     />
                 </Form.Item>
-                <ArrowPathIcon
-                    onClick={() => handleGetShopifyId()}
-                    className="w-5 text-gray-700 cursor-pointer mt-4"
-                />
             </div>
             <div onClick={() => setModal(true)} className="text-blue-500 cursor-pointer flex items-center gap-1 text-sm">
                 <PlusIcon
@@ -131,7 +125,13 @@ const Discount = ({ form }: DiscountProps) => {
 
             {/* Modal Create Discount */}
             {modal && (
-                <ModalCreateDiscount open={modal} onClose={() => setModal(false)} shopId={shopId} products={products} />
+                <ModalCreateDiscount
+                    open={modal}
+                    onrefresh={handleGetShopifyId}
+                    onClose={() => setModal(false)}
+                    shopId={shopId}
+                    products={products}
+                />
             )}
         </div>
     );

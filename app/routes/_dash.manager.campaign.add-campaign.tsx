@@ -75,6 +75,8 @@ const CampaignForm = () => {
       socialMedia: selectedSocials
     }
 
+    delete payload.removed;
+
     await createCampaign(payload as Campaign)
       .then((res) => {
         toast.success('Create campaign successfully!')
@@ -359,21 +361,10 @@ const CampaignForm = () => {
                   </Button>
                 </Form.Item>
               </div>
-              <Form.Item
-                label=""
-                className='hidden'
-                name="discountCode"
-              ></Form.Item>
-              <Form.Item
-                className='hidden'
-                label=""
-                name="discountValue"
-              ></Form.Item>
-              <Form.Item
-                className='hidden'
-                label=""
-                name="discountType"
-              ></Form.Item>
+              <Form.Item label=""className='hidden'name="discountCode"></Form.Item>
+              <Form.Item className='hidden'label=""name="discountValue"></Form.Item>
+              <Form.Item className='hidden' label=""name="discountType"></Form.Item>
+              <Form.Item className='hidden' label=""name="removed"></Form.Item>
             </div>
           </Form>
         </div>

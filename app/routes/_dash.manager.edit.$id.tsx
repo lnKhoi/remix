@@ -77,6 +77,8 @@ const CampaignForm = () => {
       deadline: dayjs(values.deadline).toISOString(),
       socialMedia: selectedSocials
     }
+    
+    delete payload.removed
 
     await updateCampaign(payload as Campaign, id as string)
       .then((res) => {
@@ -110,6 +112,7 @@ const CampaignForm = () => {
         form.setFieldsValue({
           ...campaign,
           deadline: dayjs(campaign.deadline),
+          removed:campaign?.discountValue
         });
       }
     })
@@ -379,21 +382,10 @@ const CampaignForm = () => {
                   </Button>
                 </Form.Item>
               </div>
-              <Form.Item
-                label=""
-                className='hidden'
-                name="discountCode"
-              ></Form.Item>
-              <Form.Item
-                className='hidden'
-                label=""
-                name="discountValue"
-              ></Form.Item>
-              <Form.Item
-                className='hidden'
-                label=""
-                name="discountType"
-              ></Form.Item>
+              <Form.Item label=""className='hidden'name="discountCode"></Form.Item>
+              <Form.Item className='hidden'label=""name="discountValue"></Form.Item>
+              <Form.Item className='hidden' label=""name="discountType"></Form.Item>
+              <Form.Item className='hidden' label=""name="removed"></Form.Item>
             </div>
           </Form>
         </div>
