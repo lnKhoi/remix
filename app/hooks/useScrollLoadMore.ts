@@ -1,10 +1,10 @@
 import { useRef } from "react";
 
-interface UseLoadMoreProps {
+type useScrollLoadMoreProps = {
     onLoadMore: () => void;
 }
 
-export const useLoadMore = ({ onLoadMore }: UseLoadMoreProps) => {
+export const useScrollLoadMore = ({ onLoadMore }: useScrollLoadMoreProps) => {
     const containerRef = useRef<HTMLDivElement>(null);
 
     const handleScroll = (): void => {

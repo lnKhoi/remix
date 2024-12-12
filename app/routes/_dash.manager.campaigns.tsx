@@ -30,7 +30,7 @@ import {
   Link,
   MetaFunction,
 } from '@remix-run/react';
-import { useLoadMore } from '~/hooks/useLoadMore';
+import { useScrollLoadMore } from '~/hooks/useScrollLoadMore';
 
 export const meta: MetaFunction = () => {
   return [{ title: 'Campaigns' }]
@@ -43,7 +43,7 @@ function Campaigns() {
   const [params, setParams] = useState<{ page: number, limit: number }>({ page: 1, limit: 2 })
   const [totalCampaign, setTotalCampaign] = useState<number>(0)
 
-  const { containerRef, handleScroll } = useLoadMore({
+  const { containerRef, handleScroll } = useScrollLoadMore({
     onLoadMore: () => {
       if (totalCampaign === campaigns.length && campaigns.length !== 0) {
         return setLoading('off-loading')
