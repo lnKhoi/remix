@@ -86,7 +86,7 @@ function page() {
   useEffect(() => {
     const prevScreen = localStorage.getItem('campaignTab')
     setTab(prevScreen as Tab || 'Campaign Details')
-  },[id])
+  }, [id])
 
   return (
     <div>
@@ -96,7 +96,10 @@ function page() {
           <Breadcrumb
             className='w-[200px]'
             items={[
-              { title: <Link to={'/manager/campaigns'}>Campaigns</Link> },
+              {
+                title: <Link onClick={() => localStorage.removeItem('campaignTab')}
+                  to={'/manager/campaigns'}>Campaigns</Link>
+              },
               {
                 title: <>
                   {loading
@@ -126,7 +129,7 @@ function page() {
             defaultValue={tab}
             value={tab}
             style={{ marginBottom: 8 }}
-            onChange={(value) => {setTab(value as Tab);localStorage.setItem('campaignTab',value)}}
+            onChange={(value) => { setTab(value as Tab); localStorage.setItem('campaignTab', value) }}
             options={campaignDetailsTabs}
           />
           {/* <ModalSelectTimeRange/> */}

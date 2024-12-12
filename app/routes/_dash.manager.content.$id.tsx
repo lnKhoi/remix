@@ -107,6 +107,7 @@ const ContentDetails = () => {
   }
 
   const handleReject = async (): Promise<void> => {
+    setLoading('loading-reject')
     await reviewContent(content?.campaignId as string, content?.id as string, reason, false)
       .then(() => {
         setModalType('')
@@ -114,6 +115,7 @@ const ContentDetails = () => {
         handleGetContentDetails()
         toast.success('Content has been reject successfully')
       })
+      .finally(() => setLoading(''))
   }
 
   const handleConfirmInfluencerRequest = () => {
@@ -353,7 +355,7 @@ const ContentDetails = () => {
           footer={
             <div className="float-right gap-3 flex items-end  justify-between">
               <Button onClick={() => setModalType('')} >Cancel</Button>
-              <Button onClick={handleReject} type="primary">Reject</Button>
+              <Button loading={loading ==='loading-reject'} onClick={handleReject} type="primary">Reject</Button>
             </div>
           }
           width={600}
