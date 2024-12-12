@@ -107,7 +107,9 @@ export type Order = {
     creatorId: string;
     productId: string;
     productImage:string,
+    productPrice:number
     avatar:string
+    shippingFee:number
     orderId: string;
     created_at: string;
     updated_at: string;

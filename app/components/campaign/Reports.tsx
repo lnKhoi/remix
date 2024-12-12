@@ -26,6 +26,8 @@ import { Campaign } from '~/models/Campaign.model';
 import { ReportCampaign } from '~/models/report.model';
 import { InfluencerPerformance } from '~/models/User.model';
 
+import { useParams } from '@remix-run/react';
+
 import LineChart from '../custom/charts/LineChart';
 import InfluencerProfile from '../profile/InfluencerProfile';
 import { DateRange } from '../ui/ModalSelectTimeRange';
@@ -36,6 +38,7 @@ type ReportsProps = {
 }
 
 function Reports({ campaign, filter }: ReportsProps) {
+  const { id } = useParams();
   const [loading, setLoading] = useState<boolean>(false)
   const [reportData, setReportData] = useState<ReportCampaign>(initialReport)
 
@@ -50,14 +53,14 @@ function Reports({ campaign, filter }: ReportsProps) {
   const handleGetIGReport = async () => {
     setLoading(true)
     const [igStats, roi, conversionRate, costPerConversion, costperClicks, influencers, ctr, cpa] = await Promise.all([
-      getInstagramStatistics(campaign?.id as string, filter),
-      getCampaignROI(campaign?.id as string, filter),
-      getCampaignConversionRate(campaign?.id as string, filter),
-      getCostPerConversion(campaign?.id as string, filter),
-      getCostPerClicks(campaign?.id as string, filter),
-      getInfluencerInReport(campaign?.id as string, filter),
-      getClickThroughRateInReport(campaign?.id as string, filter),
-      getCpaInReport(campaign?.id as string, filter)
+      getInstagramStatistics(id as string, filter),
+      getCampaignROI(id as string, filter),
+      getCampaignConversionRate(id as string, filter),
+      getCostPerConversion(id as string, filter),
+      getCostPerClicks(id as string, filter),
+      getInfluencerInReport(id as string, filter),
+      getClickThroughRateInReport(id as string, filter),
+      getCpaInReport(id as string, filter)
 
     ]).finally(() => setLoading(false))
 
@@ -201,7 +204,7 @@ function Reports({ campaign, filter }: ReportsProps) {
       </div>
       {modal && (
         <InfluencerProfile
-          campaignId={campaign?.id as string}
+          campaignId={id as string}
           inluencerId={selectedInfluencer?.creator?.id as string}
           onClose={() => setModal(false)}
           open={modal} />

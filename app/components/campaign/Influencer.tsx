@@ -27,6 +27,7 @@ import {
   ChevronUpDownIcon,
   XCircleIcon,
 } from '@heroicons/react/24/outline';
+import { useParams } from '@remix-run/react';
 
 import { InputSearch } from '../ui/input-search';
 import ModalViewInfluencerProfile from './ModalViewInfluencerProfile';
@@ -47,6 +48,7 @@ const items: TabsProps['items'] = [
 ];
 
 function Influencer({ campaign }: InfluencerProps) {
+  const { id } = useParams();
   const [tab, setTab] = useState<'' | 'brand_declined_influencer'>('')
   const [influencers, setInfluencers] = useState<InfluencerInCampaign[]>([])
   const [selectedInfluencer, setSelectedInfluencer] = useState<Creator | null>(null);
@@ -56,7 +58,7 @@ function Influencer({ campaign }: InfluencerProps) {
 
   const handleGetInfluencersInCampaign = async () => {
     setLoading(true)
-    await getInfluencerParticipantsInCampaign(tab, campaign?.id as string, 100, 1)
+    await getInfluencerParticipantsInCampaign(tab, id as string, 100, 1)
       .then((res) => setInfluencers(res?.data?.data))
       .finally(() => setLoading(false))
   }
@@ -66,14 +68,14 @@ function Influencer({ campaign }: InfluencerProps) {
   }, [tab])
 
   const handleApprove = async (influencerId: string): Promise<void> => {
-    await brandUpdateInvitationStatus(campaign?.id as string, influencerId, true)
+    await brandUpdateInvitationStatus(id as string, influencerId, true)
       .then(() => {
         handleGetInfluencersInCampaign()
       })
   }
 
   const handleReject = async (influencerId: string): Promise<void> => {
-    await brandUpdateInvitationStatus(campaign?.id as string, influencerId, false)
+    await brandUpdateInvitationStatus(id as string, influencerId, false)
       .then(() => {
         handleGetInfluencersInCampaign()
       })

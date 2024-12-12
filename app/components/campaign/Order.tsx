@@ -9,17 +9,20 @@ import { orderColumns } from '~/constants/campaign.constant';
 import { Campaign } from '~/models/Campaign.model';
 import type { Order } from '~/models/shopify.model';
 
+import { useParams } from '@remix-run/react';
+
 type OrderProps = {
     campaign: Campaign | null
 }
 
 function Order({ campaign }: OrderProps) {
+    const { id } = useParams();
     const [loading, setLoading] = useState<boolean>(false)
     const [orders, setOrders] = useState<Order[]>([])
 
     const handleGetTrackingOrders = () => {
         setLoading(true)
-        getOrders(campaign?.id as string).then(res => setOrders(res?.data?.data))
+        getOrders(id as string).then(res => setOrders(res?.data?.data))
             .finally(() => setLoading(false))
     }
 

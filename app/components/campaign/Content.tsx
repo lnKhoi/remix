@@ -13,6 +13,7 @@ import {
   CalendarDaysIcon,
   ChevronUpDownIcon,
 } from '@heroicons/react/24/outline';
+import { useParams } from '@remix-run/react';
 
 import ContentCard from '../content/ContentCard';
 
@@ -21,6 +22,7 @@ type ContentProps = {
 }
 
 function Content({ campaign }: ContentProps) {
+  const { id } = useParams();
   const [filteredContent, setFilteredContent] = useState<Content[]>([])
   const [contents, setContents] = useState<Content[]>([])
   const [liveContents, setLiveContents] = useState<Content[]>([])
@@ -29,14 +31,14 @@ function Content({ campaign }: ContentProps) {
 
   const handleGetListContents = async () => {
     setLoading(true)
-    await getContentsInCampaign(campaign?.id as string, 100, 1).then((res) => {
+    await getContentsInCampaign(id as string, 100, 1).then((res) => {
       setContents(res?.data?.data);
       setFilteredContent(res?.data?.data)
     }).finally(() => setLoading(false))
   }
 
   const handleGetLiveContents = () => {
-    getContentMetrics(campaign?.id as string).then(res => setLiveContents(res?.data?.data))
+    getContentMetrics(id as string).then(res => setLiveContents(res?.data?.data))
   }
 
   useEffect(() => {

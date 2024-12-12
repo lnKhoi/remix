@@ -83,6 +83,11 @@ function page() {
     handleGetCampaignDetails();
   }, []);
 
+  useEffect(() => {
+    const prevScreen = localStorage.getItem('campaignTab')
+    setTab(prevScreen as Tab || 'Campaign Details')
+  },[id])
+
   return (
     <div>
       <ToastContainer />
@@ -96,7 +101,7 @@ function page() {
                 title: <>
                   {loading
                     ? <Skeleton.Button style={{ width: 90 }} size='small' active />
-                    : <p className='text-gray-800'>{abbreviateLastName(campaign?.name as string, 17)}</p>
+                    : <p className='text-gray-800'>{abbreviateLastName(campaign?.name as string, 16)}</p>
                   }
                 </>
               },
@@ -119,8 +124,9 @@ function page() {
           <Segmented
             className='fixed z-50'
             defaultValue={tab}
+            value={tab}
             style={{ marginBottom: 8 }}
-            onChange={(value) => setTab(value as Tab)}
+            onChange={(value) => {setTab(value as Tab);localStorage.setItem('campaignTab',value)}}
             options={campaignDetailsTabs}
           />
           {/* <ModalSelectTimeRange/> */}
