@@ -185,23 +185,23 @@ function ModalViewInfluencerProfile({ onClose, open, id }: ModalViewInfluencerPr
                             {loading
                                 ? [1, 2, 3, 4, 5].map(s => <Skeleton.Node style={{ width: '100%' }} key={s} active className='w-full' />)
                                 : <>
-                                    <div className='p-4 bg-gray-200 rounded-xl flex flex-col gap-3'>
+                                    <div className='p-4 bg-gray-100 rounded-xl flex flex-col gap-3'>
                                         <p className='text-2xl font-bold text-gray-800'>${metrics?.totalRevenue?.toFixed(2)}</p>
                                         <span className='text-gray-500 font-medium text-sm'>Revenue</span>
                                     </div>
-                                    <div className='p-4 bg-gray-200 rounded-xl flex flex-col gap-3'>
+                                    <div className='p-4 bg-gray-100 rounded-xl flex flex-col gap-3'>
                                         <p className='text-2xl font-bold text-gray-800'>{metrics?.totalClicks}</p>
                                         <span className='text-gray-500 font-medium text-sm'>Clicks</span>
                                     </div>
-                                    <div className='p-4 bg-gray-200  rounded-xl flex flex-col gap-3'>
+                                    <div className='p-4 bg-gray-100  rounded-xl flex flex-col gap-3'>
                                         <p className='text-2xl font-bold text-gray-800'>${metrics?.costPerClick.toFixed(2)}</p>
                                         <span className='text-gray-500 font-medium text-sm'>CPC (Cost Per Click)</span>
                                     </div>
-                                    <div className='p-4 bg-gray-200  rounded-xl flex flex-col gap-3'>
+                                    <div className='p-4 bg-gray-100  rounded-xl flex flex-col gap-3'>
                                         <p className='text-2xl font-bold text-gray-800'>{metrics?.orderCount}</p>
                                         <span className='text-gray-500 font-medium text-sm'>Purchases</span>
                                     </div>
-                                    <div className='p-4 bg-gray-200  rounded-xl flex flex-col gap-3'>
+                                    <div className='p-4 bg-gray-100  rounded-xl flex flex-col gap-3'>
                                         <p className='text-2xl font-bold text-gray-800'>{metrics?.conversionRate?.toFixed(2)}%</p>
                                         <span className='text-gray-500 font-medium text-sm'>Conversion Rate</span>
                                     </div>
