@@ -10,10 +10,12 @@ import {
 } from 'antd';
 import { HeartIcon } from 'lucide-react';
 import { getInfluencerDetails } from '~/apis/creator';
+import { getInfluencerMetric } from '~/apis/reports';
 import instagramIcon from '~/assets/insta.svg';
 import Avatar from '~/assets/user-avatar.png';
 import PieChart from '~/components/custom/charts/Piechart';
 import { socials } from '~/constants/creator.constant';
+import { Metrics } from '~/models/report.model';
 import { Creator } from '~/models/User.model';
 import { formatName } from '~/utils/formatNumber';
 
@@ -32,18 +34,26 @@ type ModalViewInfluencerProfileProps = {
 function ModalViewInfluencerProfile({ onClose, open, id }: ModalViewInfluencerProfileProps) {
     const [influencer, setInfluencer] = useState<Creator | null>(null)
     const [loading, setLoading] = useState<boolean>(false)
+    const [metrics, setMetrics] = useState<Metrics | null>(null)
 
-    const handleGetInfluencerDemographic = () => {
-        setLoading(true)
-        getInfluencerDetails(id as string).then(res => {
-            setInfluencer(res.data)
-        }).finally(() => setLoading(false))
-    }
+    const handleFetchData = () => {
+        setLoading(true);
+        Promise.all([
+            getInfluencerDetails(id as string),
+            getInfluencerMetric(id as string),
+        ])
+            .then(([detailsResponse, metricsResponse]) => {
+                setInfluencer(detailsResponse.data);
+                setMetrics(metricsResponse?.data)
+            })
 
-    useEffect(() => { handleGetInfluencerDemographic() }, [id])
+            .finally(() => setLoading(false));
+    };
+
+    useEffect(() => { handleFetchData() }, [id]);
 
     const pieData = influencer?.demographicGenders?.map(gender => {
-        return { name: gender.detail, y: gender.valuePercentage, }
+        return { name: gender?.detail, y: gender?.valuePercentage, }
     })
 
     return (
@@ -83,7 +93,7 @@ function ModalViewInfluencerProfile({ onClose, open, id }: ModalViewInfluencerPr
                                 </h1>
                             </div>
                             <div className="ml-auto pr-1 mt-12 flex items-center space-x-2">
-                                <Button onClick={handleGetInfluencerDemographic}>Refresh</Button>
+                                <Button onClick={handleFetchData}>Refresh</Button>
                                 {/* {influencer?.connectedSocialMedias?.map(social => (
                                     <img key={social} src={'instagramIcon'} alt={social} />
                                 ))} */}
@@ -128,10 +138,10 @@ function ModalViewInfluencerProfile({ onClose, open, id }: ModalViewInfluencerPr
                         {/* Social Media Stats */}
                         <h2 className="text-lg font-semibold mt-10">Social Media</h2>
                         <div className="grid grid-cols-3 gap-4 mt-5">
-                            {socials.slice(1, 2).map((platform) => (
+                            {socials.map((platform) => (
                                 <div
                                     key={platform.name}
-                                    className="bg-gray-100 p-6 h-[128px] rounded-lg shadow flex flex-col gap-4 items-start"
+                                    className="bg-gray-100 p-6 h-[188px] rounded-lg shadow flex flex-col gap-4 items-start"
                                 >
                                     <div className="flex items-center gap-3">
                                         <div className='flex items-center justify-center w-8 h-8 rounded-lg shadow-md bg-white'>
@@ -139,29 +149,65 @@ function ModalViewInfluencerProfile({ onClose, open, id }: ModalViewInfluencerPr
                                         </div>
                                         <p className='text-xs text-gray-800 capitalize'>{platform.name}</p>
                                     </div>
-                                    <div className='flex items-start  w-full gap-8'>
+                                    <div className='items-start grid grid-cols-2  w-full gap-3'>
                                         <div className='flex flex-col items-start'>
                                             <p className="text-gray-800 text-sm font-semibold">
-                                                {loading ? <Skeleton.Button active size={'small'} /> : influencer?.instagramFollowersNumber || 0}
+                                                {loading ? <Skeleton.Button active size={'small'} /> : influencer?.instagramFollowersNumber || '---'}
                                             </p>
                                             <span className='text-xs font-normal text-gray-500'>Followers</span>
                                         </div>
                                         <div className='flex flex-col items-start'>
                                             <p className="text-gray-800 text-sm font-semibold">
-                                                {loading ? <Skeleton.Button active size={'small'} /> : influencer?.instagramMediaCount || 0}
+                                                {loading ? <Skeleton.Button active size={'small'} /> : influencer?.instagramMediaCount || '---'}
                                             </p>
                                             <span className='text-xs font-normal text-gray-500'>Posts</span>
                                         </div>
                                         <div className='flex flex-col items-start'>
                                             <p className="text-gray-800 text-sm font-semibold">
-                                                {loading ? <Skeleton.Button active size={'small'} /> : influencer?.instagramMediaCount || 0}
+                                                {loading ? <Skeleton.Button active size={'small'} /> : metrics?.engagementRate || '---'}
+                                            </p>
+                                            <span className='text-xs font-normal text-gray-500'>Engagement rate</span>
+                                        </div>
+                                        <div className='flex flex-col items-start'>
+                                            <p className="text-gray-800 text-sm font-semibold">
+                                                {loading ? <Skeleton.Button active size={'small'} /> : influencer?.instagramMediaCount || '---'}
                                             </p>
                                             <span className='text-xs font-normal text-gray-500'>Likes</span>
                                         </div>
-
                                     </div>
                                 </div>
                             ))}
+                        </div>
+
+                        {/* Performance Over Life */}
+                        <h2 className="text-lg font-semibold mt-10">Performance Over Life</h2>
+                        <div className='h-[113px] grid mt-3 gap-5 grid-cols-5'>
+                            {loading
+                                ? [1, 2, 3, 4, 5].map(s => <Skeleton.Node style={{ width: '100%' }} key={s} active className='w-full' />)
+                                : <>
+                                    <div className='p-4 bg-gray-100 rounded-xl flex flex-col gap-3'>
+                                        <p className='text-2xl font-bold text-gray-800'>${metrics?.totalRevenue?.toFixed(2)}</p>
+                                        <span className='text-gray-500 font-medium text-sm'>Revenue</span>
+                                    </div>
+                                    <div className='p-4 bg-gray-100 rounded-xl flex flex-col gap-3'>
+                                        <p className='text-2xl font-bold text-gray-800'>{metrics?.totalClicks}</p>
+                                        <span className='text-gray-500 font-medium text-sm'>Clicks</span>
+                                    </div>
+                                    <div className='p-4 bg-gray-100  rounded-xl flex flex-col gap-3'>
+                                        <p className='text-2xl font-bold text-gray-800'>${metrics?.costPerClick.toFixed(2)}</p>
+                                        <span className='text-gray-500 font-medium text-sm'>CPC (Cost Per Click)</span>
+                                    </div>
+                                    <div className='p-4 bg-gray-100  rounded-xl flex flex-col gap-3'>
+                                        <p className='text-2xl font-bold text-gray-800'>{metrics?.orderCount}</p>
+                                        <span className='text-gray-500 font-medium text-sm'>Purchases</span>
+                                    </div>
+                                    <div className='p-4 bg-gray-100  rounded-xl flex flex-col gap-3'>
+                                        <p className='text-2xl font-bold text-gray-800'>{metrics?.conversionRate?.toFixed(2)}%</p>
+                                        <span className='text-gray-500 font-medium text-sm'>Conversion Rate</span>
+                                    </div>
+                                </>
+                            }
+
                         </div>
 
                         {/* Audience Demographics */}
@@ -266,9 +312,9 @@ function ModalViewInfluencerProfile({ onClose, open, id }: ModalViewInfluencerPr
                                                     </a>
                                                 </div>
                                             </div>
-                                        ))}</>
+                                        ))}
+                                    </>
                                 }
-
                             </div>
                         </div>
                     </div>
