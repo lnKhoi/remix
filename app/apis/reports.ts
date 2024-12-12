@@ -79,3 +79,7 @@ export const getCpaInReport = (campaignId: string, filter: FilterDateRange) => {
 
     return getData(url);
 };
+
+export const getInfluencerMetric = (creatorId:string) => {
+    return getData(`/api/v1/creator/${creatorId}/metrics`)
+}

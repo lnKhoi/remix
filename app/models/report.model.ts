@@ -31,3 +31,13 @@ export type InfluencerInReport = {
     totalClicks?:number
     creator?: Creator;
 }
+
+export type Metrics = {
+    totalRevenue: number;
+    totalClicks: number;
+    conversionRate: number;
+    orderCount: number;
+    campaignCount: number;
+    costPerClick: number;
+    engagementRate: number;
+}
