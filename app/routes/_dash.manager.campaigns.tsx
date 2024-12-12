@@ -30,6 +30,7 @@ import {
   Link,
   MetaFunction,
 } from '@remix-run/react';
+import { useLoadMore } from '~/hooks/useLoadMore';
 
 export const meta: MetaFunction = () => {
   return [{ title: 'Campaigns' }]
@@ -39,13 +40,21 @@ function Campaigns() {
   const [search, setSearch] = useState<string>('')
   const [loading, setLoading] = useState<string>('')
   const [campaigns, setCampagins] = useState<Campaign[]>([])
-  const [params, setParams] = useState<{ page: number, limit: number }>({ page: 1, limit: 10 })
+  const [params, setParams] = useState<{ page: number, limit: number }>({ page: 1, limit: 2 })
   const [totalCampaign, setTotalCampaign] = useState<number>(0)
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  const { containerRef, handleScroll } = useLoadMore({
+    onLoadMore: () => {
+      if (totalCampaign === campaigns.length && campaigns.length !== 0) {
+        return setLoading('off-loading')
+      }
+      handleGetCampaigns();
+    },
+  })
 
   const handleGetCampaigns = async (): Promise<void> => {
     loading === '' ? setLoading('loading') : setLoading('load-more')
-    setParams((prev) => ({ ...prev, limit: prev.limit + 10 }));
+    setParams((prev) => ({ ...prev, limit: prev.limit + 1 }));
     await getCampaigns(params.limit, params.page, search)
       .then(res => {
         setCampagins(res?.data?.data)
@@ -70,17 +79,6 @@ function Campaigns() {
       setSearch(e.target.value);
     }, 500);
 
-  const handleScroll = () => {
-    if (totalCampaign === campaigns.length && campaigns.length !== 0) {
-      return setLoading('off-loading')
-    }
-    if (!scrollContainerRef.current) return;
-    const container = scrollContainerRef.current;
-    const bottom = container.scrollHeight === container.scrollTop + container.clientHeight;
-    if (bottom) {
-      handleGetCampaigns()
-    }
-  }
   return (
     <div>
       <ToastContainer />
@@ -115,7 +113,7 @@ function Campaigns() {
         ? <div className='grid 2xl:grid-cols-4 xl:grid-cols-3 md:grid-cols-2 grid-cols-1  gap-5 mt-5'>
           {Array?.from({ length: 16 }).map((s, idx) => <ReviewCard key={idx} />)}
         </div>
-        : <div ref={scrollContainerRef} onScroll={handleScroll} className='overflow-auto' style={{ maxHeight: 'calc(100vh - 200px)' }}>
+        : <div ref={containerRef} onScroll={handleScroll} className='overflow-auto' style={{ maxHeight: 'calc(100vh - 200px)' }}>
           {campaigns?.length === 0 && (
             <div className='flex items-center flex-col gap-3 justify-center w-full h-[calc(100vh-200px)]'>
               <img src={NoCampaigns} className='w-[370px]' />
@@ -130,7 +128,7 @@ function Campaigns() {
             ))}
           </div>
           {loading === 'load-more' && (
-            <div className="flex justify-center items-center mt-5">
+            <div className="flex justify-center items-center mt-2">
               <div className="spinner-border animate-spin inline-block w-8 h-8 border-4 border-solid border-gray-900 rounded-full border-t-transparent" role="status" />
             </div>
           )}
