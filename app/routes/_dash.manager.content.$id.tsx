@@ -45,6 +45,7 @@ import {
 } from '~/helpers/campaign.helper';
 import { Content } from '~/models/Content.model';
 import Editor from '~/plugins/editor';
+import { formatName } from '~/utils/formatNumber';
 
 import {
   CalendarDateRangeIcon,
@@ -130,7 +131,7 @@ const ContentDetails = () => {
         handleGetContentDetails()
       })
       .catch((err) => toast.error(`Posting Failed! ${err?.message}`))
-      .finally(() => setLoading('loading-post'))
+      .finally(() => setLoading(''))
   }
 
   const contentPreview = 'https://ebo.vn/static/uploads/editor/100247_content-is-king.png'
@@ -191,7 +192,7 @@ const ContentDetails = () => {
                   <>
                     <img className='w-[36px] h-[36px] rounded-[50%] object-cover' src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTw7QkfjQ7yvMpDiPlgagN_hYtCrd2acymT1TDim7Kyt-WSAFhtXgHeZ_W0y_MAnxXtJqM&usqp=CAU" alt="avatar" />
                     <div className='flex flex-col items-start'>
-                      <p className='text-sm font-medium text-gray-800'>{content?.creator.name}</p>
+                      <p className='text-sm font-medium text-gray-800'>{formatName(content?.creator.name as string)}</p>
                       <p className='text-gray-500 text-sm font-normal'>Submission date : {dayjs(content?.createdAt).format(DATE_TIME_FORMAT_V2)}</p>
                     </div>
                   </>
@@ -292,7 +293,7 @@ const ContentDetails = () => {
           {content?.approved === 'rejected' && (
             <div className='p-4 border w-[300px] border-gray-200 rounded-xl flex flex-col gap-4'>
               <span className='text-sm font-medium text-gray-800'>Reason</span>
-              <p className='text-sm font-normal text-gray-800'>Inconsistent Brand Values: If the influencer's content doesn't align with the brand's core values, messaging, or target audience, </p>
+              <p className='text-sm font-normal text-gray-800'>Your feedback has been sent to Influencer. You couldn’t edit reason or undo.</p>
               <Button onClick={() => setIsViewReason(true)} className='w-[100px] bg-gray-100 border-none'>View Details</Button>
             </div>
           )}
