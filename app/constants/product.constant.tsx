@@ -6,7 +6,10 @@ import {
 import DefaultAvatar from '~/assets/avatar.jpeg';
 import TagColor from '~/components/ui/tagColor';
 import { Order } from '~/models/shopify.model';
-import { abbreviateLastName } from '~/utils/formatNumber';
+import {
+  abbreviateLastName,
+  formatName,
+} from '~/utils/formatNumber';
 
 import { Link } from '@remix-run/react';
 
@@ -27,7 +30,7 @@ export const OrderTrackingColumns = (loading: boolean): TableColumnsType<Order> 
               src={record?.avatar || DefaultAvatar}
               className="w-9 h-9"
             />
-            <span className="text-sm font-medium text-gray-800">{record?.creatorName}</span>
+            <span className="text-sm font-medium text-gray-800">{formatName(record?.creatorName as string)}</span>
           </div>
         )}
       </div>
