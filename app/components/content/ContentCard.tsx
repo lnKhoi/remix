@@ -13,7 +13,10 @@ import {
   getColorStatusContent,
 } from '~/helpers/campaign.helper';
 import { Content } from '~/models/Content.model';
-import { abbreviateLastName } from '~/utils/formatNumber';
+import {
+  abbreviateLastName,
+  formatName,
+} from '~/utils/formatNumber';
 
 import { LinkIcon } from '@heroicons/react/24/outline';
 import { Link } from '@remix-run/react';
@@ -56,7 +59,9 @@ function ContentCard({ content, loading }: ContentCardProps) {
                             <img className='w-[36px] rounded-[50%] h-[36px] object-cover'
                                 src={content?.creator?.avatarUrl || defaultAvatar} alt="avatar" />
                             <div className='flex flex-col'>
-                                <h6 className='text-sm text-gray-800'>{content?.creator?.name}</h6>
+                                <h6 className='text-sm text-gray-800'>
+                                {formatName(content?.creator?.name as string)}
+                                    </h6>
                                 <p className='text-sm text-gray-500 '>{content?.creator?.email}</p>
                             </div></>
                     }

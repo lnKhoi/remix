@@ -6,8 +6,12 @@ import React from 'react';
 import { Drawer } from 'antd';
 //@ts-ignore
 import Slider from 'react-slick';
+import DefaultAvatar from '~/assets/avatar.jpeg';
 import { Content } from '~/models/Content.model';
-import { abbreviateLastName } from '~/utils/formatNumber';
+import {
+  abbreviateLastName,
+  formatName,
+} from '~/utils/formatNumber';
 
 import {
   BookmarkIcon,
@@ -33,6 +37,8 @@ function ModalPreviewContent({ onClose, open, content }: ModalPreviewContentProp
         slidesToScroll: 1,
     };
 
+
+
     return (
         <Drawer
             width={600}
@@ -47,11 +53,11 @@ function ModalPreviewContent({ onClose, open, content }: ModalPreviewContentProp
                     <div className="flex items-center p-3">
                         <img
                             className="w-10 h-10 rounded-full object-cover"
-                            src={content?.creator?.avatarUrl}
+                            src={content?.creator?.avatarUrl || DefaultAvatar}
                             alt="Profile"
                         />
                         <div className="ml-3 pb-2">
-                            <p className="font-semibold">{content?.creator?.name}</p>
+                            <p className="font-semibold">{formatName(content?.creator?.name as string)}</p>
                         </div>
                     </div>
 
@@ -78,19 +84,19 @@ function ModalPreviewContent({ onClose, open, content }: ModalPreviewContentProp
 
                     {/* Likes */}
                     <div className="px-4">
-                        <p className="font-semibold">247 likes</p>
+                        <p className="font-semibold">0 like</p>
                     </div>
 
                     {/* Caption */}
                     <div className="px-4 py-2">
                         <p>
-                            <span className="font-semibold">{content?.creator?.name}</span>
+                            <span className="font-semibold">{formatName(content?.creator?.name as string)}</span>
                             {abbreviateLastName(content?.caption, 40)}
                         </p>
                     </div>
 
                     {/* Time */}
-                    <div className="px-4 pb-4 text-sm text-gray-500">10 minutes ago</div>
+                    <div className="px-4 pb-4 text-sm text-gray-500">0 minute ago</div>
                 </div>
             )}
 
