@@ -1,7 +1,7 @@
 import 'react-quill/dist/quill.snow.css';
 import 'react-toastify/dist/ReactToastify.css';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import {
   Breadcrumb,
@@ -37,28 +37,29 @@ const InviteInfluencer = () => {
     const { userInfo } = useAuthContext()
     const [loading, setLoading] = useState(false);
     const [influencers, setInfluencers] = useState<Creator[]>([])
-
     const handleImportCSV = async (info: any): Promise<void> => {
+        setLoading(true)
+        setInfluencers([])
         const file = info.file.originFileObj;
         const formData = new FormData();
         formData.append('file', file);
-
         if (info.file.status !== 'uploading') {
-            await importCSV(formData).then(() => {
-                handleGetListInfluencerImported()
-            })
+                await importCSV(formData);
+                await handleGetListInfluencerImported(); // Await this call
         }
-        setLoading(false);
     };
-
+    useEffect(() => {
+        if (influencers.length > 0) {
+            setLoading(false); 
+        }
+    }, [influencers]);
     const handleGetListInfluencerImported = async (): Promise<void> => {
         await getInfluencerImported( 100, 1)
             .then((res) => setInfluencers(res?.data?.paginatedInfluencersData))
     }
-
     // Skeleton data for loading state
     const skeletonData = Array(5).fill({
-        key: '',
+        key: 'skeleton-${index}',
         name: <Skeleton.Input active size="small" style={{ width: 120 }} />,
         email: <Skeleton.Input active size="small" style={{ width: 200 }} />,
         status: <Skeleton.Input active size="small" style={{ width: 100 }} />,
@@ -82,7 +83,7 @@ const InviteInfluencer = () => {
                     <p className='text-sm text-gray-900'>Don't have the template? <span className='text-blue-500 cursor-pointer' >Download Template</span></p>
                 </div>
                 <div className='mt-2 h-[152px]'>
-                <Dragger showUploadList={false} onChange={(file) => {handleImportCSV(file); setLoading(true)}} >
+                <Dragger showUploadList={false} onChange={(file) => {handleImportCSV(file)}} >
                         <div className='flex items-center flex-col justify-center'>
                             <div className="h-[44px] w-[44px] rounded-[50%] bg-gray-100 flex items-center justify-center">
                                 <CloudArrowUpIcon className='text-gray-500' width={20} />
@@ -95,14 +96,18 @@ const InviteInfluencer = () => {
                     </Dragger>
                 </div>
                 {/* INFLUENCER */}
-                {!loading ?
-                    (influencers.length > 0 && <div className='mt-4'>
-                        <Table<Creator> columns={creatorColumns(loading)} dataSource={influencers} />
-                    </div> ) : 
-                    <div className='mt-4'>
-                        <Table columns={creatorColumns(loading)} dataSource={skeletonData} />
-                        </div>
-                }                        
+                {
+                    influencers.length > 0 ? 
+                        !loading && 
+                        <div className='mt-4'>
+                            <Table<Creator> columns={creatorColumns(loading)} dataSource={influencers} />
+                        </div>  
+                        : 
+                        loading && 
+                        <div className='mt-4'>
+                            <Table columns={creatorColumns(loading)} dataSource={skeletonData} />
+                        </div> 
+                } 
             </div>
         </div>
 
