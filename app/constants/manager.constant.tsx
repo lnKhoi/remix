@@ -43,7 +43,7 @@ export const navItems: NavItem[] = [
     label: "Contents",
   },
   {
-    to: "",
+    to: "/manager/products",
     icon: ArchiveBoxIcon,
     label: "Products",
     children: [

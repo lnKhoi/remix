@@ -93,7 +93,7 @@ export const OrderTrackingColumns = (loading: boolean): TableColumnsType<Order> 
   {
     title: 'Actions',
     render: (_, record) => (
-      <Link to={`/manager/${record.campaignId}`}>
+      <Link to={`/manager/campaign/${record.campaignId}`}>
         <p onClick={() => localStorage.setItem('campaignTab','Order')} className="text-blue-500 cursor-pointer">
           {loading ? (
             <Skeleton.Input active size="small" className="w-24" />
