@@ -46,7 +46,7 @@ function CampaignCard({ campaign, onReload }: CampaignCardProps) {
                 setIsModal(true)
                 break;
             case 'view':
-                navigate(`/manager/${campaign.id}`)
+                navigate(`/manager/campaign/${campaign.id}`)
                 break;
             case 'edit':
                 navigate(`/manager/edit/${campaign.id}`)

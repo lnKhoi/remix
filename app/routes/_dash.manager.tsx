@@ -45,10 +45,13 @@ function SidebarMenu({
 }) {
   const location = useLocation();
 
+  // Find the active key based on the current path
+  const path: NavItem = items.find(item => location.pathname.startsWith(item.to.slice(0, -1))) ?? items[0];
+
   return (
     <Menu
       mode="inline"
-      defaultSelectedKeys={[location.pathname]}
+      selectedKeys={[path.to]}
       style={{
         height: "100%",
         borderRight: 0,
@@ -123,10 +126,11 @@ function UserProfilePopover({
             {profileTab.map((tab) => (
               <Menu.Item
                 key={tab.label}
-                onClick={() =>
+                onClick={() => {
                   tab.label === "Logout"
                     ? onLogout()
-                    : onNavigate(tab.to)
+                    : (onNavigate(tab.to), setModalOpen(!modalOpen))
+                  }
                 }
               >
                 <div className="flex items-center gap-2">

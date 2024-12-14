@@ -14,23 +14,28 @@ import {
 } from '~/models/User.model';
 import { formatName } from '~/utils/formatNumber';
 
-export const creatorColumns: TableProps<Creator>['columns'] = [
+export const creatorColumns = (loading: boolean): TableProps<Creator>['columns'] => [
   {
     title: 'Name',
     dataIndex: 'fullName',
     key: 'fullName',
-    render: (text) => <a>{text}</a>,
+    render: (text) => loading ? <Skeleton.Input active size="small" style={{ width: 120 }} /> : <a>{text}</a>,
   },
   {
     title: 'Email',
     dataIndex: 'email',
     key: 'email',
+    render: (text: string) =>
+      loading ? <Skeleton.Input active size="small" style={{ width: 200 }} /> : text,
   },
   {
     title: 'Status',
     dataIndex: 'hasAccount',
     key: 'hasAccount',
     render: (text) => {
+      if (loading) {
+        return <Skeleton.Input active size="small" style={{ width: 100 }} />;
+      }
       const registered = text === 1
       return (
         <div className={`inline-flex items-center px-4   gap-1 rounded-[50px] h-[28px]  ${registered ? 'bg-teal-100' : 'bg-red-100'} `}>

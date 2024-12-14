@@ -49,7 +49,6 @@ function page() {
   const [modalInvite, setModalInvite] = useState<boolean>(false);
   const [campaign, setCampaign] = useState<Campaign | null>(null);
   const [filter, setFilter] = useState<{ time: string, dateRange: DateRange }>({ time: '7d', dateRange: null })
-
   const handleGetCampaignDetails = async (): Promise<void> => {
     setLoading(true)
     await getCampaignDetails(id as string)
