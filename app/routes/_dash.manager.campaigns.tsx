@@ -36,19 +36,19 @@ export const meta: MetaFunction = () => {
 
 function Campaigns() {
   const [search, setSearch] = useState<string>('')
-  const [loading, setLoading] = useState<string>('')
+  const [loading, setLoading] = useState<boolean>(false)
   const [campaigns, setCampagins] = useState<Campaign[]>([])
   const [params, setParams] = useState<{ page: number, limit: number }>({ page: 1, limit: 10 })
 
   const handleGetCampaigns = async (): Promise<void> => {
-    setLoading('loading')
+    setLoading(true)
     await getCampaigns(params.limit, params.page, search)
       .then(res => {
         setCampagins(res?.data?.data)
       })
       .catch(err => toast.error(err?.message))
       .finally(() => {
-        setLoading('')
+        setLoading(false)
       })
   }
 
@@ -95,11 +95,11 @@ function Campaigns() {
         </div>
       </div>
 
-      {loading === 'loading'
+      {loading
         ? <div className='grid 2xl:grid-cols-4 xl:grid-cols-3 md:grid-cols-2 grid-cols-1  gap-5 mt-5'>
           {Array?.from({ length: 16 }).map((s, idx) => <ReviewCard key={idx} />)}
         </div>
-        : <div className='overflow-auto' style={{ maxHeight: 'calc(100vh - 200px)' }}>
+        : <div>
           {campaigns?.length === 0 && (
             <div className='flex items-center flex-col gap-3 justify-center w-full h-[calc(100vh-200px)]'>
               <img src={NoCampaigns} className='w-[370px]' />
