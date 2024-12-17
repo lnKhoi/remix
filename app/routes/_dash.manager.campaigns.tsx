@@ -93,7 +93,7 @@ function Campaigns() {
 
       {loading
         ? <div className='grid 2xl:grid-cols-4 xl:grid-cols-3 md:grid-cols-2 grid-cols-1  gap-5 mt-5'>
-          {Array?.from({length:16}).map((s,idx) => <ReviewCard key={idx} />)}
+          {Array?.from({ length: 16 }).map((s, idx) => <ReviewCard key={idx} />)}
         </div>
         : <div>
           {campaigns?.length === 0 && (
