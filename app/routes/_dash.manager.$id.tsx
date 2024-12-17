@@ -143,7 +143,7 @@ function page() {
       </div>
 
       {/* Modal Invite Influencer */}
-      <ModalInviteInfluencerToCampaign open={modalInvite} onClose={() => setModalInvite(false)} campaignId={campaign?.id as string} />
+      <ModalInviteInfluencerToCampaign open={modalInvite} onClose={() => setModalInvite(false)} campaignId={id as string} />
     </div>
   );
 }

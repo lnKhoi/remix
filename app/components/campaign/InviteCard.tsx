@@ -57,6 +57,7 @@ function InviteCard({ influencer, checked, onSelect, campaignId }: InviteCardPro
             <div className='w-full'>
                 <div className='flex items-start gap-4'>
                     <Checkbox
+                        disabled={invited}
                         onChange={(e) => handleCheckboxChange(e)}
                         checked={checked} ></Checkbox>
                     <div className='flex items-center justify-between w-full'>

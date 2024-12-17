@@ -59,7 +59,7 @@ function ModalInviteInfluencerToCampaign({ onClose, open, campaignId }: ModalInv
     const [selectAll, setSelectAll] = useState<boolean>(false)
     const [influencers, setInfluencers] = useState<Creator[]>([])
     const [modal, setModal] = useState<boolean>(false)
-    const [loading, setLoading] = useState<boolean>(false)
+    const [loading, setLoading] = useState<string>('')
     const [selectedInfluencers, setSelectedInfluencers] = useState<string[]>([])
 
     const [filter, setFilter] = useState<Filter>(initialFilter);
@@ -82,20 +82,24 @@ function ModalInviteInfluencerToCampaign({ onClose, open, campaignId }: ModalInv
     };
 
     const handleGetInfluencers = async (filter: Filter) => {
-        setLoading(true)
+        setLoading('get-list')
         await getListInfluencerInviteInCampaign(campaignId as string, 100, 1, filter)
             .then((res) => setInfluencers(res?.data?.creatorsWithInvitationStatus))
-            .finally(() => setLoading(false))
+            .finally(() => setLoading(''))
     }
 
     const handleInviteInfluencers = async (): Promise<void> => {
-        setLoading(true)
-        await inviteInfluencerToCampaign(campaignId, selectedInfluencers as string[])
+        const filteredUniqueInfluencer = influencers
+            .filter(i => selectedInfluencers.includes(i.id as string) && !i.alreadyInvited).map(influencer => influencer?.id)
+        setLoading('invite')
+        await inviteInfluencerToCampaign(campaignId, filteredUniqueInfluencer as string[])
             .then(() => {
                 toast.success(INVITED_INFLUENCERS)
+                setSelectedInfluencers([])
+                handleGetInfluencers(filter)
             })
             .catch((err) => toast.error(err?.message))
-            .finally(() => setLoading(false))
+            .finally(() => setLoading(''))
     }
 
     useEffect(() => { handleGetInfluencers(filter) }, [alignValue])
@@ -130,13 +134,19 @@ function ModalInviteInfluencerToCampaign({ onClose, open, campaignId }: ModalInv
         setModal(false)
     }
 
+
     return (
         <Modal width={650} title='' open={open} onCancel={() => onClose(false)} footer={[
             <div className='flex border-t border-t-gray-300 pt-5 items-center justify-end gap-2'>
                 <Button onClick={(): void => onClose(false)} type='default' >Close</Button>
-                <Button loading={loading} onClick={handleInviteInfluencers} type='primary' >Send Invitation</Button>
+                <Button
+                    disabled={selectedInfluencers.length <= 0}
+                    loading={loading === 'invite' && selectedInfluencers.length > 0}
+                    onClick={handleInviteInfluencers}
+                    type='primary' >
+                    Send Invitation
+                </Button>
             </div>
-
         ]} >
             <div>
                 <h2 className='text-center text-2xl font-semibold'>Invite Influencer</h2>
@@ -247,7 +257,7 @@ function ModalInviteInfluencerToCampaign({ onClose, open, campaignId }: ModalInv
                             </Popover>
                         </div>
                         <div className='h-[330px] mb-8 mt-4 pr-2 overflow-y-scroll w-full flex flex-col gap-3'>
-                            {loading
+                            {loading === 'get-list'
                                 ? <> {Array.from({ length: 5 }).map((_, index) => (
                                     <div key={index} className="border border-gray-200 rounded-md p-4">
                                         <Skeleton key={index} active avatar paragraph={{ rows: 1 }} />

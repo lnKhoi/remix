@@ -7,6 +7,7 @@ import { Drawer } from 'antd';
 //@ts-ignore
 import Slider from 'react-slick';
 import DefaultAvatar from '~/assets/avatar.jpeg';
+import Timeline from '~/assets/time-line.png';
 import { Content } from '~/models/Content.model';
 import {
   abbreviateLastName,
@@ -16,9 +17,11 @@ import {
 import {
   BookmarkIcon,
   ChatBubbleOvalLeftIcon,
+  EllipsisHorizontalIcon,
   HeartIcon,
   MusicalNoteIcon,
   PaperAirplaneIcon,
+  XMarkIcon,
 } from '@heroicons/react/24/outline';
 
 type ModalPreviewContentProps = {
@@ -37,7 +40,7 @@ function ModalPreviewContent({ onClose, open, content }: ModalPreviewContentProp
         slidesToScroll: 1,
     };
 
-
+    const contentFormat = content?.campaign?.contentFormat?.[0]
 
     return (
         <Drawer
@@ -47,7 +50,7 @@ function ModalPreviewContent({ onClose, open, content }: ModalPreviewContentProp
             onClose={onClose}
         >
             {/* POST */}
-            {content?.campaign?.contentFormat?.[0] === 'post' && (
+            {contentFormat === 'post' && (
                 <div className="max-w-sm mx-auto bg-white border border-gray-200 rounded-md shadow-md">
                     {/* Header */}
                     <div className="flex items-center p-3">
@@ -101,7 +104,7 @@ function ModalPreviewContent({ onClose, open, content }: ModalPreviewContentProp
             )}
 
             {/* REEL */}
-            {content?.campaign?.contentFormat?.[0] === 'reel' && (
+            {contentFormat === 'reel' && (
                 <div className="max-w-sm mx-auto relative bg-white border border-gray-200 rounded-md shadow-md">
                     {/* Profile Section */}
                     <div className="flex items-center p-3 absolute left-0 bottom-16 ">
@@ -154,6 +157,41 @@ function ModalPreviewContent({ onClose, open, content }: ModalPreviewContentProp
                         </div>
                     </div>
 
+                </div>
+            )}
+
+            {contentFormat === 'story' && (
+                <div className='w-full h-full flex items-center justify-center'>
+                    <div className='w-[360px] rounded-xl overflow-hidden shadow-md relative h-[590px] '>
+                        <img className='absolute top-1 left-0 w-full' src={Timeline} alt="timeline" />
+                        <img src={content?.urls?.[0]} className='w-full h-full object-cover' />
+                        <div className="flex absolute bg-[rgba(0,0,0,0.03)] top-3 left-0 w-full justify-between items-center p-3">
+                            <div className='flex items-center'>
+                                <img
+                                    className="w-10 h-10 rounded-full object-cover"
+                                    src={content?.creator?.avatarUrl || DefaultAvatar}
+                                    alt="Profile"
+                                />
+                                <div className="ml-3 pb-2">
+                                    <p className="font-semibold text-white">{formatName(content?.creator?.name as string)}</p>
+                                </div>
+                            </div>
+                            <div className='flex items-center gap-2'>
+                                <EllipsisHorizontalIcon className='text-white w-5 h-5' />
+                                <XMarkIcon className='text-white h-6 w-6' />
+                            </div>
+                        </div>
+
+                        <div className='absolute bottom-3 bg-[rgba(0,0,0,0.03)] h-[40px] px-3 flex items-center justify-between left-0 w-full'>
+                            <div className='w-[80%] border border-gray-200 flex items-center px-3 rounded-[100px] text-gray-200 h-[36px]'>
+                                Send message
+                            </div>
+                            <div className='flex items-center gap-2 justify-between'>
+                                <HeartIcon className='w-6 h-6 text-white' />
+                                <PaperAirplaneIcon className=' -rotate-[45deg] text-white w-6 h-6 transform -translate-y-[2px]' />
+                            </div>
+                        </div>
+                    </div>
                 </div>
             )}
 
