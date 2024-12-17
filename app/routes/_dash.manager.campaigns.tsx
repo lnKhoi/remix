@@ -38,18 +38,14 @@ function Campaigns() {
   const [search, setSearch] = useState<string>('')
   const [loading, setLoading] = useState<boolean>(false)
   const [campaigns, setCampagins] = useState<Campaign[]>([])
-  const [params, setParams] = useState<{ page: number, limit: number }>({ page: 1, limit: 10 })
+  const [params, setParams] = useState<{ page: number, limit: number }>({ page: 1, limit: 100 })
 
   const handleGetCampaigns = async (): Promise<void> => {
     setLoading(true)
     await getCampaigns(params.limit, params.page, search)
-      .then(res => {
-        setCampagins(res?.data?.data)
-      })
+      .then(res => setCampagins(res?.data?.data))
       .catch(err => toast.error(err?.message))
-      .finally(() => {
-        setLoading(false)
-      })
+      .finally(() => setLoading(false))
   }
 
   useEffect(() => {
