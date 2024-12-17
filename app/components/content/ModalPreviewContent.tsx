@@ -128,19 +128,16 @@ function ModalPreviewContent({ onClose, open, content }: ModalPreviewContentProp
                         className="w-[393px] h-[550px] object-cover"
                     />
                     {/* Action Buttons */}
-                    <div className="flex flex-col absolute right-0 bottom-[10%] items-center justify-between px-4 py-2">
-                        <div className="flex items-center flex-col gap-4">
+                    <div className="flex flex-col absolute right-0 bottom-[20%] items-center justify-between px-4 py-2">
+                        <div className="flex items-center flex-col gap-6">
                             <div className='flex flex-col items-center'>
                                 <HeartIcon className="w-6 h-6 text-white" />
-                                <p className='text-white'>24</p>
                             </div>
                             <div className='flex flex-col items-center'>
                                 <ChatBubbleOvalLeftIcon className="w-6 h-6 text-white" />
-                                <p className='text-white'>200</p>
                             </div>
                             <div className='flex flex-col items-center'>
                                 <PaperAirplaneIcon className="w-6 h-6 text-white transform" />
-                                <p className='text-white'>2</p>
                             </div>
                         </div>
                     </div>
