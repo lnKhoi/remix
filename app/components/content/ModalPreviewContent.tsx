@@ -160,8 +160,18 @@ function ModalPreviewContent({ onClose, open, content }: ModalPreviewContentProp
             {contentFormat === 'story' && (
                 <div className='w-full h-full flex items-center justify-center'>
                     <div className='w-[360px] rounded-xl overflow-hidden shadow-md relative h-[590px] '>
-                        <img className='absolute top-1 left-0 w-full' src={Timeline} alt="timeline" />
-                        <img src={content?.urls?.[0]} className='w-full h-full object-cover' />
+                        <img className='absolute top-1 left-0 w-full z-10' src={Timeline} alt="timeline" />
+                        <div
+                            style={{
+                                backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.25)), url(${content?.urls?.[0]})`,
+                                backgroundSize: "cover",
+                                backgroundPosition: "center",
+                                width: "100%",
+                                height: "100%",
+                            }}
+                        >
+                            {/* Other content here */}
+                        </div>
                         <div className="flex absolute bg-[rgba(0,0,0,0.03)] top-3 left-0 w-full justify-between items-center p-3">
                             <div className='flex items-center'>
                                 <img
