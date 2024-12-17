@@ -33,6 +33,7 @@ import {
 } from '~/apis/content';
 import Approve from '~/assets/approve.png';
 import Reject from '~/assets/reject.png';
+import EmbedContent from '~/components/content/EmbedContent';
 import ModalPreviewContent from '~/components/content/ModalPreviewContent';
 import TagColor from '~/components/ui/tagColor';
 import {
@@ -45,7 +46,10 @@ import {
 } from '~/helpers/campaign.helper';
 import { Content } from '~/models/Content.model';
 import Editor from '~/plugins/editor';
-import { formatName } from '~/utils/formatNumber';
+import {
+  abbreviateLastName,
+  formatName,
+} from '~/utils/formatNumber';
 
 import {
   CalendarDateRangeIcon,
@@ -74,7 +78,7 @@ const ContentDetails = () => {
 
   const [reason, setReason] = useState<string>('')
   const [loading, setLoading] = useState<string>('')
-  const [isPreview, setIsPreview] = useState<boolean>(false)
+  const [previewType, setPreviewType] = useState<string>('')
   const [isViewReason, setIsViewReason] = useState<boolean>(false)
   const [submitTime, setSubmitTime] = useState<Dayjs | null>(null)
   const [messageApi, contextHolder] = message.useMessage();
@@ -174,7 +178,9 @@ const ContentDetails = () => {
                         {dayjs(content?.createdAt).format('DD/MM/YYYY')}
                         <ChevronUpDownIcon width={16} />
                       </button>
-                      <Button onClick={() => setIsPreview(true)} className='bg-gray-100'>Preview</Button>
+                      {content?.approved !=='posted' && (
+                        <Button onClick={() => setPreviewType('preview')} className='bg-gray-100'>Preview</Button>
+                      )}
                     </>
                 }
               </div>
@@ -239,6 +245,7 @@ const ContentDetails = () => {
               }
             </div>
           </div>
+
           {/* Note */}
           {content?.notes !== '' && (
             <div className='w-[700px] border border-gray-200 shadow-sm rounded-xl mt-5 p-5'>
@@ -248,13 +255,13 @@ const ContentDetails = () => {
           )}
         </div>
         {/* Review */}
-        <div className='flex flex-col gap-5 w-[300px]'>
+        <div className='flex flex-col gap-5 w-[400px]'>
           {/* Influencer Requested */}
           {
             loading === 'loading' ?
 
-              <div className='flex flex-col gap-5 w-[300px]'>
-                <div className='flex flex-col gap-5 w-[300px] border border-gray-100 rounded-xl'>
+              <div className='flex flex-col gap-5 w-full'>
+                <div className='flex flex-col gap-5 w-full border border-gray-100 rounded-xl'>
                   <Skeleton.Node active style={{ marginTop: 16, marginLeft: 16, marginRight: 16, width: '90%', height: 60 }} />
                   <div className='w-full justify-between px-4 flex items-center '>
                     <Skeleton.Button active style={{ height: 28, borderRadius: 50 }} />
@@ -264,7 +271,7 @@ const ContentDetails = () => {
                 </div>
               </div>
               :
-              <div className='w-[300px] border border-gray-100 rounded-xl shadow-sm'>
+              <div className='w-full border border-gray-100 rounded-xl shadow-sm'>
                 <p className='p-4 text-sm text-gray-800 '>Please review the attached content for approval. Looking forward to your feedback!</p>
                 <div className='w-full justify-between px-4 pb-4 flex items-center gap-2 '>
                   {content?.approved == 'pending' ? (
@@ -279,10 +286,12 @@ const ContentDetails = () => {
                       background={getColorStatusContent(content?.approved as ContentStatus)?.background as ContentStatus} />
                   )}
                   {content?.approved === 'posted' && (
-                    <Button className='bg-gray-100 border-none'>View Post</Button>
+                    <Button
+                      onClick={() => window.open(content?.permalink, "_blank")}
+                      className='bg-gray-100 border-none'>View Post</Button>
                   )}
                 </div>
-                <div className='bg-gray-100  flex gap-3 items-center p-4 justify-center'>
+                <div className='bg-gray-100  flex gap-3 items-center p-4 justify-start'>
                   <ExclamationCircleIcon width={20} className='text-gray-500' />
                   <p className='w-[224px] text-sm text-gray-800'>Content approval time within 48 hours from submission for review</p>
                 </div>
@@ -291,7 +300,7 @@ const ContentDetails = () => {
 
           {/* Reason */}
           {content?.approved === 'rejected' && (
-            <div className='p-4 border w-[300px] border-gray-200 rounded-xl flex flex-col gap-4'>
+            <div className='p-4 border w-full border-gray-200 rounded-xl flex flex-col gap-4'>
               <span className='text-sm font-medium text-gray-800'>Reason</span>
               <p className='text-sm font-normal text-gray-800'>Your feedback has been sent to Influencer. You couldn’t edit reason or undo.</p>
               <Button onClick={() => setIsViewReason(true)} className='w-[100px] bg-gray-100 border-none'>View Details</Button>
@@ -299,7 +308,7 @@ const ContentDetails = () => {
           )}
           {/* Link Content */}
           {content?.approved === 'approved' && (
-            <div className='w-[300px] border border-gray-200 rounded-xl shadow-sm'>
+            <div className='w-full border border-gray-200 rounded-xl shadow-sm'>
               <div className='flex items-start pt-4  px-3  pb-3 gap-3'>
                 <CalendarDateRangeIcon width={20} height={20} className='text-gray-500' />
                 <div className='flex flex-col gap-1 w-full'>
@@ -317,7 +326,7 @@ const ContentDetails = () => {
           {/* Link website */}
           {
             loading === 'loading' ?
-              <div className='w-[300px] border border-gray-100 rounded-xl shadow-sm'>
+              <div className='w-full border border-gray-100 rounded-xl shadow-sm'>
                 <div className='flex items-start p-4 gap-3'>
                   <div className='flex flex-col gap-1 w-full'>
                     <Skeleton.Button active style={{ width: 100, height: 16 }} />
@@ -328,7 +337,7 @@ const ContentDetails = () => {
               :
               <>
                 {content?.trackingUrl && (
-                  <div className='w-[300px] border border-gray-100 rounded-xl shadow-sm'>
+                  <div className='w-full border border-gray-100 rounded-xl shadow-sm'>
                     <div className='flex items-start p-4 gap-3'>
                       <LinkIcon width={20} height={20} className='text-gray-500' />
                       <div className='flex flex-col gap-1 w-full'>
@@ -338,7 +347,7 @@ const ContentDetails = () => {
                           text={content?.trackingUrl}
                         >
                           <div className='flex cursor-pointer items-center gap-2 justify-between w-full'>
-                            <p className='text-gray-800 text-sm overflow-hidden text-ellipsis whitespace-nowrap'>{content?.trackingUrl}</p>
+                            <p className='text-gray-800 text-sm overflow-hidden text-ellipsis whitespace-nowrap'>{abbreviateLastName(content?.trackingUrl,45)}</p>
                             <DocumentDuplicateIcon width={20} height={20} className='text-gray-500 min-w-[20px]' />
                           </div>
                         </CopyToClipboard>
@@ -350,6 +359,8 @@ const ContentDetails = () => {
               </>
           }
 
+          {/* Embed Post */}
+          <EmbedContent link={content?.permalink as string} />
         </div>
 
         {/* Modal Reject content*/}
@@ -357,7 +368,7 @@ const ContentDetails = () => {
           footer={
             <div className="float-right gap-3 flex items-end  justify-between">
               <Button onClick={() => setModalType('')} >Cancel</Button>
-              <Button loading={loading ==='loading-reject'} onClick={handleReject} type="primary">Reject</Button>
+              <Button loading={loading === 'loading-reject'} onClick={handleReject} type="primary">Reject</Button>
             </div>
           }
           width={600}
@@ -380,7 +391,7 @@ const ContentDetails = () => {
           footer={() =>
             <div className='w-full mt-7 flex items-center justify-between'>
               <Button onClick={() => setModalType('')} className='w-[49%]'>No</Button>
-              <Button onClick={handleConfirmInfluencerRequest} className='text-white bg-red-500  w-[49%]' >Yes</Button>
+              <Button onClick={handleConfirmInfluencerRequest} className='text-white w-[49%]' >Yes</Button>
             </div>
           }
         >
@@ -467,7 +478,10 @@ const ContentDetails = () => {
         </Modal>
 
         {/* Modal Preview Content */}
-        <ModalPreviewContent content={content as Content} open={isPreview} onClose={() => setIsPreview(false)} />
+        <ModalPreviewContent
+          content={content as Content} open={previewType === 'preview'}
+          onClose={() => setPreviewType('')} />
+
         <Drawer
           footer={
             <div className='flex items-center justify-end mr-7'><Button onClick={() => setIsViewReason(false)}>Close</Button></div>
