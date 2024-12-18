@@ -16,6 +16,7 @@ import type {
   CreditCard,
   TransactionHistory,
 } from '~/models/payment.model';
+import CreditCardForm from '~/sdks/CreditCard';
 
 import {
   ExclamationCircleIcon,
@@ -25,7 +26,6 @@ import {
 
 import TagColor from '../ui/tagColor';
 import BuyToken from './BuyToken';
-import CreditCardForm from './CreditCardForm';
 import ModalSuccessPayment from './ModalSuccessPayment';
 import PaymentHistory from './PaymentHistory';
 
@@ -101,7 +101,10 @@ function Payment() {
                 </div>
               </Radio >
               {/* CREDIT CARD FORM */}
-              {paymentMethod === 'creditCard' && <CreditCardForm form={form} onFinish={handleFinish} />}
+              {/* {paymentMethod === 'creditCard' && <CreditCardForm form={form} onFinish={handleFinish} />} */}
+             <div className='w-[700px]'>
+             {paymentMethod ==='creditCard' && <CreditCardForm/>}
+             </div>
               <Radio value="paypal">
                 <img className='transform translate-y-1' src={Paypal} alt="paypal" />
               </Radio>

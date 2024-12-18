@@ -285,11 +285,6 @@ const ContentDetails = () => {
                       color={getColorStatusContent(content?.approved as ContentStatus)?.color as ContentStatus}
                       background={getColorStatusContent(content?.approved as ContentStatus)?.background as ContentStatus} />
                   )}
-                  {content?.approved === 'posted' && (
-                    <Button
-                      onClick={() => window.open(content?.permalink, "_blank")}
-                      className='bg-gray-100 border-none'>View Post</Button>
-                  )}
                 </div>
                 <div className='bg-gray-100  flex gap-3 items-center p-4 justify-start'>
                   <ExclamationCircleIcon width={20} className='text-gray-500' />
@@ -341,7 +336,7 @@ const ContentDetails = () => {
                     <div className='flex items-start p-4 gap-3'>
                       <LinkIcon width={20} height={20} className='text-gray-500' />
                       <div className='flex flex-col gap-1 w-full'>
-                        <p className='text-sm font-normal text-gray-500'>Link website</p>
+                        <p className='text-sm font-normal text-gray-500'>Link Product</p>
                         <CopyToClipboard
                           onCopy={() => messageApi.success('Copied to clipboard!')}
                           text={content?.trackingUrl}

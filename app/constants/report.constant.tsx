@@ -9,7 +9,7 @@ export const influencerPerformanceColumns:  TableColumnsType<InfluencerInReport>
     title: 'Name',
     render: (_, record) => <div className='flex items-center gap-3'>
       <Avatar src={record.creator?.avatarUrl} className='w-[36px] h-[36px] rounded-[50%]' />
-      <div className='flex flex-col'>
+      <div className='flex flex-col items-center'>
         <p className='text-sm font-medium text-gray-800'>{record?.creator?.name}</p>
         <p className='text-sm font-normal text-gray-500'>{record?.creator?.email}</p>
       </div>
@@ -21,7 +21,7 @@ export const influencerPerformanceColumns:  TableColumnsType<InfluencerInReport>
   },
   {
     title: 'Revenue',
-    render: (_,record) => <div className='text-sm font-normal text-gray-800'>${record?.totalRevenue}</div>
+    render: (_,record) => <div className='text-sm font-normal text-gray-800'>${record?.totalRevenue?.toFixed(2)}</div>
   },
   {
     title: 'Clicks',
@@ -39,14 +39,6 @@ export const influencerPerformanceColumns:  TableColumnsType<InfluencerInReport>
     title: 'Conversion Rate',
     render: (_,record) => <div className='text-sm font-normal text-gray-800'>{record?.conversionRate?.toFixed(2)}%</div>
   },
-  // {
-  //   title: 'Action',
-  //   key: 'action',
-  //   align: 'center',
-  //   render: (_, record) => (
-  //     <div className='flex cursor-pointer items-center justify-center'><EyeIcon width={20} height={20} className='text-gray-500' /></div>
-  //   ),
-  // },
 ];
 
 export const initialReport  = {
