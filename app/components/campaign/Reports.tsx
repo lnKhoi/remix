@@ -186,7 +186,7 @@ function Reports({ campaign, filter }: ReportsProps) {
           {loading
             ? <Skeleton.Button active block />
             : <span className='text-2xl font-bold'>
-              $<CountUp end={reportData?.costPerClicks} />
+              $<CountUp end={reportData?.costPerClicks} decimals={2} />
             </span>
           }
         </div>
