@@ -1,24 +1,25 @@
 import React from 'react';
 
 import {
-    Button,
-    message,
+  Button,
+  message,
 } from 'antd';
 import dayjs from 'dayjs';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { DATE_TIME_FORMAT } from '~/constants/time.constant';
 import {
-    ContentStatus,
-    getColorStatusContent,
+  ContentStatus,
+  getColorStatusContent,
 } from '~/helpers/campaign.helper';
 import { Content } from '~/models/Content.model';
 import {
-    abbreviateLastName,
-    formatName,
+  abbreviateLastName,
+  formatName,
 } from '~/utils/formatNumber';
 
 import { LinkIcon } from '@heroicons/react/24/outline';
 import { Link } from '@remix-run/react';
+
 import ContentCardSkeleton from '../custom/skeletons/ContentCardSkeleton';
 
 type ContentCardProps = {
@@ -46,8 +47,8 @@ function ContentCard({ content, loading }: ContentCardProps) {
                             ? <video
                                 autoPlay
                                 loop
-                                muted className='2xl:h-[400px] xl:h-[280px] lg:h-[240px] rounded-t-2xl w-full object-cover' src={content?.urls?.[0]}></video>
-                            : <img className='2xl:h-[400px] xl:h-[280px] lg:h-[240px] rounded-t-2xl w-full object-cover'
+                                muted className='2xl:h-[290px] xl:h-[280px] lg:h-[240px] rounded-t-2xl w-full object-cover' src={content?.urls?.[0]}></video>
+                            : <img className='2xl:h-[290px] xl:h-[280px] lg:h-[240px] rounded-t-2xl w-full object-cover'
                                 src={content?.urls?.[0]} alt="content preview" />
                         }
                         <div className={`pt-4 px-4 pb-2 flex flex-col justify-around ${content?.approved === 'posted' ? 'h-[300px]' : 'h-[230px]'}`}>
