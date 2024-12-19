@@ -10,3 +10,12 @@ export type TransactionHistory = {
     type:string
     amount:number
 }
+
+export type CardDetails = {
+    number: string;
+    name: string;
+    expiry: string;
+    cvc: string;
+    focus: string;
+  }
+  

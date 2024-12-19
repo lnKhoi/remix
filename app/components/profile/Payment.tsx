@@ -9,20 +9,26 @@ import {
   Radio,
 } from 'antd';
 import dayjs from 'dayjs';
+import {
+  addPaymentMethod,
+  getPaymentMethods,
+} from '~/apis/stripe';
 import PaymentCard from '~/assets/balance-card.png';
 import Paypal from '~/assets/paypal.png';
 import Visa from '~/assets/visa.png';
 import type {
+  CardDetails,
   CreditCard,
-  TransactionHistory,
 } from '~/models/payment.model';
-import CreditCardForm from '~/sdks/CreditCard';
+import CheckoutForm from '~/sdks/CheckoutForm';
 
 import {
   ExclamationCircleIcon,
   PencilSquareIcon,
   TrashIcon,
 } from '@heroicons/react/24/outline';
+import { Elements } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
 
 import TagColor from '../ui/tagColor';
 import BuyToken from './BuyToken';
@@ -30,6 +36,7 @@ import ModalSuccessPayment from './ModalSuccessPayment';
 import PaymentHistory from './PaymentHistory';
 
 function Payment() {
+  const [loading, setLoading] = useState<boolean>(false)
   const [cards, setCards] = useState<CreditCard[]>([])
   const [totalToken, setTotalToken] = useState<number>(0)
   const [addedToken, setAddedToken] = useState<number>(0)
@@ -39,27 +46,44 @@ function Payment() {
   const [isSelectPayment, setIsSelectPayment] = useState<boolean>(false)
   const [form] = Form.useForm();
 
-  const handleFinish = (values: any) => {
-    const payload = { ...values, expirationDate: dayjs(values.expirationDate).toISOString(), }
-    localStorage.setItem('credit-card', JSON.stringify(payload))
-    setCards([...cards, payload])
+  const handleAddNewPaymentMethod = (values: CardDetails) => {
+    console.log(values)
     form.resetFields()
     setIsSelectPayment(false)
   };
 
-  useEffect(() => {
-    const userCards = localStorage.getItem('credit-card')
-    userCards && setCards([...cards, JSON.parse(userCards)])
+  const getPaymentInfo = () => {
+    setLoading(true)
+    Promise.all([getPaymentMethods(), addPaymentMethod()])
+      .then(([paymentMethods, clientIntent]) => {
+        console.log(paymentMethods);
+        console.log(clientIntent)
+      })
+      .catch(error => { console.error('Error fetching data:', error) })
+      .finally(() => setLoading(false))
+  };
 
-    const paymentHistory = JSON.parse(localStorage.getItem('paymentHistory') || '[]');
-    const totalAmount = paymentHistory.reduce((total:number, entry:TransactionHistory) => total + entry.amount, 0);
-    setTotalToken(totalAmount)
+  useEffect(() => {
+    getPaymentInfo()
   }, [])
 
   const handlePayment = (total: number) => {
     setPaymentSuccess(true)
     setAddedToken(total)
   }
+
+
+  const [clientSecret, setClientSecret] = useState(
+    "pi_3NCwMIF3hM0gtZIC0ZRtf7tZ_secret_8AgzIqnYbjLGg3s6a1H9HDtf2"
+  );
+
+  const stripePromise = loadStripe(
+    "pk_test_51KYozEF3hM0gtZICsFOodeIJWhToEUNs2dlIwNZ4Aycsvg2sF76MPTdocUp7gIXPOnBP1UqPZtU3DTDL6FhTAJ7y00doMv5315"
+  );
+
+  const options = {
+    clientSecret: clientSecret
+  };
 
   return (
     <div>
@@ -92,7 +116,7 @@ function Payment() {
 
         {/* SELECT PAYMENT METHOD */}
         {isSelectPayment && (
-          <Radio.Group onChange={(v) => setPaymentMethod(v.target.value)} value={paymentMethod}>
+          <Radio.Group className='w-full' onChange={(v) => setPaymentMethod(v.target.value)} value={paymentMethod}>
             <div className='mt-5 mx-5 flex flex-col gap-7'>
               <Radio value="creditCard">
                 <div className='flex items-center gap-2'>
@@ -101,10 +125,12 @@ function Payment() {
                 </div>
               </Radio >
               {/* CREDIT CARD FORM */}
-              {/* {paymentMethod === 'creditCard' && <CreditCardForm form={form} onFinish={handleFinish} />} */}
-             <div className='w-[700px]'>
-             {paymentMethod ==='creditCard' && <CreditCardForm/>}
-             </div>
+              <div className='w-calc()'>
+                {paymentMethod === 'creditCard' &&
+                  <Elements stripe={stripePromise} options={options}>
+                    <CheckoutForm />
+                  </Elements>}
+              </div>
               <Radio value="paypal">
                 <img className='transform translate-y-1' src={Paypal} alt="paypal" />
               </Radio>
