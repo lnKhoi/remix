@@ -15,7 +15,6 @@ import {
   message,
   Modal,
   Select,
-  Skeleton,
   TimePicker,
 } from 'antd';
 import dayjs, { Dayjs } from 'dayjs';
@@ -36,6 +35,8 @@ import Approve from '~/assets/approve.png';
 import Reject from '~/assets/reject.png';
 import EmbedContent from '~/components/content/EmbedContent';
 import ModalPreviewContent from '~/components/content/ModalPreviewContent';
+import ContentDetailSkeleton
+  from '~/components/custom/skeletons/ContentDetailSkeleton';
 import TagColor from '~/components/ui/tagColor';
 import {
   DATE_TIME_FORMAT,
@@ -64,7 +65,6 @@ import {
   useNavigate,
   useParams,
 } from '@remix-run/react';
-import ContentDetailSkeleton from '~/components/custom/skeletons/ContentDetailSkeleton';
 
 export const meta: MetaFunction = () => {
   return [{ title: 'Review Content' }]
@@ -76,6 +76,7 @@ type ModalType = 'confirm-posting-date' | 'reject-influencer-request' | 'approve
 const ContentDetails = () => {
   const { id } = useParams()
   const navigation = useNavigate()
+  const [selectedVersion,setSelectedVersion] = useState('')
 
   const [reason, setReason] = useState<string>('')
   const [loading, setLoading] = useState<string>('')
@@ -90,14 +91,14 @@ const ContentDetails = () => {
 
   const handleGetContentDetails = async () => {
     setLoading('loading')
-    await getContentDetails(id as string)
+    await getContentDetails(selectedVersion || id as string)
       .then((res) => setContent(res.data))
       .finally(() => setLoading(''))
   }
 
   useEffect(() => {
     handleGetContentDetails()
-  }, [])
+  }, [selectedVersion])
 
   const handleApproveContent = async (): Promise<void> => {
     setLoading('loading-post')
@@ -139,10 +140,6 @@ const ContentDetails = () => {
       .finally(() => setLoading(''))
   }
 
-  const handleChangeVersion = (v: string) => {
-
-  }
-
   const contentPreview = 'https://ebo.vn/static/uploads/editor/100247_content-is-king.png'
   const videoExtensions = ['mov', 'mp4'];
 
@@ -172,9 +169,13 @@ const ContentDetails = () => {
                     </div>
                     <div className='flex p-4 items-center justify-between gap-3'>
                       <p>Version</p>
-                      <Select onChange={(v) => handleChangeVersion(v)} defaultValue={'1'} className='bg-gray-200 w-[140px] rounded-lg'>
-                        <Select.Option value='1' >Hello</Select.Option>
-                        <Select.Option value='2' >ABC</Select.Option>
+                      <Select
+                        onChange={(v) => setSelectedVersion(v)}
+                        defaultValue={content?.id}
+                        className='bg-gray-200 w-[140px] rounded-lg'>
+                        {content?.versions.map(v => (
+                          <Select.Option value={v.contentId} >{v.version}</Select.Option>
+                        ))}
                       </Select>
                       {content?.approved !== 'posted' && (
                         <Button onClick={() => setPreviewType('preview')} className='bg-gray-100'>Preview</Button>
