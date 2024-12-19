@@ -1,8 +1,11 @@
 export type CreditCard = {
-    nameOnCard:string
-    cardNumber:string
-    expirationDate:string,
-    cvv:string
+    id: string;
+    user_id: string;
+    stripe_payment_method_id: string;
+    type: string;
+    last4: string;
+    brand: string;
+    created_at: string;
 }
 
 export type TransactionHistory = {

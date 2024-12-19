@@ -5,8 +5,8 @@ import {
 
 import {
   Button,
-  Form,
   Radio,
+  Skeleton,
 } from 'antd';
 import dayjs from 'dayjs';
 import {
@@ -16,10 +16,8 @@ import {
 import PaymentCard from '~/assets/balance-card.png';
 import Paypal from '~/assets/paypal.png';
 import Visa from '~/assets/visa.png';
-import type {
-  CardDetails,
-  CreditCard,
-} from '~/models/payment.model';
+import { DATE_TIME_FORMAT_V2 } from '~/constants/time.constant';
+import type { CreditCard } from '~/models/payment.model';
 import CheckoutForm from '~/sdks/CheckoutForm';
 
 import {
@@ -30,6 +28,7 @@ import {
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 
+import PaymentMethodsSkeleton from '../custom/skeletons/PaymentMethods';
 import TagColor from '../ui/tagColor';
 import BuyToken from './BuyToken';
 import ModalSuccessPayment from './ModalSuccessPayment';
@@ -44,53 +43,40 @@ function Payment() {
   const [paymentMethod, setPaymentMethod] = useState<string>('')
   const [paymentSuccess, setPaymentSuccess] = useState<boolean>(false)
   const [isSelectPayment, setIsSelectPayment] = useState<boolean>(false)
-  const [form] = Form.useForm();
+  const [clientSecret, setClientSecret] = useState("");
 
-  const handleAddNewPaymentMethod = (values: CardDetails) => {
-    console.log(values)
-    form.resetFields()
-    setIsSelectPayment(false)
+  const stripePromise = loadStripe("pk_test_51QUrpZQwRo0WgELJhEc1NKIjXzzfCjFgpJpF9jsBeJ0FNRJcx1x1atB2DAYjelT4C6nlcXiR9n6oYwUL8ton1dVy00EWFHCCE6");
+
+  const options = {
+    clientSecret: clientSecret
   };
 
   const getPaymentInfo = () => {
     setLoading(true)
     Promise.all([getPaymentMethods(), addPaymentMethod()])
       .then(([paymentMethods, clientIntent]) => {
-        console.log(paymentMethods);
-        console.log(clientIntent)
+        setClientSecret(clientIntent?.data?.clientSecret)
+        setCards(paymentMethods.data)
       })
       .catch(error => { console.error('Error fetching data:', error) })
       .finally(() => setLoading(false))
   };
 
-  useEffect(() => {
-    getPaymentInfo()
-  }, [])
+  useEffect(() => { getPaymentInfo() }, [])
 
   const handlePayment = (total: number) => {
     setPaymentSuccess(true)
     setAddedToken(total)
   }
 
-
-  const [clientSecret, setClientSecret] = useState(
-    "pi_3NCwMIF3hM0gtZIC0ZRtf7tZ_secret_8AgzIqnYbjLGg3s6a1H9HDtf2"
-  );
-
-  const stripePromise = loadStripe(
-    "pk_test_51KYozEF3hM0gtZICsFOodeIJWhToEUNs2dlIwNZ4Aycsvg2sF76MPTdocUp7gIXPOnBP1UqPZtU3DTDL6FhTAJ7y00doMv5315"
-  );
-
-  const options = {
-    clientSecret: clientSecret
-  };
-
   return (
     <div>
       <div className='p-5 border flex items-center justify-between border-gray-200 rounded-xl'>
         <div className='flex flex-col gap-1'>
           <p className='text-lg text-gray-800 font-normal'>Actual Balance</p>
-          <p className='text-2xl font-semibold text-gray-800'>{totalToken} Token</p>
+          <p className='text-2xl font-semibold text-gray-800 flex items-center gap-1'>
+            {loading ? <Skeleton.Node style={{width:60,height:25}} active  /> : totalToken} Tokens
+          </p>
           <div className='gap-3 flex items-center'>
             <ExclamationCircleIcon className='w-5 h-5 text-gray-800' />
             <p className='text-sm font-normal text-gray-500'>Locked: $0.00</p>
@@ -126,7 +112,7 @@ function Payment() {
               </Radio >
               {/* CREDIT CARD FORM */}
               <div className='w-calc()'>
-                {paymentMethod === 'creditCard' &&
+                {(paymentMethod === 'creditCard' && clientSecret !== '') &&
                   <Elements stripe={stripePromise} options={options}>
                     <CheckoutForm />
                   </Elements>}
@@ -139,7 +125,7 @@ function Payment() {
         )}
 
         {/* NO PAYMENT AVAILABLE */}
-        {(paymentMethod === '' && !isSelectPayment && cards.length === 0) && (
+        {(paymentMethod === '' && !isSelectPayment && cards.length === 0 && !loading) && (
           <div className='mt-5 flex  flex-col items-center justify-center'>
             <h6 className='font-bold text-gray-800'>No payment link created</h6>
             <p className='mt-1 text-gray-500 text-sm font-normal w-[390px] text-center'>
@@ -149,17 +135,21 @@ function Payment() {
         )}
 
         {/* CREDIT CARD */}
-        {!isSelectPayment && cards?.map(card => (
-          <div className='mt-5  px-5 py-4 rounded-xl flex items-center justify-between mx-8 border border-dashed'>
+        {!isSelectPayment && loading && (
+          [1, 2, 3].map(s => <PaymentMethodsSkeleton key={s} />)
+        )}
+        {!isSelectPayment && !loading && cards?.map((card, idx) => (
+          <div key={card.id} className='mt-5  px-5 py-4 rounded-xl flex items-center justify-between mx-8 border border-dashed'>
             <div className='flex items-center gap-3'>
               <img src={Visa} alt="visa" />
               <div className='flex flex-col'>
-                <p className='text-sm font-medium text-gray-800'>{card?.nameOnCard}</p>
-                <span className='text-xs font-normal mt-[2px] text-gray-500'>Card expires at {dayjs(card.expirationDate).format('MM-YYYY')}</span>
+                <p className='text-sm font-medium text-gray-800 capitalize'>{card?.brand}</p>
+                <span className='text-xs font-normal mt-[2px] text-gray-500'>Card expired at {dayjs(card?.created_at).format(DATE_TIME_FORMAT_V2)}</span>
               </div>
-              <TagColor hideCircle status='Primary' color='#0F766E' background='#CCFBF1' />
+              {idx === 0 && (
+                <TagColor hideCircle status='Primary' color='#0F766E' background='#CCFBF1' />
+              )}
             </div>
-
             <div className='flex items-center gap-3'>
               <div className='w-[36px] transition-all h-[36px] hover:bg-gray-200 cursor-pointer rounded-md flex items-center justify-center bg-gray-100'>
                 <PencilSquareIcon className='text-gray-800 w-5 h-5' />
