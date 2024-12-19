@@ -76,7 +76,7 @@ type ModalType = 'confirm-posting-date' | 'reject-influencer-request' | 'approve
 const ContentDetails = () => {
   const { id } = useParams()
   const navigation = useNavigate()
-  const [selectedVersion,setSelectedVersion] = useState('')
+  const [selectedVersion, setSelectedVersion] = useState('')
 
   const [reason, setReason] = useState<string>('')
   const [loading, setLoading] = useState<string>('')
@@ -183,7 +183,9 @@ const ContentDetails = () => {
                     </div>
                   </div>
                   <div className='flex p-4 items-start mt-1 gap-3'>
-                    <img className='w-[36px] h-[36px] rounded-[50%] object-cover' src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTw7QkfjQ7yvMpDiPlgagN_hYtCrd2acymT1TDim7Kyt-WSAFhtXgHeZ_W0y_MAnxXtJqM&usqp=CAU" alt="avatar" />
+                    <img className='w-[36px] h-[36px] rounded-[50%] object-cover'
+                      src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTw7QkfjQ7yvMpDiPlgagN_hYtCrd2acymT1TDim7Kyt-WSAFhtXgHeZ_W0y_MAnxXtJqM&usqp=CAU"
+                      alt="avatar" />
                     <div className='flex flex-col items-start'>
                       <p className='text-sm font-medium text-gray-800'>{formatName(content?.creator.name as string)}</p>
                       <p className='text-gray-500 text-sm font-normal'>Submission date : {dayjs(content?.createdAt).format(DATE_TIME_FORMAT_V2)}</p>
@@ -196,11 +198,7 @@ const ContentDetails = () => {
 
                         return isVideo ? (
                           <video
-                            key={index}
-                            autoPlay
-                            loop
-                            muted
-                            controls
+                            key={index} autoPlay loop muted controls
                             className='w-[120px] h-[120px] rounded-lg object-cover'
                             src={url}
                           />
