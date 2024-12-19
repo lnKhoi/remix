@@ -6,7 +6,6 @@ import { integrationTabs } from '~/constants/myProfile.constant';
 function MyProfile() {
 
     const onChange = (key: string) => {
-        console.log('ey',key);
     };
 
     return (
