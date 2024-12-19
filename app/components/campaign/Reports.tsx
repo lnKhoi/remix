@@ -200,8 +200,13 @@ function Reports({ campaign, filter }: ReportsProps) {
             onClick: () => handleViewInfluencerProfile(record as any),
           })}
           columns={influencerPerformanceColumns}
-          dataSource={reportData?.influencers} />
+          dataSource={
+            loading
+              ? [1, 2, 3] as any
+              : reportData?.influencers
+          } />
       </div>
+
       {modal && (
         <InfluencerProfile
           campaignId={id as string}

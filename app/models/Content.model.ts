@@ -22,4 +22,10 @@ export type Content ={
     post_due?:string,
     trackingUrl?:string,
     updatedAt: string;
+    versions:ContentVersion[]
   }
+
+  export type ContentVersion = {
+    contentId:string,
+    version:string
+}
