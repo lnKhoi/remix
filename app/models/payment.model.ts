@@ -5,6 +5,7 @@ export type CreditCard = {
     type: string;
     last4: string;
     brand: string;
+    exp_year:string
     created_at: string;
 }
 
@@ -20,5 +21,16 @@ export type CardDetails = {
     expiry: string;
     cvc: string;
     focus: string;
+  }
+  
+
+  export type  Payment = {
+    id: string;
+    amount: number;
+    status: string;
+    invoice_id: string;
+    created_at: string;
+    type: string;
+    brand: string;
   }
   
