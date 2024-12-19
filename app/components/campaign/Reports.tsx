@@ -199,7 +199,7 @@ function Reports({ campaign, filter }: ReportsProps) {
           onRow={(record) => ({
             onClick: () => handleViewInfluencerProfile(record as any),
           })}
-          columns={influencerPerformanceColumns}
+          columns={influencerPerformanceColumns({ loading })}
           dataSource={
             loading
               ? [1, 2, 3] as any
