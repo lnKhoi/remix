@@ -22,3 +22,11 @@ export const paymentHistoryColumns:TableColumnsType<TransactionHistory>  = [
     render: () => <p>343434</p>
   },
 ];
+
+export const initialCardDetails = {
+  number: "",
+  name: "",
+  expiry: "",
+  cvc: "",
+  focus: "",
+}

@@ -3,7 +3,6 @@ import 'antd/dist/reset.css';
 
 import React, {
   ChangeEvent,
-  FC,
   FocusEvent,
   useState,
 } from 'react';
@@ -13,23 +12,19 @@ import {
   Input,
 } from 'antd';
 import Cards from 'react-credit-cards-2';
+import { addPaymentMethod } from '~/apis/stripe';
+import { initialCardDetails } from '~/constants/payment.constant';
+import { CardDetails } from '~/models/payment.model';
 
-interface CardDetails {
-  number: string;
-  name: string;
-  expiry: string;
-  cvc: string;
-  focus: string;
+import { loadStripe } from '@stripe/stripe-js';
+
+type CreditCardFormProps = {
+  onFinish: () => void
 }
 
-const CreditCardForm: FC = () => {
-  const [cardDetails, setCardDetails] = useState<CardDetails>({
-    number: "",
-    name: "",
-    expiry: "",
-    cvc: "",
-    focus: "",
-  });
+const CreditCardForm = ({ }: CreditCardFormProps) => {
+  const [loading, setLoading] = useState<boolean>(false)
+  const [cardDetails, setCardDetails] = useState<CardDetails>(initialCardDetails);
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -38,15 +33,15 @@ const CreditCardForm: FC = () => {
 
     if (name === "number") {
       formattedValue = value
-        .replace(/\D/g, "") // Remove non-numeric
-        .replace(/(.{4})/g, "$1 ") // Add space after every 4 digits
-        .trim(); // Trim spaces
+        .replace(/\D/g, "")
+        .replace(/(.{4})/g, "$1 ")
+        .trim();
     }
 
     if (name === "expiry") {
       formattedValue = value
-        .replace(/\D/g, "") // Remove non-numeric
-        .slice(0, 4); // Limit to 4 digits (MMYY)
+        .replace(/\D/g, "")
+        .slice(0, 4);
     }
 
     setCardDetails({ ...cardDetails, [name]: formattedValue });
@@ -57,11 +52,23 @@ const CreditCardForm: FC = () => {
   };
 
   const handleSave = () => {
+    setLoading(true)
+    addPaymentMethod().then(res => console.log(res)).finally(() => setLoading(false))
     console.log("Saved Card Details:", cardDetails);
   };
 
+  const stripePromise = loadStripe('pk_test_51QUrpZQwRo0WgELJhEc1NKIjXzzfCjFgpJpF9jsBeJ0FNRJcx1x1atB2DAYjelT4C6nlcXiR9n6oYwUL8ton1dVy00EWFHCCE6');
+
   return (
     <div className="flex flex-col md:flex-row items-center gap-8 p-8 bg-gray-50 rounded-lg shadow-md max-w-4xl mx-auto">
+
+      <form id="payment-form">
+        <div id="card-element">
+        </div>
+        <button type="submit">Submit Payment</button>
+      </form>
+      <div id="error-message"></div>
+
       {/* Card Preview */}
       <div className="w-full md:w-1/2">
         <Cards
@@ -120,6 +127,7 @@ const CreditCardForm: FC = () => {
 
         {/* Save Button */}
         <Button
+          loading={loading}
           type="primary"
           onClick={handleSave}
           className="mt-"

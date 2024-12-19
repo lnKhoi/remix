@@ -14,6 +14,7 @@ import {
   Input,
   message,
   Modal,
+  Select,
   Skeleton,
   TimePicker,
 } from 'antd';
@@ -53,7 +54,6 @@ import {
 
 import {
   CalendarDateRangeIcon,
-  ChevronUpDownIcon,
   DocumentDuplicateIcon,
   ExclamationCircleIcon,
   LinkIcon,
@@ -138,6 +138,10 @@ const ContentDetails = () => {
       .finally(() => setLoading(''))
   }
 
+  const handleChangeVersion = (v: string) => {
+
+  }
+
   const contentPreview = 'https://ebo.vn/static/uploads/editor/100247_content-is-king.png'
   const videoExtensions = ['mov', 'mp4'];
 
@@ -174,11 +178,11 @@ const ContentDetails = () => {
                     :
                     <>
                       <p>Version</p>
-                      <button className='bg-[#F3F4F6] px-3 justify-between flex items-center px hover:bg-[#D1D5DB] transition-all text-sm h-[36px] w-[125px] font-normal rounded-[9px] text-[#1F2937]'>
-                        {dayjs(content?.createdAt).format('DD/MM/YYYY')}
-                        <ChevronUpDownIcon width={16} />
-                      </button>
-                      {content?.approved !=='posted' && (
+                      <Select onChange={(v) => handleChangeVersion(v)} defaultValue={'1'} className='bg-gray-200 w-[140px] rounded-lg'>
+                        <Select.Option value='1' >Hello</Select.Option>
+                        <Select.Option value='2' >ABC</Select.Option>
+                      </Select>
+                      {content?.approved !== 'posted' && (
                         <Button onClick={() => setPreviewType('preview')} className='bg-gray-100'>Preview</Button>
                       )}
                     </>
@@ -314,10 +318,8 @@ const ContentDetails = () => {
               <div onClick={handlePostContentToProfileInfluent} className='w-full px-5 pb-4'>
                 <Button loading={loading === 'loading-post'} disabled={loading === 'loading-post'} className='w-full' type='primary'>Post to social</Button>
               </div>
-
             </div>
           )}
-
           {/* Link website */}
           {
             loading === 'loading' ?
@@ -342,7 +344,7 @@ const ContentDetails = () => {
                           text={content?.trackingUrl}
                         >
                           <div className='flex cursor-pointer items-center gap-2 justify-between w-full'>
-                            <p className='text-gray-800 text-sm overflow-hidden text-ellipsis whitespace-nowrap'>{abbreviateLastName(content?.trackingUrl,45)}</p>
+                            <p className='text-gray-800 text-sm overflow-hidden text-ellipsis whitespace-nowrap'>{abbreviateLastName(content?.trackingUrl, 45)}</p>
                             <DocumentDuplicateIcon width={20} height={20} className='text-gray-500 min-w-[20px]' />
                           </div>
                         </CopyToClipboard>
@@ -353,7 +355,21 @@ const ContentDetails = () => {
                 )}
               </>
           }
+          {/* IG POST LINK */}
 
+          {content?.approved === 'posted' && (
+            <div className='w-full border border-gray-100 rounded-xl shadow-sm'>
+              <div className='flex items-start p-4 gap-3'>
+                <div className='flex flex-col gap-1 w-full'>
+                  <p className='text-sm font-normal text-gray-900'>Instagram Post Link</p>
+                  <p onClick={() => window.open(content?.permalink, "_blank")} className='text-blue-500 font-medium text-sm overflow-hidden text-ellipsis whitespace-nowrap'>
+                    {content?.permalink}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+          )}
           {/* Embed Post */}
           <EmbedContent link={content?.permalink as string} />
         </div>
