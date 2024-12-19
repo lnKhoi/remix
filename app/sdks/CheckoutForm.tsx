@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
+
+import { Button } from 'antd';
 
 import {
   PaymentElement,
@@ -10,6 +12,7 @@ import { StripeError } from '@stripe/stripe-js';
 const CheckoutForm: React.FC = () => {
     const stripe = useStripe();
     const elements = useElements();
+    const [loading, setLoading] = useState<boolean>(false); 
 
     const handleError = (error: StripeError) => {
         alert(error.message || 'An unknown error occurred.');
@@ -19,38 +22,35 @@ const CheckoutForm: React.FC = () => {
         event.preventDefault();
 
         if (!stripe || !elements) {
-            // Stripe.js has not yet loaded
             alert('Stripe.js is not loaded yet.');
             return;
         }
 
-        // Confirm the payment using the Payment Element
-        const { error, paymentIntent } = await stripe.confirmPayment({
+        setLoading(true); 
+
+        // @ts-ignore
+        const { setupIntent, error } = await stripe.confirmSetup({
             elements,
             confirmParams: {
-                return_url: 'https://example.com/order/complete', // Replace with your return URL
-                payment_method_data: {
-                    billing_details: {
-                        name: 'Jenny Rosen',
-                    },
-                },
+                return_url: 'http://localhost:3000/manager/my-profile', // Optional redirect URL
             },
-            redirect: 'if_required', // Prevents automatic redirection
         });
 
         if (error) {
             handleError(error);
-        } else if (paymentIntent) {
-            alert(`PaymentIntent created: ${paymentIntent.id}`);
+        } else if (setupIntent) {
+            alert(`PaymentIntent created: ${setupIntent.id}`);
         }
+
+        setLoading(false); 
     };
 
     return (
         <form className='max-w-[1200px]' onSubmit={handleSubmit}>
             <PaymentElement />
-            <button type="submit" disabled={!stripe || !elements}>
+            <Button className='mt-3' type="primary" htmlType="submit" loading={loading}>
                 Pay
-            </button>
+            </Button>
         </form>
     );
 };

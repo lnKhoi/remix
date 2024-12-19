@@ -75,7 +75,7 @@ function BuyToken({ cards, onclose, open,onPayment }: BuyTokenProps) {
                                 <img src={Visa} alt="visa" />
                                 <div className='flex flex-col'>
                                     <p className='text-sm font-medium text-gray-800'>{card?.nameOnCard}</p>
-                                    <span className='text-xs font-normal mt-[2px] text-gray-500'>Card expires at {dayjs(card.expirationDate).format('MM-YYYY')}</span>
+                                    <span className='text-xs font-normal mt-[2px] text-gray-500'>Card expires at {dayjs(card.created_at).format('MM-YYYY')}</span>
                                 </div>
                             </div>
                             <Radio checked />

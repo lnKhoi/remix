@@ -1,6 +1,9 @@
 import 'react-toastify/dist/ReactToastify.css';
 
-import React, { useState } from 'react';
+import React, {
+  useEffect,
+  useState,
+} from 'react';
 
 import {
   Breadcrumb,
@@ -21,56 +24,66 @@ export const meta: MetaFunction = () => {
   return [{ title: 'My Profile' }];
 };
 
-type Tab = 'Profile Details' | 'Billing' | 'Intergration'
+type Tab = 'Profile Details' | 'Billing' | 'Intergration';
 
-function page() {
+const Page: React.FC = () => {
   const { id } = useParams();
   const [tab, setTab] = useState<Tab>('Profile Details');
 
+  useEffect(() => {
+    const savedTab = localStorage.getItem('profile-tab') as Tab;
+    if (savedTab) setTab(savedTab);
+  }, []);
 
   const getCampaignTab = () => {
     switch (tab) {
       case 'Profile Details':
-        return <ProfileDetails/>
+        return <ProfileDetails />;
       case 'Billing':
-        return <Payment/>
+        return <Payment />;
       case 'Intergration':
-        return <MyProfile/>
+        return <MyProfile />;
       default:
-        break;
+        return null;
     }
+  };
+
+  const handleChangeProfileTab = (t: Tab) => {
+    setTab(t);
+    localStorage.setItem('profile-tab', t);
   };
 
   return (
     <div>
       <ToastContainer />
-      <div className='fixed w-full'>
-        <div className='relative h-[60px] items-center -ml-5 border-b border-b-gray-200 bg-white z-40 -mt-5  w-[calc(100%-200px)] px-8 flex  justify-between'>
+      <div className="fixed w-full">
+        <div className="relative h-[60px] items-center -ml-5 border-b border-b-gray-200 bg-white z-40 -mt-5 w-[calc(100%-200px)] px-8 flex justify-between">
           <Breadcrumb
-            className='w-[200px]'
+            className="w-[200px]"
             items={[
               { title: <Link to={'/manager/dashboard'}>Dashboard</Link> },
-              { title: <p className='text-gray-800'>My Profile</p> },
+              { title: <p className="text-gray-800">My Profile</p> },
             ]}
           />
         </div>
       </div>
-      <div className='mt-14'>
+      <div className="mt-14">
         <Segmented
-          className='fixed z-50'
+          value={tab}
+          className="fixed z-50"
           defaultValue={tab}
           style={{ marginBottom: 8 }}
-          onChange={(value) => setTab(value as Tab)}
+          onChange={(value) => handleChangeProfileTab(value as Tab)}
           options={[
             { label: 'Profile Details', value: 'Profile Details' },
             { label: 'Billing & Payment', value: 'Billing' },
             { label: 'Intergration', value: 'Intergration' },
           ]}
         />
-        <div className='pt-14'>{getCampaignTab()}</div>
+        <div className="pt-14">{getCampaignTab()}</div>
       </div>
     </div>
   );
-}
+};
 
-export default page;
+export default Page;
