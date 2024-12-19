@@ -1,28 +1,50 @@
-import { TableColumnsType } from 'antd';
+import {
+  Skeleton,
+  TableColumnsType,
+} from 'antd';
 import dayjs from 'dayjs';
-import { TransactionHistory } from '~/models/payment.model';
+import { Payment } from '~/models/payment.model';
 
 import { DATE_TIME_FORMAT_V2 } from './time.constant';
 
-export const paymentHistoryColumns:TableColumnsType<TransactionHistory>  = [
+export const paymentHistoryColumns = (loading: boolean): TableColumnsType<Payment> => [
   {
     title: 'Time',
-    render: (_,record) => <p>{dayjs(record?.time).format(DATE_TIME_FORMAT_V2)}</p>
+    render: (_, record) =>
+      loading ? (
+        <Skeleton.Input style={{ width: 100 }} active size="small" />
+      ) : (
+        <p>{dayjs(record?.created_at).format(DATE_TIME_FORMAT_V2)}</p>
+      ),
   },
   {
     title: 'Type',
-    render: (_,record) => <p>{record.type}</p>
+    render: (_, record) =>
+      loading ? (
+        <Skeleton.Input style={{ width: 80 }} active size="small" />
+      ) : (
+        <p>{record.type}</p>
+      ),
   },
   {
     title: 'Amount',
-    render: (_,record) => <p>${record.amount.toFixed(2)}</p>
+    render: (_, record) =>
+      loading ? (
+        <Skeleton.Input style={{ width: 60 }} active size="small" />
+      ) : (
+        <p>${record.amount.toFixed(2)}</p>
+      ),
   },
   {
     title: 'Transaction ID',
-    render: () => <p>343434</p>
+    render: (_, record) =>
+      loading ? (
+        <Skeleton.Input style={{ width: 150 }} active size="small" />
+      ) : (
+        <p>{record.invoice_id}</p>
+      ),
   },
 ];
-
 export const initialCardDetails = {
   number: "",
   name: "",

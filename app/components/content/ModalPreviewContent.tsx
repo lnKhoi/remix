@@ -106,27 +106,33 @@ function ModalPreviewContent({ onClose, open, content }: ModalPreviewContentProp
             {/* REEL */}
             {contentFormat === 'reel' && (
                 <div className="max-w-sm mx-auto relative bg-white border border-gray-200 rounded-md shadow-md">
-                    {/* Profile Section */}
-                    <div className="flex items-center p-3 absolute left-0 bottom-16 ">
-                        <img
-                            className="w-8 h-8 rounded-full object-cover"
-                            src={content?.creator?.avatarUrl}
-                            alt="Profile"
-                        />
-                        <div className="ml-3  flex-1">
-                            <p className="font-semibold text-white">{content?.creator?.name}</p>
-
+                    {/* Image Slider */}
+                    <div
+                        className="relative rounded-lg w-[393px] h-[590px] overflow-hidden"
+                    >
+                        {/* Profile Section */}
+                        <div className="flex items-center p-3 absolute z-20 left-0 bottom-16 ">
+                            <img
+                                className="w-8 h-8 rounded-full object-cover"
+                                src={content?.creator?.avatarUrl || DefaultAvatar}
+                                alt="Profile"
+                            />
+                            <div className="ml-3  flex-1">
+                                <p className="font-semibold text-white">{formatName(content?.creator?.name as string)}</p>
+                            </div>
                         </div>
+                        <video
+                            autoPlay
+                            loop
+                            muted
+                            src={content?.urls?.[0]}
+                            className="w-full h-full object-cover"
+                        />
+                        <div
+                            className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"
+                        ></div>
                     </div>
 
-                    {/* Image Slider */}
-                    <video
-                        autoPlay
-                        loop
-                        muted
-                        src={content?.urls?.[0]}
-                        className="w-[393px] h-[550px] object-cover"
-                    />
                     {/* Action Buttons */}
                     <div className="flex flex-col absolute right-0 bottom-[20%] items-center justify-between px-4 py-2">
                         <div className="flex items-center flex-col gap-6">

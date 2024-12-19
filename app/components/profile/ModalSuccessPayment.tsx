@@ -4,32 +4,18 @@ import {
   Button,
   Modal,
 } from 'antd';
-import dayjs from 'dayjs';
 import Success from '~/assets/success.png';
-import { DATE_TIME_FORMAT_V2 } from '~/constants/time.constant';
 
 type ModalSuccessPayment = {
     open: boolean
     onClose: () => void
-    totalToken: number
     newToken: number
-    onChangeTotalToken: (total: number) => void
 }
 
-function ModalSuccessPayment({ onClose, open, newToken, totalToken, onChangeTotalToken }: ModalSuccessPayment) {
+function ModalSuccessPayment({ onClose, open, newToken}: ModalSuccessPayment) {
 
     const handleOk = () => {
-        onChangeTotalToken(totalToken + newToken)
         onClose()
-
-        const paymentHistory = JSON.parse(localStorage.getItem('paymentHistory') || '[]');
-        const newPayment = {
-            time: dayjs().format(DATE_TIME_FORMAT_V2),
-            type: 'top-up',
-            amount: newToken,
-        };
-        paymentHistory.push(newPayment);
-        localStorage.setItem('paymentHistory', JSON.stringify(paymentHistory));
     }
 
     return (

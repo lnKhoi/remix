@@ -1,29 +1,22 @@
-import React, {
-  useEffect,
-  useState,
-} from 'react';
+import React from 'react';
 
 import { Table } from 'antd';
-import { getPaymentsHistory } from '~/apis/stripe';
 import { paymentHistoryColumns } from '~/constants/payment.constant';
+import { Payment } from '~/models/payment.model';
 
-function PaymentHistory() {
-    const [loading,setLoading] = useState<boolean>(false)
-    const [paymentHistory,setPaymentHistory] = useState([])
+type PaymentHistoryProps = {
+    loading: boolean
+    paymentHistory: Payment[]
+}
+function PaymentHistory({ loading, paymentHistory }: PaymentHistoryProps) {
 
-    const handleGetPaymentsHistory = () => {
-        getPaymentsHistory().then(res => console.log(res))
-    }
-
-    useEffect(() => {
-        handleGetPaymentsHistory()
-    }, []); 
-    
     return (
         <div>
             <Table
-                columns={paymentHistoryColumns}
-                dataSource={paymentHistory}
+                columns={paymentHistoryColumns(loading)}
+                dataSource={loading ? Array(5).fill({}) : paymentHistory} 
+                rowKey="id" 
+                loading={false} 
             />
         </div>
     )

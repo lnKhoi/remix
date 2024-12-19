@@ -8,16 +8,19 @@ import {
   Radio,
   Skeleton,
 } from 'antd';
-import dayjs from 'dayjs';
+import { ToastContainer } from 'react-toastify';
 import {
   addPaymentMethod,
   getPaymentMethods,
+  getPaymentsHistory,
 } from '~/apis/stripe';
 import PaymentCard from '~/assets/balance-card.png';
 import Paypal from '~/assets/paypal.png';
 import Visa from '~/assets/visa.png';
-import { DATE_TIME_FORMAT_V2 } from '~/constants/time.constant';
-import type { CreditCard } from '~/models/payment.model';
+import type {
+  CreditCard,
+  Payment,
+} from '~/models/payment.model';
 import CheckoutForm from '~/sdks/CheckoutForm';
 
 import {
@@ -37,6 +40,8 @@ import PaymentHistory from './PaymentHistory';
 function Payment() {
   const [loading, setLoading] = useState<boolean>(false)
   const [cards, setCards] = useState<CreditCard[]>([])
+  const [paymentHistory, setPaymentHistory] = useState<Payment[]>([])
+
   const [totalToken, setTotalToken] = useState<number>(0)
   const [addedToken, setAddedToken] = useState<number>(0)
   const [isBuyToken, setIsBuyToken] = useState<boolean>(false)
@@ -53,10 +58,11 @@ function Payment() {
 
   const getPaymentInfo = () => {
     setLoading(true)
-    Promise.all([getPaymentMethods(), addPaymentMethod()])
-      .then(([paymentMethods, clientIntent]) => {
+    Promise.all([getPaymentMethods(), addPaymentMethod(), getPaymentsHistory()])
+      .then(([paymentMethods, clientIntent, paymentHistory]) => {
         setClientSecret(clientIntent?.data?.clientSecret)
-        setCards(paymentMethods.data)
+        setCards(paymentMethods?.data)
+        setPaymentHistory(paymentHistory?.data?.data)
       })
       .catch(error => { console.error('Error fetching data:', error) })
       .finally(() => setLoading(false))
@@ -71,11 +77,12 @@ function Payment() {
 
   return (
     <div>
+      <ToastContainer />
       <div className='p-5 border flex items-center justify-between border-gray-200 rounded-xl'>
         <div className='flex flex-col gap-1'>
           <p className='text-lg text-gray-800 font-normal'>Actual Balance</p>
           <p className='text-2xl font-semibold text-gray-800 flex items-center gap-1'>
-            {loading ? <Skeleton.Node style={{width:60,height:25}} active  /> : totalToken} Tokens
+            {loading ? <Skeleton.Node style={{ width: 60, height: 25 }} active /> : totalToken} Tokens
           </p>
           <div className='gap-3 flex items-center'>
             <ExclamationCircleIcon className='w-5 h-5 text-gray-800' />
@@ -144,7 +151,7 @@ function Payment() {
               <img src={Visa} alt="visa" />
               <div className='flex flex-col'>
                 <p className='text-sm font-medium text-gray-800 capitalize'>{card?.brand}</p>
-                <span className='text-xs font-normal mt-[2px] text-gray-500'>Card expired at {dayjs(card?.created_at).format(DATE_TIME_FORMAT_V2)}</span>
+                <span className='text-xs font-normal mt-[2px] text-gray-500'>Card expired at {card?.exp_year}</span>
               </div>
               {idx === 0 && (
                 <TagColor hideCircle status='Primary' color='#0F766E' background='#CCFBF1' />
@@ -175,16 +182,14 @@ function Payment() {
       {/* PAYMENT HISTORY */}
       <div className='mt-5 flex flex-col gap-6'>
         <p className='text-lg font-semibold text-gray-800'>Payment History</p>
-        <PaymentHistory />
+        <PaymentHistory loading={loading} paymentHistory={paymentHistory} />
       </div>
 
       {/* MODAL PAYMENT SUCCESS */}
       <ModalSuccessPayment
         open={paymentSuccess}
         newToken={addedToken}
-        totalToken={totalToken}
-        onClose={() => setPaymentSuccess(false)}
-        onChangeTotalToken={setTotalToken}
+        onClose={() => { setPaymentSuccess(false); getPaymentInfo() }}
       />
     </div>
   )
