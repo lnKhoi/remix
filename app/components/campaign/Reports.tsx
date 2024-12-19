@@ -194,52 +194,18 @@ function Reports({ campaign, filter }: ReportsProps) {
       {/* Influencer Performance */}
       <h2 className='mt-6 text-2xl font-medium text-gray-800'>Influencer Performance</h2>
       <p className='text-sm mt-1 text-gray-700'>Manage your content and view their sales performance.</p>
-
-      {loading
-        ? <div className='relative pb-2 px-4 mt-6 border rounded-xl border-gray-200 hover:shadow-md cursor-pointer transition-shadow 2xl:p-5rounded-2xl flex items-start flex-col'>
-          <div className='z-0 inset-0 absolute items-center p-4 rounded-t-xl bg-gray-100 w-full h-[40px] flex justify-center'>
-
-          </div>
-          <div className='w-full mt-2 z-10 flex justify-between items-center'>
-            <div>
-              <p className='font-bold'>Name</p>
-              <Skeleton.Node style={{ height: 20, width: 45, marginTop: 20 }} />
-            </div>
-            <div>
-              <p className='font-bold'>Engagement Rate</p>
-              <Skeleton.Node style={{ height: 20, width: 45, marginTop: 20 }} />
-            </div>
-            <div>
-              <p className='font-bold'>Revenue</p>
-              <Skeleton.Node style={{ height: 20, width: 45, marginTop: 20 }} />
-            </div>
-            <div>
-              <p className='font-bold'>Clicks</p>
-              <Skeleton.Node style={{ height: 20, width: 45, marginTop: 20 }} />
-            </div>
-            <div>
-              <p className='font-bold'>Cost Per Click (CPC)</p>
-              <Skeleton.Node style={{ height: 20, width: 45, marginTop: 20 }} />
-            </div>
-            <div>
-              <p className='font-bold'>Purchases</p>
-              <Skeleton.Node style={{ height: 20, width: 45, marginTop: 20 }} />
-            </div>
-            <div>
-              <p className='font-bold'>Conversion Rate</p>
-              <Skeleton.Node style={{ height: 20, width: 45, marginTop: 20 }} />
-            </div>
-          </div>
-        </div>
-        : <div className='mt-6 cursor-pointer'>
-          <Table
-            onRow={(record) => ({
-              onClick: () => handleViewInfluencerProfile(record as any),
-            })}
-            columns={influencerPerformanceColumns}
-            dataSource={reportData?.influencers} />
-        </div>
-      }
+      <div className='mt-6 cursor-pointer'>
+        <Table
+          onRow={(record) => ({
+            onClick: () => handleViewInfluencerProfile(record as any),
+          })}
+          columns={influencerPerformanceColumns}
+          dataSource={
+            loading
+              ? [1, 2, 3] as any
+              : reportData?.influencers
+          } />
+      </div>
 
       {modal && (
         <InfluencerProfile
