@@ -15,7 +15,6 @@ export const influencerPerformanceColumns = ({
     {
       title: 'Name',
       render: (_, record) =>
-
         <div>
           {
             loading
@@ -52,7 +51,6 @@ export const influencerPerformanceColumns = ({
               : <div className='text-sm font-normal text-gray-800'>${record?.totalRevenue?.toFixed(2)}</div>
           }
         </div>
-
     },
     {
       title: 'Clicks',
@@ -98,7 +96,6 @@ export const influencerPerformanceColumns = ({
               : <div className='text-sm font-normal text-gray-800'>{record?.conversionRate?.toFixed(2)}%</div>
           }
         </div>
-
     },
   ];
 
