@@ -55,6 +55,7 @@ import {
 
 import {
   CalendarDateRangeIcon,
+  CursorArrowRaysIcon,
   DocumentDuplicateIcon,
   ExclamationCircleIcon,
   LinkIcon,
@@ -244,10 +245,12 @@ const ContentDetails = () => {
                         background={getColorStatusContent(content?.approved as ContentStatus)?.background as ContentStatus} />
                     )}
                   </div>
-                  <div className='bg-gray-100  flex gap-3 items-center p-4 justify-start'>
-                    <ExclamationCircleIcon width={20} className='text-gray-500' />
-                    <p className='w-[224px] text-sm text-gray-800'>Content approval time within 48 hours from submission for review</p>
-                  </div>
+                  {content?.approved !== 'posted' && (
+                    <div className='bg-gray-100  flex gap-3 items-center p-4 justify-start'>
+                      <ExclamationCircleIcon width={20} className='text-gray-500' />
+                      <p className='w-[224px] text-sm text-gray-800'>Content approval time within 48 hours from submission for review</p>
+                    </div>
+                  )}
                 </div>
 
                 {/* Reason */}
@@ -285,7 +288,7 @@ const ContentDetails = () => {
                           text={content?.trackingUrl}
                         >
                           <div className='flex cursor-pointer items-center gap-2 justify-between w-full'>
-                            <p className='text-gray-800 text-sm overflow-hidden text-ellipsis whitespace-nowrap'>{abbreviateLastName(content?.trackingUrl, 45)}</p>
+                            <p className='text-gray-500 text-sm overflow-hidden text-ellipsis whitespace-nowrap'>{abbreviateLastName(content?.trackingUrl, 45)}</p>
                             <DocumentDuplicateIcon width={20} height={20} className='text-gray-500 min-w-[20px]' />
                           </div>
                         </CopyToClipboard>
@@ -299,9 +302,12 @@ const ContentDetails = () => {
                 {content?.approved === 'posted' && (
                   <div className='w-full border border-gray-100 rounded-xl shadow-sm'>
                     <div className='flex items-start p-4 gap-3'>
-                      <div className='flex flex-col gap-1 w-full'>
-                        <p className='text-sm font-normal text-gray-900'>Instagram Post Link</p>
-                        <p onClick={() => window.open(content?.permalink, "_blank")} className='text-blue-500 font-medium text-sm overflow-hidden text-ellipsis whitespace-nowrap'>
+                      <div className='flex flex-col cursor-pointer gap-1 w-full'>
+                        <div className='flex items-center gap-3'>
+                          <CursorArrowRaysIcon width={20} height={20} className='text-gray-500' />
+                          <p className='text-sm font-normal text-gray-500'>Instagram Post Link</p>
+                        </div>
+                        <p onClick={() => window.open(content?.permalink, "_blank")} className='text-blue-500 pl-8 font-medium text-sm overflow-hidden text-ellipsis whitespace-nowrap'>
                           {content?.permalink}
                         </p>
                       </div>

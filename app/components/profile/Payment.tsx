@@ -8,11 +8,16 @@ import {
   Radio,
   Skeleton,
 } from 'antd';
-import { ToastContainer } from 'react-toastify';
+import {
+  toast,
+  ToastContainer,
+} from 'react-toastify';
 import {
   addPaymentMethod,
   getPaymentMethods,
   getPaymentsHistory,
+  getTotalTokens,
+  removePaymentMethod,
 } from '~/apis/stripe';
 import PaymentCard from '~/assets/balance-card.png';
 import Paypal from '~/assets/paypal.png';
@@ -40,6 +45,7 @@ import PaymentHistory from './PaymentHistory';
 function Payment() {
   const [loading, setLoading] = useState<boolean>(false)
   const [cards, setCards] = useState<CreditCard[]>([])
+  const [loadingDelete, setLoadingDelete] = useState<boolean>(false)
   const [paymentHistory, setPaymentHistory] = useState<Payment[]>([])
 
   const [totalToken, setTotalToken] = useState<number>(0)
@@ -58,11 +64,12 @@ function Payment() {
 
   const getPaymentInfo = () => {
     setLoading(true)
-    Promise.all([getPaymentMethods(), addPaymentMethod(), getPaymentsHistory()])
-      .then(([paymentMethods, clientIntent, paymentHistory]) => {
+    Promise.all([getPaymentMethods(), addPaymentMethod(), getPaymentsHistory(), getTotalTokens()])
+      .then(([paymentMethods, clientIntent, paymentHistory, balance]) => {
         setClientSecret(clientIntent?.data?.clientSecret)
         setCards(paymentMethods?.data)
         setPaymentHistory(paymentHistory?.data?.data)
+        setTotalToken(balance?.data?.wallet?.balance)
       })
       .catch(error => { console.error('Error fetching data:', error) })
       .finally(() => setLoading(false))
@@ -73,6 +80,17 @@ function Payment() {
   const handlePayment = (total: number) => {
     setPaymentSuccess(true)
     setAddedToken(total)
+  }
+
+  const handleRemovePaymentMethod = (id: string) => {
+    setLoadingDelete(true)
+    removePaymentMethod(id)
+      .then(() => {
+        const newPaymentMethod = cards.filter(c => c.stripe_payment_method_id !== id)
+        setCards(newPaymentMethod)
+      })
+      .catch(() => toast.error('Failed to Delete payment method. Try again!'))
+      .finally(() => setLoadingDelete(false))
   }
 
   return (
@@ -150,7 +168,7 @@ function Payment() {
             <div className='flex items-center gap-3'>
               <img src={Visa} alt="visa" />
               <div className='flex flex-col'>
-                <p className='text-sm font-medium text-gray-800 capitalize'>{card?.brand}</p>
+                <p className='text-sm font-medium text-gray-800 capitalize'>****{card?.last4}</p>
                 <span className='text-xs font-normal mt-[2px] text-gray-500'>Card expired at {card?.exp_year}</span>
               </div>
               {idx === 0 && (
@@ -161,7 +179,7 @@ function Payment() {
               <div className='w-[36px] transition-all h-[36px] hover:bg-gray-200 cursor-pointer rounded-md flex items-center justify-center bg-gray-100'>
                 <PencilSquareIcon className='text-gray-800 w-5 h-5' />
               </div>
-              <div className='w-[36px] transition-all h-[36px] hover:bg-gray-200 cursor-pointer rounded-md flex items-center justify-center bg-gray-100'>
+              <div onClick={() => handleRemovePaymentMethod(card.stripe_payment_method_id)} className='w-[36px] transition-all h-[36px] hover:bg-gray-200 cursor-pointer rounded-md flex items-center justify-center bg-gray-100'>
                 <TrashIcon className='text-gray-800 w-5 h-5' />
               </div>
             </div>
