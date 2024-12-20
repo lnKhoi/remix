@@ -179,9 +179,12 @@ function Payment() {
               <div className='w-[36px] transition-all h-[36px] hover:bg-gray-200 cursor-pointer rounded-md flex items-center justify-center bg-gray-100'>
                 <PencilSquareIcon className='text-gray-800 w-5 h-5' />
               </div>
-              <div onClick={() => handleRemovePaymentMethod(card.stripe_payment_method_id)} className='w-[36px] transition-all h-[36px] hover:bg-gray-200 cursor-pointer rounded-md flex items-center justify-center bg-gray-100'>
-                <TrashIcon className='text-gray-800 w-5 h-5' />
-              </div>
+              <Button
+                className='bg-gray-100 border-none'
+                icon={<TrashIcon className='text-gray-800 w-5 h-5' />}
+                loading={loadingDelete}
+                onClick={() => handleRemovePaymentMethod(card.stripe_payment_method_id)}
+              />
             </div>
           </div>
         ))}
