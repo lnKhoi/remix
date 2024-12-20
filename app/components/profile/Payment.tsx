@@ -98,7 +98,7 @@ function Payment() {
       <ToastContainer />
       <div className='p-5 border flex items-center justify-between border-gray-200 rounded-xl'>
         <div className='flex flex-col gap-1'>
-          <p className='text-lg text-gray-800 font-normal'>Actual Balance</p>
+          <p className='text-lg text-gray-800 font-normal'>Available Balance</p>
           <p className='text-2xl font-semibold text-gray-800 flex items-center gap-1'>
             {loading ? <Skeleton.Node style={{ width: 60, height: 25 }} active /> : totalToken} Tokens
           </p>

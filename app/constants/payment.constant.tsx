@@ -44,6 +44,24 @@ export const paymentHistoryColumns = (loading: boolean): TableColumnsType<Paymen
         <p>{record.invoice_id}</p>
       ),
   },
+  {
+    title: 'Status',
+    render: (_, record) =>
+      loading ? (
+        <Skeleton.Input style={{ width: 150 }} active size="small" />
+      ) : (
+        <p className='text-green-600 capitalize'>{record.status}</p>
+      ),
+  },
+  {
+    title: 'Payment Method',
+    render: (_, record) =>
+      loading ? (
+        <Skeleton.Input style={{ width: 150 }} active size="small" />
+      ) : (
+        <p>{record.brand}</p>
+      ),
+  },
 ];
 export const initialCardDetails = {
   number: "",
