@@ -19,3 +19,10 @@ export const buyToken = (amount: number, paymentId: string) => {
     return postData(`/api/v1/payment/process-payment`, { paymentMethodId: paymentId, amount: amount })
 }
 
+export const getTotalTokens = () => {
+    return getData(`/api/v1/user/wallet`)
+}
+
+export const removePaymentMethod = (id: string) => {
+    return postData(`/api/v1/payment/unlink-payment-method`, { paymentMethodId: id })
+}

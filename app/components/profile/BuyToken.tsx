@@ -69,12 +69,12 @@ function BuyToken({ cards, onclose, open, onPayment }: BuyTokenProps) {
                             <p className='text-sm text-gray-800 font-medium'>Top-up Amount</p>
                             <InputNumber
                                 onChange={(num) => setTotalTokens(Number(num))}
-                                className='mt-1 w-full bg-gray-100 border-none h-[44px]' prefix='$' suffix='USD' />
+                                className='mt-1 w-full bg-gray-100 border-none h-[44px]'  suffix='Token' />
                         </div>
 
                         <div className='flex mt-5 items-center justify-end gap-2'>
                             <span className='font-medium text-gray-800'>Total:</span>
-                            <p className='font-semibold text-gray-800'>{totalTokens} Tokens</p>
+                            <p className='font-semibold text-gray-800'>{totalTokens} $</p>
                         </div>
 
                     </div>
