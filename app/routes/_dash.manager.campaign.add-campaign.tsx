@@ -24,8 +24,14 @@ import {
 } from 'react-toastify';
 import { createCampaign } from '~/apis/campaign';
 import Discount from '~/components/campaign/Discount';
+import ModalConfirmToken from '~/components/campaign/ModalConfirmToken';
 import TotalBudgetBox from '~/components/campaign/TotalBudgetBox';
-import { contentFormatOptions } from '~/constants/campaign.constant';
+import {
+  ageRangeCampaign,
+  campaignStatusOptions,
+  contentFormatOptions,
+  genderOptions,
+} from '~/constants/campaign.constant';
 import { countries } from '~/constants/countries.constant';
 import { socials } from '~/constants/creator.constant';
 import {
@@ -62,9 +68,18 @@ const CampaignForm = () => {
   const navigate = useNavigate()
   const budget = Form.useWatch('budget', form);
   const contentFormat = Form.useWatch('contentFormat', form)
+  const contentStatus = Form.useWatch('status', form)
   const maximumParticipants = Form.useWatch('maximumParticipants', form);
+  const [modalConfirmToken, setModalConfirmToken] = useState<boolean>(false)
 
-  const onFinish = async (values: Campaign): Promise<void> => {
+  // CHECK BALANCE OF BRAND AND CONFIRM TOKEN
+  const onFinish = async (): Promise<void> => {
+    contentStatus === 'active' ? setModalConfirmToken(true) : handleCreateCampaign()
+  };
+
+  // CREATE CAMPAGIN
+  const handleCreateCampaign = async () => {
+    const values: Campaign = form.getFieldsValue()
     setLoading(true)
 
     const payload = {
@@ -87,9 +102,9 @@ const CampaignForm = () => {
       })
       .catch(err => toast.error(err?.message))
       .finally(() => setLoading(false))
-  };
+  }
 
-
+  // SELECT SOCIAL MEDIAS
   const handleSelectSocial = (id: string) => {
     setSelectedSocials((prevSelected) =>
       prevSelected.includes(id)
@@ -98,10 +113,12 @@ const CampaignForm = () => {
     );
   };
 
+  // CHANGE CONTENT OVERVIEW
   const handleChangeContent = (content: string): void => {
     setContent(content)
   }
 
+  // CALCULATION TOTAL BUDGET
   useEffect(() => {
     if (budget && maximumParticipants) {
       const totalBudget = budget * maximumParticipants;
@@ -282,10 +299,9 @@ const CampaignForm = () => {
               >
                 <Checkbox.Group>
                   <div className='grid gap-2 grid-cols-2'>
-                    <Checkbox value="18-24">18 - 24</Checkbox>
-                    <Checkbox value="25-32">25 - 32</Checkbox>
-                    <Checkbox value="33-40">33 - 40</Checkbox>
-                    <Checkbox value="41-50">41 - 50</Checkbox>
+                    {ageRangeCampaign.map(a => (
+                      <Checkbox key={a.value} value={a.value}>{a.label}</Checkbox>
+                    ))}
                   </div>
                 </Checkbox.Group>
               </Form.Item>
@@ -298,9 +314,9 @@ const CampaignForm = () => {
                   rules={[{ required: true, message: PLEASE_SELECT_GENDER }]}
                 >
                   <Select className="custom-select" placeholder="Select gender">
-                    <Option value="male">Male</Option>
-                    <Option value="female">Female</Option>
-                    <Option value="all">All</Option>
+                    {genderOptions.map(g => (
+                      <Option key={g.value} value={g.value}>{g.label}</Option>
+                    ))}
                   </Select>
                 </Form.Item>
               </div>
@@ -348,9 +364,9 @@ const CampaignForm = () => {
               <div className='h-full flex items-center'>
                 <Form.Item name='status' initialValue='active' style={{ margin: 0 }}>
                   <Radio.Group>
-                    <Radio value={'active'}>Active</Radio>
-                    <Radio value={'draft'}>Draft</Radio>
-                    <Radio value={'archive'}>Archive</Radio>
+                    {campaignStatusOptions.map(s => (
+                      <Radio key={s.value} value={s.value}>{s.label}</Radio>
+                    ))}
                   </Radio.Group>
                 </Form.Item>
               </div>
@@ -361,15 +377,24 @@ const CampaignForm = () => {
                   </Button>
                 </Form.Item>
               </div>
-              <Form.Item label=""className='hidden'name="discountCode"></Form.Item>
-              <Form.Item className='hidden'label=""name="discountValue"></Form.Item>
-              <Form.Item className='hidden' label=""name="discountType"></Form.Item>
-              <Form.Item className='hidden' label=""name="removed"></Form.Item>
+              <Form.Item label="" className='hidden' name="discountCode"></Form.Item>
+              <Form.Item className='hidden' label="" name="discountValue"></Form.Item>
+              <Form.Item className='hidden' label="" name="discountType"></Form.Item>
+              <Form.Item className='hidden' label="" name="removed"></Form.Item>
             </div>
           </Form>
         </div>
-        {/* Total Campaign Budget */}
+        {/* TOTAL CAMPAIGN BUDGET */}
         <TotalBudgetBox perInfluencerBudget={budget} maximumParticipants={maximumParticipants} />
+        {/* MODAL CONFIRM TOKEN */}
+        {modalConfirmToken &&
+          <ModalConfirmToken
+            open={modalConfirmToken}
+            perInfluencerBudget={budget}
+            maximumParticipants={maximumParticipants}
+            onConfirm={handleCreateCampaign}
+            onclose={() => setModalConfirmToken(false)}
+          />}
       </div>
     </div>
 

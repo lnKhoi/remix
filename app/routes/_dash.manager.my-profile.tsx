@@ -77,7 +77,7 @@ const Page: React.FC = () => {
           options={[
             { label: 'Profile Details', value: 'Profile Details' },
             { label: 'Billing & Payment', value: 'Billing' },
-            { label: 'Intergration', value: 'Intergration' },
+            { label: 'Integration', value: 'Intergration' },
           ]}
         />
         <div className="pt-14">{getCampaignTab()}</div>
