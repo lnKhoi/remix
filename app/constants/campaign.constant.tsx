@@ -100,7 +100,7 @@ export const orderColumns = (loading: boolean): TableColumnsType<Order> => [
     render: (_, record) => (
       <div className="flex items-center gap-3">
         {loading ? (
-            <Skeleton.Input active size="small" className="w-24" />
+          <Skeleton.Input active size="small" className="w-24" />
         ) : (
           <div className="flex items-center gap-3">
             <img
@@ -140,3 +140,21 @@ export const orderColumns = (loading: boolean): TableColumnsType<Order> => [
     ),
   },
 ];
+
+export const ageRangeCampaign = [
+  { label: '18 - 24', value: "18-24" },
+  { label: '25 - 32', value: "25-32" },
+  { label: '33 - 40', value: "33-40" },
+  { label: '41 - 50', value: "41-50" },
+]
+
+export const genderOptions = [
+  { label: 'Male', value: 'male' },
+  { label: 'Female', value: 'female' },
+  { label: 'All', value: 'all' }
+]
+export const campaignStatusOptions = [
+  { label: 'Active', value: 'active' },
+  { label: 'Draft', value: 'draft' },
+  { label: 'Archive', value: 'archive' }
+]
