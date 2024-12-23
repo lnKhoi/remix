@@ -114,11 +114,11 @@ function CampaignCard({ campaign, onReload }: CampaignCardProps) {
             <div className='flex items-center justify-between gap-2'>
                 <div className='w-1/2 p-3 h-[100px] flex flex-col justify-between rounded-xl bg-[#F3F4F6]'>
                     <p className='text-sm text-[#6B7280] font-semibold'>Revenue on investment</p>
-                    <p className='mt-2 text-[#111827] font-semibold text-[18px]'>%20.5</p>
+                    <p className='mt-2 text-[#111827] font-semibold text-[18px]'>0.00 %</p>
                 </div>
                 <div className='w-1/2 p-3 h-[100px] rounded-xl bg-[#F3F4F6]'>
                     <p className='text-sm text-[#6B7280] font-semibold'>Performance (CVR ETC)</p>
-                    <p className='mt-2 text-[#111827] font-semibold text-[18px]'>%20.5</p>
+                    <p className='mt-2 text-[#111827] font-semibold text-[18px]'>0.00 %</p>
                 </div>
             </div>
             <div className='flex items-center'>
