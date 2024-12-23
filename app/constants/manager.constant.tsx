@@ -3,6 +3,7 @@ import { FC } from 'react';
 import {
   ArchiveBoxIcon,
   ChartBarIcon,
+  ChartBarSquareIcon,
   Cog6ToothIcon,
   CreditCardIcon,
   DocumentChartBarIcon,
@@ -51,6 +52,11 @@ export const navItems: NavItem[] = [
     ],
   },
   {
+    to: "/manager/finance",
+    icon: ChartBarSquareIcon,
+    label: "Finance",
+  },
+  {
     to: "/manager/analytics",
     icon: ChartBarIcon,
     label: "Analytics",
@@ -59,8 +65,8 @@ export const navItems: NavItem[] = [
 
 export const profileTab = [
   { to: "/manager/my-profile", icon: UserCircleIcon, label: "My Profile" },
-  { to: "/manager/settings", icon: Cog6ToothIcon, label: "Setting" },
-  { to: "/manager/payment-method", icon: CreditCardIcon, label: "Payment Methods" },
+  { to: "#", icon: Cog6ToothIcon, label: "Setting" },
+  { to: "/manager/my-profile", icon: CreditCardIcon, label: "Payment Methods" },
 ];
 
 export const campaignMenuItems = [
