@@ -24,6 +24,8 @@ function BuyToken({ cards, onclose, open, onPayment }: BuyTokenProps) {
     const cardPrimary = cards?.[0]
     const [loading, setLoading] = useState<boolean>(false)
 
+    const transactionFee = totalTokens * 0.03
+
     const handleBuyToken = () => {
         setLoading(true)
         buyToken(totalTokens, cardPrimary.stripe_payment_method_id)
@@ -69,12 +71,18 @@ function BuyToken({ cards, onclose, open, onPayment }: BuyTokenProps) {
                             <p className='text-sm text-gray-800 font-medium'>Top-up Amount</p>
                             <InputNumber
                                 onChange={(num) => setTotalTokens(Number(num))}
-                                className='mt-1 w-full bg-gray-100 border-none h-[44px]'  suffix='Token' />
+                                className='mt-1 w-full bg-gray-100 border-none h-[44px]' suffix='Token' />
                         </div>
 
-                        <div className='flex mt-5 items-center justify-end gap-2'>
-                            <span className='font-medium text-gray-800'>Total:</span>
-                            <p className='font-semibold text-gray-800'>{totalTokens} $</p>
+                        <div className='flex items-end  flex-col justify-end'>
+                            <div className='flex mt-5  items-center justify-end gap-2'>
+                                <span className='font-medium text-gray-500 text-sm'>Transaction Fee (3%):</span>
+                                <p className='font-medium text-gray-500 text-sm'>{transactionFee.toFixed(2)} $</p>
+                            </div>
+                            <div className='flex items-center mt-2 justify-end gap-2'>
+                                <span className='font-bold text-gray-800 text-base'>Total:</span>
+                                <p className='font-bold text-gray-800 text-base'>{(totalTokens + transactionFee).toFixed(2)} $</p>
+                            </div>
                         </div>
 
                     </div>
@@ -85,7 +93,7 @@ function BuyToken({ cards, onclose, open, onPayment }: BuyTokenProps) {
                                 <div className='flex items-center gap-3'>
                                     <img src={Visa} alt="visa" />
                                     <div className='flex flex-col'>
-                                        <p className='text-sm font-medium text-gray-800'>Khoi Lam</p>
+                                        <p className='text-sm font-medium text-gray-800'>****{card.last4}</p>
                                         <span className='text-xs font-normal mt-[2px] text-gray-500'>Card expires at {card?.exp_year}</span>
                                     </div>
                                 </div>
