@@ -103,7 +103,7 @@ function UserProfilePopover({
   onLogout: () => void;
   onNavigate: (to: string) => void;
 }) {
-  const [modalOpen, setModalOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
 
   return (
     <Popover
@@ -126,7 +126,7 @@ function UserProfilePopover({
                 onClick={() =>
                   tab.label === "Logout"
                     ? onLogout()
-                    : onNavigate(tab.to)
+                    : (onNavigate(tab.to), setModalOpen(false))
                 }
               >
                 <div className="flex items-center gap-2">
