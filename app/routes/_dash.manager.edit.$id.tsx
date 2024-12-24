@@ -34,6 +34,8 @@ import {
   campaignStatusOptions,
   contentFormatOptions,
   genderOptions,
+  postDurationOptions,
+  storyDurationOptions,
 } from '~/constants/campaign.constant';
 import { countries } from '~/constants/countries.constant';
 import { socials } from '~/constants/creator.constant';
@@ -43,6 +45,7 @@ import {
   LOCATION_REQUIRED,
   MAXIMUM_PARTICIPANT,
   PLEASE_SELECT_DEADLINE,
+  PLEASE_SELECT_DURATION,
   PLEASE_SELECT_GENDER,
   REQUIRED,
 } from '~/constants/messages.constant';
@@ -283,6 +286,20 @@ const CampaignForm = () => {
                 </div>
               </Form.Item>
             </div>
+
+            {/* Posting Duration */}
+            <h2 className='text-lg mb-4 font-semibold mt-6'>Posting Duration</h2>
+            <Form.Item
+              label=""
+              name="postingDuration"
+              rules={[{ required: true, message: PLEASE_SELECT_DURATION }]}
+            >
+              <Select className="custom-select" placeholder="Select duration">
+                {(contentFormat == 'story' ? storyDurationOptions : postDurationOptions).map(g => (
+                  <Option key={g.value} value={g.value}>{g.label}</Option>
+                ))}
+              </Select>
+            </Form.Item>
 
 
             {/* Campaign Deadline */}
