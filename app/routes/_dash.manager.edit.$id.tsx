@@ -203,7 +203,7 @@ const CampaignForm = () => {
                   className='bg-gray-100 hover:bg-gray-200 border-none'
                   min={1}
                   placeholder='0'
-                  maxLength={2}
+                  maxLength={3}
                   style={{ width: '100%' }}
                 />
               </Form.Item>
