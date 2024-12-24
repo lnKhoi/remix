@@ -33,7 +33,7 @@ function BuyToken({ cards, onclose, open, onPayment }: BuyTokenProps) {
                 onPayment(totalTokens)
                 onclose()
             })
-            .catch((err) => toast.error('Amount must be at least $50.'))
+            .catch((err) => toast.error(err?.message))
             .finally(() => setLoading(false))
     }
 
@@ -70,6 +70,10 @@ function BuyToken({ cards, onclose, open, onPayment }: BuyTokenProps) {
                         <div className='mt-5'>
                             <p className='text-sm text-gray-800 font-medium'>Top-up Amount</p>
                             <InputNumber
+                                min={50}
+                                step={0.01}
+                                precision={2}
+                                max={50000}
                                 onChange={(num) => setTotalTokens(Number(num))}
                                 className='mt-1 w-full bg-gray-100 border-none h-[44px]' suffix='Token' />
                         </div>
