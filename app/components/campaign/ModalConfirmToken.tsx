@@ -39,6 +39,7 @@ function ModalConfirmToken({ onclose, open, maximumParticipants, perInfluencerBu
 
     const handleViewPaymentSettings = () => {
         onclose()
+        localStorage.setItem('profile-tab','Billing')
         window.open("/manager/my-profile", "_blank")
     }
 
