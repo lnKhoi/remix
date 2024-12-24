@@ -2,6 +2,7 @@ import 'react-quill/dist/quill.snow.css';
 import 'react-toastify/dist/ReactToastify.css';
 
 import React, {
+  useCallback,
   useEffect,
   useState,
 } from 'react';
@@ -77,7 +78,7 @@ type ModalType = 'confirm-posting-date' | 'reject-influencer-request' | 'approve
 const ContentDetails = () => {
   const { id } = useParams()
   const navigation = useNavigate()
-  const [selectedVersion, setSelectedVersion] = useState('')
+  const [selectedVersion, setSelectedVersion] = useState<string>('')
 
   const [reason, setReason] = useState<string>('')
   const [loading, setLoading] = useState<string>('')
@@ -144,6 +145,11 @@ const ContentDetails = () => {
   const contentPreview = 'https://ebo.vn/static/uploads/editor/100247_content-is-king.png'
   const videoExtensions = ['mov', 'mp4'];
 
+  const handleRefreshVersion = useCallback(() => {
+     getContentDetails(selectedVersion || id as string)
+    .then((res) => setContent(res.data))
+  },[selectedVersion])
+
   return (
     <div className='custom-select'>
 
@@ -171,6 +177,12 @@ const ContentDetails = () => {
                     <div className='flex p-4 items-center justify-between gap-3'>
                       <p>Version</p>
                       <Select
+                        onDropdownVisibleChange={(open) => {
+                          if (open) {
+                            handleRefreshVersion()
+                          }
+                        }}
+                      
                         onChange={(v) => setSelectedVersion(v)}
                         defaultValue={content?.id}
                         className='bg-gray-200 w-[140px] rounded-lg'>
