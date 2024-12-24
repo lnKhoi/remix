@@ -32,7 +32,7 @@ const CheckoutForm: React.FC = () => {
         const { setupIntent, error } = await stripe.confirmSetup({
             elements,
             confirmParams: {
-                return_url: 'http://localhost:3000/manager/my-profile', // Optional redirect URL
+                return_url: 'https://spiral-tawny.vercel.app/manager/my-profile', // Optional redirect URL
             },
         });
 
