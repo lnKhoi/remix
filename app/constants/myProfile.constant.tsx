@@ -6,9 +6,9 @@ export const integrationTabs = [
       label: 'Shopify',
       children: <Shopify />, 
     },
-    {
-      key: 'instagram',
-      label: 'Instagram',
-      children: <></>
-    },
+    // {
+    //   key: 'instagram',
+    //   label: 'Instagram',
+    //   children: <></>
+    // },
   ];

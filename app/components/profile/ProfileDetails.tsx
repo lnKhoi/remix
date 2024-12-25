@@ -168,7 +168,7 @@ const ProfileDetails: FC = () => {
                       />
                   </div>
   
-                  <div className="flex items-center">
+                  <div className="flex hidden items-center">
                       <label className="block text-sm w-[250px] text-gray-600">
                           Timezone
                       </label>
