@@ -11,6 +11,8 @@ import {
 } from 'antd';
 import { getInfluencerImported } from '~/apis/creator';
 import NoCSV from '~/assets/no-csv.png';
+import ModalViewInfluencerProfile
+  from '~/components/campaign/ModalViewInfluencerProfile';
 import { creatorColumns } from '~/constants/creator.constant';
 import { useAuthContext } from '~/contexts/auth.context';
 import { Creator } from '~/models/User.model';
@@ -47,11 +49,12 @@ const Page: FC = () => {
   }, []);
 
   // Handle row click to open the drawer
-  const handleRowClick = (record: Creator) => {
-    setSelectedInfluencer(record); // Store the selected influencer data
-    setIsDrawerVisible(true); // Open the drawer
+  const handleRowClick = (record:any) => {
+    if(record.hasAccount === 1) {
+      setSelectedInfluencer(record); 
+      setIsDrawerVisible(true); 
+    }
   };
-
 
   return (
     <div>
@@ -90,6 +93,13 @@ const Page: FC = () => {
           }}
         />
       </Spin>
+
+      {isDrawerVisible && (
+        <ModalViewInfluencerProfile
+          id={selectedInfluencer?.creatorId}
+          open={isDrawerVisible}
+          onClose={() => setIsDrawerVisible(false)} />
+      )}
 
     </div>
   );

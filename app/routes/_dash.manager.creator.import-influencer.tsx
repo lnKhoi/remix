@@ -5,7 +5,6 @@ import { useState } from 'react';
 
 import {
   Breadcrumb,
-  Button,
   Table,
   Upload,
 } from 'antd';
@@ -50,7 +49,10 @@ const InviteInfluencer = () => {
 
     const handleGetListInfluencerImported = async (): Promise<void> => {
         await getInfluencerImported( 100, 1)
-            .then((res) => setInfluencers(res?.data?.paginatedInfluencersData))
+            .then((res) => {
+                setInfluencers(res?.data?.paginatedInfluencersData)
+                toast.success('Import Influencer Successfully')
+            })
     }
 
     return (
@@ -64,7 +66,7 @@ const InviteInfluencer = () => {
                         { title: <p className='text-gray-800'>Import Influencer</p> },
                     ]}
                 />
-                <Button onClick={() => toast.success('Import Influencer Successfully')} type='primary'>Import & Save data</Button>
+                {/* <Button onClick={() => toast.success('Import Influencer Successfully')} type='primary'>Import & Save data</Button> */}
             </div>
             <div className='w-[1024px] mt-14 mx-auto'>
                 <div className='flex items-center justify-between'>

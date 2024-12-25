@@ -20,6 +20,8 @@ import {
 } from 'antd';
 import dayjs, { Dayjs } from 'dayjs';
 import CopyToClipboard from 'react-copy-to-clipboard';
+//@ts-ignore
+import Slider from 'react-slick';
 import {
   toast,
   ToastContainer,
@@ -74,6 +76,16 @@ export const meta: MetaFunction = () => {
 
 const { TextArea } = Input
 type ModalType = 'confirm-posting-date' | 'reject-influencer-request' | 'approve-influencer-request' | 'reject-content' | ''
+
+const settings = {
+  dots: false,
+  infinite: false,
+  speed: 500,
+  slidesToShow: 5,
+  slidesToScroll: 1,
+  centerPadding: "10px",
+};
+
 
 const ContentDetails = () => {
   const { id } = useParams()
@@ -146,9 +158,9 @@ const ContentDetails = () => {
   const videoExtensions = ['mov', 'mp4'];
 
   const handleRefreshVersion = useCallback(() => {
-     getContentDetails(selectedVersion || id as string)
-    .then((res) => setContent(res.data))
-  },[selectedVersion])
+    getContentDetails(selectedVersion || id as string)
+      .then((res) => setContent(res.data))
+  }, [selectedVersion])
 
   return (
     <div className='custom-select'>
@@ -182,7 +194,7 @@ const ContentDetails = () => {
                             handleRefreshVersion()
                           }
                         }}
-                      
+
                         onChange={(v) => setSelectedVersion(v)}
                         defaultValue={content?.id}
                         className='bg-gray-200 w-[140px] rounded-lg'>
@@ -204,24 +216,58 @@ const ContentDetails = () => {
                       <p className='text-gray-500 text-sm font-normal'>Submission date : {dayjs(content?.createdAt).format(DATE_TIME_FORMAT_V2)}</p>
                     </div>
                   </div>
-                  <div className='px-4 pt-2 pb-4'>
+                  <div className='px-4 slider-container pt-2 pb-4'>
+                    {content?.urls.length as number > 4 && (
+                      <Slider {...settings}>
+                        {content?.urls?.map((url, index) => {
+                          const isVideo = videoExtensions.includes(url.slice(-3));
+
+                          return (
+                            <div key={index} style={{ margin: "0 10px" }}>
+                              {isVideo ? (
+                                <video
+                                  autoPlay
+                                  loop
+                                  muted
+                                  controls
+                                  className="w-[120px] h-[120px] rounded-lg object-cover"
+                                  src={url}
+                                />
+                              ) : (
+                                <img
+                                  className="w-[120px] h-[120px] rounded-lg object-cover"
+                                  src={url || contentPreview}
+                                  alt="content"
+                                />
+                              )}
+                            </div>
+                          );
+                        })}
+                      </Slider>
+                    )}
                     <div className='flex items-center gap-2'>
-                      {content?.urls.map((url, index) => {
+                      {content?.urls.length as number <= 4 && content?.urls?.map((url, index) => {
                         const isVideo = videoExtensions.includes(url.slice(-3));
 
-                        return isVideo ? (
-                          <video
-                            key={index} autoPlay loop muted controls
-                            className='w-[120px] h-[120px] rounded-lg object-cover'
-                            src={url}
-                          />
-                        ) : (
-                          <img
-                            key={index}
-                            className='w-[120px] h-[120px] rounded-lg object-cover'
-                            src={url || contentPreview}
-                            alt="content"
-                          />
+                        return (
+                          <div key={index} style={{ margin: "0 10px" }}>
+                            {isVideo ? (
+                              <video
+                                autoPlay
+                                loop
+                                muted
+                                controls
+                                className="w-[120px] h-[120px] rounded-lg object-cover"
+                                src={url}
+                              />
+                            ) : (
+                              <img
+                                className="w-[120px] h-[120px] rounded-lg object-cover"
+                                src={url || contentPreview}
+                                alt="content"
+                              />
+                            )}
+                          </div>
                         );
                       })}
                     </div>
@@ -325,7 +371,6 @@ const ContentDetails = () => {
                       </div>
                     </div>
                   </div>
-
                 )}
                 {/* Embed Post */}
                 <EmbedContent link={content?.permalink as string} />
