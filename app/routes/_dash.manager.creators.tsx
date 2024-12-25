@@ -76,6 +76,7 @@ const Page: FC = () => {
           onRow={(record) => ({
             onClick: () => handleRowClick(record), // Handle row click
           })}
+          className='cursor-pointer'
           locale={{
             emptyText: (
               <div className='flex items-center flex-col h-[70vh] justify-center'>
