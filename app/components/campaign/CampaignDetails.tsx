@@ -100,7 +100,7 @@ function CampaignDetails({ campaign, loading }: CampaignDetailsProps) {
             {loading
               ? <Skeleton.Button size='small' style={{ borderRadius: 8, height: 28, width: 25 }} active />
               : <div className='h-[28px] inline-flex rounded-lg text-gray-700 text-[12px]  gap-2 items-center  justify-center bg-gray-200 py-[6px] px-3'>
-                ${totalCommissionFee}
+                ${totalCommissionFee?.toFixed(2)}
               </div>
             }
           </div>
