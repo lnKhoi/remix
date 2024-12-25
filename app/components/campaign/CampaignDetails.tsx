@@ -32,7 +32,7 @@ function CampaignDetails({ campaign, loading }: CampaignDetailsProps) {
   const totalBudget = totalCommissionFee + totalInfluencerBudget
 
   return (
-    <div className='flex items-start justify-between gap-3 2xl:w-[1316px] w-full'>
+    <div className='flex custom-editor-copy items-start justify-between gap-3 2xl:w-[1316px] w-full'>
       <div className='w-[68%]'>
         <h2 className='text-2xl text-gray-900 font-semibold'>
           {loading ? <Skeleton.Button active style={{ width: 180 }} /> : campaign?.name}

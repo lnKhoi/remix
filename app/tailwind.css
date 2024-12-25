@@ -251,3 +251,7 @@ input::placeholder {
   box-shadow: none !important;
   display: none !important;
 }
+
+.custom-editor-copy .ql-clipboard {
+  display: none !important;
+}
