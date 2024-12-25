@@ -9,10 +9,16 @@ const ReactQuill = React.lazy(() => import('react-quill'));
 type EditorProps = {
   onChange?: (content: string) => void;
   value: string;
-  showToolbar?: boolean; 
+  showToolbar?: boolean;
+  disabled?: boolean; // Add the disabled prop
 };
 
-const Editor = ({ onChange, value, showToolbar = true }: EditorProps) => {
+const Editor = ({
+  onChange,
+  value,
+  showToolbar = true,
+  disabled = false, // Default to false
+}: EditorProps) => {
   const [code, setCode] = useState<string>(value);
 
   useEffect(() => {
@@ -25,7 +31,7 @@ const Editor = ({ onChange, value, showToolbar = true }: EditorProps) => {
   };
 
   const modules = {
-    toolbar: showToolbar
+    toolbar: showToolbar && !disabled // Hide toolbar when disabled
       ? [
           [{ header: [1, 2, 3, 4, 5, 6, false] }],
           ['bold', 'italic', 'underline', 'strike', 'blockquote'],
@@ -37,7 +43,7 @@ const Editor = ({ onChange, value, showToolbar = true }: EditorProps) => {
           [{ color: ['red', '#785412'] }],
           [{ background: ['red', '#785412'] }],
         ]
-      : false, // Hide toolbar when showToolbar is false
+      : false, // Hide toolbar when showToolbar is false or disabled
   };
 
   const formats = [
@@ -66,7 +72,8 @@ const Editor = ({ onChange, value, showToolbar = true }: EditorProps) => {
         defaultValue={code}
         formats={formats}
         value={code}
-        onChange={handleProcedureContentChange}
+        onChange={disabled ? undefined : handleProcedureContentChange} // Disable onChange if disabled
+        readOnly={disabled} // Set ReactQuill to read-only mode
       />
     </Suspense>
   );

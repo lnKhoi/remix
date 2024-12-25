@@ -27,6 +27,10 @@ export const socialMediaIcons: { [key: string]: string } = {
 
 function CampaignDetails({ campaign, loading }: CampaignDetailsProps) {
 
+  const totalInfluencerBudget = campaign?.maximumParticipants * campaign?.budget
+  const totalCommissionFee = totalInfluencerBudget * 0.15
+  const totalBudget = totalCommissionFee + totalInfluencerBudget
+
   return (
     <div className='flex items-start justify-between gap-3 2xl:w-[1316px] w-full'>
       <div className='w-[68%]'>
@@ -49,11 +53,11 @@ function CampaignDetails({ campaign, loading }: CampaignDetailsProps) {
           {loading ? <Skeleton.Button block style={{ height: 400 }} active />
             : <>
               {campaign?.campaignOverview && (
-                <Editor value={campaign?.campaignOverview as string} />
+                <Editor disabled value={campaign?.campaignOverview as string} />
               )}</>}
         </div>
       </div>
-      <div className='w-[32%] border border-gray-200 rounded-xl p-5 h-[380px]'>
+      <div className='w-[32%] border border-gray-200 rounded-xl p-5 h-[440px]'>
         <h6 className='text-gray-800 font-semibold mb-3'>Campaign Deadline</h6>
         <div className='flex items-center justify-between'>
           <span className='text-gray-500'>End date</span>
@@ -71,15 +75,36 @@ function CampaignDetails({ campaign, loading }: CampaignDetailsProps) {
             ? <Skeleton.Input size='small' active />
             : <span className='font-semibold text-gray-800'>{campaign?.discountValue} {campaign?.discountType === 'percentage' ? '%' : '$'} Discount </span>
           }
-
         </div>
-        <h6 className='font-semibold text-gray-800 mb-3 mt-4'>Campaign Budget</h6>
+
+        <h6 className='font-semibold text-gray-800 mb-3 mt-4'>Total campaign budget</h6>
         {loading
           ? <Skeleton.Button size='small' style={{ borderRadius: 8, height: 28, width: 25 }} active />
           : <div className='h-[28px] inline-flex rounded-lg text-gray-700 text-[12px]  gap-2 items-center  justify-center bg-gray-200 py-[6px] px-3'>
-            ${campaign?.budget}
+            ${totalBudget.toFixed(2)}
           </div>
         }
+
+        <div className='flex '>
+          <div className='flex flex-col'>
+            <h6 className='font-semibold text-gray-800 mb-3 mt-4'>Influencer Budget</h6>
+            {loading
+              ? <Skeleton.Button size='small' style={{ borderRadius: 8, height: 28, width: 25 }} active />
+              : <div className='h-[28px] inline-flex rounded-lg text-gray-700 text-[12px]  gap-2 items-center  justify-center bg-gray-200 py-[6px] px-3'>
+                ${totalInfluencerBudget?.toFixed(2)}
+              </div>
+            }
+          </div>
+          <div className='flex ml-5 flex-col'>
+            <h6 className='font-semibold text-gray-800 mb-3 mt-4'>Commission fee</h6>
+            {loading
+              ? <Skeleton.Button size='small' style={{ borderRadius: 8, height: 28, width: 25 }} active />
+              : <div className='h-[28px] inline-flex rounded-lg text-gray-700 text-[12px]  gap-2 items-center  justify-center bg-gray-200 py-[6px] px-3'>
+                ${totalCommissionFee}
+              </div>
+            }
+          </div>
+        </div>
         <h6 className='font-semibold text-gray-800 mb-3 mt-4'>Campaign Demographic</h6>
         {loading
           ? <div className='flex items-center flex-wrap gap-2'>
@@ -97,7 +122,6 @@ function CampaignDetails({ campaign, loading }: CampaignDetailsProps) {
             </div>
           </div>
         }
-
       </div>
     </div>
   )

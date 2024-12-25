@@ -107,11 +107,11 @@ const ModalCreateDiscount = ({ products, shopId, open, onClose,onrefresh }: Moda
 
                     <div className='flex items-center gap-4'>
                         <Form.Item className='w-1/2' label="Start date" name="startsAt" rules={[{ required: true, message: "Please select a start date" }]}>
-                            <DatePicker className='bg-gray-100 w-full border-none' showTime />
+                            <DatePicker className='bg-gray-100 w-full border-none'  />
                         </Form.Item>
 
                         <Form.Item className='w-1/2' label="End date" name="endsAt" rules={[{ required: true, message: "Please select an end date" }]}>
-                            <DatePicker showTime className='bg-gray-100 w-full border-none' />
+                            <DatePicker className='bg-gray-100 w-full border-none' />
                         </Form.Item>
                     </div>
 
