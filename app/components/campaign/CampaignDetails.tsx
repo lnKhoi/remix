@@ -87,11 +87,11 @@ function CampaignDetails({ campaign, loading }: CampaignDetailsProps) {
 
         <div className='flex '>
           <div className='flex flex-col'>
-            <h6 className='font-semibold text-gray-800 mb-3 mt-4'>Influencer Budget</h6>
+            <h6 className='font-semibold text-gray-800 mb-3 mt-4'>Per-influencer budget</h6>
             {loading
               ? <Skeleton.Button size='small' style={{ borderRadius: 8, height: 28, width: 25 }} active />
               : <div className='h-[28px] inline-flex rounded-lg text-gray-700 text-[12px]  gap-2 items-center  justify-center bg-gray-200 py-[6px] px-3'>
-                ${totalInfluencerBudget?.toFixed(2)}
+                ${campaign?.budget?.toFixed(2)}
               </div>
             }
           </div>
