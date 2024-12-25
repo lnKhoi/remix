@@ -82,7 +82,7 @@ const settings = {
   infinite: false,
   speed: 500,
   slidesToShow: 5,
-  slidesToScroll: 1,
+  slidesToScroll: 5,
   centerPadding: "10px",
 };
 
