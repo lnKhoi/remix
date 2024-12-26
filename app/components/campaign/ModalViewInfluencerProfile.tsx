@@ -181,11 +181,15 @@ function ModalViewInfluencerProfile({ onClose, open, id }: ModalViewInfluencerPr
                         </div>
 
                         {/* Performance Over Life */}
-                        <h2 className="text-lg font-semibold mt-10">Performance Over Life</h2>
-                        <div className='h-[113px] grid mt-3 gap-5 grid-cols-5'>
+                        <h2 className="text-lg font-semibold mt-10">Performance Over Lifetime</h2>
+                        <div className='h-[113px] grid mt-3 gap-4 grid-cols-6'>
                             {loading
-                                ? [1, 2, 3, 4, 5].map(s => <Skeleton.Node style={{ width: '100%' }} key={s} active className='w-full' />)
+                                ? [1, 2, 3, 4, 5, 6].map(s => <Skeleton.Node style={{ width: '100%' }} key={s} active className='w-full' />)
                                 : <>
+                                    <div className='p-4 bg-gray-100 rounded-xl flex flex-col gap-3'>
+                                        <p className='text-2xl font-bold text-gray-800'>{metrics?.engagementRate.toFixed(2)} %</p>
+                                        <span className='text-gray-500 font-medium text-sm'>Engagement rate</span>
+                                    </div>
                                     <div className='p-4 bg-gray-100 rounded-xl flex flex-col gap-3'>
                                         <p className='text-2xl font-bold text-gray-800'>${metrics?.totalRevenue?.toFixed(2)}</p>
                                         <span className='text-gray-500 font-medium text-sm'>Revenue</span>
@@ -322,7 +326,6 @@ function ModalViewInfluencerProfile({ onClose, open, id }: ModalViewInfluencerPr
                 </div>
 
             </div>
-
         </Drawer>
     )
 }
