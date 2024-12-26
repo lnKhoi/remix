@@ -56,66 +56,6 @@ function ModalViewInfluencerProfile({ onClose, open, id }: ModalViewInfluencerPr
         return { name: gender?.detail, y: gender?.valuePercentage, }
     })
 
-    const dummyAges = [
-        { valuePercentage: 13, detail: '12 - 17' },
-        { valuePercentage: 29, detail: '18 - 24' },
-        { valuePercentage: 21, detail: '25 - 34' },
-        { valuePercentage: 24, detail: '35 - 44' },
-        { valuePercentage: 13, detail: '45 - 54' },
-    ]
-
-    const dummyLocations = [
-        { valuePercentage: 40, detail: 'Thailand' },
-        { valuePercentage: 38, detail: 'Vietnam' },
-        { valuePercentage: 13, detail: 'Australia' },
-        { valuePercentage: 3, detail: 'UK' },
-        { valuePercentage: 6, detail: 'China' },
-    ]
-
-    const dummyGenders = [
-        {
-            y:35,
-            name:'Male'
-        },
-        {
-            y:40,
-            name:'Female'
-        },
-        {
-            y:35,
-            name:'Unkown'
-        },
-    ]
-
-    const dummyPorfolios = [
-        {
-            id: 1,
-            media_url: "https://instagram.fsgn5-10.fna.fbcdn.net/v/t39.30808-6/427463634_1098909924893182_3117155287312796489_n.jpg?stp=c0.52.1242.1552a_dst-jpg_e35_s1080x1080_tt6&efg=eyJ2ZW5jb2RlX3RhZyI6ImltYWdlX3VybGdlbi4xMjQyeDE2NTYuc2RyLmYzMDgwOC5kZWZhdWx0X2ltYWdlIn0&_nc_ht=instagram.fsgn5-10.fna.fbcdn.net&_nc_cat=110&_nc_ohc=uF9H5Q9jQAwQ7kNvgE3gLSS&_nc_gid=648e0ba638214d4cb4a641938b0bd4de&edm=AA5fTDYAAAAA&ccb=7-5&ig_cache_key=MzI5OTc0NTczODcwNjgwODc4NA%3D%3D.3-ccb7-5&oh=00_AYAp0XgbpVI6Xi7TGmXyEY1bydPpqxNYeMYeuqE7z3hslA&oe=6771B950&_nc_sid=7edfe2",
-            like_count: 8,
-            comments_count: 3,
-            share_count: 0,
-            permalink: "https://www.instagram.com/p/C3LDUQ8um_Q/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==",
-        },
-        {
-            id: 2,
-            media_url: "https://instagram.fsgn5-5.fna.fbcdn.net/v/t39.30808-6/342208731_247083601065608_4888127116570083739_n.jpg?stp=c0.85.1502.1877a_dst-jpg_e35_s1080x1080_tt6&efg=eyJ2ZW5jb2RlX3RhZyI6ImltYWdlX3VybGdlbi4xNTAyeDIwNDguc2RyLmYzMDgwOC5kZWZhdWx0X2ltYWdlIn0&_nc_ht=instagram.fsgn5-5.fna.fbcdn.net&_nc_cat=108&_nc_ohc=WMUpdoHHvhYQ7kNvgHqbxjP&_nc_gid=648e0ba638214d4cb4a641938b0bd4de&edm=AA5fTDYAAAAA&ccb=7-5&ig_cache_key=MzA4NTI0NTcxNzQ3MDc5NzY2NA%3D%3D.3-ccb7-5&oh=00_AYCCdiQMM5r9YtxvwfNpuyBkd6gupDMQPv5hekqpCrcm9Q&oe=67719D53&_nc_sid=7edfe2",
-            like_count: 6,
-            comments_count: 1,
-            share_count: 0,
-            permalink: "https://www.instagram.com/p/CrQ_qI6pF9g/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==",
-        },
-        {
-            id: 3,
-            media_url: "https://instagram.fsgn5-5.fna.fbcdn.net/v/t39.30808-6/329117530_624344039519996_8628204648713780911_n.jpg?stp=dst-jpg_e35_p1080x1080_sh0.08_tt6&_nc_ht=instagram.fsgn5-5.fna.fbcdn.net&_nc_cat=108&_nc_ohc=5o49ZeMX2z4Q7kNvgG4s7pE&_nc_gid=648e0ba638214d4cb4a641938b0bd4de&edm=AA5fTDYAAAAA&ccb=7-5&ig_cache_key=MzAzNzMzMjYxNDc3MTMwNDQxMg%3D%3D.3-ccb7-5&oh=00_AYDYpZjiAng3k7JauhogcdAmcFPzY5RoPGL89S8ASMmPKQ&oe=6771D03C&_nc_sid=7edfe2",
-            like_count: 11,
-            comments_count: 2,
-            share_count: 0,
-            permalink: "https://www.instagram.com/p/Comxe59pqr3/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==",
-        },
-    ]
-
-
-    const isEmpty = influencer?.id !=='creator_01JFVVXF3FNXR1BCXR84RY0EMK'
 
     return (
         <Drawer
@@ -280,7 +220,7 @@ function ModalViewInfluencerProfile({ onClose, open, id }: ModalViewInfluencerPr
                                 {loading
                                     ? <Skeleton.Node active style={{ width: 190 }} />
                                     : <>
-                                        {!isEmpty && dummyAges?.map((age) => (
+                                        {influencer?.demographicAges?.map((age) => (
                                             <div key={age.detail} className="flex gap-3 items-center justify-between mb-2">
                                                 <span className='max-w-[45px] min-w-[45px] text-xs text-gray-500 text-end'>{age.detail}</span>
                                                 <div className="min-w-[177px] bg-gray-200 h-4 rounded-md">
@@ -303,7 +243,7 @@ function ModalViewInfluencerProfile({ onClose, open, id }: ModalViewInfluencerPr
                                 {loading
                                     ? <Skeleton.Node active style={{ width: 190 }} />
                                     : <>
-                                        {!isEmpty && dummyLocations?.map((city) => (
+                                        {influencer?.demographicCities?.map((city) => (
                                             <div key={city.detail} className="flex gap-3 items-center justify-between mb-2">
                                                 <span className='max-w-[95px] text-xs text-gray-500 min-w-[95px] text-end'>{city.detail}</span>
                                                 <div className="min-w-[177px] bg-gray-200 h-4 rounded-md">
@@ -327,7 +267,7 @@ function ModalViewInfluencerProfile({ onClose, open, id }: ModalViewInfluencerPr
                                     {loading
                                         ? <Skeleton.Node active style={{ width: 190, marginTop: 14 }} />
                                         : <>
-                                            {!isEmpty && (<PieChart data={dummyGenders as any} />)}</>}
+                                            {pieData?.length as number > 0 && (<PieChart data={pieData as any} />)}</>}
 
                                 </div>
                             </div>
@@ -344,7 +284,7 @@ function ModalViewInfluencerProfile({ onClose, open, id }: ModalViewInfluencerPr
                                         <Skeleton.Node active style={{ width: '100%', height: 293 }} />
                                     </>
                                     : <>
-                                        {!isEmpty &&  dummyPorfolios?.map((item) => (
+                                        {influencer?.portfolios?.map((item) => (
                                             <div key={item.id} className="relative">
                                                 <img
                                                     src={item?.media_url}
