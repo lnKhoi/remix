@@ -31,11 +31,11 @@ function FinanceDetails() {
 
         <div className='mt-6 border border-gray-200 grid grid-cols-3 rounded-xl p-6'>
           <div className='flex flex-col'>
-            <p className='text-xs font-medium text-gray-800'>Payment Recipent</p>
+            <p className='text-xs font-medium text-gray-800'>Member</p>
             <span className='text-lg font-bold text-gray-800 mt-3'>56</span>
           </div>
           <div className='flex flex-col'>
-            <p className='text-xs font-medium text-gray-800'>Payout Due</p>
+            <p className='text-xs font-medium text-gray-800'>Payment AMount</p>
             <span className='text-lg font-bold text-gray-800 mt-3'>23,434.11 Tokens</span>
           </div>
           <div className='flex flex-col'>

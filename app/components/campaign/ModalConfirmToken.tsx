@@ -61,7 +61,14 @@ function ModalConfirmToken({ onclose, open, maximumParticipants, perInfluencerBu
                     <Button onClick={handleConfirmToken} disabled={loading || notEnoughTokens} type='primary' >Confirm</Button>
                 </div>
             }
-            title={<div className='text-2xl font-semibold text-gray-800 text-center'>Notification</div>}
+            title={
+                <div className='flex flex-col items-center justify-center'>
+                    <div className='text-2xl font-semibold text-gray-800 text-center'>Lock Token</div>
+                    <p className='text-sm w-[586px] mt-1 text-center font-normal text-gray-500'>
+                        Tokens will be locked upon activating the campaign to ensure sufficient funds for campaign operations and influencer payments
+                    </p>
+                </div>
+            }
         >
             <div className='mt-8 flex items-center gap-3 p-4 rounded-xl border border-dashed'>
                 <div className='flex items-center justify-center h-[40px] w-[40px] bg-gray-100'>

@@ -16,11 +16,11 @@ function Finance() {
 
             <div className='mt-6 border border-gray-200 grid grid-cols-3 rounded-xl p-6'>
                 <div className='flex flex-col'>
-                    <p className='text-xs font-medium text-gray-800'>Payment Recipent</p>
+                    <p className='text-xs font-medium text-gray-800'>Members</p>
                     <span className='text-lg font-bold text-gray-800 mt-3'>56</span>
                 </div>
                 <div className='flex flex-col'>
-                    <p className='text-xs font-medium text-gray-800'>Payout Due</p>
+                    <p className='text-xs font-medium text-gray-800'>Payment Amount</p>
                     <span className='text-lg font-bold text-gray-800 mt-3'>23,434.11 Tokens</span>
                 </div>
                 <div className='flex flex-col'>
@@ -36,11 +36,6 @@ function Finance() {
 
             <div className='mt-6 cursor-pointer'>
                 <Table
-                    onRow={(record) => ({
-                        onClick: () => {
-                           navigate(`/manager/finance-details/${record}`)
-                        },
-                    })}
                     columns={FinanceColumns(false) as any}
                     dataSource={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
                 />
