@@ -21,7 +21,7 @@ import {
 } from '~/apis/stripe';
 import PaymentCard from '~/assets/balance-card.png';
 import Paypal from '~/assets/paypal.png';
-import Visa from '~/assets/visa.png';
+import { paymentMethodBrandLogo } from '~/constants/payment.constant';
 import type {
   CreditCard,
   Payment,
@@ -166,7 +166,9 @@ function Payment() {
         {!isSelectPayment && !loading && cards?.map((card, idx) => (
           <div key={card.id} className='mt-5  px-5 py-4 rounded-xl flex items-center justify-between mx-8 border border-dashed'>
             <div className='flex items-center gap-3'>
-              <img src={Visa} alt="visa" />
+              <img className='w-[67px] h-[38px] object-cover rounded-lg'
+                src={paymentMethodBrandLogo[card.brand as keyof typeof paymentMethodBrandLogo]}
+                alt="payment logo" />
               <div className='flex flex-col'>
                 <p className='text-sm font-medium text-gray-800 capitalize'>****{card?.last4}</p>
                 <span className='text-xs font-normal mt-[2px] text-gray-500'>Card expired at {card?.exp_year}</span>
