@@ -12,6 +12,8 @@ import Balance from '~/assets/balance.png';
 import { paymentMethodBrandLogo } from '~/constants/payment.constant';
 import { CreditCard } from '~/models/payment.model';
 
+import ConfirmBuyToken from './ConfirmBuyToken';
+
 type BuyTokenProps = {
     cards: CreditCard[]
     open: boolean
@@ -23,8 +25,10 @@ function BuyToken({ cards, onclose, open, onPayment }: BuyTokenProps) {
     const [totalTokens, setTotalTokens] = useState<number>(0)
     const cardPrimary = cards?.[0]
     const [loading, setLoading] = useState<boolean>(false)
+    const [confirmBuyToken, setConfirmBuyToken] = useState<boolean>(false)
 
     const transactionFee = totalTokens * 0.03
+    const total = totalTokens + transactionFee
 
     const handleBuyToken = () => {
         setLoading(true)
@@ -47,7 +51,9 @@ function BuyToken({ cards, onclose, open, onPayment }: BuyTokenProps) {
                 footer={
                     <div className='flex items-center gap-2 justify-end'>
                         <Button onClick={() => onclose()}>Cancel</Button>
-                        <Button loading={loading} onClick={handleBuyToken} disabled={totalTokens === 0} type='primary'>Top Up</Button>
+                        <Button
+                            loading={loading} onClick={() => setConfirmBuyToken(true)}
+                            disabled={totalTokens === 0} type='primary'>Top Up</Button>
                     </div>
                 }
             >
@@ -85,7 +91,7 @@ function BuyToken({ cards, onclose, open, onPayment }: BuyTokenProps) {
                             </div>
                             <div className='flex items-center mt-2 justify-end gap-2'>
                                 <span className='font-bold text-gray-800 text-base'>Total:</span>
-                                <p className='font-bold text-gray-800 text-base'>{(totalTokens + transactionFee).toFixed(2)} $</p>
+                                <p className='font-bold text-gray-800 text-base'>{total.toFixed(2)} $</p>
                             </div>
                         </div>
                     </div>
@@ -105,6 +111,17 @@ function BuyToken({ cards, onclose, open, onPayment }: BuyTokenProps) {
                         ))}
                     </div>
                 </div>
+
+                {/* CONFIRM BUY TOKEN */}
+                <ConfirmBuyToken
+                    paymentMethod={cards[0].brand}
+                    transactionFee={transactionFee}
+                    tokens={totalTokens}
+                    total={total}
+                    onConfirm={handleBuyToken}
+                    open={confirmBuyToken}
+                    onclose={() => setConfirmBuyToken(false)}
+                />
             </Drawer>
         </>
     )

@@ -3,21 +3,25 @@ import DefaultAvatar from '~/assets/avatar.jpeg';
 import TagColor from '~/components/ui/tagColor';
 import { Finance } from '~/models/finance.model';
 
+import { Link } from '@remix-run/react';
+
 export const FinanceColumns = (loading: boolean): TableColumnsType<Finance> => [
     {
         title: 'Campaign',
         render: (_, record) => (
-            <span className="text-sm font-medium text-blue-500">Campaign name 001</span>
+            <Link to={`/manager/1`}>
+                <p className="text-sm font-medium text-blue-500">Campaign name 001</p>
+            </Link>
         ),
     },
     {
-        title: 'Payment Recipient',
+        title: 'Members',
         render: (_, record) => (
             <span className="text-sm text-gray-800 font-normal">4</span>
         ),
     },
     {
-        title: 'Payout Due',
+        title: 'Payment Amount',
         render: (_, record) =>
             <>
                 <span className="text-sm text-gray-800 font-normal">1233.4 Tokens</span>
@@ -29,6 +33,13 @@ export const FinanceColumns = (loading: boolean): TableColumnsType<Finance> => [
             <>
                 <span className="text-sm text-gray-800 font-normal">$24.44 Tokens</span>
             </>
+    },
+    {
+        title: 'Action',
+        render: (_, record) =>
+            <Link to={`/manager/finance-details/5`}>
+                <p className="text-sm text-blue-500 font-normal">View Details</p>
+            </Link>
     },
 ];
 

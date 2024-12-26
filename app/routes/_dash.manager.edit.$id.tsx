@@ -186,7 +186,7 @@ const CampaignForm = () => {
                   placeholder='0.00'
                   className='bg-gray-100 border-none'
                   maxLength={10}
-                  suffix='USD'
+                  suffix='Token'
                   min={0}
                   style={{ width: '100%' }}
                 />
@@ -222,7 +222,7 @@ const CampaignForm = () => {
                   prefix="$"
                   className='bg-gray-100 hover:bg-gray-100 cursor-not-allowed border-none'
                   disabled
-                  suffix='USD'
+                  suffix='Token'
                   min={0}
                   style={{ width: '100%' }}
                 />

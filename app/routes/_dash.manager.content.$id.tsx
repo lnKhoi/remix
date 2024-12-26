@@ -10,13 +10,10 @@ import React, {
 import {
   Breadcrumb,
   Button,
-  DatePicker,
   Drawer,
-  Input,
   message,
   Modal,
   Select,
-  TimePicker,
 } from 'antd';
 import dayjs, { Dayjs } from 'dayjs';
 import CopyToClipboard from 'react-copy-to-clipboard';
@@ -35,16 +32,15 @@ import {
   publishContent,
 } from '~/apis/content';
 import Approve from '~/assets/approve.png';
+import DefaultAvatar from '~/assets/avatar.jpeg';
 import Reject from '~/assets/reject.png';
 import EmbedContent from '~/components/content/EmbedContent';
+import ModalPostingDate from '~/components/content/ModalPostingDate';
 import ModalPreviewContent from '~/components/content/ModalPreviewContent';
 import ContentDetailSkeleton
   from '~/components/custom/skeletons/ContentDetailSkeleton';
 import TagColor from '~/components/ui/tagColor';
-import {
-  DATE_TIME_FORMAT,
-  DATE_TIME_FORMAT_V2,
-} from '~/constants/time.constant';
+import { DATE_TIME_FORMAT_V2 } from '~/constants/time.constant';
 import {
   ContentStatus,
   getColorStatusContent,
@@ -74,7 +70,6 @@ export const meta: MetaFunction = () => {
   return [{ title: 'Review Content' }]
 }
 
-const { TextArea } = Input
 type ModalType = 'confirm-posting-date' | 'reject-influencer-request' | 'approve-influencer-request' | 'reject-content' | ''
 
 const settings = {
@@ -96,12 +91,10 @@ const ContentDetails = () => {
   const [loading, setLoading] = useState<string>('')
   const [previewType, setPreviewType] = useState<string>('')
   const [isViewReason, setIsViewReason] = useState<boolean>(false)
-  const [submitTime, setSubmitTime] = useState<Dayjs | null>(null)
   const [messageApi, contextHolder] = message.useMessage();
   const [content, setContent] = useState<Content | null>(null)
 
   const [modalType, setModalType] = useState<ModalType>('')
-  const minDateTime = dayjs(dayjs()).add(48, 'hour');
 
   const handleGetContentDetails = async () => {
     setLoading('loading')
@@ -114,11 +107,11 @@ const ContentDetails = () => {
     handleGetContentDetails()
   }, [selectedVersion])
 
-  const handleApproveContent = async (): Promise<void> => {
+  const handleApproveContent = useCallback((time: Dayjs) => {
     setLoading('loading-post')
-    const date = dayjs(submitTime).toISOString()
+    const date = dayjs(time).toISOString()
 
-    await approveContent(content?.campaignId as string, content?.id as string, true, date, reason)
+    approveContent(content?.campaignId as string, content?.id as string, true, date, reason)
       .then(() => {
         handleGetContentDetails()
         toast.success('Content has been approved successfully')
@@ -126,7 +119,7 @@ const ContentDetails = () => {
       })
       .catch((err) => toast.error(err.message))
       .finally(() => setLoading(''))
-  }
+  }, [])
 
   const handleReject = async (): Promise<void> => {
     setLoading('loading-reject')
@@ -154,7 +147,6 @@ const ContentDetails = () => {
       .finally(() => setLoading(''))
   }
 
-  const contentPreview = 'https://ebo.vn/static/uploads/editor/100247_content-is-king.png'
   const videoExtensions = ['mov', 'mp4'];
 
   const handleRefreshVersion = useCallback(() => {
@@ -209,7 +201,7 @@ const ContentDetails = () => {
                   </div>
                   <div className='flex p-4 items-start mt-1 gap-3'>
                     <img className='w-[36px] h-[36px] rounded-[50%] object-cover'
-                      src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTw7QkfjQ7yvMpDiPlgagN_hYtCrd2acymT1TDim7Kyt-WSAFhtXgHeZ_W0y_MAnxXtJqM&usqp=CAU"
+                      src={content?.creator?.avatarUrl || DefaultAvatar}
                       alt="avatar" />
                     <div className='flex flex-col items-start'>
                       <p className='text-sm font-medium text-gray-800'>{formatName(content?.creator.name as string)}</p>
@@ -236,7 +228,7 @@ const ContentDetails = () => {
                               ) : (
                                 <img
                                   className="w-[120px] h-[120px] rounded-lg object-cover"
-                                  src={url || contentPreview}
+                                  src={url}
                                   alt="content"
                                 />
                               )}
@@ -263,7 +255,7 @@ const ContentDetails = () => {
                             ) : (
                               <img
                                 className="w-[120px] h-[120px] rounded-lg object-cover"
-                                src={url || contentPreview}
+                                src={url}
                                 alt="content"
                               />
                             )}
@@ -434,61 +426,12 @@ const ContentDetails = () => {
               </Modal>
 
               {/* Modal Posting Date */}
-              <Modal
-                width={355}
-                confirmLoading={loading === 'loading-post'}
-                onOk={handleApproveContent}
+              <ModalPostingDate
                 open={modalType === 'confirm-posting-date'}
-                onCancel={() => setModalType('')} title=''>
-                <div className='flex items-center flex-col justify-center mb-8'>
-                  <h2 className='text-xl font-semibold text-gray-800'>Posting Date</h2>
-                  <p className='text-sm text-center text-gray-800 mt-1'>The date content goes live on influender's social media platforms.</p>
-                </div>
-                <div className='flex flex-col gap-2 pb-3'>
-                  <span className='text-sm font-semibold text-gray-800 text-left'>Posting Date</span>
-                  <DatePicker
-                    onChange={(date) =>
-                      setSubmitTime((prev) => {
-                        const time = prev ? prev : dayjs();
-                        return dayjs(date).set('hour', time.hour()).set('minute', time.minute());
-                      })
-                    }
-                    disabledDate={(current) => current && current < minDateTime.startOf('day')}
-                    style={{ width: '100%' }}
-                    format={DATE_TIME_FORMAT}
-                  />
-                  <span className='text-sm font-semibold text-gray-800 mt-3 text-left'>Time</span>
-                  <TimePicker
-                    onChange={(time) =>
-                      setSubmitTime((prev) => {
-                        const date = prev ? prev : dayjs();
-                        return dayjs(date).set('hour', time.hour()).set('minute', time.minute());
-                      })
-                    }
-                    disabledHours={() => {
-                      const selectedDate = submitTime ? dayjs(submitTime) : null;
-                      if (selectedDate && selectedDate.isSame(minDateTime, 'day')) {
-                        return [...Array(24).keys()].filter((hour) => hour < minDateTime.hour());
-                      }
-                      return [];
-                    }}
-                    disabledMinutes={(selectedHour) => {
-                      // Disable minutes if the selected hour is the same as minDateTime's hour
-                      const selectedDate = submitTime ? dayjs(submitTime) : null;
-                      if (
-                        selectedDate &&
-                        selectedDate.isSame(minDateTime, 'day') &&
-                        selectedHour === minDateTime.hour()
-                      ) {
-                        return [...Array(60).keys()].filter((minute) => minute < minDateTime.minute());
-                      }
-                      return [];
-                    }}
-                    style={{ width: '100%' }}
-                    format="HH:mm"
-                  />
-                </div>
-              </Modal>
+                onApproveContent={(time) => handleApproveContent(time)}
+                loading={loading === 'loading-post'}
+                onclose={() => setModalType('')}
+              />
 
               {/* Modal Preview Content */}
               <ModalPreviewContent
