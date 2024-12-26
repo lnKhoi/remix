@@ -9,7 +9,7 @@ import {
 import { toast } from 'react-toastify';
 import { buyToken } from '~/apis/stripe';
 import Balance from '~/assets/balance.png';
-import Visa from '~/assets/visa.png';
+import { paymentMethodBrandLogo } from '~/constants/payment.constant';
 import { CreditCard } from '~/models/payment.model';
 
 type BuyTokenProps = {
@@ -88,14 +88,13 @@ function BuyToken({ cards, onclose, open, onPayment }: BuyTokenProps) {
                                 <p className='font-bold text-gray-800 text-base'>{(totalTokens + transactionFee).toFixed(2)} $</p>
                             </div>
                         </div>
-
                     </div>
                     <div className='mt-8 flex flex-col gap-5'>
                         <p className='font-semibold text-lg text-gray-800'>Payment Method</p>
                         {cards?.slice(0, 1)?.map(card => (
                             <div className='py-4 rounded-xl border-blue-600 flex items-center justify-between px-4 border bg-blue-100'>
                                 <div className='flex items-center gap-3'>
-                                    <img src={Visa} alt="visa" />
+                                    <img src={paymentMethodBrandLogo[card.brand as keyof typeof paymentMethodBrandLogo]} alt="Payment Card" />
                                     <div className='flex flex-col'>
                                         <p className='text-sm font-medium text-gray-800'>****{card.last4}</p>
                                         <span className='text-xs font-normal mt-[2px] text-gray-500'>Card expires at {card?.exp_year}</span>

@@ -98,7 +98,7 @@ function UserProfilePopover({
   onLogout,
   onNavigate,
 }: {
-  userInfo: { name: string; email: string };
+  userInfo: User;
   profileTab: NavItem[];
   onLogout: () => void;
   onNavigate: (to: string) => void;
@@ -126,7 +126,7 @@ function UserProfilePopover({
                 onClick={() =>
                   tab.label === "Logout"
                     ? onLogout()
-                    : (onNavigate(tab.to), setModalOpen(false))
+                    : (onNavigate(tab.to), setModalOpen(false), localStorage.setItem('profile-tab', (tab?.active || 'Profile Details')))
                 }
               >
                 <div className="flex items-center gap-2">

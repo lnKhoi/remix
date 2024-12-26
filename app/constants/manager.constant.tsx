@@ -23,6 +23,7 @@ export type NavItem = {
   label: string;
   badge?: number;
   children?: NavItem[];
+  active?:string
 }
 
 
@@ -64,9 +65,9 @@ export const navItems: NavItem[] = [
 ];
 
 export const profileTab = [
-  { to: "/manager/my-profile", icon: UserCircleIcon, label: "My Profile" },
-  { to: "#", icon: Cog6ToothIcon, label: "Setting" },
-  { to: "/manager/my-profile", icon: CreditCardIcon, label: "Payment Methods" },
+  { to: "/manager/my-profile", icon: UserCircleIcon, label: "My Profile", active: 'Profile Details' },
+  { to: "#", icon: Cog6ToothIcon, label: "Setting", active: 'Profile Details' },
+  { to: "/manager/my-profile", icon: CreditCardIcon, label: "Payment Methods", active: 'Billing' },
 ];
 
 export const campaignMenuItems = [

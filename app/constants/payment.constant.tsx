@@ -3,6 +3,10 @@ import {
   TableColumnsType,
 } from 'antd';
 import dayjs from 'dayjs';
+import AmericanExpress from '~/assets/american-express.webp';
+import Discover from '~/assets/discover.png';
+import MasterCard from '~/assets/mastercard.jpg';
+import Visa from '~/assets/visa.png';
 import { Payment } from '~/models/payment.model';
 
 import { DATE_TIME_FORMAT_V2 } from './time.constant';
@@ -89,3 +93,10 @@ export const initialCardDetails = {
   cvc: "",
   focus: "",
 }
+
+export const paymentMethodBrandLogo = {
+  visa: Visa,
+  mastercard: MasterCard,
+  amex: AmericanExpress,
+  discover:Discover
+};
