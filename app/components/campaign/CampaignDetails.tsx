@@ -27,7 +27,7 @@ export const socialMediaIcons: { [key: string]: string } = {
 
 function CampaignDetails({ campaign, loading }: CampaignDetailsProps) {
 
-  const totalInfluencerBudget = campaign?.maximumParticipants * campaign?.budget
+  const totalInfluencerBudget = (campaign?.maximumParticipants || 0) * (campaign?.budget || 0)
   const totalCommissionFee = totalInfluencerBudget * 0.15
   const totalBudget = totalCommissionFee + totalInfluencerBudget
 

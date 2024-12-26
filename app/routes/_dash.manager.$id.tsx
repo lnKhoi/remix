@@ -18,6 +18,7 @@ import {
 import { getCampaignDetails } from '~/apis/campaign';
 import CampaignDetails from '~/components/campaign/CampaignDetails';
 import Content from '~/components/campaign/Content';
+import Finance from '~/components/campaign/Finance';
 import Influencer from '~/components/campaign/Influencer';
 import ModalInviteInfluencerToCampaign
   from '~/components/campaign/ModalInviteInfluencerToCampaign';
@@ -41,7 +42,7 @@ export const meta: MetaFunction = () => {
   return [{ title: 'Campaign Details' }];
 };
 
-type Tab = 'Campaign Details' | 'Influencer' | 'Content' | 'Reports' | 'Order';
+type Tab = 'Campaign Details' | 'Influencer' | 'Content' | 'Reports' | 'Order' | 'Finance'
 function page() {
   const { id } = useParams();
   const [loading, setLoading] = useState<boolean>(false)
@@ -70,6 +71,8 @@ function page() {
         return <Reports filter={filter} campaign={campaign} />;
       case 'Order':
         return <Order campaign={campaign} />;
+      case 'Finance':
+          return <Finance />;
       default:
         break;
     }

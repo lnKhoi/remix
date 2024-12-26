@@ -70,6 +70,7 @@ export const campaignDetailsTabs = [
   { label: 'Content', value: 'Content' },
   { label: 'Reports', value: 'Reports' },
   { label: 'Order Tracking', value: 'Order' },
+  { label: 'Finance', value: 'Finance' },
 ]
 
 
