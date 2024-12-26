@@ -26,3 +26,7 @@ export const getTotalTokens = () => {
 export const removePaymentMethod = (id: string) => {
     return postData(`/api/v1/payment/unlink-payment-method`, { paymentMethodId: id })
 }
+
+export const downloadInvoice = (id:string) => {
+    return getData(`/api/v1/payment/download-invoice/${id}`)
+}
