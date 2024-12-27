@@ -10,14 +10,12 @@ import {
   Breadcrumb,
   Button,
   Checkbox,
-  DatePicker,
   Form,
   Input,
   InputNumber,
   Radio,
   Select,
 } from 'antd';
-import dayjs from 'dayjs';
 import {
   toast,
   ToastContainer,
@@ -41,12 +39,10 @@ import {
   CAMPAIGN_REQUIRED,
   LOCATION_REQUIRED,
   MAXIMUM_PARTICIPANT,
-  PLEASE_SELECT_DEADLINE,
   PLEASE_SELECT_DURATION,
   PLEASE_SELECT_GENDER,
   REQUIRED,
 } from '~/constants/messages.constant';
-import { DATE_TIME_FORMAT_V2 } from '~/constants/time.constant';
 import { Campaign } from '~/models/Campaign.model';
 import Editor from '~/plugins/editor';
 
@@ -89,7 +85,7 @@ const CampaignForm = () => {
       ...values,
       discountValue: Number(values.discountValue),
       campaignOverview: content,
-      deadline: dayjs(values.deadline).toISOString(),
+      deadline: '3024-12-27T04:06:33.865Z',
       socialMedia: selectedSocials
     }
 
@@ -286,23 +282,6 @@ const CampaignForm = () => {
               </Select>
             </Form.Item>
 
-            {/* Campaign Deadline */}
-            <h2 className='text-lg mb-4 border-t border-t-gray-200 pt-5 font-semibold mt-6'>Campaign Deadline</h2>
-            <Form.Item
-              label=""
-              name="deadline"
-              rules={[{ required: true, message: PLEASE_SELECT_DEADLINE }]}
-            >
-              <DatePicker
-                placeholder='dd/mm/yyyy'
-                className='bg-gray-100 border-none hover:bg-gray-100'
-                disabledDate={(current) => {
-                  return current && current < dayjs().endOf('day');
-                }}
-                style={{ width: '100%' }}
-                showTime
-                format={DATE_TIME_FORMAT_V2} />
-            </Form.Item>
             {/* Age */}
             <h2 className='text-lg  font-semibold text-gray-800 mb-4 mt-6 border-t border-t-gray-200 pt-8'>
               Campaign Demographic

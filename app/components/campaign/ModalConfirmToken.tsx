@@ -78,7 +78,7 @@ function ModalConfirmToken({ onclose, open, maximumParticipants, perInfluencerBu
                     <p className='text-sm font-medium text-gray-800'>Wallet</p>
                     {loading
                         ? <Skeleton.Input active size='small' />
-                        : <span className='text-gray-500 text-xs font-normal'>Available Balance: {totalBalance} Tokens</span>}
+                        : <span className='text-gray-500 text-xs font-normal'>Available Balance: {totalBalance.toFixed(2)} Tokens</span>}
 
                 </div>
             </div>
