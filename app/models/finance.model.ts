@@ -3,6 +3,7 @@ export type CampaignsInFinance = {
     creatorCount: number
     totalBudget: number
     totalTokenEarned: number
+    campaignName?:string
 }
 
 export type FinanceMetrics = {

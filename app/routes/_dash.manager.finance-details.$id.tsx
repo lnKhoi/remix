@@ -22,10 +22,12 @@ import {
 import {
   Link,
   useNavigate,
+  useParams,
 } from '@remix-run/react';
 
 function FinanceDetails() {
   const navigate = useNavigate()
+  const { id } = useParams();
 
   const [loading, setLoading] = useState<boolean>(false)
   const [campaignMetrics, setCampaignMetric] = useState<FinanceMetrics | null>(null)
@@ -33,7 +35,7 @@ function FinanceDetails() {
 
   const getFinanceDetails = () => {
     setLoading(true)
-    Promise.all([getCampaignMetrics('campaign_01JFVSR1PYRM5C6RJ4VRS7N613'), getMembersInFinance('campaign_01JFVSR1PYRM5C6RJ4VRS7N613')])
+    Promise.all([getCampaignMetrics(id as string), getMembersInFinance(id as string)])
       .then(([metrics, members]) => {
         setCampaignMetric(metrics?.data)
         setMembersInFinance({ total: members?.data?.total, data: members?.data?.data })
@@ -51,13 +53,13 @@ function FinanceDetails() {
         className='fixed h-[40px] w-full '
         items={[
           { title: <Link to={'/manager/finance'}>Finance</Link>, },
-          { title: <p className='text-gray-800'>Campaign 001</p> },
+          { title: <p className='text-gray-800'>{campaignMetrics?.campaignName}</p> },
         ]}
       />
 
       <div className='mt-8'>
         <div>
-          <h2 className='text-2xl font-medium text-gray-800'>Campaign 001</h2>
+          <h2 className='text-2xl font-medium text-gray-800'>{campaignMetrics?.campaignName}</h2>
         </div>
 
         <div className='mt-6 border border-gray-200 grid grid-cols-3 rounded-xl p-6'>
@@ -82,7 +84,7 @@ function FinanceDetails() {
         </div>
 
         <div className='mt-6 flex items-center gap-3'>
-          <p className='font-medium text-base text-gray-800'>10 Members</p>
+          <p className='font-medium text-base text-gray-800'>{membersInFinance.total} Members</p>
           <InputSearch onChange={(e) => null} placeholder='Search...' className='w-[300px] h-[36px] ' />
         </div>
 

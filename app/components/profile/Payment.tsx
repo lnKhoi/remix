@@ -100,7 +100,7 @@ function Payment() {
         <div className='flex flex-col gap-1'>
           <p className='text-lg text-gray-800 font-normal'>Available Balance</p>
           <p className='text-2xl font-semibold text-gray-800 flex items-center gap-1'>
-            {loading ? <Skeleton.Node style={{ width: 60, height: 25 }} active /> : totalToken} Tokens
+            {loading ? <Skeleton.Node style={{ width: 60, height: 25 }} active /> : totalToken?.toFixed(2)} Tokens
           </p>
           <div className='gap-3 flex items-center'>
             <ExclamationCircleIcon className='w-5 h-5 text-gray-800' />
