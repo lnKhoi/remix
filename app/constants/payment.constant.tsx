@@ -57,7 +57,7 @@ export const paymentHistoryColumns = (
         loading ? (
           <Skeleton.Input style={{ width: 150 }} active size="small" />
         ) : (
-          <p className="text-green-600 capitalize">{record.status}</p>
+          <p className="text-green-600 capitalize">Success</p>
         ),
     },
     {

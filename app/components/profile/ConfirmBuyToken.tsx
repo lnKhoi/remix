@@ -31,7 +31,7 @@ function ConfirmBuyToken({ open, onclose, onConfirm, transactionFee, tokens, tot
                     </div>
                     <span className='h-[1px] w-full bg-gray-200'></span>
                     <div className='flex items-center justify-between'>
-                        <p className='text-sm font-medium text-gray-500'>Transaction Fee (3%)</p>
+                        <p className='text-sm font-medium text-gray-500'>Transaction Fee (10%)</p>
                         <p className='text-sm font-normal text-gray-500'>${transactionFee.toFixed(2)}</p>
                     </div>
                     <div className='flex items-center mb-4 justify-between'>
