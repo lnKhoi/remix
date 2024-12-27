@@ -159,3 +159,14 @@ export const campaignStatusOptions = [
   { label: 'Draft', value: 'draft' },
   { label: 'Archive', value: 'archive' }
 ]
+
+export const postDurationOptions = [
+  { label: '1 week', value: '1w' },
+  { label: '2 weeks', value: '2w' },
+  { label: '1 month', value: '1m' },
+]
+
+export const storyDurationOptions = [
+  { label: '12 hours', value: '12h' },
+  { label: '24 hours', value: '24h' },
+]
