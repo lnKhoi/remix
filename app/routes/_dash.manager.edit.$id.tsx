@@ -291,7 +291,7 @@ const CampaignForm = () => {
             <h2 className='text-lg mb-4 font-semibold mt-6'>Posting Duration</h2>
             <Form.Item
               label=""
-              name="postingDuration"
+              name="duration"
               rules={[{ required: true, message: PLEASE_SELECT_DURATION }]}
             >
               <Select className="custom-select" placeholder="Select duration">

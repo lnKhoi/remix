@@ -160,12 +160,12 @@ export const campaignStatusOptions = [
 ]
 
 export const postDurationOptions = [
-  { label: '1 week', value: '1week' },
-  { label: '2 weeks', value: '2weeks' },
-  { label: '1 month', value: '1month' },
+  { label: '1 week', value: '1w' },
+  { label: '2 weeks', value: '2w' },
+  { label: '1 month', value: '1m' },
 ]
 
 export const storyDurationOptions = [
-  { label: '12 hours', value: '12hours' },
-  { label: '24 hours', value: '24hours' },
+  { label: '12 hours', value: '12h' },
+  { label: '24 hours', value: '24h' },
 ]
