@@ -100,7 +100,9 @@ export const FinanceDetailsColumns = (loading: boolean): TableColumnsType<Member
         render: (_, record) =>
             <>
                 <span className="text-sm text-gray-800 font-normal">
-                    {loading ? <Skeleton.Input active size='small' /> : dayjs(record.paymentDate).format(DATE_TIME_FORMAT)}
+                    {loading
+                        ? <Skeleton.Input active size='small' />
+                        : record.paymentDate !== '' ? dayjs(record.paymentDate).format(DATE_TIME_FORMAT) : ''}
                 </span>
             </>
     },

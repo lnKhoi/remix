@@ -53,13 +53,13 @@ function FinanceDetails() {
         className='fixed h-[40px] w-full '
         items={[
           { title: <Link to={'/manager/finance'}>Finance</Link>, },
-          { title: <p className='text-gray-800'>Campaign 001</p> },
+          { title: <p className='text-gray-800'>{campaignMetrics?.campaignName}</p> },
         ]}
       />
 
       <div className='mt-8'>
         <div>
-          <h2 className='text-2xl font-medium text-gray-800'>Campaign 001</h2>
+          <h2 className='text-2xl font-medium text-gray-800'>{campaignMetrics?.campaignName}</h2>
         </div>
 
         <div className='mt-6 border border-gray-200 grid grid-cols-3 rounded-xl p-6'>
