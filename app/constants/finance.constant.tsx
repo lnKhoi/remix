@@ -18,7 +18,7 @@ export const FinanceColumns = (loading: boolean): TableColumnsType<CampaignsInFi
     {
         title: 'Campaign',
         render: (_, record) => (
-            <Link to={`/manager/1`}>
+            <Link onClick={() => localStorage.setItem('campaignTab', 'Finance')} to={`/manager/${record.id}`}>
                 <p className="text-sm font-medium text-blue-500">
                     {loading ? <Skeleton.Input active size='small' /> : record.campaignName}
                 </p>
@@ -54,7 +54,7 @@ export const FinanceColumns = (loading: boolean): TableColumnsType<CampaignsInFi
     {
         title: 'Action',
         render: (_, record) =>
-            <Link to={`/manager/finance-details/5`}>
+            <Link to={`/manager/finance-details/${record.id}`}>
                 <p className="text-sm text-blue-500 font-normal">
                     {loading ? <Skeleton.Input active size='small' /> : 'View Details'}
                 </p>

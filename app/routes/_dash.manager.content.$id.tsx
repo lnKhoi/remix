@@ -119,7 +119,7 @@ const ContentDetails = () => {
       })
       .catch((err) => toast.error(err.message))
       .finally(() => setLoading(''))
-  }, [])
+  }, [content?.campaignId])
 
   const handleReject = async (): Promise<void> => {
     setLoading('loading-reject')
@@ -427,6 +427,7 @@ const ContentDetails = () => {
 
               {/* Modal Posting Date */}
               <ModalPostingDate
+                
                 open={modalType === 'confirm-posting-date'}
                 onApproveContent={(time) => handleApproveContent(time)}
                 loading={loading === 'loading-post'}

@@ -27,7 +27,7 @@ function BuyToken({ cards, onclose, open, onPayment }: BuyTokenProps) {
     const [loading, setLoading] = useState<boolean>(false)
     const [confirmBuyToken, setConfirmBuyToken] = useState<boolean>(false)
 
-    const transactionFee = totalTokens * 0.03
+    const transactionFee = totalTokens * 0.1
     const total = totalTokens + transactionFee
 
     const handleBuyToken = () => {
@@ -86,7 +86,7 @@ function BuyToken({ cards, onclose, open, onPayment }: BuyTokenProps) {
 
                         <div className='flex items-end  flex-col justify-end'>
                             <div className='flex mt-5  items-center justify-end gap-2'>
-                                <span className='font-medium text-gray-500 text-sm'>Transaction Fee (3%):</span>
+                                <span className='font-medium text-gray-500 text-sm'>Transaction Fee (10%):</span>
                                 <p className='font-medium text-gray-500 text-sm'>{transactionFee.toFixed(2)} $</p>
                             </div>
                             <div className='flex items-center mt-2 justify-end gap-2'>
