@@ -50,6 +50,7 @@ function Payment() {
   const [loadingDelete, setLoadingDelete] = useState<boolean>(false)
   const [paymentHistory, setPaymentHistory] = useState<Payment[]>([])
 
+  const [selectedCard, setSelectedCard] = useState<string>('')
   const [totalToken, setTotalToken] = useState<number>(0)
   const [addedToken, setAddedToken] = useState<number>(0)
   const [isBuyToken, setIsBuyToken] = useState<boolean>(false)
@@ -193,8 +194,8 @@ function Payment() {
               <Button
                 className='bg-gray-100 border-none'
                 icon={<TrashIcon className='text-gray-800 w-5 h-5' />}
-                loading={loadingDelete}
-                onClick={() => handleRemovePaymentMethod(card.stripe_payment_method_id)}
+                loading={loadingDelete && card.id === selectedCard}
+                onClick={() => { handleRemovePaymentMethod(card.stripe_payment_method_id); setSelectedCard(card.id) }}
               />
             </div>
           </div>
