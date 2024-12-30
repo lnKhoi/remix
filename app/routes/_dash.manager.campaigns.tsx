@@ -6,6 +6,7 @@ import React, {
   useState,
 } from 'react';
 
+import { Button as AntButton } from 'antd';
 import debounce from 'lodash/debounce';
 import {
   toast,
@@ -36,16 +37,24 @@ export const meta: MetaFunction = () => {
 
 function Campaigns() {
   const [search, setSearch] = useState<string>('')
-  const [loading, setLoading] = useState<boolean>(false)
+  const [loading, setLoading] = useState<'get-list' | 'load-more' | ''>('')
   const [campaigns, setCampagins] = useState<Campaign[]>([])
-  const [params, setParams] = useState<{ page: number, limit: number }>({ page: 1, limit: 100 })
+  const [limit, setLimit] = useState<number>(20)
+  const [total, setTotal] = useState<number>(0)
 
-  const handleGetCampaigns = async (): Promise<void> => {
-    setLoading(true)
-    await getCampaigns(params.limit, params.page, search)
-      .then(res => setCampagins(res?.data?.data))
+  const handleGetCampaigns = async (hasMore?: boolean): Promise<void> => {
+
+    hasMore ? setLoading('load-more') : setLoading('get-list')
+    const nextLimit = hasMore ? limit + 20 : limit
+
+    await getCampaigns(nextLimit, 1, search)
+      .then(res => {
+        setTotal(res.data.total)
+        setCampagins(res?.data?.data)
+        hasMore && setLimit(nextLimit)
+      })
       .catch(err => toast.error(err?.message))
-      .finally(() => setLoading(false))
+      .finally(() => setLoading(''))
   }
 
   useEffect(() => {
@@ -60,6 +69,9 @@ function Campaigns() {
     (e: ChangeEvent<HTMLInputElement>): void => {
       setSearch(e.target.value);
     }, 500);
+
+  const noMore = total === campaigns.length
+
 
   return (
     <div>
@@ -91,7 +103,7 @@ function Campaigns() {
         </div>
       </div>
 
-      {loading
+      {loading === 'get-list'
         ? <div className='grid 2xl:grid-cols-4 xl:grid-cols-3 md:grid-cols-2 grid-cols-1  gap-5 mt-5'>
           {Array?.from({ length: 16 }).map((s, idx) => <ReviewCard key={idx} />)}
         </div>
@@ -109,6 +121,14 @@ function Campaigns() {
               <CampaignCard onReload={handleReloadCampagins} key={c.id} campaign={c} />
             ))}
           </div>
+
+          <AntButton
+            disabled={noMore}
+            loading={loading == 'load-more'}
+            onClick={() => handleGetCampaigns(true)}
+            className='mx-auto mt-[44px] flex justify-center' >
+            {noMore ? 'No more campaign' : 'Load more...'}
+          </AntButton>
         </div>
       }
     </div>
