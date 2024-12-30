@@ -6,6 +6,7 @@ import {
 } from 'antd';
 import dayjs from 'dayjs';
 import CopyToClipboard from 'react-copy-to-clipboard';
+import DefaultAvatar from '~/assets/avatar.jpeg';
 import { DATE_TIME_FORMAT } from '~/constants/time.constant';
 import {
   ContentStatus,
@@ -34,7 +35,6 @@ function ContentCard({ content, loading }: ContentCardProps) {
     const isVideo = content?.urls?.[0] ? videoExtensions?.includes(content?.urls[0]?.slice(-3)) : false;
 
 
-    const defaultAvatar = 'https://www.svgrepo.com/show/384676/account-avatar-profile-user-6.svg'
 
     return (
         <div className='rounded-2xl cursor-pointer border border-gray-200 hover:shadow-md transition-shadow'>
@@ -55,7 +55,7 @@ function ContentCard({ content, loading }: ContentCardProps) {
                             <div className='flex items-center gap-3'>
 
                                 <img className='w-[36px] rounded-[50%] h-[36px] object-cover'
-                                    src={content?.creator?.avatarUrl || defaultAvatar} alt="avatar" />
+                                    src={content?.creator?.avatarUrl || DefaultAvatar} alt="avatar" />
                                 <div className='flex flex-col'>
                                     <h6 className='text-sm text-gray-800'>
                                         {formatName(content?.creator?.name as string)}

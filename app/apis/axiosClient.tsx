@@ -1,10 +1,8 @@
 import axios, { InternalAxiosRequestConfig } from 'axios';
-
-export const API_LOCAL = 'http://localhost:8787'
-export const API_DEV = 'https://dev.spiral.tego.global'
+import { API_URL } from '~/constants/env.constant';
 
 const axiosClient = axios.create({
-    baseURL: API_DEV,
+    baseURL: API_URL,
     timeout: 200000,
     headers: { contentType: "application/json", "ngrok-skip-browser-warning": "true", },
 });

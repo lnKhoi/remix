@@ -1,6 +1,11 @@
 import { Authenticator } from 'remix-auth';
 import { GoogleStrategy } from 'remix-auth-google';
 import { createThemeSessionResolver } from 'remix-themes';
+import {
+  DOMAIN,
+  GOOGLE_CLIENT_ID,
+  GOOGLE_CLIENT_TOKEN,
+} from '~/constants/env.constant';
 
 import { createCookieSessionStorage } from '@remix-run/cloudflare';
 
@@ -26,9 +31,9 @@ export const authenticator = new Authenticator(sessionStorage);
 
 let googleStrategy = new GoogleStrategy(
   {
-    clientID: '463266305530-ctq3htprdauqbp5qnrmkmdrcnife3mih.apps.googleusercontent.com',
-    clientSecret: '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',
-    callbackURL: `https://spiral-tawny.vercel.app/auth/google/callback`,
+    clientID: GOOGLE_CLIENT_ID,
+    clientSecret: GOOGLE_CLIENT_TOKEN,
+    callbackURL: `${DOMAIN}/auth/google/callback`,
   },
   async ({ accessToken, refreshToken, extraParams, profile }) => {
     return {

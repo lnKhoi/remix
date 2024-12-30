@@ -130,10 +130,6 @@ export default function Page() {
                 <Tabs
                   className="w-[460px]"
                 >
-                  {/* <TabsList className="grid w-full grid-cols-2">
-                    <TabsTrigger value="creator">Creator</TabsTrigger>
-                    <TabsTrigger value="brand">Brands</TabsTrigger>
-                  </TabsList> */}
                   <FormikForm className="mt-[30px]">
                     <div className="grid gap-4">
                       <div className="grid gap-2">

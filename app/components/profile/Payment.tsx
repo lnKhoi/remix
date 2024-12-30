@@ -21,6 +21,7 @@ import {
 } from '~/apis/stripe';
 import PaymentCard from '~/assets/balance-card.png';
 import Paypal from '~/assets/paypal.png';
+import { STRIPE_KEY } from '~/constants/env.constant';
 import { paymentMethodBrandLogo } from '~/constants/payment.constant';
 import type {
   CreditCard,
@@ -58,7 +59,7 @@ function Payment() {
   const [isSelectPayment, setIsSelectPayment] = useState<boolean>(false)
   const [clientSecret, setClientSecret] = useState("");
 
-  const stripePromise = loadStripe("pk_test_51QUrpZQwRo0WgELJhEc1NKIjXzzfCjFgpJpF9jsBeJ0FNRJcx1x1atB2DAYjelT4C6nlcXiR9n6oYwUL8ton1dVy00EWFHCCE6");
+  const stripePromise = loadStripe(STRIPE_KEY);
 
   const options = {
     clientSecret: clientSecret

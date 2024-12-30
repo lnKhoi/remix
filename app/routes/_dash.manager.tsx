@@ -10,6 +10,7 @@ import {
   Menu,
   Popover,
 } from 'antd';
+import DefaultAvatar from '~/assets/avatar.jpeg';
 import Logo from '~/assets/logo.svg';
 import {
   NavItem,
@@ -111,8 +112,8 @@ function UserProfilePopover({
         <div>
           <div className="pb-2.5 border-b border-b-gray-200 flex items-center gap-2">
             <Avatar
-              className="w-[24px]"
-              src="https://api.dicebear.com/7.x/miniavs/svg?seed=1"
+              className="w-[36px] h-[36px] object-cover"
+              src={DefaultAvatar}
             />
             <div className="flex w-[100px] flex-col">
               <h6 className="text-gray-900 font-medium">{userInfo?.name}</h6>
@@ -153,8 +154,8 @@ function UserProfilePopover({
     >
       <div className="absolute m-5 cursor-pointer bottom-0 left-0 flex items-center gap-2">
         <Avatar
-          className="w-[24px]"
-          src="https://api.dicebear.com/7.x/miniavs/svg?seed=1"
+          className="w-[36px] h-[36px] object-cover"
+          src={DefaultAvatar}
         />
         <div className="flex w-[100px] flex-col">
           <h6 className="text-gray-900 font-medium">{userInfo?.name}</h6>
