@@ -14,7 +14,6 @@ import NoCSV from '~/assets/no-csv.png';
 import ModalViewInfluencerProfile
   from '~/components/campaign/ModalViewInfluencerProfile';
 import { creatorColumns } from '~/constants/creator.constant';
-import { useAuthContext } from '~/contexts/auth.context';
 import { Creator } from '~/models/User.model';
 
 import { CloudArrowDownIcon } from '@heroicons/react/24/outline';
@@ -28,33 +27,34 @@ export const meta: MetaFunction = () => {
 };
 
 const Page: FC = () => {
-  const { userInfo } = useAuthContext();
-  const [influencers, setInfluencers] = useState<Creator[]>([]);
+  const [influencers, setInfluencers] = useState<{ total: number, data: Creator[] }>({ total: 0, data: [] });
   const [loading, setLoading] = useState<boolean>(true);
-  const [selectedInfluencer, setSelectedInfluencer] = useState<Creator | null>(null); // Store clicked row data
-  const [isDrawerVisible, setIsDrawerVisible] = useState(false); // Control drawer visibility
+  const [selectedInfluencer, setSelectedInfluencer] = useState<Creator | null>(null);
+  const [isDrawerVisible, setIsDrawerVisible] = useState(false);
+  const [params, setParams] = useState<{ page: number, pageSize: number }>({ page: 1, pageSize: 10 })
 
   const handleGetListInfluencerImported = async (): Promise<void> => {
+
     setLoading(true);
-    try {
-      const res = await getInfluencerImported(100, 1);
-      setInfluencers(res?.data?.paginatedInfluencersData || []);
-    } finally {
-      setLoading(false);
-    }
+    await getInfluencerImported(params.pageSize,params.page)
+      .then(res => {
+        setInfluencers({ total: res?.data?.total, data: res?.data?.paginatedInfluencersData })
+      })
+      .finally(() => setLoading(false))
   };
 
   useEffect(() => {
     handleGetListInfluencerImported();
-  }, []);
+  }, [params]);
 
   // Handle row click to open the drawer
-  const handleRowClick = (record:any) => {
-    if(record.hasAccount === 1) {
-      setSelectedInfluencer(record); 
-      setIsDrawerVisible(true); 
+  const handleRowClick = (record: any) => {
+    if (record.hasAccount === 1) {
+      setSelectedInfluencer(record);
+      setIsDrawerVisible(true);
     }
   };
+
 
   return (
     <div>
@@ -72,10 +72,17 @@ const Page: FC = () => {
       <Spin spinning={loading}>
         <Table<Creator>
           columns={creatorColumns}
-          dataSource={influencers}
+          pagination={{
+            total: influencers.total,
+            onChange: (page, pageSize) => {
+              setParams({page:page,pageSize:pageSize})
+            },
+          }}
+          dataSource={influencers.data}
           onRow={(record) => ({
-            onClick: () => handleRowClick(record), // Handle row click
+            onClick: () => handleRowClick(record),
           })}
+          bordered
           className='cursor-pointer'
           locale={{
             emptyText: (
@@ -101,7 +108,6 @@ const Page: FC = () => {
           open={isDrawerVisible}
           onClose={() => setIsDrawerVisible(false)} />
       )}
-
     </div>
   );
 };
