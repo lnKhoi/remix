@@ -79,6 +79,7 @@ export type Creator = {
   name?: string,
   age?:number,
   platform?: string,
+  creatorId:string
   avatarUrl?:string
   expertises?:string [],
   instagramTotalLikes?:number
