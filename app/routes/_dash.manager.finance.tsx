@@ -1,4 +1,5 @@
 import React, {
+  ChangeEvent,
   useEffect,
   useState,
 } from 'react';
@@ -7,6 +8,7 @@ import {
   Skeleton,
   Table,
 } from 'antd';
+import debounce from 'lodash/debounce';
 import {
   getCampaignsInFinance,
   getFinanceMetrics,
@@ -19,13 +21,22 @@ import {
 } from '~/models/finance.model';
 
 function Finance() {
+    const [search,setSearch] = useState<string>('')
     const [loading, setLoading] = useState<boolean>(false)
     const [financeMetrics, setFinanceMetrics] = useState<FinanceMetrics | null>(null)
     const [campaignsInFinance, setCampaignsInFinance] = useState<{ total: number, data: CampaignsInFinance[] }>({ total: 0, data: [] })
 
+    const [params,setParams] = useState<{page:number,pageSize:number}>({page:1,pageSize:10})
+
+    const handleSearchCampaigns = debounce(
+        (e: ChangeEvent<HTMLInputElement>): void => {
+          setSearch(e.target.value);
+    }, 500);
+    
+ 
     const getFinanceDetails = () => {
         setLoading(true)
-        Promise.all([getFinanceMetrics(), getCampaignsInFinance()])
+        Promise.all([getFinanceMetrics(), getCampaignsInFinance(params.page,params.pageSize,search)])
             .then(([metrics, campaigns]) => {
                 setFinanceMetrics(metrics?.data)
                 setCampaignsInFinance({ total: campaigns?.data?.total, data: campaigns?.data?.data })
@@ -34,7 +45,7 @@ function Finance() {
             .finally(() => setLoading(false))
     };
 
-    useEffect(() => { getFinanceDetails() }, [])
+    useEffect(() => { getFinanceDetails() }, [params,search])
 
     return (
         <div>
@@ -65,11 +76,20 @@ function Finance() {
 
             <div className='mt-6 flex items-center gap-3'>
                 <p className='font-medium text-base text-gray-800'>{campaignsInFinance.total} Campaigns</p>
-                <InputSearch onChange={(e) => null} placeholder='Search campaigns' className='w-[300px] h-[36px] ' />
+                <InputSearch
+                 onChange={(e) => handleSearchCampaigns(e)}
+                 placeholder='Search campaigns'
+                  className='w-[300px] h-[36px] ' />
             </div>
 
             <div className='mt-6 cursor-pointer'>
                 <Table
+                   pagination={{
+                    total: campaignsInFinance.total,
+                    onChange: (page, pageSize) => {
+                      setParams({page:page,pageSize:pageSize})
+                    },
+                    }}
                     columns={FinanceColumns(loading) as any}
                     dataSource={loading ? Array.from({ length: 10 }, () => ({})) : campaignsInFinance.data
                     }
