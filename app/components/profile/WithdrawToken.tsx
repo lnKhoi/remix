@@ -6,46 +6,34 @@ import {
   InputNumber,
   Radio,
 } from 'antd';
-import { toast } from 'react-toastify';
-import { buyToken } from '~/apis/stripe';
 import Balance from '~/assets/balance.png';
 import { paymentMethodBrandLogo } from '~/constants/payment.constant';
 import { CreditCard } from '~/models/payment.model';
 
-import ConfirmBuyToken from './ConfirmBuyToken';
+import ConfirmWithdrawToken from './ConfirmWithdrawToken';
 
-type BuyTokenProps = {
+type WithdrawTokenProps = {
     cards: CreditCard[]
     open: boolean
     onclose: () => void
-    balance:number
+    balance: number
     onPayment: (total: number) => void
 }
 
-function BuyToken({ cards, onclose, open, onPayment,balance }: BuyTokenProps) {
+function WithdrawToken({ cards, onclose, open, onPayment, balance }: WithdrawTokenProps) {
     const [totalTokens, setTotalTokens] = useState<number>(0)
     const cardPrimary = cards?.[0]
     const [loading, setLoading] = useState<boolean>(false)
-    const [confirmBuyToken, setConfirmBuyToken] = useState<boolean>(false)
+    const [confirmWithdrawToken, setConfirmWithdrawToken] = useState<boolean>(false)
 
-    const transactionFee = totalTokens * 0.1
-    const total = totalTokens + transactionFee
-
-    const handleBuyToken = () => {
-        setLoading(true)
-        buyToken(totalTokens, cardPrimary.stripe_payment_method_id)
-            .then(res => {
-                onPayment(totalTokens)
-                onclose()
-            })
-            .catch((err) => toast.error(err?.message))
-            .finally(() => setLoading(false))
+    const handleWithdrawToken = () => {
+       
     }
 
     return (
         <>
             <Drawer
-                title='Buy Token'
+                title='Withdraw Token'
                 width={650}
                 open={open}
                 onClose={() => onclose()}
@@ -53,8 +41,8 @@ function BuyToken({ cards, onclose, open, onPayment,balance }: BuyTokenProps) {
                     <div className='flex items-center gap-2 justify-end'>
                         <Button onClick={() => onclose()}>Cancel</Button>
                         <Button
-                            loading={loading} onClick={() => setConfirmBuyToken(true)}
-                            disabled={totalTokens === 0} type='primary'>Top Up</Button>
+                            loading={loading} onClick={() => setConfirmWithdrawToken(true)}
+                            disabled={totalTokens === 0} type='primary'>Withdraw</Button>
                     </div>
                 }
             >
@@ -62,7 +50,7 @@ function BuyToken({ cards, onclose, open, onPayment,balance }: BuyTokenProps) {
                 <div>
                     <div className='border border-gray-200 rounded-xl p-5'>
                         <div className='flex items-center justify-between'>
-                            <p className='text-lg font-semibold text-gray-800'>Top-up To</p>
+                            <p className='text-lg font-semibold text-gray-800'>Withdraw from</p>
                             <p className='text-xs font-medium text-gray-500'>Exchange Rage: 1USD = 1 Token</p>
                         </div>
 
@@ -75,7 +63,7 @@ function BuyToken({ cards, onclose, open, onPayment,balance }: BuyTokenProps) {
                         </div>
 
                         <div className='mt-5'>
-                            <p className='text-sm text-gray-800 font-medium'>Top-up Amount</p>
+                            <p className='text-sm text-gray-800 font-medium'>Amount</p>
                             <InputNumber
                                 min={50}
                                 step={0.01}
@@ -84,15 +72,10 @@ function BuyToken({ cards, onclose, open, onPayment,balance }: BuyTokenProps) {
                                 onChange={(num) => setTotalTokens(Number(num))}
                                 className='mt-1 w-full bg-gray-100 border-none h-[44px]' suffix='Token' />
                         </div>
-
                         <div className='flex items-end  flex-col justify-end'>
-                            <div className='flex mt-5  items-center justify-end gap-2'>
-                                <span className='font-medium text-gray-500 text-sm'>Transaction Fee (10%):</span>
-                                <p className='font-medium text-gray-500 text-sm'>{transactionFee.toFixed(2)} $</p>
-                            </div>
                             <div className='flex items-center mt-2 justify-end gap-2'>
                                 <span className='font-bold text-gray-800 text-base'>Total:</span>
-                                <p className='font-bold text-gray-800 text-base'>{total.toFixed(2)} $</p>
+                                <p className='font-bold text-gray-800 text-base'>{totalTokens.toFixed(2)} $</p>
                             </div>
                         </div>
                     </div>
@@ -114,18 +97,16 @@ function BuyToken({ cards, onclose, open, onPayment,balance }: BuyTokenProps) {
                 </div>
 
                 {/* CONFIRM BUY TOKEN */}
-                <ConfirmBuyToken
+                <ConfirmWithdrawToken
                     paymentMethod={cards[0].brand}
-                    transactionFee={transactionFee}
-                    tokens={totalTokens}
-                    total={total}
-                    onConfirm={handleBuyToken}
-                    open={confirmBuyToken}
-                    onclose={() => setConfirmBuyToken(false)}
+                    total={totalTokens}
+                    onConfirm={handleWithdrawToken}
+                    open={confirmWithdrawToken}
+                    onclose={() => setConfirmWithdrawToken(false)}
                 />
             </Drawer>
         </>
     )
 }
 
-export default BuyToken
+export default WithdrawToken

@@ -41,6 +41,7 @@ import TagColor from '../ui/tagColor';
 import BuyToken from './BuyToken';
 import ModalSuccessPayment from './ModalSuccessPayment';
 import PaymentHistory from './PaymentHistory';
+import WithdrawToken from './WithdrawToken';
 
 function Payment() {
   const [loading, setLoading] = useState<boolean>(false)
@@ -53,6 +54,7 @@ function Payment() {
   const [isBuyToken, setIsBuyToken] = useState<boolean>(false)
   const [paymentMethod, setPaymentMethod] = useState<string>('')
   const [paymentSuccess, setPaymentSuccess] = useState<boolean>(false)
+  const [isWithdrawToken, setIsWidthdrawToken] = useState<boolean>(false)
   const [isSelectPayment, setIsSelectPayment] = useState<boolean>(false)
   const [clientSecret, setClientSecret] = useState("");
 
@@ -106,13 +108,19 @@ function Payment() {
             <ExclamationCircleIcon className='w-5 h-5 text-gray-800' />
             <p className='text-sm font-normal text-gray-500'>Locked: $0.00</p>
           </div>
-          <Button
-            onClick={() => setIsBuyToken(true)}
-            disabled={cards.length === 0}
-            className='w-[50px] mt-3'
-            type='primary'>
-            Buy
-          </Button>
+          <div className='flex mt-3 items-center gap-3'>
+            <Button
+              onClick={() => setIsBuyToken(true)}
+              disabled={cards.length === 0}
+              className='w-[50px]'
+              type='primary'>
+              Buy
+            </Button>
+            <Button
+              disabled={cards.length === 0}
+              onClick={() => setIsWidthdrawToken(true)}
+              className='bg-gray-100 border-gray-100'>Withdraw</Button>
+          </div>
         </div>
         <img src={PaymentCard} alt="balance card" />
       </div>
@@ -194,11 +202,22 @@ function Payment() {
         {/* BUY TOKEN */}
         {isBuyToken && (
           <BuyToken
+            balance={totalToken}
             onPayment={handlePayment}
             onclose={() => setIsBuyToken(false)}
             open={isBuyToken}
             cards={cards}
           />
+        )}
+
+        {/* WITHDRAW TOKEN */}
+        {isWithdrawToken && (
+          <WithdrawToken
+            balance={totalToken}
+            onPayment={handlePayment}
+            onclose={() => setIsWidthdrawToken(false)}
+            open={isWithdrawToken}
+            cards={cards} />
         )}
       </div>
 
