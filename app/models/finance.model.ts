@@ -2,13 +2,18 @@ export type CampaignsInFinance = {
     campaignName: string
     creatorCount: number
     totalBudget: number
+    totalPayment:number
+    campaignId:string
+    totalPaid:number
+    id:string
     totalTokenEarned: number
-    campaignName?:string
+    totalMembers:number
 }
 
 export type FinanceMetrics = {
     totalMembers:number
     totalPayment:number
+    campaignName:string
     totalPaid:number
 }
 

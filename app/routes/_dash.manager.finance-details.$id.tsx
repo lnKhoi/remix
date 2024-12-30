@@ -46,7 +46,6 @@ function FinanceDetails() {
 
   useEffect(() => { getFinanceDetails() }, [])
 
-
   return (
     <div>
       <Breadcrumb

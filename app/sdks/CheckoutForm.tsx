@@ -50,7 +50,7 @@ const CheckoutForm: React.FC = () => {
         <form className='max-w-[1200px]' onSubmit={handleSubmit}>
             <PaymentElement />
             <Button className='mt-3' type="primary" htmlType="submit" loading={loading}>
-                Pay
+                Save
             </Button>
         </form>
     );

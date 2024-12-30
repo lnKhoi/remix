@@ -13,5 +13,5 @@ export const getMembersInFinance = (campaignId: string) => {
 }
 
 export const getCampaignMetrics = (campaignId: string) => {
-    return getData(`/api/v1/finance/campaigns/${campaignId}/metrics`)
+    return getData(`/api/v1/finance/campaigns/metrics?campaignId=${campaignId}`)
 }

@@ -18,7 +18,7 @@ export const FinanceColumns = (loading: boolean): TableColumnsType<CampaignsInFi
     {
         title: 'Campaign',
         render: (_, record) => (
-            <Link onClick={() => localStorage.setItem('campaignTab', 'Finance')} to={`/manager/${record.id}`}>
+            <Link onClick={() => localStorage.setItem('campaignTab', 'Finance')} to={`/manager/${record.campaignId}`}>
                 <p className="text-sm font-medium text-blue-500">
                     {loading ? <Skeleton.Input active size='small' /> : record.campaignName}
                 </p>
@@ -26,10 +26,10 @@ export const FinanceColumns = (loading: boolean): TableColumnsType<CampaignsInFi
         ),
     },
     {
-        title: 'Members',
+        title: 'Payment Recipients',
         render: (_, record) => (
             <span className="text-sm text-gray-800 font-normal">
-                {loading ? <Skeleton.Input active size='small' /> : record.creatorCount}
+                {loading ? <Skeleton.Input active size='small' /> : record.totalMembers}
             </span>
         ),
     },
@@ -38,7 +38,7 @@ export const FinanceColumns = (loading: boolean): TableColumnsType<CampaignsInFi
         render: (_, record) =>
             <>
                 <span className="text-sm text-gray-800 font-normal">
-                    {loading ? <Skeleton.Input active size='small' /> : record.totalBudget + ' Tokens'}
+                    {loading ? <Skeleton.Input active size='small' /> : record.totalPayment + ' Tokens'}
                 </span>
             </>
     },
@@ -47,14 +47,14 @@ export const FinanceColumns = (loading: boolean): TableColumnsType<CampaignsInFi
         render: (_, record) =>
             <>
                 <span className="text-sm text-gray-800 font-normal">
-                    {loading ? <Skeleton.Input active size='small' /> : record.totalTokenEarned + ' Tokens'}
+                    {loading ? <Skeleton.Input active size='small' /> : record.totalPaid + ' Tokens'}
                 </span>
             </>
     },
     {
         title: 'Action',
         render: (_, record) =>
-            <Link to={`/manager/finance-details/${record.id}`}>
+            <Link to={`/manager/finance-details/${record.campaignId}`}>
                 <p className="text-sm text-blue-500 font-normal">
                     {loading ? <Skeleton.Input active size='small' /> : 'View Details'}
                 </p>
