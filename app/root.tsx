@@ -26,7 +26,10 @@ export const links: LinksFunction = () => [
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const { getTheme } = await themeSessionResolver(request);
-  return { theme: getTheme(), };
+  return { 
+    theme: getTheme(), 
+    ENV:process.env.API_URL
+  };
 }
 
 export default function AppWithProviders() {

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
 import { Button } from 'antd';
+import { DOMAIN } from '~/constants/env.constant';
 
 import {
   PaymentElement,
@@ -32,7 +33,7 @@ const CheckoutForm: React.FC = () => {
         const { setupIntent, error } = await stripe.confirmSetup({
             elements,
             confirmParams: {
-                return_url: 'https://spiral-tawny.vercel.app/manager/my-profile', // Optional redirect URL
+                return_url: `${DOMAIN}/manager/my-profile`, 
             },
         });
 

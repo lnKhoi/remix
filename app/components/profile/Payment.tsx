@@ -21,6 +21,7 @@ import {
 } from '~/apis/stripe';
 import PaymentCard from '~/assets/balance-card.png';
 import Paypal from '~/assets/paypal.png';
+import { STRIPE_KEY } from '~/constants/env.constant';
 import { paymentMethodBrandLogo } from '~/constants/payment.constant';
 import type {
   CreditCard,
@@ -49,6 +50,7 @@ function Payment() {
   const [loadingDelete, setLoadingDelete] = useState<boolean>(false)
   const [paymentHistory, setPaymentHistory] = useState<Payment[]>([])
 
+  const [selectedCard, setSelectedCard] = useState<string>('')
   const [totalToken, setTotalToken] = useState<number>(0)
   const [addedToken, setAddedToken] = useState<number>(0)
   const [isBuyToken, setIsBuyToken] = useState<boolean>(false)
@@ -58,7 +60,7 @@ function Payment() {
   const [isSelectPayment, setIsSelectPayment] = useState<boolean>(false)
   const [clientSecret, setClientSecret] = useState("");
 
-  const stripePromise = loadStripe("pk_test_51QUrpZQwRo0WgELJhEc1NKIjXzzfCjFgpJpF9jsBeJ0FNRJcx1x1atB2DAYjelT4C6nlcXiR9n6oYwUL8ton1dVy00EWFHCCE6");
+  const stripePromise = loadStripe(STRIPE_KEY);
 
   const options = {
     clientSecret: clientSecret
@@ -192,8 +194,8 @@ function Payment() {
               <Button
                 className='bg-gray-100 border-none'
                 icon={<TrashIcon className='text-gray-800 w-5 h-5' />}
-                loading={loadingDelete}
-                onClick={() => handleRemovePaymentMethod(card.stripe_payment_method_id)}
+                loading={loadingDelete && card.id === selectedCard}
+                onClick={() => { handleRemovePaymentMethod(card.stripe_payment_method_id); setSelectedCard(card.id) }}
               />
             </div>
           </div>
