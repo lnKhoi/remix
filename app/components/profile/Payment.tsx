@@ -51,7 +51,6 @@ function Payment() {
   const [paymentHistory, setPaymentHistory] = useState<Payment[]>([])
 
   const [selectedCard, setSelectedCard] = useState<string>('')
-  const [totalToken, setTotalToken] = useState<number>(0)
   const [addedToken, setAddedToken] = useState<number>(0)
   const [isBuyToken, setIsBuyToken] = useState<boolean>(false)
   const [paymentMethod, setPaymentMethod] = useState<string>('')
@@ -59,12 +58,11 @@ function Payment() {
   const [isWithdrawToken, setIsWidthdrawToken] = useState<boolean>(false)
   const [isSelectPayment, setIsSelectPayment] = useState<boolean>(false)
   const [clientSecret, setClientSecret] = useState("");
+  const [totalToken, setTotalToken] = useState<{available:number,locked:number}>({available:0,locked:0})
 
   const stripePromise = loadStripe(STRIPE_KEY);
 
-  const options = {
-    clientSecret: clientSecret
-  };
+  const options = {  clientSecret: clientSecret };
 
   const getPaymentInfo = () => {
     setLoading(true)
@@ -73,7 +71,7 @@ function Payment() {
         setClientSecret(clientIntent?.data?.clientSecret)
         setCards(paymentMethods?.data)
         setPaymentHistory(paymentHistory?.data?.data)
-        setTotalToken(balance?.data?.wallet?.balance)
+        setTotalToken({available:balance?.data?.wallet?.balance,locked:balance?.data?.wallet?.lockBalance})
       })
       .catch(error => { console.error('Error fetching data:', error) })
       .finally(() => setLoading(false))
@@ -104,11 +102,11 @@ function Payment() {
         <div className='flex flex-col gap-1'>
           <p className='text-lg text-gray-800 font-normal'>Available Balance</p>
           <p className='text-2xl font-semibold text-gray-800 flex items-center gap-1'>
-            {loading ? <Skeleton.Node style={{ width: 60, height: 25 }} active /> : totalToken?.toFixed(2)} Tokens
+            {loading ? <Skeleton.Node style={{ width: 60, height: 25 }} active /> : totalToken?.available?.toFixed(2)} Tokens
           </p>
           <div className='gap-3 flex items-center'>
             <ExclamationCircleIcon className='w-5 h-5 text-gray-800' />
-            <p className='text-sm font-normal text-gray-500'>Locked: $0.00</p>
+            <p className='text-sm font-normal text-gray-500'>Locked: {totalToken?.locked?.toFixed(2)}$</p>
           </div>
           <div className='flex mt-3 items-center gap-3'>
             <Button
@@ -204,7 +202,7 @@ function Payment() {
         {/* BUY TOKEN */}
         {isBuyToken && (
           <BuyToken
-            balance={totalToken}
+            balance={totalToken.available}
             onPayment={handlePayment}
             onclose={() => setIsBuyToken(false)}
             open={isBuyToken}
@@ -215,7 +213,7 @@ function Payment() {
         {/* WITHDRAW TOKEN */}
         {isWithdrawToken && (
           <WithdrawToken
-            balance={totalToken}
+            balance={totalToken.available}
             onPayment={handlePayment}
             onclose={() => setIsWidthdrawToken(false)}
             open={isWithdrawToken}

@@ -111,7 +111,7 @@ const ContentDetails = () => {
     setLoading('loading-post')
     const date = dayjs(time).toISOString()
 
-    approveContent(content?.campaignId as string, content?.id as string, true, date, reason)
+    approveContent(content?.campaignId as string, selectedVersion as string, true, date, reason)
       .then(() => {
         handleGetContentDetails()
         toast.success('Content has been approved successfully')
@@ -123,7 +123,7 @@ const ContentDetails = () => {
 
   const handleReject = async (): Promise<void> => {
     setLoading('loading-reject')
-    await reviewContent(content?.campaignId as string, content?.id as string, reason, false)
+    await reviewContent(content?.campaignId as string, selectedVersion as string, reason, false)
       .then(() => {
         setModalType('')
         setReason('')
@@ -138,7 +138,7 @@ const ContentDetails = () => {
 
   const handlePostContentToProfileInfluent = () => {
     setLoading('loading-post')
-    publishContent(content?.id as string, 'instagram',)
+    publishContent(selectedVersion as string, 'instagram',)
       .then((res) => {
         toast.success('Content has been posted!')
         handleGetContentDetails()
