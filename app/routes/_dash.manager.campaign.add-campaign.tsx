@@ -51,8 +51,6 @@ import {
   Link,
   useNavigate,
 } from '@remix-run/react';
-import axios from 'axios';
-import { BASE64_REGEX } from '~/constants/regex.constant';
 
 export const meta: MetaFunction = () => {
   return [{ title: 'Create Campaign' }]
@@ -115,47 +113,9 @@ const CampaignForm = () => {
   };
 
   // CHANGE CONTENT OVERVIEW
-  const handleChangeContent = async (content: string) => {
-    // const base64Regex = content.match(/base64,([\w\d+/=]+)"/)?.[1];
-
-    try {
-      const base64Matches = content.matchAll(BASE64_REGEX);
-
-      let updatedContent = content;
-
-      for (const match of base64Matches) {
-        const base64Image = match[1];
-        const uploadedUrl = await uploadToImgBB(base64Image);
-
-        updatedContent = updatedContent.replace(match[0], uploadedUrl + '"');
-      }
-      setContent(updatedContent);
-    } catch (error) {
-      console.error(error);
-    }
+  const handleChangeContent = (content: string) => {
+    setContent(content);
   }
-
-  const uploadToImgBB = async (file: string) => {
-    const apiKey = "e37513ca1eb7dd64802347b892fafdb0";
-
-    const formData = new FormData();
-    formData.append("image", file);
-
-    try {
-      const response = await axios.post(
-        `https://api.imgbb.com/1/upload?key=${apiKey}`,
-        formData
-      );
-
-      if (response.status >= 200 && response.status < 300 && response.data.success) {
-        return response.data.data.url;
-      } else {
-        console.log(response.data.error.message);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   // CALCULATION TOTAL BUDGET
   useEffect(() => {
