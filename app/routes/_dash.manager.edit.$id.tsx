@@ -267,6 +267,7 @@ const CampaignForm = () => {
                       onClick={() => {
                         const newValue = contentFormat?.includes(c?.value) ? [] : [c.value];
                         form.setFieldsValue({ contentFormat: newValue });
+                        form.setFieldValue('duration',null)
                       }}
                     >
                       <div className="flex gap-2">
