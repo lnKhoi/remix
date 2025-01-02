@@ -286,6 +286,7 @@ const CampaignForm = () => {
 
             {/* Posting Duration */}
             <h2 className='text-lg mb-4 font-semibold mt-6'>Posting Duration</h2>
+            <p className='text-sm  font-normal text-gray-500  mb-[14px] -mt-3.5'>Time the influencer keeps the content on Instagram within the required timeframe. After this period, payment will be processed</p>
             <Form.Item
               label=""
               name="duration"
