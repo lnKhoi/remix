@@ -152,8 +152,6 @@ const CampaignForm = () => {
     }
   }, [form]);
 
-  console.log(selectedSocials)
-
   return (
     <div className='custom-select custom-form'>
       <ToastContainer />
