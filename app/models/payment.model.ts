@@ -31,6 +31,7 @@ export type CardDetails = {
     invoice_id: string;
     created_at: string;
     type: string;
+    last4:string
     brand: string;
   }
   

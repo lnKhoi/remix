@@ -66,7 +66,10 @@ export const paymentHistoryColumns = (
         loading ? (
           <Skeleton.Input style={{ width: 150 }} active size="small" />
         ) : (
-          <p>{record.brand}</p>
+          <div className='flex items-center gap-1'>
+            <span className='capitalize'>{record.brand}</span>
+            <p> ....{record.last4}</p>
+          </div>
         ),
     },
     {

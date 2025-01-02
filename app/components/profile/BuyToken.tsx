@@ -101,7 +101,7 @@ function BuyToken({ cards, onclose, open, onPayment,balance }: BuyTokenProps) {
                         {cards?.slice(0, 1)?.map(card => (
                             <div className='py-4 rounded-xl border-blue-600 flex items-center justify-between px-4 border bg-blue-100'>
                                 <div className='flex items-center gap-3'>
-                                    <img src={paymentMethodBrandLogo[card.brand as keyof typeof paymentMethodBrandLogo]} alt="Payment Card" />
+                                    <img className='w-[67px] h-[38px] object-cover' src={paymentMethodBrandLogo[card.brand as keyof typeof paymentMethodBrandLogo]} alt="Payment Card" />
                                     <div className='flex flex-col'>
                                         <p className='text-sm font-medium text-gray-800'>****{card.last4}</p>
                                         <span className='text-xs font-normal mt-[2px] text-gray-500'>Card expires at {card?.exp_year}</span>
