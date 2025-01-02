@@ -16,6 +16,7 @@ import {
   Radio,
   Select,
 } from 'antd';
+import debounce from 'lodash/debounce';
 import {
   toast,
   ToastContainer,
@@ -96,6 +97,7 @@ const CampaignForm = () => {
         toast.success('Create campaign successfully!')
         form.resetFields()
         setSelectedSocials([])
+        sessionStorage.removeItem('campaignFormValues')
         setContent('')
         navigate('/manager/campaigns')
       })
@@ -110,6 +112,10 @@ const CampaignForm = () => {
         ? prevSelected.filter((socialId) => socialId !== id)
         : [...prevSelected, id]
     );
+
+    const newValue = selectedSocials?.includes(id) ? [] : [id];
+    sessionStorage.setItem('campaignFormValues',
+      JSON.stringify({ ...form.getFieldsValue(), socialMedias: newValue }));
   };
 
   // CHANGE CONTENT OVERVIEW
@@ -125,6 +131,28 @@ const CampaignForm = () => {
     }
   }, [budget, maximumParticipants]);
 
+  // Debounced function to save form data to localStorage when user leaving
+  const handleDraftCampaign = debounce(() => {
+    sessionStorage.setItem('campaignFormValues',
+      JSON.stringify({ ...form.getFieldsValue(), socialMedias: selectedSocials }));
+  }, 1000);
+
+  // Load form values from localStorage when the component mounts
+  useEffect(() => {
+    const getLastFormValues = sessionStorage.getItem('campaignFormValues');
+
+    if (getLastFormValues) {
+      const parsedValues = JSON.parse(getLastFormValues);
+
+      if (parsedValues.socialMedias) {
+        setSelectedSocials(parsedValues?.socialMedias)
+      }
+
+      form.setFieldsValue(parsedValues);
+    }
+  }, [form]);
+
+  console.log(selectedSocials)
 
   return (
     <div className='custom-select custom-form'>
@@ -144,6 +172,7 @@ const CampaignForm = () => {
             form={form}
             layout="vertical"
             onFinish={onFinish}
+            onValuesChange={handleDraftCampaign}
             style={{ margin: 'auto' }}
           >
 
@@ -251,6 +280,7 @@ const CampaignForm = () => {
                       onClick={() => {
                         const newValue = contentFormat?.includes(c.value) ? [] : [c.value];
                         form.setFieldsValue({ contentFormat: newValue });
+                        form.setFieldValue('duration',null)
                       }}
                     >
                       <div className="flex gap-2">
