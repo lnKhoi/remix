@@ -60,6 +60,7 @@ function SidebarMenu({
         item.children ? (
           <SubMenu
             key={item.to}
+            style={{fontSize:14}}
             icon={renderIcon(item.icon)}
             title={item.label}
           >
@@ -75,11 +76,11 @@ function SidebarMenu({
             ))}
           </SubMenu>
         ) : (
-          <Menu.Item key={item.to}>
+          <Menu.Item style={{ height: 40,padding:20 }} key={item.to}>
             <Link to={item.to}>
               <div
-                className="flex items-center gap-2"
-                onClick={() => item.label === "Logout" && onLogout()}
+                style={{ fontSize: 14 }}
+                className="flex items-center h-full gap-2"
               >
                 {renderIcon(item.icon)}
                 {item.label}
@@ -112,6 +113,7 @@ function UserProfilePopover({
         <div>
           <div className="pb-2.5 border-b border-b-gray-200 flex items-center gap-2">
             <Avatar
+              shape='circle'
               className="w-[36px] h-[36px] object-cover"
               src={DefaultAvatar}
             />
@@ -153,10 +155,7 @@ function UserProfilePopover({
       onOpenChange={() => setModalOpen(!modalOpen)}
     >
       <div className="absolute m-5 cursor-pointer bottom-0 left-0 flex items-center gap-2">
-        <Avatar
-          className="w-[36px] h-[36px] object-cover"
-          src={DefaultAvatar}
-        />
+        <img style={{ width: 36, height: 36, borderRadius: 36 }} src={DefaultAvatar} alt="avatar" />
         <div className="flex w-[100px] flex-col">
           <h6 className="text-gray-900 font-medium">{userInfo?.name}</h6>
           <p className="text-gray-500 text-sm">
