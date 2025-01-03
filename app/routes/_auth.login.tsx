@@ -64,7 +64,6 @@ export const loader: LoaderFunction = async ({ request }) => {
   const user = session.get("user");
   authenticator.logout
 
-  console.log('loader',user)
   return user || null;
 };
 
@@ -74,7 +73,7 @@ export default function Page() {
   const [loading, setLoading] = useState<boolean>(false)
   const user: GoogleAccount = useLoaderData()
 
-  console.log('uat envs',user)
+  console.log('LOADED UAT ENV',user)
 
   useEffect(() => {
     const handleLogin3rdParty = async () => {
