@@ -33,7 +33,10 @@ import {
 } from '~/constants/messages.constant';
 import { useAuthContext } from '~/contexts/auth.context';
 import { GoogleAccount } from '~/models/User.model';
-import { getSession } from '~/services/sessions.server';
+import {
+  authenticator,
+  getSession,
+} from '~/services/sessions.server';
 import { createPasswordValidationSchema } from '~/validators/account.validator';
 
 import {
@@ -59,16 +62,15 @@ const validationSchema = Yup.object().shape({
 export const loader: LoaderFunction = async ({ request }) => {
   const session = await getSession(request.headers.get("Cookie"));
   const user = session.get("user");
+  authenticator.logout
 
   console.log('loader',user)
-
-  return user; 
+  return user || null;
 };
-
 
 export default function Page() {
   const { updateUserInfo } = useAuthContext()
-  const navigate = useNavigate();``
+  const navigate = useNavigate();
   const [loading, setLoading] = useState<boolean>(false)
   const user: GoogleAccount = useLoaderData()
 
