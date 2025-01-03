@@ -74,7 +74,7 @@ export default function Page() {
   const [loading, setLoading] = useState<boolean>(false)
   const user: GoogleAccount = useLoaderData()
 
-  console.log('user',user)
+  console.log('uat env',user)
 
   useEffect(() => {
     const handleLogin3rdParty = async () => {
