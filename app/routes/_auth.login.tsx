@@ -62,17 +62,13 @@ export const loader: LoaderFunction = async ({ request }) => {
 
   console.log('loader',user)
 
-  if (!user) {
-    throw new Response("Unauthorized", { status: 401 });
-  }
-
   return user; 
 };
 
 
 export default function Page() {
   const { updateUserInfo } = useAuthContext()
-  const navigate = useNavigate();
+  const navigate = useNavigate();``
   const [loading, setLoading] = useState<boolean>(false)
   const user: GoogleAccount = useLoaderData()
 
