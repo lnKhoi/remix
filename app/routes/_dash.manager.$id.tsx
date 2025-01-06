@@ -107,7 +107,7 @@ function page() {
                 title: <>
                   {loading
                     ? <Skeleton.Button style={{ width: 90 }} size='small' active />
-                    : <p className='text-gray-800'>{abbreviateLastName(campaign?.name as string, 16)}</p>
+                    : <p className='text-gray-800'>{abbreviateLastName(campaign?.name as string, 14)}</p>
                   }
                 </>
               },
