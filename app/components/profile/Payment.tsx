@@ -5,15 +5,14 @@ import {
 
 import {
   Button,
+  message,
   Radio,
   Skeleton,
 } from 'antd';
 import {
-  toast,
-  ToastContainer,
-} from 'react-toastify';
-import {
   addPaymentMethod,
+  checkConnectedAccount,
+  getOnboardLink,
   getPaymentMethods,
   getPaymentsHistory,
   getTotalTokens,
@@ -44,65 +43,88 @@ import ModalSuccessPayment from './ModalSuccessPayment';
 import PaymentHistory from './PaymentHistory';
 import WithdrawToken from './WithdrawToken';
 
+type ModalType = 'verify-user' | 'buy-token' | 'withdraw' | ''
+type LoadingType = 'payment-info' | 'delete-payment' | 'verify-user' | ''
+
 function Payment() {
-  const [loading, setLoading] = useState<boolean>(false)
   const [cards, setCards] = useState<CreditCard[]>([])
-  const [loadingDelete, setLoadingDelete] = useState<boolean>(false)
   const [paymentHistory, setPaymentHistory] = useState<Payment[]>([])
 
   const [selectedCard, setSelectedCard] = useState<string>('')
   const [addedToken, setAddedToken] = useState<number>(0)
-  const [isBuyToken, setIsBuyToken] = useState<boolean>(false)
   const [paymentMethod, setPaymentMethod] = useState<string>('')
   const [paymentSuccess, setPaymentSuccess] = useState<boolean>(false)
-  const [isWithdrawToken, setIsWidthdrawToken] = useState<boolean>(false)
   const [isSelectPayment, setIsSelectPayment] = useState<boolean>(false)
-  const [clientSecret, setClientSecret] = useState("");
-  const [totalToken, setTotalToken] = useState<{available:number,locked:number}>({available:0,locked:0})
+  const [clientSecret, setClientSecret] = useState<string>("");
 
+  const [modalType, setModalType] = useState<ModalType>('')
+  const [loadingType,setLoadingType] = useState<LoadingType>('')
+  const [totalToken, setTotalToken] = useState<{ available: number, locked: number }>({ available: 0, locked: 0 })
+
+  const [messageApi, contextHolder] = message.useMessage();
   const stripePromise = loadStripe(STRIPE_KEY);
 
-  const options = {  clientSecret: clientSecret };
+  const options = { clientSecret: clientSecret };
+  const emptyCard = cards.length === 0
 
+  // GET PAYMENT - BALANCE INFO
   const getPaymentInfo = () => {
-    setLoading(true)
+    setLoadingType('payment-info')
     Promise.all([getPaymentMethods(), addPaymentMethod(), getPaymentsHistory(), getTotalTokens()])
       .then(([paymentMethods, clientIntent, paymentHistory, balance]) => {
         setClientSecret(clientIntent?.data?.clientSecret)
         setCards(paymentMethods?.data)
         setPaymentHistory(paymentHistory?.data?.data)
-        setTotalToken({available:balance?.data?.wallet?.balance,locked:balance?.data?.wallet?.lockBalance})
+        setTotalToken({ available: balance?.data?.wallet?.balance, locked: balance?.data?.wallet?.lockBalance })
       })
       .catch(error => { console.error('Error fetching data:', error) })
-      .finally(() => setLoading(false))
+      .finally(() => setLoadingType(''))
   };
 
   useEffect(() => { getPaymentInfo() }, [])
 
+  // PAYMENT - BUY TOKEN
   const handlePayment = (total: number) => {
     setPaymentSuccess(true)
     setAddedToken(total)
   }
 
+  // REMOVE PAYMENT METHOD
   const handleRemovePaymentMethod = (id: string) => {
-    setLoadingDelete(true)
+    setLoadingType('delete-payment')
     removePaymentMethod(id)
       .then(() => {
         const newPaymentMethod = cards.filter(c => c.stripe_payment_method_id !== id)
         setCards(newPaymentMethod)
       })
-      .catch(() => toast.error('Failed to Delete payment method. Try again!'))
-      .finally(() => setLoadingDelete(false))
+      .catch(() => messageApi.error('Failed to Delete payment method. Try again!'))
+      .finally(() => setLoadingType(''))
+  }
+
+  // VERIFY USER BEFORE WITHDRAW
+  const handleWithdraw = () => {
+    setLoadingType('verify-user')
+    checkConnectedAccount()
+    .then(res => console.log(res.data))
+    .catch(err => {
+      // Account is not ready for payouts.
+      err?.status == 400 && handleOnboardUser()
+    })
+    .finally(() => setLoadingType(''))
+  }
+
+  const handleOnboardUser = () => {
+    getOnboardLink().then(res => window.open(res?.data?.onboardingLink,'_blank'))
   }
 
   return (
     <div>
-      <ToastContainer />
+      {contextHolder}
       <div className='p-5 border flex items-center justify-between border-gray-200 rounded-xl'>
         <div className='flex flex-col gap-1'>
           <p className='text-lg text-gray-800 font-normal'>Available Balance</p>
           <p className='text-2xl font-semibold text-gray-800 flex items-center gap-1'>
-            {loading ? <Skeleton.Node style={{ width: 60, height: 25 }} active /> : totalToken?.available?.toFixed(2)} Tokens
+            {loadingType ==='payment-info' ? <Skeleton.Node style={{ width: 60, height: 25 }} active /> : totalToken?.available?.toFixed(2)} Tokens
           </p>
           <div className='gap-3 flex items-center'>
             <ExclamationCircleIcon className='w-5 h-5 text-gray-800' />
@@ -110,15 +132,16 @@ function Payment() {
           </div>
           <div className='flex mt-3 items-center gap-3'>
             <Button
-              onClick={() => setIsBuyToken(true)}
-              disabled={cards.length === 0}
+              onClick={() => setModalType('buy-token')}
+              disabled={emptyCard}
               className='w-[50px]'
               type='primary'>
               Buy
             </Button>
             <Button
-              disabled={cards.length === 0}
-              onClick={() => setIsWidthdrawToken(true)}
+              loading={loadingType ==='verify-user'}
+              disabled={emptyCard}
+              onClick={handleWithdraw}
               className='bg-gray-100 border-gray-100'>Withdraw</Button>
           </div>
         </div>
@@ -158,7 +181,7 @@ function Payment() {
         )}
 
         {/* NO PAYMENT AVAILABLE */}
-        {(paymentMethod === '' && !isSelectPayment && cards.length === 0 && !loading) && (
+        {(paymentMethod === '' && !isSelectPayment && emptyCard && loadingType !=='payment-info') && (
           <div className='mt-5 flex  flex-col items-center justify-center'>
             <h6 className='font-bold text-gray-800'>No payment link created</h6>
             <p className='mt-1 text-gray-500 text-sm font-normal w-[390px] text-center'>
@@ -168,10 +191,10 @@ function Payment() {
         )}
 
         {/* CREDIT CARD */}
-        {!isSelectPayment && loading && (
+        {!isSelectPayment && loadingType =='payment-info' && (
           [1, 2, 3].map(s => <PaymentMethodsSkeleton key={s} />)
         )}
-        {!isSelectPayment && !loading && cards?.map((card, idx) => (
+        {!isSelectPayment && loadingType !=='payment-info' && cards?.map((card, idx) => (
           <div key={card.id} className='mt-5  px-5 py-4 rounded-xl flex items-center justify-between mx-8 border border-dashed'>
             <div className='flex items-center gap-3'>
               <img className='w-[67px] h-[38px] object-cover rounded-lg'
@@ -192,7 +215,7 @@ function Payment() {
               <Button
                 className='bg-gray-100 border-none'
                 icon={<TrashIcon className='text-gray-800 w-5 h-5' />}
-                loading={loadingDelete && card.id === selectedCard}
+                loading={loadingType ==='delete-payment' && card.id === selectedCard}
                 onClick={() => { handleRemovePaymentMethod(card.stripe_payment_method_id); setSelectedCard(card.id) }}
               />
             </div>
@@ -200,23 +223,23 @@ function Payment() {
         ))}
 
         {/* BUY TOKEN */}
-        {isBuyToken && (
+        {modalType === 'buy-token' && (
           <BuyToken
             balance={totalToken.available}
             onPayment={handlePayment}
-            onclose={() => setIsBuyToken(false)}
-            open={isBuyToken}
+            onclose={() => setModalType('')}
+            open={modalType === 'buy-token'}
             cards={cards}
           />
         )}
 
         {/* WITHDRAW TOKEN */}
-        {isWithdrawToken && (
+        {modalType === 'withdraw' && (
           <WithdrawToken
             balance={totalToken.available}
             onPayment={handlePayment}
-            onclose={() => setIsWidthdrawToken(false)}
-            open={isWithdrawToken}
+            onclose={() => setModalType('')}
+            open={modalType === 'withdraw'}
             cards={cards} />
         )}
       </div>
@@ -224,7 +247,7 @@ function Payment() {
       {/* PAYMENT HISTORY */}
       <div className='mt-5 flex flex-col gap-6'>
         <p className='text-lg font-semibold text-gray-800'>Payment History</p>
-        <PaymentHistory loading={loading} paymentHistory={paymentHistory} />
+        <PaymentHistory loading={loadingType ==='payment-info'} paymentHistory={paymentHistory} />
       </div>
 
       {/* MODAL PAYMENT SUCCESS */}

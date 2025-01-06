@@ -8,12 +8,18 @@ import {
   Skeleton,
   Table,
 } from 'antd';
+import dayjs from 'dayjs';
 import {
   getCampaignMetrics,
   getMembersInFinance,
 } from '~/apis/finance';
 import { InputSearch } from '~/components/ui/input-search';
+import ModalSelectTimeRange, {
+  DateRange,
+} from '~/components/ui/ModalSelectTimeRange';
 import { FinanceDetailsColumns } from '~/constants/finance.constant';
+import { DATE_TIME_FORMAT_V4 } from '~/constants/time.constant';
+import { useAuthContext } from '~/contexts/auth.context';
 import {
   FinanceMetrics,
   MemberInCampaign,
@@ -28,23 +34,26 @@ import {
 function FinanceDetails() {
   const navigate = useNavigate()
   const { id } = useParams();
+  const {userInfo} = useAuthContext()
 
   const [loading, setLoading] = useState<boolean>(false)
   const [campaignMetrics, setCampaignMetric] = useState<FinanceMetrics | null>(null)
   const [membersInFinance, setMembersInFinance] = useState<{ total: number, data: MemberInCampaign[] }>({ total: 0, data: [] })
 
-  const getFinanceDetails = () => {
-    setLoading(true)
-    Promise.all([getCampaignMetrics(id as string), getMembersInFinance(id as string)])
+  const getFinanceDetails = (time:string,dates:DateRange) => {
+    if (time !== 'custom' || (dates?.[0] && time === 'custom')) { 
+      setLoading(true)
+      Promise.all([getCampaignMetrics(id as string,time,dates), getMembersInFinance(id as string,time,dates)])
       .then(([metrics, members]) => {
         setCampaignMetric(metrics?.data)
         setMembersInFinance({ total: members?.data?.total, data: members?.data?.data })
       })
       .catch(error => { console.error('Error fetching data:', error) })
       .finally(() => setLoading(false))
+    }
   };
 
-  useEffect(() => { getFinanceDetails() }, [])
+  useEffect(() => { getFinanceDetails('',null) }, [])
 
   return (
     <div>
@@ -56,9 +65,13 @@ function FinanceDetails() {
         ]}
       />
 
-      <div className='mt-8'>
-        <div>
+      <div className='mt-10'>
+        <div className='flex items-center justify-between'>
           <h2 className='text-2xl font-medium text-gray-800'>{campaignMetrics?.campaignName}</h2>
+          <ModalSelectTimeRange
+                    allTime={`All Time ${dayjs(userInfo?.created_at).format(DATE_TIME_FORMAT_V4)} - Today`}
+                    onSelect={(time, dates) => getFinanceDetails(time, dates)}
+                />
         </div>
 
         <div className='mt-6 border border-gray-200 grid grid-cols-3 rounded-xl p-6'>

@@ -29,7 +29,7 @@ function Finance() {
 
     const getFinanceDetails = () => {
         setLoading(true)
-        Promise.all([getCampaignMetrics(id as string), getMembersInFinance(id as string)])
+        Promise.all([getCampaignMetrics(id as string, '', null), getMembersInFinance(id as string, '', null)])
             .then(([metrics, members]) => {
                 setCampaignMetric(metrics?.data)
                 setMembersInFinance({ total: members?.data?.total, data: members?.data?.data })
@@ -64,7 +64,7 @@ function Finance() {
             </div>
 
             <div className='mt-6 flex items-center gap-3'>
-                <p className='font-medium text-base text-gray-800'>10 Members</p>
+                <p className='font-medium text-base text-gray-800'>{membersInFinance?.total} Members</p>
                 <InputSearch onChange={(e) => null} placeholder='Search...' className='w-[300px] h-[36px] ' />
             </div>
 
