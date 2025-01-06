@@ -20,10 +20,12 @@ export type DateRange = [string, string] | null;
 
 type ModalSelectTimeRangeProps = {
   onSelect: (time: string, range: DateRange) => void;
+  allTime?: string
 };
 
-const ModalSelectTimeRange = ({ onSelect }: ModalSelectTimeRangeProps) => {
-  const [selectedFilter, setSelectedFilter] = useState<string>('7d');
+const ModalSelectTimeRange = ({ onSelect, allTime }: ModalSelectTimeRangeProps) => {
+  const [selectedFilter, setSelectedFilter] = useState<string>(allTime ? allTime : FILTER_OPTION?.[0]?.value)
+
   const [dropdownVisible, setDropdownVisible] = useState<boolean>(false);
   const [dateRange, setDateRange] = useState<DateRange>(null);
 
@@ -66,7 +68,7 @@ const ModalSelectTimeRange = ({ onSelect }: ModalSelectTimeRangeProps) => {
           ? `${dateRange[0]} - ${dateRange[1]}`
           : selectedFilter
       }
-      style={{ width: isCustom ? 240 : 160 }}
+      style={{ width: allTime ? 240 : isCustom ? 240 : 160 }}
       onChange={handleFilterChange}
       open={dropdownVisible || (isCustom && !dateRange)}
       onDropdownVisibleChange={(visible) => {
@@ -81,7 +83,7 @@ const ModalSelectTimeRange = ({ onSelect }: ModalSelectTimeRangeProps) => {
             <div style={{ padding: 8 }} onMouseDown={(e) => e.preventDefault()}>
               <RangePicker
                 onChange={(dates) => handleDateChange(dates as [Dayjs | null, Dayjs | null])}
-                format="YYYY-MM-DD"
+                format={DATE_TIME_FORMAT_V3}
                 style={{ width: '100%' }}
               />
             </div>
@@ -89,6 +91,7 @@ const ModalSelectTimeRange = ({ onSelect }: ModalSelectTimeRangeProps) => {
         </>
       )}
     >
+      {allTime && <Option key={''} value={''}>{allTime}</Option>}
       {FILTER_OPTION.map((option) => (
         <Option key={option.value} value={option.value}>
           {option.label}
