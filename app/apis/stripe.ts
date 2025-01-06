@@ -30,3 +30,11 @@ export const removePaymentMethod = (id: string) => {
 export const downloadInvoice = (id:string) => {
     return getData(`/api/v1/payment/download-invoice/${id}`)
 }
+
+export const checkConnectedAccount = () => {
+    return getData(`/api/v1/payment/check-connected-account`)
+}
+
+export const getOnboardLink = () => {
+    return getData(`/api/v1/payment/onboarding-link`)
+}
