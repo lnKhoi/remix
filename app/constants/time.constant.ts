@@ -1,3 +1,5 @@
+import { Dayjs } from "dayjs"
+
 export const DATE_TIME_FORMAT_V2 = 'DD/MM/YYYY HH:mm'
 export const DATE_TIME_FORMAT = 'DD/MM/YYYY'
 export const DATE_TIME_FORMAT_V3 = 'YYYY-MM-DD'
@@ -17,16 +19,21 @@ export const FINANCE_FILTER_OPTIONS = [
     { value: 'custom', label: 'Custom Date' },
 ]
 
-export const generateTimeOptions = () => {
+export const generateTimeOptions = (selectedDate: Dayjs) => {
     const now = new Date();
     const currentHour = now.getHours();
+    const isToday = selectedDate.isSame(now, 'day');
     const currentMinute = now.getMinutes();
 
     const options = [];
+    const startHour = currentHour + 1;
+
     for (let hour = 1; hour < 24; hour++) {
         for (let minute = 0; minute < 60; minute += 30) {
             const label = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
-            const isPast = hour < currentHour || (hour === currentHour && minute < currentMinute);
+
+            const isPast =
+                isToday ? hour < startHour || (hour === startHour && minute < currentMinute) : false
             options.push({ value: label, label, disabled: isPast });
         }
     }
@@ -38,13 +45,6 @@ export const getCurrentTime = () => {
     const now = new Date();
     let hour = now.getHours();
     let minute = now.getMinutes();
-
-    if (minute <= 30) {
-        minute < 1 ? minute = 0 : minute = 30
-    } else {
-        minute = 0;
-        hour += 1;
-    }
 
     return `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
 };

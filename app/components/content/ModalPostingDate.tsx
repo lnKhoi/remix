@@ -59,7 +59,7 @@ function ModalPostingDate({ loading, open, onApproveContent, onclose }: ModalPos
                             const [hour, minute] = time.split(':').map(Number);
                             setSubmitTime((prev) => prev.set('hour', hour).set('minute', minute));
                         }}
-                        options={generateTimeOptions()}
+                        options={generateTimeOptions(submitTime)}
                     />
                 </Space>
             </div>
