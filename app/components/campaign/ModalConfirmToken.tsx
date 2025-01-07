@@ -84,12 +84,12 @@ function ModalConfirmToken({ onclose, open, maximumParticipants, perInfluencerBu
             </div>
 
             {(notEnoughTokens && !loading) && (
-                <div className='mt-4 p-4 rounded-lg bg-blue-100 flex items-center gap-3'>
+                <div className='mt-4 p-4 rounded-lg bg-blue-100 flex justify-between items-center gap-3'>
+                    <div className='flex gap-3 items-center'>
                     <ExclamationCircleIcon className='text-blue-500 ml-1 cursor-pointer w-5 h-5' />
-                    <div className='flex flex-col'>
                         <p className='text-sm font-medium text-gray-600'>Please add funds to your account to active the campaign</p>
-                        <span onClick={handleViewPaymentSettings} className='text-sm cursor-pointer font-medium text-blue-500'>Go to Payment Settings</span>
                     </div>
+                    <Button onClick={handleViewPaymentSettings} type='primary'>Buy More</Button>
                 </div>
             )}
 

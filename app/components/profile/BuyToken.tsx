@@ -24,7 +24,7 @@ type BuyTokenProps = {
 
 function BuyToken({ cards, onclose, open, onPayment,balance }: BuyTokenProps) {
     const [totalTokens, setTotalTokens] = useState<number>(0)
-    const cardPrimary = cards?.[0]
+    const cardPrimary = cards.find(c => c.is_primary == 1)
     const [loading, setLoading] = useState<boolean>(false)
     const [confirmBuyToken, setConfirmBuyToken] = useState<boolean>(false)
 
@@ -33,10 +33,10 @@ function BuyToken({ cards, onclose, open, onPayment,balance }: BuyTokenProps) {
 
     const handleBuyToken = () => {
         setLoading(true)
-        buyToken(totalTokens, cardPrimary.stripe_payment_method_id)
+        buyToken(totalTokens, cardPrimary?.id as string)
             .then(res => {
-                onPayment(totalTokens)
                 onclose()
+                onPayment(totalTokens)
             })
             .catch((err) => toast.error(err?.message))
             .finally(() => setLoading(false))
@@ -115,7 +115,7 @@ function BuyToken({ cards, onclose, open, onPayment,balance }: BuyTokenProps) {
 
                 {/* CONFIRM BUY TOKEN */}
                 <ConfirmBuyToken
-                    paymentMethod={cards[0].brand}
+                    paymentMethod={cardPrimary?.brand as string}
                     transactionFee={transactionFee}
                     tokens={totalTokens}
                     total={total}

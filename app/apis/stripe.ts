@@ -38,3 +38,7 @@ export const checkConnectedAccount = () => {
 export const getOnboardLink = () => {
     return getData(`/api/v1/payment/onboarding-link`)
 }
+
+export const payout = (amount:number) => {
+    return postData(`/api/v1/payment/process-payout`,{amount:amount})
+}

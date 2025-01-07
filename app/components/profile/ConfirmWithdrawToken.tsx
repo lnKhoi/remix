@@ -26,7 +26,7 @@ function ConfirmWithdrawToken({ open, onclose, onConfirm, total, paymentMethod }
                     </div>
                     <div className='flex items-center justify-between'>
                         <p className='text-sm font-medium text-gray-500'>Amount</p>
-                        <p className='text-sm font-normal text-gray-500'>${total.toFixed(2)}</p>
+                        <p className='text-sm font-normal text-gray-500'>{total.toFixed(2)} Tokens</p>
                     </div>
                     <div className='flex items-center justify-between'>
                         <p className='text-sm font-medium text-gray-500'>Payment method</p>
