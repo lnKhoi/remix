@@ -34,6 +34,7 @@ export const generateTimeOptions = (selectedDate: Dayjs) => {
 
             const isPast =
                 isToday ? hour < startHour || (hour === startHour && minute < currentMinute) : false
+
             options.push({ value: label, label, disabled: isPast });
         }
     }
