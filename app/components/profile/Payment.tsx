@@ -8,11 +8,11 @@ import {
   message,
   Radio,
   Skeleton,
+  Tooltip,
 } from 'antd';
 import {
   addPaymentMethod,
   checkConnectedAccount,
-  getOnboardLink,
   getPaymentMethods,
   getPaymentsHistory,
   getTotalTokens,
@@ -21,7 +21,12 @@ import {
 import PaymentCard from '~/assets/balance-card.png';
 import Paypal from '~/assets/paypal.png';
 import { STRIPE_KEY } from '~/constants/env.constant';
-import { paymentMethodBrandLogo } from '~/constants/payment.constant';
+import {
+  availableTokensDesc,
+  lockedTokensDesc,
+  paymentMethodBrandLogo,
+  totalBalanceDesc,
+} from '~/constants/payment.constant';
 import type {
   CreditCard,
   Payment,
@@ -32,6 +37,7 @@ import {
   ExclamationCircleIcon,
   PencilSquareIcon,
   TrashIcon,
+  XMarkIcon,
 } from '@heroicons/react/24/outline';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
@@ -39,26 +45,28 @@ import { loadStripe } from '@stripe/stripe-js';
 import PaymentMethodsSkeleton from '../custom/skeletons/PaymentMethods';
 import TagColor from '../ui/tagColor';
 import BuyToken from './BuyToken';
+import ConnectStripeAccount from './ConnectStripeAccount';
 import ModalSuccessPayment from './ModalSuccessPayment';
+import ModalSuccessPayout from './ModalSuccessPayout';
 import PaymentHistory from './PaymentHistory';
 import WithdrawToken from './WithdrawToken';
 
-type ModalType = 'verify-user' | 'buy-token' | 'withdraw' | ''
+type ModalType = 'verify-user' | 'buy-token' | 'withdraw' | 'connect-stripe' | 'widthdraw-success' | 'payment-success' | ''
 type LoadingType = 'payment-info' | 'delete-payment' | 'verify-user' | ''
 
 function Payment() {
   const [cards, setCards] = useState<CreditCard[]>([])
+  const [warning, setWarning] = useState<boolean>(true)
   const [paymentHistory, setPaymentHistory] = useState<Payment[]>([])
 
   const [selectedCard, setSelectedCard] = useState<string>('')
   const [addedToken, setAddedToken] = useState<number>(0)
   const [paymentMethod, setPaymentMethod] = useState<string>('')
-  const [paymentSuccess, setPaymentSuccess] = useState<boolean>(false)
   const [isSelectPayment, setIsSelectPayment] = useState<boolean>(false)
   const [clientSecret, setClientSecret] = useState<string>("");
 
   const [modalType, setModalType] = useState<ModalType>('')
-  const [loadingType,setLoadingType] = useState<LoadingType>('')
+  const [loadingType, setLoadingType] = useState<LoadingType>('')
   const [totalToken, setTotalToken] = useState<{ available: number, locked: number }>({ available: 0, locked: 0 })
 
   const [messageApi, contextHolder] = message.useMessage();
@@ -85,7 +93,7 @@ function Payment() {
 
   // PAYMENT - BUY TOKEN
   const handlePayment = (total: number) => {
-    setPaymentSuccess(true)
+    setModalType('payment-success')
     setAddedToken(total)
   }
 
@@ -94,7 +102,7 @@ function Payment() {
     setLoadingType('delete-payment')
     removePaymentMethod(id)
       .then(() => {
-        const newPaymentMethod = cards.filter(c => c.stripe_payment_method_id !== id)
+        const newPaymentMethod = cards.filter(c => c.id !== id)
         setCards(newPaymentMethod)
       })
       .catch(() => messageApi.error('Failed to Delete payment method. Try again!'))
@@ -105,32 +113,74 @@ function Payment() {
   const handleWithdraw = () => {
     setLoadingType('verify-user')
     checkConnectedAccount()
-    .then(res => console.log(res.data))
-    .catch(err => {
-      // Account is not ready for payouts.
-      err?.status == 400 && handleOnboardUser()
-    })
-    .finally(() => setLoadingType(''))
-  }
-
-  const handleOnboardUser = () => {
-    getOnboardLink().then(res => window.open(res?.data?.onboardingLink,'_blank'))
+      .then(() => setModalType('withdraw'))
+      .catch(err => {
+        // Account is not ready for payouts.
+        err?.status == 400 && setModalType('connect-stripe')
+      })
+      .finally(() => setLoadingType(''))
   }
 
   return (
     <div>
       {contextHolder}
-      <div className='p-5 border flex items-center justify-between border-gray-200 rounded-xl'>
-        <div className='flex flex-col gap-1'>
-          <p className='text-lg text-gray-800 font-normal'>Available Balance</p>
-          <p className='text-2xl font-semibold text-gray-800 flex items-center gap-1'>
-            {loadingType ==='payment-info' ? <Skeleton.Node style={{ width: 60, height: 25 }} active /> : totalToken?.available?.toFixed(2)} Tokens
-          </p>
-          <div className='gap-3 flex items-center'>
-            <ExclamationCircleIcon className='w-5 h-5 text-gray-800' />
-            <p className='text-sm font-normal text-gray-500'>Locked: {totalToken?.locked?.toFixed(2)}$</p>
+      {/* WARNING IF NO PAYMENT METHOD LINKED */}
+      {warning && emptyCard && loadingType !== 'payment-info' && (
+        <div className='flex items-center mb-6 justify-between px-3 h-[54px] rounded-lg bg-blue-100'>
+          <div className='flex items-center gap-3'>
+            <ExclamationCircleIcon className='w-6 h-6 text-blue-500' />
+            <p className='text-sm font-normal text-gray-800'>We need your attention! To start using tools, Please
+              <span className='text-blue-500 text-sm font-bold ml-2'>Add Payment Method</span>
+            </p>
           </div>
-          <div className='flex mt-3 items-center gap-3'>
+          <XMarkIcon onClick={() => setWarning(false)} className='cursor-pointer w-6 h-6 text-gray-500' />
+        </div>
+      )}
+      <div className='p-5 border flex items-center justify-between border-gray-200 rounded-xl'>
+        <div className='flex flex-col  w-full'>
+          <div className='w-full grid grid-cols-3'>
+            <div>
+              <div className='flex items-center gap-1'>
+                <p className='text-lg text-gray-800 font-normal'>Available Balance</p>
+                <Tooltip
+                  title={<div className="text-center block ">{availableTokensDesc}</div>}
+                >
+                  <ExclamationCircleIcon className="w-5 cursor-pointer h-5 text-gray-500" />
+                </Tooltip>
+
+              </div>
+              <p className='text-2xl font-semibold text-gray-800 flex items-center gap-1'>
+                {loadingType === 'payment-info' ? <Skeleton.Node style={{ width: 60, height: 25 }} active /> : totalToken?.available?.toFixed(2)} Tokens
+              </p>
+            </div>
+            <div>
+              <div className='flex items-center gap-1'>
+                <p className='text-lg text-gray-800 font-normal'>Locked Tokens</p>
+                <Tooltip
+                  title={<div className="text-center block ">{lockedTokensDesc}</div>}
+                >
+                  <ExclamationCircleIcon className="w-5 cursor-pointer h-5 text-gray-500" />
+                </Tooltip>
+              </div>
+              <p className='text-2xl font-semibold text-gray-800 flex items-center gap-1'>
+                {loadingType === 'payment-info' ? <Skeleton.Node style={{ width: 60, height: 25 }} active /> : totalToken?.locked?.toFixed(2)} Tokens
+              </p>
+            </div>
+            <div>
+              <div className='flex items-center gap-1'>
+                <p className='text-lg text-gray-800 font-normal'>Total Balance</p>
+                <Tooltip
+                  title={<div className="text-center block ">{totalBalanceDesc}</div>}
+                >
+                  <ExclamationCircleIcon className="w-5 cursor-pointer h-5 text-gray-500" />
+                </Tooltip>
+              </div>
+              <p className='text-2xl font-semibold text-gray-800 flex items-center gap-1'>
+                {loadingType === 'payment-info' ? <Skeleton.Node style={{ width: 60, height: 25 }} active /> : (totalToken?.available + totalToken?.locked)?.toFixed(2)} Tokens
+              </p>
+            </div>
+          </div>
+          <div className='flex mt-5 items-center gap-3'>
             <Button
               onClick={() => setModalType('buy-token')}
               disabled={emptyCard}
@@ -139,7 +189,7 @@ function Payment() {
               Buy
             </Button>
             <Button
-              loading={loadingType ==='verify-user'}
+              loading={loadingType === 'verify-user'}
               disabled={emptyCard}
               onClick={handleWithdraw}
               className='bg-gray-100 border-gray-100'>Withdraw</Button>
@@ -181,7 +231,7 @@ function Payment() {
         )}
 
         {/* NO PAYMENT AVAILABLE */}
-        {(paymentMethod === '' && !isSelectPayment && emptyCard && loadingType !=='payment-info') && (
+        {(paymentMethod === '' && !isSelectPayment && emptyCard && loadingType !== 'payment-info') && (
           <div className='mt-5 flex  flex-col items-center justify-center'>
             <h6 className='font-bold text-gray-800'>No payment link created</h6>
             <p className='mt-1 text-gray-500 text-sm font-normal w-[390px] text-center'>
@@ -191,10 +241,10 @@ function Payment() {
         )}
 
         {/* CREDIT CARD */}
-        {!isSelectPayment && loadingType =='payment-info' && (
+        {!isSelectPayment && loadingType == 'payment-info' && (
           [1, 2, 3].map(s => <PaymentMethodsSkeleton key={s} />)
         )}
-        {!isSelectPayment && loadingType !=='payment-info' && cards?.map((card, idx) => (
+        {!isSelectPayment && loadingType !== 'payment-info' && cards?.map((card, idx) => (
           <div key={card.id} className='mt-5  px-5 py-4 rounded-xl flex items-center justify-between mx-8 border border-dashed'>
             <div className='flex items-center gap-3'>
               <img className='w-[67px] h-[38px] object-cover rounded-lg'
@@ -215,8 +265,8 @@ function Payment() {
               <Button
                 className='bg-gray-100 border-none'
                 icon={<TrashIcon className='text-gray-800 w-5 h-5' />}
-                loading={loadingType ==='delete-payment' && card.id === selectedCard}
-                onClick={() => { handleRemovePaymentMethod(card.stripe_payment_method_id); setSelectedCard(card.id) }}
+                loading={loadingType === 'delete-payment' && card.id === selectedCard}
+                onClick={() => { handleRemovePaymentMethod(card.id); setSelectedCard(card.id) }}
               />
             </div>
           </div>
@@ -237,7 +287,7 @@ function Payment() {
         {modalType === 'withdraw' && (
           <WithdrawToken
             balance={totalToken.available}
-            onPayment={handlePayment}
+            onWithdrawSuccess={() => setModalType('widthdraw-success')}
             onclose={() => setModalType('')}
             open={modalType === 'withdraw'}
             cards={cards} />
@@ -247,15 +297,30 @@ function Payment() {
       {/* PAYMENT HISTORY */}
       <div className='mt-5 flex flex-col gap-6'>
         <p className='text-lg font-semibold text-gray-800'>Payment History</p>
-        <PaymentHistory loading={loadingType ==='payment-info'} paymentHistory={paymentHistory} />
+        <PaymentHistory loading={loadingType === 'payment-info'} paymentHistory={paymentHistory} />
       </div>
 
       {/* MODAL PAYMENT SUCCESS */}
-      <ModalSuccessPayment
-        open={paymentSuccess}
-        newToken={addedToken}
-        onClose={() => { setPaymentSuccess(false); getPaymentInfo() }}
-      />
+      {modalType == 'payment-success' && (
+        <ModalSuccessPayment
+          open={modalType == 'payment-success'}
+          newToken={addedToken}
+          onClose={() => { setModalType(''); getPaymentInfo() }}
+        />
+      )}
+
+      {/* MODAL WITHDRAW SUCCESS */}
+      {modalType == 'widthdraw-success' && (
+        <ModalSuccessPayout
+          onClose={() => { setModalType(''); getPaymentInfo() }}
+          open={modalType === 'widthdraw-success'} />
+      )}
+
+      {/* MODAL CONNECT WITH STRIPE ACCOUNT BEFORE WITHDRAW */}
+      {modalType == 'connect-stripe' && <ConnectStripeAccount
+        open={modalType == 'connect-stripe'}
+        onclose={() => setModalType('')}
+      />}
     </div>
   )
 }

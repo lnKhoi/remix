@@ -5,6 +5,7 @@ export type CreditCard = {
     type: string;
     last4: string;
     brand: string;
+    is_primary?:number
     exp_year:string
     created_at: string;
 }
