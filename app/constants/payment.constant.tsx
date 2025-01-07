@@ -68,7 +68,7 @@ export const paymentHistoryColumns = (
         ) : (
           <div className='flex items-center gap-1'>
             <span className='capitalize'>{record.brand}</span>
-            <p> ....{record.last4}</p>
+            <p> ....{record?.bank_last4}</p>
           </div>
         ),
     },
@@ -103,3 +103,7 @@ export const paymentMethodBrandLogo = {
   amex: AmericanExpress,
   discover:Discover
 };
+
+export const availableTokensDesc = 'Tokens the brand can use immediately for transactions or withdrawals'
+export const lockedTokensDesc = 'Tokens temporarily held for active campaigns to ensure funds are reserved for payments or expenses.'
+export const totalBalanceDesc = "The sum of available and locked tokens in the brand's account."

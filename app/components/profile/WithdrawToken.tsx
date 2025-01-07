@@ -6,9 +6,16 @@ import {
   InputNumber,
   Radio,
 } from 'antd';
+import { payout } from '~/apis/stripe';
 import Balance from '~/assets/balance.png';
 import { paymentMethodBrandLogo } from '~/constants/payment.constant';
 import { CreditCard } from '~/models/payment.model';
+
+import {
+  ExclamationCircleIcon,
+  EyeSlashIcon,
+  ShareIcon,
+} from '@heroicons/react/24/outline';
 
 import ConfirmWithdrawToken from './ConfirmWithdrawToken';
 
@@ -17,17 +24,20 @@ type WithdrawTokenProps = {
     open: boolean
     onclose: () => void
     balance: number
-    onPayment: (total: number) => void
+    onWithdrawSuccess: () => void
 }
 
-function WithdrawToken({ cards, onclose, open, onPayment, balance }: WithdrawTokenProps) {
+function WithdrawToken({ cards, onclose, open, onWithdrawSuccess, balance }: WithdrawTokenProps) {
     const [totalTokens, setTotalTokens] = useState<number>(0)
-    const cardPrimary = cards?.[0]
+    const cardPrimary = cards?.find(c => c?.is_primary === 1)
     const [loading, setLoading] = useState<boolean>(false)
     const [confirmWithdrawToken, setConfirmWithdrawToken] = useState<boolean>(false)
 
     const handleWithdrawToken = () => {
-       
+        setLoading(true)
+        payout(totalTokens)
+            .then(() => { onclose(); onWithdrawSuccess() })
+            .finally(() => setLoading(false))
     }
 
     return (
@@ -41,20 +51,21 @@ function WithdrawToken({ cards, onclose, open, onPayment, balance }: WithdrawTok
                     <div className='flex items-center gap-2 justify-end'>
                         <Button onClick={() => onclose()}>Cancel</Button>
                         <Button
-                            loading={loading} onClick={() => setConfirmWithdrawToken(true)}
+                            loading={loading}
+                            onClick={() => setConfirmWithdrawToken(true)}
                             disabled={totalTokens === 0} type='primary'>Withdraw</Button>
                     </div>
                 }
             >
 
                 <div>
-                    <div className='border border-gray-200 rounded-xl p-5'>
-                        <div className='flex items-center justify-between'>
+                    <div className='border border-gray-200 rounded-xl pt-5'>
+                        <div className='flex items-center justify-between px-5'>
                             <p className='text-lg font-semibold text-gray-800'>Withdraw from</p>
                             <p className='text-xs font-medium text-gray-500'>Exchange Rage: 1USD = 1 Token</p>
                         </div>
 
-                        <div className='mt-5 border border-gray-200 flex gap-4 items-center rounded-xl p-4'>
+                        <div className='mt-5 border border-gray-200 mx-5 flex gap-4 items-center rounded-xl p-4'>
                             <img src={Balance} alt="balance icon" />
                             <div className='flex items-start flex-col gap-[2px]'>
                                 <p className='text-sm font-medium text-gray-800'>Wallet</p>
@@ -62,7 +73,7 @@ function WithdrawToken({ cards, onclose, open, onPayment, balance }: WithdrawTok
                             </div>
                         </div>
 
-                        <div className='mt-5'>
+                        <div className='mt-5 mx-5'>
                             <p className='text-sm text-gray-800 font-medium'>Amount</p>
                             <InputNumber
                                 min={50}
@@ -72,33 +83,60 @@ function WithdrawToken({ cards, onclose, open, onPayment, balance }: WithdrawTok
                                 onChange={(num) => setTotalTokens(Number(num))}
                                 className='mt-1 w-full bg-gray-100 border-none h-[44px]' suffix='Token' />
                         </div>
-                        <div className='flex items-end  flex-col justify-end'>
+                        <div className='flex items-end  mx-5 flex-col justify-end'>
                             <div className='flex items-center mt-2 justify-end gap-2'>
                                 <span className='font-bold text-gray-800 text-base'>Total:</span>
                                 <p className='font-bold text-gray-800 text-base'>{totalTokens.toFixed(2)} $</p>
                             </div>
                         </div>
+
+                        <div className='w-full h-[72px] px-6 flex items-center justify-center gap-2 rounded-bl-lg mt-6 rounded-br-lg bg-gray-100'>
+                            <ExclamationCircleIcon className='w-5 min-w-5 h-5 transform -translate-y-2 text-blue-500' />
+                            <p className='font-normal text-sm text-gray-800'>Withdrawn funds are deducted from the brand's wallet and processed within a defined timeframe (2-7 business days).</p>
+
+                        </div>
+
                     </div>
                     <div className='mt-8 flex flex-col gap-5'>
-                        <p className='font-semibold text-lg text-gray-800'>Payment Method</p>
-                        {cards?.slice(0, 1)?.map(card => (
-                            <div className='py-4 rounded-xl border-blue-600 flex items-center justify-between px-4 border bg-blue-100'>
-                                <div className='flex items-center gap-3'>
-                                    <img src={paymentMethodBrandLogo[card.brand as keyof typeof paymentMethodBrandLogo]} alt="Payment Card" />
-                                    <div className='flex flex-col'>
-                                        <p className='text-sm font-medium text-gray-800'>****{card.last4}</p>
-                                        <span className='text-xs font-normal mt-[2px] text-gray-500'>Card expires at {card?.exp_year}</span>
-                                    </div>
+                        <div className='flex items-center justify-between'>
+                            <p className='font-semibold text-lg text-gray-800'>Payment Method</p>
+                            <p className='text-sm font-medium text-blue-500 cursor-pointer'>Change the receiving account</p>
+                        </div>
+
+                        <div className='py-4 rounded-xl border-blue-600 flex items-center justify-between px-4 border bg-blue-100'>
+                            <div className='flex items-center gap-3'>
+                                <img src={paymentMethodBrandLogo[cardPrimary?.brand as keyof typeof paymentMethodBrandLogo]} alt="Payment Card" />
+                                <div className='flex flex-col'>
+                                    <p className='text-sm font-medium text-gray-800'>****{cardPrimary?.last4}</p>
+                                    <span className='text-xs font-normal mt-[2px] text-gray-500'>Card expires at {cardPrimary?.exp_year}</span>
                                 </div>
-                                <Radio checked />
                             </div>
-                        ))}
+                            <Radio checked />
+                        </div>
                     </div>
+
+                    <div className='mt-8 bg-gray-100 rounded-lg p-4'>
+                        <div className='flex items-start gap-3'>
+                            <ShareIcon className='text-blue-500 min-w-5 w-5 h-5' />
+                            <div className='fle flex-col gap-2'>
+                                <p className='text-sm font-semibold text-gray-800'>Connect effortlessly</p>
+                                <p className='text-sm font-normal text-gray-800'>Your receiving account is highly secure, and the information is safely stored by Stripe – one of the leading payment platforms worldwide. Stripe ensures compliance with international security standards (such as PCI-DSS) to protect your account information. </p>
+                            </div>
+                        </div>
+                        <div className='flex mt-4 items-start gap-3'>
+                            <EyeSlashIcon className='text-blue-500 w-5 h-5 min-w-5' />
+                            <div className='fle flex-col gap-2'>
+                                <p className='text-sm font-semibold text-gray-800'>Your data belong to you</p>
+                                <p className='text-sm font-normal text-gray-800'>Our system does not store or process account details directly on our servers; instead, all data is encrypted and securely stored by Stripe.</p>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
 
                 {/* CONFIRM BUY TOKEN */}
                 <ConfirmWithdrawToken
-                    paymentMethod={cards[0].brand}
+                    paymentMethod={cardPrimary?.brand as string}
                     total={totalTokens}
                     onConfirm={handleWithdrawToken}
                     open={confirmWithdrawToken}

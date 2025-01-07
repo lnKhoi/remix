@@ -5,6 +5,7 @@ export type CreditCard = {
     type: string;
     last4: string;
     brand: string;
+    is_primary?:number
     exp_year:string
     created_at: string;
 }
@@ -27,6 +28,7 @@ export type CardDetails = {
   export type  Payment = {
     id: string;
     amount: number;
+    bank_last4?:number
     status: string;
     invoice_id: string;
     created_at: string;
