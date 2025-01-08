@@ -29,7 +29,7 @@ function Finance() {
 
     const getFinanceDetails = () => {
         setLoading(true)
-        Promise.all([getCampaignMetrics(id as string, '', null), getMembersInFinance(id as string, '', null)])
+        Promise.all([getCampaignMetrics(id as string), getMembersInFinance(id as string, '', null,'')])
             .then(([metrics, members]) => {
                 setCampaignMetric(metrics?.data)
                 setMembersInFinance({ total: members?.data?.total, data: members?.data?.data })
