@@ -11,6 +11,7 @@ import {
   formatName,
 } from '~/utils/formatNumber';
 
+import { ArrowLongRightIcon } from '@heroicons/react/24/outline';
 import { Link } from '@remix-run/react';
 
 export const OrderTrackingColumns = (loading: boolean): TableColumnsType<Order> => [
@@ -98,7 +99,10 @@ export const OrderTrackingColumns = (loading: boolean): TableColumnsType<Order> 
           {loading ? (
             <Skeleton.Input active size="small" className="w-24" />
           ) : (
-            'View Details'
+            <div className='w-[36px] h-[36px] rounded-lg bg-gray-200 flex items-center justify-center'>
+              <ArrowLongRightIcon className='w-5 h-5 text-gray-800' />
+
+            </div>
           )}
         </p>
       </Link>

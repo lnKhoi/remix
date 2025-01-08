@@ -14,7 +14,6 @@ import {
   addPaymentMethod,
   checkConnectedAccount,
   getPaymentMethods,
-  getPaymentsHistory,
   getTotalTokens,
   removePaymentMethod,
   setPrimaryCard,
@@ -58,7 +57,6 @@ type LoadingType = 'payment-info' | 'delete-payment' | 'verify-user' | 'list-pay
 function Payment() {
   const [cards, setCards] = useState<CreditCard[]>([])
   const [warning, setWarning] = useState<boolean>(true)
-  const [paymentHistory, setPaymentHistory] = useState<Payment[]>([])
 
   const [selectedCard, setSelectedCard] = useState<string>('')
   const [addedToken, setAddedToken] = useState<number>(0)
@@ -80,11 +78,11 @@ function Payment() {
   // GET PAYMENT - BALANCE INFO
   const getPaymentInfo = () => {
     setLoadingType('payment-info')
-    Promise.all([getPaymentMethods(), addPaymentMethod(), getPaymentsHistory(), getTotalTokens()])
-      .then(([paymentMethods, clientIntent, paymentHistory, balance]) => {
+    Promise.all([getPaymentMethods(), addPaymentMethod(), getTotalTokens()])
+      .then(([paymentMethods, clientIntent, balance]) => {
         setClientSecret(clientIntent?.data?.clientSecret)
         setCards(paymentMethods?.data)
-        setPaymentHistory(paymentHistory?.data?.data)
+
         setTotalToken({ available: balance?.data?.wallet?.balance, locked: balance?.data?.wallet?.lockBalance })
       })
       .catch(error => { console.error('Error fetching data:', error) })
@@ -322,7 +320,7 @@ function Payment() {
       {/* PAYMENT HISTORY */}
       <div className='mt-5 flex flex-col gap-6'>
         <p className='text-lg font-semibold text-gray-800'>Payment History</p>
-        <PaymentHistory loading={loadingType === 'payment-info'} paymentHistory={paymentHistory} />
+        <PaymentHistory />
       </div>
 
       {/* MODAL PAYMENT SUCCESS */}
