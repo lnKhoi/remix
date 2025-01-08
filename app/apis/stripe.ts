@@ -11,8 +11,8 @@ export const getPaymentMethods = () => {
     return getData(`/api/v1/payment/payment-methods`)
 }
 
-export const getPaymentsHistory = () => {
-    return getData(`/api/v1/payment/payment-history`)
+export const getPaymentsHistory = (page:number,limit:number) => {
+    return getData(`/api/v1/payment/payment-history?page=${page}?limit=${limit}`)
 }
 
 export const buyToken = (amount: number, paymentId: string) => {
