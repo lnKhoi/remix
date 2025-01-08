@@ -28,7 +28,7 @@ export const generateTimeOptions = (selectedDate: Dayjs) => {
     const options = [];
     const startHour = currentHour + 1;
 
-    for (let hour = 1; hour < 24; hour++) {
+    for (let hour = 0; hour < 24; hour++) {
         for (let minute = 0; minute < 60; minute += 30) {
             const label = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
 
@@ -44,8 +44,16 @@ export const generateTimeOptions = (selectedDate: Dayjs) => {
 
 export const getCurrentTime = () => {
     const now = new Date();
-    let hour = now.getHours();
+    let hour = now.getHours() + 1;
     let minute = now.getMinutes();
 
+    if (hour >= 24) hour = hour % 24;
+
+    if (minute > 0 && minute <= 30) {
+        minute = 30;
+    } else if (minute > 30) {
+        minute = 0;
+        hour += 1;
+    }
     return `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
 };

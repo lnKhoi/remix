@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import {
     DatePicker,
@@ -19,6 +19,7 @@ type ModalPostingDateProps = {
 function ModalPostingDate({ loading, open, onApproveContent, onclose }: ModalPostingDateProps) {
     const minDateTime = dayjs().add(1, 'hour');
     const [submitTime, setSubmitTime] = useState<Dayjs>(minDateTime);
+    const [isValidDate, setIsValidDate] = useState<boolean>(false);
 
     return (
         <Modal
@@ -26,7 +27,7 @@ function ModalPostingDate({ loading, open, onApproveContent, onclose }: ModalPos
             confirmLoading={loading}
             onOk={() => submitTime && onApproveContent(submitTime)}
             open={open}
-            okButtonProps={{ disabled: !submitTime }}
+            okButtonProps={{ disabled: isValidDate }}
             onCancel={onclose}
             title=""
         >
@@ -39,16 +40,17 @@ function ModalPostingDate({ loading, open, onApproveContent, onclose }: ModalPos
             <div className="flex flex-col gap-2 pb-3">
                 <span className="text-sm font-semibold text-gray-800 text-left">Posting Date</span>
                 <DatePicker
-                    onChange={(date) =>
+                    onChange={(date) => {
+                        !date ? setIsValidDate(true) : setIsValidDate(false)
                         setSubmitTime((prev) => {
-                            const time = prev || minDateTime;
+                            const time = prev;
                             return dayjs(date).set('hour', time.hour()).set('minute', time.minute());
                         })
-                    }
+                    }}
                     disabledDate={(current) => current && current < minDateTime.startOf('day')}
                     style={{ width: '100%' }}
+                    defaultValue={submitTime}
                     format={DATE_TIME_FORMAT}
-                    value={submitTime}
                 />
                 <span className="text-sm font-semibold text-gray-800 mt-3 text-left">Time</span>
                 <Space wrap direction="vertical">
