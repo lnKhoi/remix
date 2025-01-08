@@ -17,6 +17,7 @@ import {
   getPaymentsHistory,
   getTotalTokens,
   removePaymentMethod,
+  setPrimaryCard,
 } from '~/apis/stripe';
 import PaymentCard from '~/assets/balance-card.png';
 import Paypal from '~/assets/paypal.png';
@@ -52,7 +53,7 @@ import PaymentHistory from './PaymentHistory';
 import WithdrawToken from './WithdrawToken';
 
 type ModalType = 'verify-user' | 'buy-token' | 'withdraw' | 'connect-stripe' | 'widthdraw-success' | 'payment-success' | ''
-type LoadingType = 'payment-info' | 'delete-payment' | 'verify-user' | ''
+type LoadingType = 'payment-info' | 'delete-payment' | 'verify-user' | 'list-payment-methods' | ''
 
 function Payment() {
   const [cards, setCards] = useState<CreditCard[]>([])
@@ -74,6 +75,7 @@ function Payment() {
 
   const options = { clientSecret: clientSecret };
   const emptyCard = cards.length === 0
+
 
   // GET PAYMENT - BALANCE INFO
   const getPaymentInfo = () => {
@@ -119,6 +121,18 @@ function Payment() {
         err?.status == 400 && setModalType('connect-stripe')
       })
       .finally(() => setLoadingType(''))
+  }
+
+  // SET CARD DEFAULT
+  const handleSetPaymentDefault = (id: string) => {
+    setPrimaryCard(id).then(() => {
+      setLoadingType('list-payment-methods')
+      getPaymentMethods().then(res => {
+        messageApi.success('Update primary card successfully!')
+        setCards(res.data)
+      })
+        .finally(() => setLoadingType(''))
+    })
   }
 
   return (
@@ -201,7 +215,7 @@ function Payment() {
         <div className='flex items-center justify-between px-5 pb-5 border-b border-b-gray-200'>
           <p className='text-lg font-semibold text-gray-800'>Payment Methods</p>
           {!isSelectPayment
-            ? <Button onClick={() => setIsSelectPayment(true)} type='primary'>Add New</Button>
+            ? <Button disabled={cards.length >= 5} onClick={() => setIsSelectPayment(true)} type='primary'>Add New</Button>
             : <Button onClick={() => { setIsSelectPayment(false); setPaymentMethod('') }}>Cancel</Button>
           }
         </div>
@@ -240,12 +254,16 @@ function Payment() {
           </div>
         )}
 
-        {/* CREDIT CARD */}
-        {!isSelectPayment && loadingType == 'payment-info' && (
+        {/* PAYMENT METHODS CARD */}
+        {!isSelectPayment && (loadingType == 'payment-info' || loadingType == 'list-payment-methods') && (
           [1, 2, 3].map(s => <PaymentMethodsSkeleton key={s} />)
         )}
-        {!isSelectPayment && loadingType !== 'payment-info' && cards?.map((card, idx) => (
-          <div key={card.id} className='mt-5  px-5 py-4 rounded-xl flex items-center justify-between mx-8 border border-dashed'>
+        {!isSelectPayment && loadingType !== 'payment-info' && loadingType !== 'list-payment-methods' && cards?.map((card, idx) => (
+          <div
+            key={card.id}
+            onMouseEnter={() => setSelectedCard(card.id)}
+            onMouseLeave={() => setSelectedCard('')}
+            className='mt-5 cursor-pointer  px-5 py-4 rounded-xl flex items-center justify-between mx-8 border border-dashed'>
             <div className='flex items-center gap-3'>
               <img className='w-[67px] h-[38px] object-cover rounded-lg'
                 src={paymentMethodBrandLogo[card.brand as keyof typeof paymentMethodBrandLogo]}
@@ -254,17 +272,24 @@ function Payment() {
                 <p className='text-sm font-medium text-gray-800 capitalize'>****{card?.last4}</p>
                 <span className='text-xs font-normal mt-[2px] text-gray-500'>Card expired at {card?.exp_year}</span>
               </div>
-              {idx === 0 && (
+              {card.is_primary == 1 && (
                 <TagColor hideCircle status='Primary' color='#0F766E' background='#CCFBF1' />
               )}
             </div>
+            {/* BUTTON ACTIONS */}
             <div className='flex items-center gap-3'>
+              {card.is_primary !== 1 &&
+                <p
+                  onClick={() => handleSetPaymentDefault(card.id)}
+                  className='text-sm font-medium text-blue-500 hover:text-blue-600 transition-all'>Set as default
+                </p>}
               <div className='w-[36px] transition-all h-[36px] hover:bg-gray-200 cursor-pointer rounded-md flex items-center justify-center bg-gray-100'>
                 <PencilSquareIcon className='text-gray-800 w-5 h-5' />
               </div>
               <Button
+                disabled={card.is_primary == 1}
                 className='bg-gray-100 border-none'
-                icon={<TrashIcon className='text-gray-800 w-5 h-5' />}
+                icon={<TrashIcon className={`${card.is_primary == 1 ? 'text-gray-400' : 'text-gray-800'} w-5 h-5`} />}
                 loading={loadingType === 'delete-payment' && card.id === selectedCard}
                 onClick={() => { handleRemovePaymentMethod(card.id); setSelectedCard(card.id) }}
               />
@@ -290,7 +315,7 @@ function Payment() {
             onWithdrawSuccess={() => setModalType('widthdraw-success')}
             onclose={() => setModalType('')}
             open={modalType === 'withdraw'}
-            cards={cards} />
+          />
         )}
       </div>
 
@@ -317,10 +342,11 @@ function Payment() {
       )}
 
       {/* MODAL CONNECT WITH STRIPE ACCOUNT BEFORE WITHDRAW */}
-      {modalType == 'connect-stripe' && <ConnectStripeAccount
-        open={modalType == 'connect-stripe'}
-        onclose={() => setModalType('')}
-      />}
+      {modalType == 'connect-stripe' &&
+        <ConnectStripeAccount
+          open={modalType == 'connect-stripe'}
+          onclose={() => setModalType('')}
+        />}
     </div>
   )
 }

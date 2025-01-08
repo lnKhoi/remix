@@ -27,7 +27,7 @@ export const removePaymentMethod = (id: string) => {
     return postData(`/api/v1/payment/unlink-payment-method`, { paymentMethodId: id })
 }
 
-export const downloadInvoice = (id:string) => {
+export const downloadInvoice = (id: string) => {
     return getData(`/api/v1/payment/download-invoice/${id}`)
 }
 
@@ -39,6 +39,14 @@ export const getOnboardLink = () => {
     return getData(`/api/v1/payment/onboarding-link`)
 }
 
-export const payout = (amount:number) => {
-    return postData(`/api/v1/payment/process-payout`,{amount:amount})
+export const payout = (amount: number) => {
+    return postData(`/api/v1/payment/process-payout`, { amount: amount })
+}
+
+export const setPrimaryCard = (paymentMethodId: string) => {
+    return postData(`/api/v1/payment/payment-methods/set-primary`, { paymentMethodId: paymentMethodId })
+}
+
+export const getConnectedBankAccount = () => {
+    return getData(`api/v1/payment/connected-account/details`)
 }
