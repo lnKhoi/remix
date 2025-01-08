@@ -29,6 +29,7 @@ export type CardDetails = {
     id: string;
     amount: number;
     bank_last4?:number
+    bank_name?:string
     status: string;
     invoice_id: string;
     created_at: string;
