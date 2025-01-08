@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import {
-  DatePicker,
-  Modal,
-  TimePicker,
+    DatePicker,
+    Modal,
+    Select,
+    Space
 } from 'antd';
 import dayjs, { Dayjs } from 'dayjs';
 import { DATE_TIME_FORMAT } from '~/constants/time.constant';
+import { generateTimeOptions, getCurrentTime } from '~/helpers/content.helper';
 
 type ModalPostingDateProps = {
     loading: boolean;
@@ -18,6 +20,7 @@ type ModalPostingDateProps = {
 function ModalPostingDate({ loading, open, onApproveContent, onclose }: ModalPostingDateProps) {
     const minDateTime = dayjs().add(1, 'hour');
     const [submitTime, setSubmitTime] = useState<Dayjs>(minDateTime);
+    const [isValidDate, setIsValidDate] = useState<boolean>(false);
 
     return (
         <Modal
@@ -25,7 +28,7 @@ function ModalPostingDate({ loading, open, onApproveContent, onclose }: ModalPos
             confirmLoading={loading}
             onOk={() => submitTime && onApproveContent(submitTime)}
             open={open}
-            okButtonProps={{ disabled: !submitTime }}
+            okButtonProps={{ disabled: submitTime === null }}
             onCancel={onclose}
             title=""
         >
@@ -38,46 +41,30 @@ function ModalPostingDate({ loading, open, onApproveContent, onclose }: ModalPos
             <div className="flex flex-col gap-2 pb-3">
                 <span className="text-sm font-semibold text-gray-800 text-left">Posting Date</span>
                 <DatePicker
-                    onChange={(date) =>
+                    onChange={(date) => {
+                        !date ? setIsValidDate(true) : setIsValidDate(false)
                         setSubmitTime((prev) => {
-                            const time = prev || minDateTime;
+                            const time = prev;
                             return dayjs(date).set('hour', time.hour()).set('minute', time.minute());
                         })
-                    }
+                    }}
                     disabledDate={(current) => current && current < minDateTime.startOf('day')}
                     style={{ width: '100%' }}
+                    defaultValue={submitTime}
                     format={DATE_TIME_FORMAT}
-                    value={submitTime}
                 />
                 <span className="text-sm font-semibold text-gray-800 mt-3 text-left">Time</span>
-                <TimePicker
-                    onChange={(time) =>
-                        setSubmitTime((prev) => {
-                            const date = prev || minDateTime;
-                            return dayjs(date).set('hour', time.hour()).set('minute', time.minute());
-                        })
-                    }
-                    disabledHours={() => {
-                        const selectedDate = submitTime || minDateTime;
-                        if (selectedDate.isSame(minDateTime, 'day')) {
-                            return [...Array(24).keys()].filter((hour) => hour < minDateTime.hour());
-                        }
-                        return [];
-                    }}
-                    disabledMinutes={(selectedHour) => {
-                        const selectedDate = submitTime || minDateTime;
-                        if (
-                            selectedDate.isSame(minDateTime, 'day') &&
-                            selectedHour === minDateTime.hour()
-                        ) {
-                            return [...Array(60).keys()].filter((minute) => minute < minDateTime.minute());
-                        }
-                        return [];
-                    }}
-                    style={{ width: '100%' }}
-                    format="HH:mm"
-                    value={submitTime}
-                />
+                <Space wrap direction="vertical">
+                    <Select
+                        defaultValue={getCurrentTime()}
+                        style={{ width: '100%' }}
+                        onChange={(time: string): void => {
+                            const [hour, minute] = time.split(':').map(Number);
+                            setSubmitTime((prev) => prev.set('hour', hour).set('minute', minute));
+                        }}
+                        options={generateTimeOptions(submitTime)}
+                    />
+                </Space>
             </div>
         </Modal>
     );
