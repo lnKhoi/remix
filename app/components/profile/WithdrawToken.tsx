@@ -1,15 +1,22 @@
-import React, { useState } from 'react';
+import React, {
+  useEffect,
+  useState,
+} from 'react';
 
 import {
   Button,
   Drawer,
   InputNumber,
   Radio,
+  Skeleton,
 } from 'antd';
-import { payout } from '~/apis/stripe';
+import {
+  getConnectedBankAccount,
+  payout,
+} from '~/apis/stripe';
 import Balance from '~/assets/balance.png';
-import { paymentMethodBrandLogo } from '~/constants/payment.constant';
-import { CreditCard } from '~/models/payment.model';
+import BankLogo from '~/assets/bank-logo.png';
+import { Payment } from '~/models/payment.model';
 
 import {
   ExclamationCircleIcon,
@@ -20,17 +27,17 @@ import {
 import ConfirmWithdrawToken from './ConfirmWithdrawToken';
 
 type WithdrawTokenProps = {
-    cards: CreditCard[]
     open: boolean
     onclose: () => void
     balance: number
     onWithdrawSuccess: () => void
 }
 
-function WithdrawToken({ cards, onclose, open, onWithdrawSuccess, balance }: WithdrawTokenProps) {
+function WithdrawToken({ onclose, open, onWithdrawSuccess, balance }: WithdrawTokenProps) {
     const [totalTokens, setTotalTokens] = useState<number>(0)
-    const cardPrimary = cards?.find(c => c?.is_primary === 1)
     const [loading, setLoading] = useState<boolean>(false)
+    const [loadingBankInfo, setLoadingBankInfo] = useState<boolean>(false)
+    const [bankInfo, setBankInfo] = useState<Payment | null>(null)
     const [confirmWithdrawToken, setConfirmWithdrawToken] = useState<boolean>(false)
 
     const handleWithdrawToken = () => {
@@ -39,6 +46,17 @@ function WithdrawToken({ cards, onclose, open, onWithdrawSuccess, balance }: Wit
             .then(() => { onclose(); onWithdrawSuccess() })
             .finally(() => setLoading(false))
     }
+
+    const handleGetConnectBankAccount = () => {
+        setLoadingBankInfo(true)
+        getConnectedBankAccount()
+            .then(res => setBankInfo(res?.data?.data?.bankAccounts?.[0]))
+            .finally(() => setLoadingBankInfo(false))
+    }
+
+    useEffect(() => {
+        handleGetConnectBankAccount()
+    }, [])
 
     return (
         <>
@@ -105,10 +123,14 @@ function WithdrawToken({ cards, onclose, open, onWithdrawSuccess, balance }: Wit
 
                         <div className='py-4 rounded-xl border-blue-600 flex items-center justify-between px-4 border bg-blue-100'>
                             <div className='flex items-center gap-3'>
-                                <img src={paymentMethodBrandLogo[cardPrimary?.brand as keyof typeof paymentMethodBrandLogo]} alt="Payment Card" />
+                                <img src={BankLogo} alt="Payment Card" />
                                 <div className='flex flex-col'>
-                                    <p className='text-sm font-medium text-gray-800'>****{cardPrimary?.last4}</p>
-                                    <span className='text-xs font-normal mt-[2px] text-gray-500'>Card expires at {cardPrimary?.exp_year}</span>
+                                    <p className='text-sm font-medium text-gray-800'>
+                                        {loadingBankInfo ? <Skeleton.Node active style={{ height: 18 }} /> : bankInfo?.bank_name}
+                                    </p>
+                                    <span className='text-xs font-normal mt-[2px] text-gray-500'>
+                                        {loadingBankInfo ? <Skeleton.Node active style={{ height: 14 }} /> : `**** ${bankInfo?.last4}`}
+                                    </span>
                                 </div>
                             </div>
                             <Radio checked />
@@ -136,7 +158,7 @@ function WithdrawToken({ cards, onclose, open, onWithdrawSuccess, balance }: Wit
 
                 {/* CONFIRM BUY TOKEN */}
                 <ConfirmWithdrawToken
-                    paymentMethod={cardPrimary?.brand as string}
+                    paymentMethod={bankInfo?.bank_name as string}
                     total={totalTokens}
                     onConfirm={handleWithdrawToken}
                     open={confirmWithdrawToken}
