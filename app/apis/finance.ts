@@ -2,32 +2,21 @@ import { DateRange } from '~/components/ui/ModalSelectTimeRange';
 
 import { getData } from './axiosClient';
 
-export const getCampaignsInFinance = (page: number, limit: number, search: string, time: string, dates: DateRange) => {
-    const dateRangeQuery = dates
-        ? `&from=${dates?.[0]}&to=${dates?.[1]}`
-        : '';
-
-    return getData(`/api/v1/finance/campaigns/financial-details?timeRange=${time}${dateRangeQuery}?page=${page}&limit=${limit}&campaignName=${search}`)
+export const getCampaignsInFinance = (page: number, limit: number, search: string) => {
+    return getData(`/api/v1/finance/campaigns/financial-details?page=${page}&limit=${limit}&campaignName=${search}`)
 }
 
-export const getFinanceMetrics = (time: string, dates: DateRange) => {
-    const dateRangeQuery = dates
-        ? `&from=${dates?.[0]}&to=${dates?.[1]}`
-        : '';
-
-    return getData(`/api/v1/finance/campaigns/metrics?timeRange=${time}${dateRangeQuery}`)
+export const getFinanceMetrics = () => {
+    return getData(`/api/v1/finance/campaigns/metrics`)
 }
 
-export const getMembersInFinance = (campaignId: string, time: string, dates: DateRange) => {
+export const getMembersInFinance = (campaignId: string, time: string, dates: DateRange,search:string) => {
     const dateRangeQuery = dates
         ? `&from=${dates?.[0]}&to=${dates?.[1]}`
         : '';
-    return getData(`/api/v1/finance/campaigns/${campaignId}/creators?timeRange=${time}${dateRangeQuery}`)
+    return getData(`/api/v1/finance/campaigns/${campaignId}/creators?timeRange=${time}${dateRangeQuery}&creatorName=${search}`)
 }
 
-export const getCampaignMetrics = (campaignId: string, time: string, dates: DateRange) => {
-    const dateRangeQuery = dates
-        ? `&from=${dates?.[0]}&to=${dates?.[1]}`
-        : '';
-    return getData(`/api/v1/finance/campaigns/metrics?timeRange=${time}${dateRangeQuery}?campaignId=${campaignId}`)
+export const getCampaignMetrics = (campaignId: string) => {
+    return getData(`/api/v1/finance/campaigns/metrics?campaignId=${campaignId}`)
 }
