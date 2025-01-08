@@ -7,7 +7,8 @@ import {
     Space
 } from 'antd';
 import dayjs, { Dayjs } from 'dayjs';
-import { DATE_TIME_FORMAT, generateTimeOptions, getCurrentTime } from '~/constants/time.constant';
+import { DATE_TIME_FORMAT } from '~/constants/time.constant';
+import { generateTimeOptions, getCurrentTime } from '~/helpers/content.helper';
 
 type ModalPostingDateProps = {
     loading: boolean;
@@ -27,7 +28,7 @@ function ModalPostingDate({ loading, open, onApproveContent, onclose }: ModalPos
             confirmLoading={loading}
             onOk={() => submitTime && onApproveContent(submitTime)}
             open={open}
-            okButtonProps={{ disabled: isValidDate }}
+            okButtonProps={{ disabled: submitTime === null }}
             onCancel={onclose}
             title=""
         >
