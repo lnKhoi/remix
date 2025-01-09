@@ -7,12 +7,12 @@ import { Table } from 'antd';
 import { ToastContainer } from 'react-toastify';
 import { getTokenTransactionHistory } from '~/apis/stripe';
 import { tokenTransactionHistoryColumns } from '~/constants/payment.constant';
-import { TokenTransactionHistory } from '~/models/payment.model';
+import { TokenTransaction } from '~/models/payment.model';
 
 function TokenTransactionHistory() {
     const [loading, setLoading] = useState<boolean>(false)
     const [params, setParams] = useState<{ page: number, perPage: number }>({ page: 1, perPage: 10 })
-    const [paymentHistory, setPaymentHistory] = useState<{ total: number, data: TokenTransactionHistory[] }>({ total: 0, data: [] })
+    const [paymentHistory, setPaymentHistory] = useState<{ total: number, data: TokenTransaction[] }>({ total: 0, data: [] })
 
     const handleGetPaymentHistory = () => {
         setLoading(true)

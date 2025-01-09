@@ -14,7 +14,7 @@ import TokenTransactionHistory
 import TagColor from '~/components/ui/tagColor';
 import {
   Payment,
-  TokenTransactionHistory,
+  TokenTransaction,
 } from '~/models/payment.model';
 
 import { DATE_TIME_FORMAT_V2 } from './time.constant';
@@ -131,7 +131,7 @@ export const paymentTabs: TabsProps['items'] = [
 
 export const tokenTransactionHistoryColumns = (
   loading: boolean,
-): TableColumnsType<TokenTransactionHistory> => [
+): TableColumnsType<TokenTransaction> => [
     {
       title: 'Date Time',
       render: (_, record) =>
