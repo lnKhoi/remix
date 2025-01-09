@@ -76,7 +76,7 @@ export const paymentHistoryColumns = (
         ) : (
           <div className='flex items-center gap-1'>
             <span className='capitalize'>{record.brand}</span>
-            <p> ....{record?.bank_last4}</p>
+            <p> ....{record?.bank_last4 || record?.card_last4}</p>
           </div>
         ),
     },
