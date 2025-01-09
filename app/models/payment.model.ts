@@ -37,17 +37,8 @@ export type CardDetails = {
     last4:string
     brand: string;
   }
-  
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
+
   export type TokenTransaction = {
-=======
-  export type TokenTransactionHistory = {
->>>>>>> Stashed changes
-=======
-  export type TokenTransactionHistory = {
->>>>>>> Stashed changes
-    id:string,
     user_id:string,
     amount:number,
     status:string,
