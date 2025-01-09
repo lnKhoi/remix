@@ -122,13 +122,15 @@ function Campaigns() {
             ))}
           </div>
 
-          <AntButton
-            disabled={noMore}
-            loading={loading == 'load-more'}
-            onClick={() => handleGetCampaigns(true)}
-            className='mx-auto mt-[44px] flex justify-center' >
-            {noMore ? 'No more campaign' : 'Load more...'}
-          </AntButton>
+          {!noMore && (
+            <AntButton
+              disabled={noMore}
+              loading={loading == 'load-more'}
+              onClick={() => handleGetCampaigns(true)}
+              className='mx-auto mt-[44px] flex justify-center' >
+                 Load more...
+            </AntButton>
+          )}
         </div>
       }
     </div>
