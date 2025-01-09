@@ -8,6 +8,7 @@ import {
   message,
   Radio,
   Skeleton,
+  Tabs,
   Tooltip,
 } from 'antd';
 import {
@@ -25,6 +26,7 @@ import {
   availableTokensDesc,
   lockedTokensDesc,
   paymentMethodBrandLogo,
+  paymentTabs,
   totalBalanceDesc,
 } from '~/constants/payment.constant';
 import type {
@@ -48,7 +50,6 @@ import BuyToken from './BuyToken';
 import ConnectStripeAccount from './ConnectStripeAccount';
 import ModalSuccessPayment from './ModalSuccessPayment';
 import ModalSuccessPayout from './ModalSuccessPayout';
-import PaymentHistory from './PaymentHistory';
 import WithdrawToken from './WithdrawToken';
 
 type ModalType = 'verify-user' | 'buy-token' | 'withdraw' | 'connect-stripe' | 'widthdraw-success' | 'payment-success' | ''
@@ -317,11 +318,9 @@ function Payment() {
         )}
       </div>
 
-      {/* PAYMENT HISTORY */}
-      <div className='mt-5 flex flex-col gap-6'>
-        <p className='text-lg font-semibold text-gray-800'>Payment History</p>
-        <PaymentHistory />
-      </div>
+      {/* PAYMENT TRANSACTION + TOKEN TRANSACTION */}
+      <Tabs defaultActiveKey="1" items={paymentTabs} className='mt-3' />
+
 
       {/* MODAL PAYMENT SUCCESS */}
       {modalType == 'payment-success' && (

@@ -38,3 +38,12 @@ export type CardDetails = {
     brand: string;
   }
   
+  export type TokenTransaction = {
+    id:string,
+    user_id:string,
+    amount:number,
+    status:string,
+    created_at:string
+    type:string
+    campaign_name:string
+  }

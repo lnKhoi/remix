@@ -15,11 +15,6 @@ import {
 import { paymentHistoryColumns } from '~/constants/payment.constant';
 import { Payment } from '~/models/payment.model';
 
-type PaymentHistoryProps = {
-    loading: boolean;
-    paymentHistory: Payment[];
-};
-
 function PaymentHistory() {
     const [loading, setLoading] = useState<boolean>(false)
     const [params,setParams] = useState<{page:number,perPage:number}>({page:1,perPage:10})
@@ -43,6 +38,7 @@ function PaymentHistory() {
 
     return (
         <div>
+            <p className='text-lg font-semibold text-gray-800 mb-6'>Payment History</p>
             <ToastContainer />
             <Table
                 columns={paymentHistoryColumns(loading, handleDownloadInvoice)}
