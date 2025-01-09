@@ -1,13 +1,29 @@
 import {
   Skeleton,
   TableColumnsType,
+  TabsProps,
 } from 'antd';
 import dayjs from 'dayjs';
 import AmericanExpress from '~/assets/american-express.webp';
 import Discover from '~/assets/discover.png';
 import MasterCard from '~/assets/mastercard.jpg';
 import Visa from '~/assets/visa.png';
-import { Payment } from '~/models/payment.model';
+import PaymentHistory from '~/components/profile/PaymentHistory';
+import TokenTransactionHistory
+  from '~/components/profile/TokenTransactionHistory';
+import TagColor from '~/components/ui/tagColor';
+import {
+  Payment,
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+  TokenTransaction,
+=======
+  TokenTransactionHistory,
+>>>>>>> Stashed changes
+=======
+  TokenTransactionHistory,
+>>>>>>> Stashed changes
+} from '~/models/payment.model';
 
 import { DATE_TIME_FORMAT_V2 } from './time.constant';
 
@@ -16,7 +32,7 @@ export const paymentHistoryColumns = (
   handleDownload: (record: Payment) => void
 ): TableColumnsType<Payment> => [
     {
-      title: 'Time',
+      title: 'Date Time',
       render: (_, record) =>
         loading ? (
           <Skeleton.Input style={{ width: 100 }} active size="small" />
@@ -101,9 +117,94 @@ export const paymentMethodBrandLogo = {
   visa: Visa,
   mastercard: MasterCard,
   amex: AmericanExpress,
-  discover:Discover
+  discover: Discover
 };
 
 export const availableTokensDesc = 'Tokens the brand can use immediately for transactions or withdrawals'
 export const lockedTokensDesc = 'Tokens temporarily held for active campaigns to ensure funds are reserved for payments or expenses.'
 export const totalBalanceDesc = "The sum of available and locked tokens in the brand's account."
+
+export const paymentTabs: TabsProps['items'] = [
+  {
+    key: 'payment',
+    label: 'Payment History',
+    children: <PaymentHistory />,
+  },
+  {
+    key: 'token',
+    label: 'Token Transaction History',
+    children: <TokenTransactionHistory />,
+  },
+];
+
+export const tokenTransactionHistoryColumns = (
+  loading: boolean,
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+): TableColumnsType<TokenTransaction> => [
+=======
+): TableColumnsType<TokenTransactionHistory> => [
+>>>>>>> Stashed changes
+=======
+): TableColumnsType<TokenTransactionHistory> => [
+>>>>>>> Stashed changes
+    {
+      title: 'Date Time',
+      render: (_, record) =>
+        loading ? (
+          <Skeleton.Input style={{ width: 100 }} active size="small" />
+        ) : (
+          <p>{dayjs(record?.created_at).format(DATE_TIME_FORMAT_V2)}</p>
+        ),
+    },
+    {
+      title: 'Transaction Type',
+      render: (_, record) =>
+        loading ? (
+          <Skeleton.Input style={{ width: 80 }} active size="small" />
+        ) : (
+          <p>{record.type}</p>
+        ),
+    },
+    {
+      title: 'Amount',
+      render: (_, record) =>
+        loading ? (
+          <Skeleton.Input style={{ width: 60 }} active size="small" />
+        ) : (
+          <p>${record.amount.toFixed(2)}</p>
+        ),
+    },
+    {
+      title: 'Campaign',
+      render: (_, record) =>
+        loading ? (
+          <Skeleton.Input style={{ width: 150 }} active size="small" />
+        ) : (
+          <p>{record.campaign_name}</p>
+        ),
+    },
+    {
+      title: 'Status',
+      render: (_, record) =>
+        loading ? (
+          <Skeleton.Input style={{ width: 150 }} active size="small" />
+        ) : (
+          <TagColor
+            status={record.status}
+            background={getTokenTransactdionStatus(record?.status)?.background as string}
+            color={getTokenTransactdionStatus(record.status)?.color as string} />
+        ),
+    },
+  ];
+
+const getTokenTransactdionStatus = (status: string) => {
+  switch (status) {
+    case 'pending':
+      return { background: '#CCFBF1', color: '#0F766E' }
+    case 'success':
+      return { background: '#CCFBF1', color: '#0F766E' }
+    default:
+      break;
+  }
+}
