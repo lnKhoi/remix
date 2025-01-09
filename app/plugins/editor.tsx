@@ -1,12 +1,11 @@
-import axios from 'axios';
-import { log } from 'node:console';
 import React, {
   Suspense,
   useCallback,
   useEffect,
+  useRef,
   useState,
 } from 'react';
-import { BASE64_REGEX } from '~/constants/regex.constant';
+import { convertImage } from '~/apis/campaign';
 
 const ReactQuill = React.lazy(() => import('react-quill'));
 
@@ -24,66 +23,64 @@ const Editor = ({
   disabled = false, // Default to false
 }: EditorProps) => {
   const [code, setCode] = useState<string>(value);
+  const quillRef = useRef<any>(null)
 
   useEffect(() => {
     setCode(value);
   }, [value]);
 
   const handleProcedureContentChange = async (content: string) => {
-    try {
-      const base64Matches = content.matchAll(BASE64_REGEX);
+    setCode(content);
+    onChange?.(content);
+    console.log(content);
 
-      let updatedContent = content;
-
-      for (const match of base64Matches) {
-        const base64Image = match[1];
-        const uploadedUrl = await uploadToImgBB(base64Image);
-
-        updatedContent = updatedContent.replace(match[0], `${uploadedUrl}"`);
-      }
-
-      setCode(updatedContent);
-      onChange?.(updatedContent);
-    } catch (error) {
-      console.error(error);
-    }
   };
 
-  const uploadToImgBB = async (file: string) => {
-    const apiKey = 'e37513ca1eb7dd64802347b892fafdb0';
+  const uploadToCloudinary = async (file: File): Promise<string> => {
     const formData = new FormData();
-    formData.append('image', file);
+    formData.append('media', file);
+    const res = await convertImage(formData)
+    return res.data.mediaUrl
+  }
 
-    try {
-      const response = await axios.post(
-        `https://api.imgbb.com/1/upload?key=${apiKey}`,
-        formData
-      );
-
-      if (response.status >= 200 && response.status < 300 && response.data.success) {
-        return response.data.data.url;
-      } else {
-        console.log(response.data.error.message);
+  const imageHandler = useCallback(() => {
+    const input = document.createElement("input");
+    input.setAttribute("type", "file");
+    input.setAttribute("accept", "image/*");
+    input.click();
+    input.onchange = async () => {
+      if (input !== null && input.files !== null) {
+        const file = input.files[0];
+        const url = await uploadToCloudinary(file);
+        const quill = quillRef.current;
+        if (quill) {
+          const range = quill.getEditorSelection();
+          range && quill.getEditor().insertEmbed(range.index, "image", url);
+        }
       }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+    };
+  }, []);
 
   const modules = {
     toolbar: showToolbar && !disabled // Hide toolbar when disabled
-      ? [
-        [{ header: [1, 2, 3, 4, 5, 6, false] }],
-        ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-        [{ size: [] }],
-        [{ font: [] }],
-        [{ align: ['right', 'center', 'justify'] }],
-        [{ list: 'ordered' }, { list: 'bullet' }],
-        ['link', 'image'],
-        [{ color: ['red', '#785412'] }],
-        [{ background: ['red', '#785412'] }],
-      ]
-      : false, // Hide toolbar when showToolbar is false or disabled
+      ? {
+        container: [
+          [{ header: [1, 2, 3, 4, 5, 6, false] }],
+          ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+          [{ size: [] }],
+          [{ font: [] }],
+          [{ align: ['right', 'center', 'justify'] }],
+          [{ list: 'ordered' }, { list: 'bullet' }],
+          ['link', 'image', 'video'],
+          ['code-block'],
+          ['clean'],
+          [{ color: ['red', '#785412'] }],
+          [{ background: ['red', '#785412'] }],
+        ],
+        handlers: {
+          image: imageHandler,
+        },
+      } : false
   };
 
   const formats = [
@@ -107,6 +104,7 @@ const Editor = ({
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <ReactQuill
+        ref={quillRef}
         theme="snow"
         modules={modules}
         defaultValue={code}
