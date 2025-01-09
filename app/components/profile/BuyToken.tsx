@@ -98,18 +98,18 @@ function BuyToken({ cards, onclose, open, onPayment,balance }: BuyTokenProps) {
                     </div>
                     <div className='mt-8 flex flex-col gap-5'>
                         <p className='font-semibold text-lg text-gray-800'>Payment Method</p>
-                        {cards?.slice(0, 1)?.map(card => (
-                            <div className='py-4 rounded-xl border-blue-600 flex items-center justify-between px-4 border bg-blue-100'>
+                      
+                            <div className={`py-4 rounded-xl border-blue-600 flex items-center justify-between px-4 border bg-blue-100`}>
                                 <div className='flex items-center gap-3'>
-                                    <img className='w-[67px] h-[38px] object-cover' src={paymentMethodBrandLogo[card.brand as keyof typeof paymentMethodBrandLogo]} alt="Payment Card" />
+                                    <img className='w-[67px] h-[38px] object-cover' src={paymentMethodBrandLogo[cardPrimary?.brand as keyof typeof paymentMethodBrandLogo]} alt="Payment Card" />
                                     <div className='flex flex-col'>
-                                        <p className='text-sm font-medium text-gray-800'>****{card.last4}</p>
-                                        <span className='text-xs font-normal mt-[2px] text-gray-500'>Card expires at {card?.exp_year}</span>
+                                        <p className='text-sm font-medium text-gray-800'>****{cardPrimary?.last4}</p>
+                                        <span className='text-xs font-normal mt-[2px] text-gray-500'>Card expires at {cardPrimary?.exp_year}</span>
                                     </div>
                                 </div>
                                 <Radio checked />
                             </div>
-                        ))}
+                      
                     </div>
                 </div>
 
