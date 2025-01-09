@@ -128,7 +128,7 @@ function Campaigns() {
               loading={loading == 'load-more'}
               onClick={() => handleGetCampaigns(true)}
               className='mx-auto mt-[44px] flex justify-center' >
-              {noMore ? 'No more campaign' : 'Load more...'}
+                 Load more...
             </AntButton>
           )}
         </div>
