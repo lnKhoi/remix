@@ -7,11 +7,13 @@ import {
   Button,
   Drawer,
   InputNumber,
+  message,
   Radio,
   Skeleton,
 } from 'antd';
 import {
   getConnectedBankAccount,
+  getOnboardLink,
   payout,
 } from '~/apis/stripe';
 import Balance from '~/assets/balance.png';
@@ -35,12 +37,14 @@ function WithdrawToken({ onclose, open, onWithdrawSuccess, balance }: WithdrawTo
     const [loadingBankInfo, setLoadingBankInfo] = useState<boolean>(false)
     const [bankInfo, setBankInfo] = useState<Payment | null>(null)
     const [confirmWithdrawToken, setConfirmWithdrawToken] = useState<boolean>(false)
+    const [messageApi, contextHolder] = message.useMessage();
 
     const handleWithdrawToken = () => {
         setLoading(true)
         payout(totalTokens)
             .then(() => { onclose(); onWithdrawSuccess() })
             .finally(() => setLoading(false))
+            .catch((err) => messageApi.error(err?.message))
     }
 
     const handleGetConnectBankAccount = () => {
@@ -54,8 +58,13 @@ function WithdrawToken({ onclose, open, onWithdrawSuccess, balance }: WithdrawTo
         handleGetConnectBankAccount()
     }, [])
 
+    const handleEditStripeAccount = () => {
+        getOnboardLink().then(res => window.open(res?.data?.onboardingLink,'_bank'))
+    }
+
     return (
         <>
+        {contextHolder}
             <Drawer
                 title='Withdraw Token'
                 width={650}
@@ -93,7 +102,7 @@ function WithdrawToken({ onclose, open, onWithdrawSuccess, balance }: WithdrawTo
                                 min={50}
                                 step={0.01}
                                 precision={2}
-                                max={50000}
+                                max={balance}
                                 onChange={(num) => setTotalTokens(Number(num))}
                                 className='mt-1 w-full bg-gray-100 border-none h-[44px]' suffix='Token' />
                         </div>
@@ -114,7 +123,7 @@ function WithdrawToken({ onclose, open, onWithdrawSuccess, balance }: WithdrawTo
                     <div className='mt-8 flex flex-col gap-5'>
                         <div className='flex items-center justify-between'>
                             <p className='font-semibold text-lg text-gray-800'>Payment Method</p>
-                            <p className='text-sm font-medium text-blue-500 cursor-pointer'>Change the receiving account</p>
+                            <p onClick={handleEditStripeAccount} className='text-sm font-medium text-blue-500 cursor-pointer'>Change the receiving account</p>
                         </div>
 
                         <div className='py-4 rounded-xl border-blue-600 flex items-center justify-between px-4 border bg-blue-100'>
