@@ -15,6 +15,10 @@ export const getPaymentsHistory = (page:number,limit:number) => {
     return getData(`/api/v1/payment/payment-history?page=${page}?limit=${limit}`)
 }
 
+export const getTokenTransactionHistory = (page:number,limit:number) => {
+    return getData(`/api/v1/payment/token-transaction-history?page=${page}?limit=${limit}`)
+}
+
 export const buyToken = (amount: number, paymentId: string) => {
     return postData(`/api/v1/payment/process-payment`, { paymentMethodId: paymentId, amount: amount })
 }
