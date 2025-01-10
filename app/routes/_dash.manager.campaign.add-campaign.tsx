@@ -74,7 +74,9 @@ const CampaignForm = () => {
 
   // CHECK BALANCE OF BRAND AND CONFIRM TOKEN
   const onFinish = async (): Promise<void> => {
-    contentStatus === 'active' ? setModalConfirmToken(true) : handleCreateCampaign()
+    selectedSocials.length == 0
+      ? toast.error('Please select social media')
+      : contentStatus === 'active' ? setModalConfirmToken(true) : handleCreateCampaign()
   };
 
   // CREATE CAMPAGIN
@@ -278,7 +280,7 @@ const CampaignForm = () => {
                       onClick={() => {
                         const newValue = contentFormat?.includes(c.value) ? [] : [c.value];
                         form.setFieldsValue({ contentFormat: newValue });
-                        form.setFieldValue('duration',null)
+                        form.setFieldValue('duration', null)
                       }}
                     >
                       <div className="flex gap-2">
