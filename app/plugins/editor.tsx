@@ -1,8 +1,11 @@
 import React, {
   Suspense,
+  useCallback,
   useEffect,
+  useRef,
   useState,
 } from 'react';
+import { convertImage } from '~/apis/campaign';
 
 const ReactQuill = React.lazy(() => import('react-quill'));
 
@@ -20,30 +23,64 @@ const Editor = ({
   disabled = false, // Default to false
 }: EditorProps) => {
   const [code, setCode] = useState<string>(value);
+  const quillRef = useRef<any>(null)
 
   useEffect(() => {
     setCode(value);
   }, [value]);
 
-  const handleProcedureContentChange = (content: string) => {
+  const handleProcedureContentChange = async (content: string) => {
     setCode(content);
     onChange?.(content);
+    console.log(content);
+
   };
+
+  const uploadToCloudinary = async (file: File): Promise<string> => {
+    const formData = new FormData();
+    formData.append('media', file);
+    const res = await convertImage(formData)
+    return res.data.mediaUrl
+  }
+
+  const imageHandler = useCallback(() => {
+    const input = document.createElement("input");
+    input.setAttribute("type", "file");
+    input.setAttribute("accept", "image/*");
+    input.click();
+    input.onchange = async () => {
+      if (input !== null && input.files !== null) {
+        const file = input.files[0];
+        const url = await uploadToCloudinary(file);
+        const quill = quillRef.current;
+        if (quill) {
+          const range = quill.getEditorSelection();
+          range && quill.getEditor().insertEmbed(range.index, "image", url);
+        }
+      }
+    };
+  }, []);
 
   const modules = {
     toolbar: showToolbar && !disabled // Hide toolbar when disabled
-      ? [
+      ? {
+        container: [
           [{ header: [1, 2, 3, 4, 5, 6, false] }],
           ['bold', 'italic', 'underline', 'strike', 'blockquote'],
           [{ size: [] }],
           [{ font: [] }],
           [{ align: ['right', 'center', 'justify'] }],
           [{ list: 'ordered' }, { list: 'bullet' }],
-          ['link', 'image'],
+          ['link', 'image', 'video'],
+          ['code-block'],
+          ['clean'],
           [{ color: ['red', '#785412'] }],
           [{ background: ['red', '#785412'] }],
-        ]
-      : false, // Hide toolbar when showToolbar is false or disabled
+        ],
+        handlers: {
+          image: imageHandler,
+        },
+      } : false
   };
 
   const formats = [
@@ -67,6 +104,7 @@ const Editor = ({
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <ReactQuill
+        ref={quillRef}
         theme="snow"
         modules={modules}
         defaultValue={code}
