@@ -119,8 +119,8 @@ const CampaignForm = () => {
   };
 
   // CHANGE CONTENT OVERVIEW
-  const handleChangeContent = (content: string): void => {
-    setContent(content)
+  const handleChangeContent = (content: string) => {
+    setContent(content);
   }
 
   // CALCULATION TOTAL BUDGET
