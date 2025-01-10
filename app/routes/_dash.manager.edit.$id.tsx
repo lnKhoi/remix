@@ -76,7 +76,9 @@ const CampaignForm = () => {
   const maximumParticipants = Form.useWatch('maximumParticipants', form);
 
   const onFinish = async (): Promise<void> => {
-    contentStatus === 'active' ? setModalConfirmToken(true) : handleUpdateCampaign()
+    selectedSocials.length == 0
+      ? toast.error('Please select social media')
+      : contentStatus === 'active' ? setModalConfirmToken(true) : handleUpdateCampaign()
   };
 
   const handleUpdateCampaign = () => {
@@ -267,7 +269,7 @@ const CampaignForm = () => {
                       onClick={() => {
                         const newValue = contentFormat?.includes(c?.value) ? [] : [c.value];
                         form.setFieldsValue({ contentFormat: newValue });
-                        form.setFieldValue('duration',null)
+                        form.setFieldValue('duration', null)
                       }}
                     >
                       <div className="flex gap-2">
@@ -299,7 +301,7 @@ const CampaignForm = () => {
                 ))}
               </Select>
             </Form.Item>
-           
+
             {/* Age */}
             <h2 className='text-lg  font-semibold text-gray-800 mb-4 mt-6 border-t border-t-gray-200 pt-8'>
               Campaign Demographic
