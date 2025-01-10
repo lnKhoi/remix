@@ -34,6 +34,7 @@ const Discount = ({ form }: DiscountProps) => {
     const [discountCodes, setDiscountCodes] = useState<DiscountCode[]>([]);
     const [products, setProducts] = useState<Product[]>([])
     const [shopId, setShopId] = useState<string>('')
+    const formData = form.getFieldsValue()
 
 
     const handleGetShopifyId = () => {
@@ -55,6 +56,13 @@ const Discount = ({ form }: DiscountProps) => {
     useEffect(() => {
         handleGetShopifyId()
     }, [])
+
+
+    useEffect(() => {
+       formData?.discountCode &&  form.setFieldValue('removed',formData?.discountCode)
+    },[formData?.discountCode])
+
+    
 
     return (
         <div className="flex flex-col pt-8 items-start mt-6 border-t border-t-gray-200">
