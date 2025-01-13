@@ -81,7 +81,7 @@ function FinanceDetails() {
 
         <div className='mt-6 border border-gray-200 grid grid-cols-3 rounded-xl p-6'>
           <div className='flex flex-col'>
-            <p className='text-xs font-medium text-gray-800'>Member</p>
+            <p className='text-xs font-medium text-gray-800'>Payment Recepient</p>
             <span className='text-lg font-bold text-gray-800 mt-3'>
               {loadingMetrics ? <Skeleton.Input active size='small' /> : campaignMetrics?.totalMembers}
             </span>
