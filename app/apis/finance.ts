@@ -10,11 +10,11 @@ export const getFinanceMetrics = () => {
     return getData(`/api/v1/finance/campaigns/metrics`)
 }
 
-export const getMembersInFinance = (campaignId: string, time: string, dates: DateRange,search:string) => {
+export const getMembersInFinance = (campaignId: string, time: string, dates: DateRange,search:string,page:number,pageSize:number) => {
     const dateRangeQuery = dates
         ? `&from=${dates?.[0]}&to=${dates?.[1]}`
         : '';
-    return getData(`/api/v1/finance/campaigns/${campaignId}/creators?timeRange=${time}${dateRangeQuery}&creatorName=${search}`)
+    return getData(`/api/v1/finance/campaigns/${campaignId}/creators?page=${page}&limit=${pageSize}?timeRange=${time}${dateRangeQuery}&creatorName=${search}`)
 }
 
 export const getCampaignMetrics = (campaignId: string) => {
