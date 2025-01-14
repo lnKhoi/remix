@@ -65,9 +65,8 @@ function FinanceDetails() {
   }, 500);
 
   useEffect(() => getFinanceMetrics(), [])
-  useEffect(() => { getFinanceDetails() }, [search, params])
+  useEffect(() => { getFinanceDetails() }, [search, params,selectedTime])
 
-  console.log(params)
   return (
     <div>
       <Breadcrumb
