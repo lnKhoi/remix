@@ -23,30 +23,33 @@ import {
 function Finance() {
     const [search, setSearch] = useState<string>('')
     const [loadingMetric, setLoadingMetric] = useState<boolean>(false)
-    const [loading,setLoading] = useState<boolean>(false)
+    const [loading, setLoading] = useState<boolean>(false)
     const [financeMetrics, setFinanceMetrics] = useState<FinanceMetrics | null>(null)
-    const [campaignsInFinance, setCampaignsInFinance] 
-    = useState<{ total: number, data: CampaignsInFinance[] }>({ total: 0, data: [] })
+    const [campaignsInFinance, setCampaignsInFinance]
+        = useState<{ total: number, data: CampaignsInFinance[] }>({ total: 0, data: [] })
 
     const [params, setParams] = useState<{ page: number, pageSize: number }>({ page: 1, pageSize: 10 })
 
-    const handleSearchCampaigns = debounce((e: ChangeEvent<HTMLInputElement>): void => {setSearch(e.target.value);}, 500);
+    const handleSearchCampaigns = debounce((e: ChangeEvent<HTMLInputElement>): void => {
+        setSearch(e.target.value)
+        setParams({ page: 1, pageSize: 10 })
+    }, 500);
 
     const handleGetFinanceMetrics = () => {
         setLoadingMetric(true)
         getFinanceMetrics().then(res => setFinanceMetrics(res.data))
-        .finally(() => setLoadingMetric(false))
+            .finally(() => setLoadingMetric(false))
     }
-    
-    const getMemberInFinance = () => {  
-            setLoading(true)
-            getCampaignsInFinance(params.page, params.pageSize, search)
+
+    const getMemberInFinance = () => {
+        setLoading(true)
+        getCampaignsInFinance(params.page, params.pageSize, search)
             .then(res => setCampaignsInFinance({ total: res?.data?.total, data: res?.data?.data }))
             .finally(() => setLoading(false))
     };
 
-    useEffect(() => handleGetFinanceMetrics(),[])
-    useEffect(() => { getMemberInFinance()}, [params, search])
+    useEffect(() => handleGetFinanceMetrics(), [])
+    useEffect(() => { getMemberInFinance() }, [params, search])
 
     return (
         <div>
@@ -86,6 +89,8 @@ function Finance() {
             <div className='mt-6 cursor-pointer'>
                 <Table
                     pagination={{
+                        pageSize: params.pageSize,
+                        current: params.page,
                         total: campaignsInFinance.total,
                         onChange: (page, pageSize) => {
                             setParams({ page: page, pageSize: pageSize })
