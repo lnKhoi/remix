@@ -13,9 +13,11 @@ import {
   getPaymentsHistory,
 } from '~/apis/stripe';
 import { paymentHistoryColumns } from '~/constants/payment.constant';
+import { useAuthContext } from '~/contexts/auth.context';
 import { Payment } from '~/models/payment.model';
 
 function PaymentHistory() {
+    const {onPayment} = useAuthContext()
     const [loading, setLoading] = useState<boolean>(false)
     const [params,setParams] = useState<{page:number,perPage:number}>({page:1,perPage:10})
     const [paymentHistory, setPaymentHistory] = useState<{ total: number, data: Payment[] }>({ total: 0, data: [] })
@@ -34,7 +36,7 @@ function PaymentHistory() {
             .catch(err => toast.error(err?.message))
     };
 
-    useEffect(() => handleGetPaymentHistory(), [params])
+    useEffect(() => handleGetPaymentHistory(), [params,onPayment])
 
     return (
         <div>
