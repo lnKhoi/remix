@@ -7,9 +7,11 @@ import { Table } from 'antd';
 import { ToastContainer } from 'react-toastify';
 import { getTokenTransactionHistory } from '~/apis/stripe';
 import { tokenTransactionHistoryColumns } from '~/constants/payment.constant';
+import { useAuthContext } from '~/contexts/auth.context';
 import { TokenTransaction } from '~/models/payment.model';
 
 function TokenTransactionHistory() {
+    const { onPayment } = useAuthContext()
     const [loading, setLoading] = useState<boolean>(false)
     const [params, setParams] = useState<{ page: number, perPage: number }>({ page: 1, perPage: 10 })
     const [paymentHistory, setPaymentHistory] = useState<{ total: number, data: TokenTransaction[] }>({ total: 0, data: [] })
@@ -20,7 +22,7 @@ function TokenTransactionHistory() {
             .finally(() => setLoading(false))
     }
 
-    useEffect(() => handleGetPaymentHistory(), [params])
+    useEffect(() => handleGetPaymentHistory(), [params, onPayment])
 
     return (
         <div>

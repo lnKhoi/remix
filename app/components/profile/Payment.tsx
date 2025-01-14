@@ -29,6 +29,7 @@ import {
   paymentTabs,
   totalBalanceDesc,
 } from '~/constants/payment.constant';
+import { useAuthContext } from '~/contexts/auth.context';
 import type {
   CreditCard,
   Payment,
@@ -58,6 +59,7 @@ type LoadingType = 'payment-info' | 'delete-payment' | 'verify-user' | 'list-pay
 function Payment() {
   const [cards, setCards] = useState<CreditCard[]>([])
   const [warning, setWarning] = useState<boolean>(true)
+  const { setOnPayment, onPayment } = useAuthContext()
 
   const [selectedCard, setSelectedCard] = useState<string>('')
   const [addedToken, setAddedToken] = useState<number>(0)
@@ -321,20 +323,19 @@ function Payment() {
       {/* PAYMENT TRANSACTION + TOKEN TRANSACTION */}
       <Tabs defaultActiveKey="1" items={paymentTabs} className='mt-3' />
 
-
       {/* MODAL PAYMENT SUCCESS */}
       {modalType == 'payment-success' && (
         <ModalSuccessPayment
           open={modalType == 'payment-success'}
           newToken={addedToken}
-          onClose={() => { setModalType(''); getPaymentInfo() }}
+          onClose={() => { setModalType(''); getPaymentInfo(); setOnPayment(!onPayment) }}
         />
       )}
 
       {/* MODAL WITHDRAW SUCCESS */}
       {modalType == 'widthdraw-success' && (
         <ModalSuccessPayout
-          onClose={() => { setModalType(''); getPaymentInfo() }}
+          onClose={() => { setModalType(''); getPaymentInfo(); setOnPayment(!onPayment) }}
           open={modalType === 'widthdraw-success'} />
       )}
 
