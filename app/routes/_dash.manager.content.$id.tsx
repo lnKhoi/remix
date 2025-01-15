@@ -12,7 +12,6 @@ import {
   Button,
   Drawer,
   message,
-  Modal,
   Select,
 } from 'antd';
 import dayjs, { Dayjs } from 'dayjs';
@@ -29,11 +28,10 @@ import {
 } from '~/apis/campaign';
 import {
   approveContent,
+  approveContentLinkStory,
   publishContent,
 } from '~/apis/content';
-import Approve from '~/assets/approve.png';
 import DefaultAvatar from '~/assets/avatar.jpeg';
-import Reject from '~/assets/reject.png';
 import EmbedContent from '~/components/content/EmbedContent';
 import ModalPostingDate from '~/components/content/ModalPostingDate';
 import ModalPreviewContent from '~/components/content/ModalPreviewContent';
@@ -71,6 +69,7 @@ export const meta: MetaFunction = () => {
 }
 
 type ModalType = 'confirm-posting-date' | 'reject-influencer-request' | 'approve-influencer-request' | 'reject-content' | ''
+type LoadingType = 'approve-content-link' | 'reject-content-link' | 'get-content-details' | 'approve-content-post' | 'reject-content-post' | ''
 
 const settings = {
   dots: false,
@@ -81,34 +80,38 @@ const settings = {
   centerPadding: "10px",
 };
 
-
 const ContentDetails = () => {
   const { id } = useParams()
   const navigation = useNavigate()
   const [selectedVersion, setSelectedVersion] = useState<string>('')
 
   const [reason, setReason] = useState<string>('')
-  const [loading, setLoading] = useState<string>('')
+  const [loading, setLoading] = useState<LoadingType>('')
   const [previewType, setPreviewType] = useState<string>('')
   const [isViewReason, setIsViewReason] = useState<boolean>(false)
   const [messageApi, contextHolder] = message.useMessage();
   const [content, setContent] = useState<Content | null>(null)
 
   const [modalType, setModalType] = useState<ModalType>('')
+  const videoExtensions = ['mov', 'mp4'];
+  const isStory = content?.campaign?.contentFormat?.includes('story')
 
+  // GET CONTENT DETAILS
   const handleGetContentDetails = async () => {
-    setLoading('loading')
+    setLoading('get-content-details')
     await getContentDetails(selectedVersion || id as string)
       .then((res) => setContent(res.data))
       .finally(() => setLoading(''))
   }
 
+  // GET CONTENT BY VERSION
   useEffect(() => {
     handleGetContentDetails()
   }, [selectedVersion])
 
+  // APPROVE CONTENT POST
   const handleApproveContent = useCallback((time: Dayjs) => {
-    setLoading('loading-post')
+    setLoading('approve-content-post')
     const date = dayjs(time).toISOString()
 
     approveContent(selectedVersion || content?.campaignId as string, content?.id as string, true, date, reason)
@@ -121,9 +124,11 @@ const ContentDetails = () => {
       .finally(() => setLoading(''))
   }, [content?.campaignId])
 
+  // REJECT CONTENT POST
   const handleReject = async (): Promise<void> => {
-    setLoading('loading-reject')
-    await reviewContent(selectedVersion || content?.campaignId as string, content?.id as string, reason, false)
+    setLoading('reject-content-post')
+
+    await reviewContent(content?.campaignId as string, selectedVersion || content?.id as string, reason, false)
       .then(() => {
         setModalType('')
         setReason('')
@@ -133,11 +138,9 @@ const ContentDetails = () => {
       .finally(() => setLoading(''))
   }
 
-  const handleConfirmInfluencerRequest = () => {
-  }
-
+  // POST CONTENT TO INFLUENCER PROFILE
   const handlePostContentToProfileInfluent = () => {
-    setLoading('loading-post')
+    setLoading('approve-content-post')
     publishContent(content?.id as string, 'instagram',)
       .then((res) => {
         toast.success('Content has been posted!')
@@ -147,12 +150,24 @@ const ContentDetails = () => {
       .finally(() => setLoading(''))
   }
 
-  const videoExtensions = ['mov', 'mp4'];
-
+  // GET LASTED VERSION EVERY TIME CLICKS
   const handleRefreshVersion = useCallback(() => {
     getContentDetails(selectedVersion || id as string)
       .then((res) => setContent(res.data))
   }, [selectedVersion])
+
+  // APPROVE CONTENT LINK (STORY)
+  const handleReviewContentLink = (status: boolean) => {
+    status ? setLoading('approve-content-link') : setLoading('reject-content-link')
+
+    approveContentLinkStory(selectedVersion || content?.id as string, status, reason)
+      .then(() => {
+        toast.success('Approved Content Link Successfully')
+        handleGetContentDetails()
+      })
+      .catch(err => toast.error(err?.message))
+      .finally(() => setLoading(''))
+  }
 
   return (
     <div className='custom-select'>
@@ -162,17 +177,17 @@ const ContentDetails = () => {
       <Breadcrumb
         className='fixed h-[40px] w-full '
         items={[
-          { title: <div className='hover:text-gray-400 cursor-pointer  transition-all' onClick={() => navigation(-1)} >Contents</div>, },
+          { title: <div className='hover:text-gray-400 cursor-pointer transition-all' onClick={() => navigation(-1)} >Contents</div>, },
           { title: <p className='text-gray-800'>Review Content</p> },
         ]}
       />
       {
-        loading === 'loading'
+        loading === 'get-content-details'
           ? <ContentDetailSkeleton />
           : <>
             <div className='mx-auto w-full mt-16 justify-center flex items-start gap-7'>
               <div>
-                <div className='w-[700px] border border-gray-200 shadow-sm rounded-xl '>
+                <div className='w-[680px] border border-gray-200 shadow-sm rounded-xl '>
                   <div className='flex border-b border-b-gray-200 items-center justify-between'>
                     <div className='flex items-center p-4 gap-2'>
                       <Square3Stack3DIcon width={20} className='text-gray-800' />
@@ -269,7 +284,7 @@ const ContentDetails = () => {
 
                 {/* Note */}
                 {content?.notes !== '' && (
-                  <div className='w-[700px] border border-gray-200 shadow-sm rounded-xl mt-5 p-5'>
+                  <div className='w-[680px] border border-gray-200 shadow-sm rounded-xl mt-5 p-5'>
                     <h5 className='text-sm text-gray-800'>Note</h5>
                     <p className='text-justify p-2 bg-gray-100 rounded-xl text-sm text-gray-800 mt-2'>{content?.notes}</p>
                   </div>
@@ -277,13 +292,12 @@ const ContentDetails = () => {
               </div>
               {/* Review */}
 
-              <div className='flex flex-col gap-5 w-[400px]'>
-
+              <div className='flex flex-col gap-5 w-[330px]'>
                 {/* Influencer Requested */}
                 <div className='w-full border border-gray-100 rounded-xl shadow-sm'>
                   <p className='p-4 text-sm text-gray-800 '>Please review the attached content for approval. Looking forward to your feedback!</p>
                   <div className='w-full justify-between px-4 pb-4 flex items-center gap-2 '>
-                    {content?.approved == 'pending' ? (
+                    {content?.approved == 'pending' || content?.approved == 'pending-review' ? (
                       <>
                         <Button onClick={() => setModalType('reject-content')} className='w-1/2' type='default' >Reject</Button>
                         <Button onClick={() => setModalType('confirm-posting-date')} className='w-1/2' type='primary' >Approve</Button>
@@ -311,23 +325,43 @@ const ContentDetails = () => {
                     <Button onClick={() => setIsViewReason(true)} className='w-[100px] bg-gray-100 border-none'>View Details</Button>
                   </div>
                 )}
+                {/* Instagram post link */}
+
+                {isStory && content?.permalink && content.approved =='approved' && (
+                  <div className='p-4 border w-full border-gray-200 rounded-xl flex flex-col gap-4'>
+                    <span className='text-sm font-medium text-gray-800'>Instagram Post Link</span>
+                    <div className='flex gap-3'>
+                      <Button onClick={() => setModalType('reject-content')} className='w-1/2' type='default' >Reject</Button>
+                      <Button
+                        loading={loading == 'approve-content-link'}
+                        onClick={() => handleReviewContentLink(true)}
+                        className='w-1/2' type='primary' >
+                        Approve
+                      </Button>
+                    </div>
+                  </div>
+                )}
+
+
                 {/* Link Content */}
-                {content?.approved === 'approved' && (
+                {(content?.approved === 'approved' && !isStory || isStory  )&& (
                   <div className='w-full border border-gray-200 rounded-xl shadow-sm'>
                     <div className='flex items-start pt-4  px-3  pb-3 gap-3'>
                       <CalendarDateRangeIcon width={20} height={20} className='text-gray-500' />
                       <div className='flex flex-col gap-1 w-full'>
                         <p className='text-sm font-normal text-gray-500'>Posting date</p>
-                        <p className='text-gray-800 text-sm'>{dayjs(content.post_due).format(DATE_TIME_FORMAT_V2)}</p>
+                        <p className='text-gray-800 text-sm'>{dayjs(content?.post_due).format(DATE_TIME_FORMAT_V2)}</p>
                       </div>
                     </div>
-                    <div onClick={handlePostContentToProfileInfluent} className='w-full px-5 pb-4'>
-                      <Button loading={loading === 'loading-post'} disabled={loading === 'loading-post'} className='w-full' type='primary'>Post to social</Button>
-                    </div>
+                   {content?.approved =='approved' && !isStory && (
+                     <div onClick={handlePostContentToProfileInfluent} className='w-full px-5 pb-4'>
+                     <Button loading={loading === 'approve-content-post'} disabled={loading === 'approve-content-post'} className='w-full' type='primary'>Post to social</Button>
+                   </div>
+                   )}
                   </div>
                 )}
                 {/* Link website */}
-                {content?.trackingUrl && (
+                {content?.trackingUrl && !isStory && (
                   <div className='w-full border border-gray-100 rounded-xl shadow-sm'>
                     <div className='flex items-start p-4 gap-3'>
                       <LinkIcon width={20} height={20} className='text-gray-500' />
@@ -364,8 +398,11 @@ const ContentDetails = () => {
                     </div>
                   </div>
                 )}
+                
                 {/* Embed Post */}
-                <EmbedContent link={content?.permalink as string} />
+                {!isStory && (
+                  <EmbedContent link={content?.permalink as string} />
+                )}
               </div>
 
               {/* Modal Reject content*/}
@@ -373,7 +410,7 @@ const ContentDetails = () => {
                 footer={
                   <div className="float-right gap-3 flex items-end  justify-between">
                     <Button onClick={() => setModalType('')} >Cancel</Button>
-                    <Button loading={loading === 'loading-reject'} onClick={handleReject} type="primary">Reject</Button>
+                    <Button loading={loading === 'reject-content-post'} onClick={handleReject} type="primary">Reject</Button>
                   </div>
                 }
                 width={600}
@@ -387,50 +424,11 @@ const ContentDetails = () => {
                 <Editor value={reason} onChange={(value) => setReason(value)} />
               </Drawer>
 
-              {/* Modal Reject Influencer request */}
-              <Modal
-                width={355}
-                onOk={handleReject}
-                open={modalType === 'reject-influencer-request'}
-                onCancel={() => setModalType('')} title=''
-                footer={() =>
-                  <div className='w-full mt-7 flex items-center justify-between'>
-                    <Button onClick={() => setModalType('')} className='w-[49%]'>No</Button>
-                    <Button onClick={handleConfirmInfluencerRequest} className='text-white w-[49%]' >Yes</Button>
-                  </div>
-                }
-              >
-                <div className='flex items-center flex-col -mt-4 justify-center'>
-                  <img src={Reject} className='h-[130px] object-contain' alt="" />
-                  <p className='text-sm text-gray-600 -mt-4'>Are you sure you want to reject this request?</p>
-                </div>
-              </Modal>
-
-              {/* Modal Approve Influencer Requeset */}
-              <Modal
-                width={355}
-                onOk={handleReject}
-                open={modalType === 'approve-influencer-request'}
-                onCancel={() => setModalType('')} title=''
-                footer={() =>
-                  <div className='w-full mt-7 flex items-center justify-between'>
-                    <Button onClick={() => setModalType('')} className='w-[49%]'>No</Button>
-                    <Button type='primary' onClick={handleConfirmInfluencerRequest} className='text-white w-[49%]' >Yes</Button>
-                  </div>
-                }
-              >
-                <div className='flex items-center flex-col -mt-4 justify-center'>
-                  <img src={Approve} className='h-[130px] object-contain' alt="" />
-                  <p className='text-sm text-gray-600 -mt-4'>Are you sure you want to approve this request?</p>
-                </div>
-              </Modal>
-
               {/* Modal Posting Date */}
               <ModalPostingDate
-                
                 open={modalType === 'confirm-posting-date'}
                 onApproveContent={(time) => handleApproveContent(time)}
-                loading={loading === 'loading-post'}
+                loading={loading === 'approve-content-post'}
                 onclose={() => setModalType('')}
               />
 

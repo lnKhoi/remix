@@ -1,82 +1,26 @@
 import 'react-quill/dist/quill.snow.css';
 import 'react-toastify/dist/ReactToastify.css';
 
-import React, {
-    useEffect,
-    useState,
-} from 'react';
+import React from 'react';
 
 import {
-    Breadcrumb,
-    Button,
-    DatePicker,
-    Drawer,
-    Input,
-    message,
-    Modal,
-    Select,
-    Skeleton,
-    TimePicker,
+  Input,
+  Skeleton,
 } from 'antd';
-import dayjs, { Dayjs } from 'dayjs';
-import CopyToClipboard from 'react-copy-to-clipboard';
-import {
-    toast,
-    ToastContainer,
-} from 'react-toastify';
-import {
-    getContentDetails,
-    reviewContent,
-} from '~/apis/campaign';
-import {
-    approveContent,
-    publishContent,
-} from '~/apis/content';
-import Approve from '~/assets/approve.png';
-import Reject from '~/assets/reject.png';
-import EmbedContent from '~/components/content/EmbedContent';
-import ModalPreviewContent from '~/components/content/ModalPreviewContent';
-import TagColor from '~/components/ui/tagColor';
-import {
-    DATE_TIME_FORMAT,
-    DATE_TIME_FORMAT_V2,
-} from '~/constants/time.constant';
-import {
-    ContentStatus,
-    getColorStatusContent,
-} from '~/helpers/campaign.helper';
-import { Content } from '~/models/Content.model';
-import Editor from '~/plugins/editor';
-import {
-    abbreviateLastName,
-    formatName,
-} from '~/utils/formatNumber';
 
-import {
-    CalendarDateRangeIcon,
-    DocumentDuplicateIcon,
-    ExclamationCircleIcon,
-    LinkIcon,
-    Square3Stack3DIcon,
-} from '@heroicons/react/24/outline';
 import { MetaFunction } from '@remix-run/cloudflare';
-import {
-    useNavigate,
-    useParams,
-} from '@remix-run/react';
 
 export const meta: MetaFunction = () => {
     return [{ title: 'Review Content' }]
 }
 
 const { TextArea } = Input
-type ModalType = 'confirm-posting-date' | 'reject-influencer-request' | 'approve-influencer-request' | 'reject-content' | ''
 
 function ContentDetailSkeleton() {
     return (
         <div className='mx-auto w-full mt-16 justify-center flex items-start gap-7'>
             <div>
-                <div className='w-[700px] border border-gray-200 shadow-sm rounded-xl '>
+                <div className='w-[680px] border border-gray-200 shadow-sm rounded-xl '>
                     <div className='flex border-b border-b-gray-200 items-center justify-between'>
                         <div className='flex items-center p-4 gap-2'>
                             <Skeleton.Button active style={{ height: 25, width: 100, marginLeft: 20, }} />
@@ -102,7 +46,7 @@ function ContentDetailSkeleton() {
                 </div>
 
                 {/* Note */}
-                <div className='w-[700px] border border-gray-200 shadow-sm rounded-xl mt-5 p-5'>
+                <div className='w-[680px] border border-gray-200 shadow-sm rounded-xl mt-5 p-5'>
                     <Skeleton.Button active style={{ height: 20 }} />
                     <div className='text-justify rounded-xl mt-2'>
                         <Skeleton.Button block active style={{ height: 30 }} />
@@ -111,7 +55,7 @@ function ContentDetailSkeleton() {
             </div>
 
             {/* Review */}
-            <div className='flex flex-col gap-5 w-[400px]'>
+            <div className='flex flex-col gap-5 w-[330px]'>
                 {/* Influencer Requested */}
                 <div className='flex flex-col gap-5 w-full'>
                     <div className='flex flex-col gap-5 w-full border border-gray-100 rounded-xl'>
