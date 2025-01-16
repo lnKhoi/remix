@@ -13,7 +13,7 @@ import {
   Radio,
   Select,
 } from 'antd';
-import dayjs from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 import {
   toast,
   ToastContainer,
@@ -33,12 +33,13 @@ type ModalCreateDiscountProps = {
 
 type TargetOption = 'all' | 'entitled'
 
-const ModalCreateDiscount = ({ products, shopId, open, onClose,onrefresh }: ModalCreateDiscountProps) => {
+const ModalCreateDiscount = ({ products, shopId, open, onClose, onrefresh }: ModalCreateDiscountProps) => {
     const [targetOptions, setTargetOptions] = useState<TargetOption>('all');
     const [discountPrefix, setDiscountPrefix] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(false)
 
     const [form] = Form.useForm();
+    const startDate = Form.useWatch('startsAt', form)
     const discountType = Form.useWatch('discountType')
 
 
@@ -60,7 +61,7 @@ const ModalCreateDiscount = ({ products, shopId, open, onClose,onrefresh }: Moda
                 onrefresh()
 
             })
-            .catch((err =>  toast.error(`Create Discount Failed - ${err?.message}`)))
+            .catch((err => toast.error(`Create Discount Failed - ${err?.message}`)))
             .finally(() => setLoading(false))
     };
 
@@ -74,6 +75,12 @@ const ModalCreateDiscount = ({ products, shopId, open, onClose,onrefresh }: Moda
                 setDiscountPrefix(null);
             }
         }
+    };
+
+    const disabledEndDate = (current: Dayjs) => {
+        if (!startDate) return false;
+        const minEndDate = startDate.add(1, 'day');
+        return current && current.isBefore(minEndDate, 'day');
     };
 
     return (
@@ -107,11 +114,14 @@ const ModalCreateDiscount = ({ products, shopId, open, onClose,onrefresh }: Moda
 
                     <div className='flex items-center gap-4'>
                         <Form.Item className='w-1/2' label="Start date" name="startsAt" rules={[{ required: true, message: "Please select a start date" }]}>
-                            <DatePicker className='bg-gray-100 w-full border-none'  />
+                            <DatePicker
+                                onChange={() => form.setFieldValue('endsAt', null)}
+                                disabledDate={(current) => current && current.isBefore(new Date().setHours(0, 0, 0, 0))}
+                                className='bg-gray-100 w-full border-none' />
                         </Form.Item>
 
                         <Form.Item className='w-1/2' label="End date" name="endsAt" rules={[{ required: true, message: "Please select an end date" }]}>
-                            <DatePicker className='bg-gray-100 w-full border-none' />
+                            <DatePicker disabledDate={disabledEndDate} className='bg-gray-100 w-full border-none' />
                         </Form.Item>
                     </div>
 

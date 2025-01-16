@@ -5,10 +5,14 @@ export const approveContent = (campaignId: string, contentId: string, status: bo
         { approved: status, reason: reason, post_due: date })
 }
 
-export const publishContent = (contentId: string, flatForm:string) => {
+export const publishContent = (contentId: string, flatForm: string) => {
     return postData(`api/v1/content/${contentId}/publish/${flatForm}`)
 }
 
 export const getContentMetrics = (campaignId: string) => {
     return postData(`api/v1/content/campaign/${campaignId}/live-posts`)
+}
+
+export const approveContentLinkStory = (contentId: string, status: boolean, reason: string) => {
+    return postData(`/api/v1/brand/${contentId}/approve-post-link`, { approve: status, reason: reason })
 }
