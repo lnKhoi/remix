@@ -24,6 +24,7 @@ import {
 } from 'react-toastify';
 import {
   getContentDetails,
+  rejectContentLink,
   reviewContent,
 } from '~/apis/campaign';
 import {
@@ -95,6 +96,7 @@ const ContentDetails = () => {
   const [modalType, setModalType] = useState<ModalType>('')
   const videoExtensions = ['mov', 'mp4'];
   const isStory = content?.campaign?.contentFormat?.includes('story')
+  const lastVersion = content?.versions?.[0]?.contentId
 
   // GET CONTENT DETAILS
   const handleGetContentDetails = async () => {
@@ -114,7 +116,7 @@ const ContentDetails = () => {
     setLoading('approve-content-post')
     const date = dayjs(time).toISOString()
 
-    approveContent(selectedVersion || content?.campaignId as string, content?.id as string, true, date, reason)
+    approveContent(content?.campaignId as string, lastVersion as string, true, date, reason)
       .then(() => {
         handleGetContentDetails()
         toast.success('Content has been approved successfully')
@@ -122,26 +124,32 @@ const ContentDetails = () => {
       })
       .catch((err) => toast.error(err.message))
       .finally(() => setLoading(''))
-  }, [content?.campaignId])
+  }, [content?.campaignId,lastVersion,selectedVersion])
 
   // REJECT CONTENT POST
   const handleReject = async (): Promise<void> => {
-    setLoading('reject-content-post')
+    setLoading('reject-content-post');
 
-    await reviewContent(content?.campaignId as string, selectedVersion || content?.id as string, reason, false)
+    const isLinkRejection = content?.permalink && isStory;
+    const rejectAction = isLinkRejection
+      ? rejectContentLink(lastVersion as string, reason)
+      : reviewContent(content?.campaignId as string, lastVersion as string, reason, false);
+
+    await rejectAction
       .then(() => {
-        setModalType('')
-        setReason('')
-        handleGetContentDetails()
-        toast.success('Content has been reject successfully')
+        setModalType('');
+        setReason('');
+        handleGetContentDetails();
+        toast.success('Content has been rejected successfully');
       })
+      .catch((error) => toast.error(error?.message))
       .finally(() => setLoading(''))
-  }
+  };
 
   // POST CONTENT TO INFLUENCER PROFILE
   const handlePostContentToProfileInfluent = () => {
     setLoading('approve-content-post')
-    publishContent(content?.id as string, 'instagram',)
+    publishContent(lastVersion as string, 'instagram',)
       .then((res) => {
         toast.success('Content has been posted!')
         handleGetContentDetails()
@@ -160,7 +168,7 @@ const ContentDetails = () => {
   const handleReviewContentLink = (status: boolean) => {
     status ? setLoading('approve-content-link') : setLoading('reject-content-link')
 
-    approveContentLinkStory(selectedVersion || content?.id as string, status, reason)
+    approveContentLinkStory(lastVersion as string, status, reason)
       .then(() => {
         toast.success('Approved Content Link Successfully')
         handleGetContentDetails()
@@ -294,6 +302,7 @@ const ContentDetails = () => {
 
               <div className='flex flex-col gap-5 w-[330px]'>
                 {/* Influencer Requested */}
+
                 <div className='w-full border border-gray-100 rounded-xl shadow-sm'>
                   <p className='p-4 text-sm text-gray-800 '>Please review the attached content for approval. Looking forward to your feedback!</p>
                   <div className='w-full justify-between px-4 pb-4 flex items-center gap-2 '>
@@ -309,7 +318,7 @@ const ContentDetails = () => {
                         background={getColorStatusContent(content?.approved as ContentStatus)?.background as ContentStatus} />
                     )}
                   </div>
-                  {content?.approved !== 'posted' && (
+                  {content?.approved !== 'posted' && content?.approved !== 'declined' && (
                     <div className='bg-gray-100  flex gap-3 items-center p-4 justify-start'>
                       <ExclamationCircleIcon width={20} className='text-gray-500' />
                       <p className='w-[224px] text-sm text-gray-800'>Content approval time within 48 hours from submission for review</p>
@@ -317,8 +326,9 @@ const ContentDetails = () => {
                   )}
                 </div>
 
+
                 {/* Reason */}
-                {content?.approved === 'rejected' && (
+                {content?.approved === 'rejected' || content?.approved == 'declined' && (
                   <div className='p-4 border w-full border-gray-200 rounded-xl flex flex-col gap-4'>
                     <span className='text-sm font-medium text-gray-800'>Reason</span>
                     <p className='text-sm font-normal text-gray-800'>Your feedback has been sent to Influencer. You couldn’t edit reason or undo.</p>
@@ -326,11 +336,12 @@ const ContentDetails = () => {
                   </div>
                 )}
                 {/* Instagram post link */}
-
-                {isStory && content?.permalink && content.approved =='approved' && (
-                  <div className='p-4 border w-full border-gray-200 rounded-xl flex flex-col gap-4'>
-                    <span className='text-sm font-medium text-gray-800'>Instagram Post Link</span>
-                    <div className='flex gap-3'>
+                {isStory && content?.permalink && content.approved == 'approved' && (
+                  <div className=' border w-full border-gray-200 rounded-xl flex flex-col '>
+                    <span className='text-sm p-4 font-medium text-gray-800'>Instagram Post Link</span>
+                    <p onClick={() => window.open(content?.permalink, "_blank")}
+                      className='text-blue-500 px-4 cursor-pointer'>{abbreviateLastName(content.permalink,35)}</p>
+                    <div className='flex gap-3 px-4 mt-5 pb-4'>
                       <Button onClick={() => setModalType('reject-content')} className='w-1/2' type='default' >Reject</Button>
                       <Button
                         loading={loading == 'approve-content-link'}
@@ -339,12 +350,16 @@ const ContentDetails = () => {
                         Approve
                       </Button>
                     </div>
+                    <div className='bg-gray-100  flex gap-3 items-center p-4 justify-start'>
+                      <ExclamationCircleIcon width={20} className='text-gray-500' />
+                      <p className='w-[254px] text-sm text-gray-800'>Brand does not respond within 12 hours, the system automatically considers it approved</p>
+                    </div>
                   </div>
                 )}
 
 
                 {/* Link Content */}
-                {(content?.approved === 'approved' && !isStory || isStory  )&& (
+                {((content?.approved === 'approved' && !isStory) || (isStory && content?.approved !== 'pending' && content?.approved !== 'rejected')) && (
                   <div className='w-full border border-gray-200 rounded-xl shadow-sm'>
                     <div className='flex items-start pt-4  px-3  pb-3 gap-3'>
                       <CalendarDateRangeIcon width={20} height={20} className='text-gray-500' />
@@ -353,13 +368,24 @@ const ContentDetails = () => {
                         <p className='text-gray-800 text-sm'>{dayjs(content?.post_due).format(DATE_TIME_FORMAT_V2)}</p>
                       </div>
                     </div>
-                   {content?.approved =='approved' && !isStory && (
-                     <div onClick={handlePostContentToProfileInfluent} className='w-full px-5 pb-4'>
-                     <Button loading={loading === 'approve-content-post'} disabled={loading === 'approve-content-post'} className='w-full' type='primary'>Post to social</Button>
-                   </div>
-                   )}
+                    {content?.approved == 'approved' && !isStory && (
+                      <div onClick={handlePostContentToProfileInfluent} className='w-full px-5 pb-4'>
+                        <Button loading={loading === 'approve-content-post'} disabled={loading === 'approve-content-post'} className='w-full' type='primary'>Post to social</Button>
+                      </div>
+                    )}
                   </div>
                 )}
+                {/* NEXT STEP - WAITING INFLUENCER ADD POST LINK */}
+                {isStory && content?.approved == 'approved' && !content.permalink && (
+                  <div className='w-full border border-gray-100 rounded-xl shadow-sm'>
+                    <p className='p-4 text-sm text-gray-800 '>Instagram Post Link</p>
+                    <div className='bg-gray-100  flex gap-3 items-center p-4 justify-start'>
+                      <ExclamationCircleIcon width={20} className='text-gray-500' />
+                      <p className='w-[254px] text-sm text-gray-800'>The next step is to wait for the Story link to be submitted by the Influencer for review before proceeding to the payment process.</p>
+                    </div>
+                  </div>
+                )}
+
                 {/* Link website */}
                 {content?.trackingUrl && !isStory && (
                   <div className='w-full border border-gray-100 rounded-xl shadow-sm'>
@@ -383,7 +409,7 @@ const ContentDetails = () => {
                 )}
 
                 {/* IG POST LINK */}
-                {content?.approved === 'posted' && (
+                {(content?.approved === 'posted' || content?.approved == 'declined') && (
                   <div className='w-full border border-gray-100 rounded-xl shadow-sm'>
                     <div className='flex items-start p-4 gap-3'>
                       <div className='flex flex-col cursor-pointer gap-1 w-full'>
@@ -398,7 +424,7 @@ const ContentDetails = () => {
                     </div>
                   </div>
                 )}
-                
+
                 {/* Embed Post */}
                 {!isStory && (
                   <EmbedContent link={content?.permalink as string} />
@@ -450,7 +476,6 @@ const ContentDetails = () => {
             </div>
           </>
       }
-
     </div>
   );
 };

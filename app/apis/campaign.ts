@@ -3,10 +3,10 @@ import { DateRange } from '~/components/ui/ModalSelectTimeRange';
 import { Campaign } from '~/models/Campaign.model';
 
 import {
-    deleteData,
-    getData,
-    patchData,
-    postData,
+  deleteData,
+  getData,
+  patchData,
+  postData,
 } from './axiosClient';
 
 export const createCampaign = (payload: Campaign) => {
@@ -67,6 +67,10 @@ export const getContentDetails = (id: string) => {
 
 export const reviewContent = (campaignId: string, contentId: string, reason?: string, status?: boolean) => {
     return postData(`api/v1/brand/${campaignId}/${contentId}/approve-content`, { approved: status, reason: reason })
+}
+
+export const rejectContentLink = (contentId:string,reason:string) => {
+    return postData(`/api/v1/brand/${contentId}/approve-post-link`,{approve:false,reason:reason})
 }
 
 export const getMedia = (campaignId: string, filename: string) => {
