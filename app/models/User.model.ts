@@ -107,6 +107,7 @@ export type InstagramPost =  {
   caption: string;
   media_type: "CAROUSEL_ALBUM" | "IMAGE" | "VIDEO"; 
   media_url: string;
+  thumbnail_url?:string
   share_count?:string,
   permalink: string;
   timestamp: string;

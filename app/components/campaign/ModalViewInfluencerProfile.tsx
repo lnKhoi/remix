@@ -291,7 +291,7 @@ function ModalViewInfluencerProfile({ onClose, open, id }: ModalViewInfluencerPr
                                         {influencer?.portfolios?.map((item) => (
                                             <div key={item.id} className="relative">
                                                 <img
-                                                    src={item?.media_url}
+                                                    src={item?.thumbnail_url || item?.media_url}
                                                     alt={`Portfolio ${item}`}
                                                     className="rounded-lg w-[293px] h-[293px] object-cover"
                                                 />
