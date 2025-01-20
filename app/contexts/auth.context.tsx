@@ -33,7 +33,7 @@ const AuthContextProvider: FC<AuthContextProviderProps> = ({ children }) => {
     };
 
     const handleLogout = (): void => {
-        localStorage.removeItem('remix_us_tk')
+        localStorage.clear()
         navigate('/logout')
     }
 
