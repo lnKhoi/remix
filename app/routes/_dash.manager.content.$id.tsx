@@ -124,7 +124,7 @@ const ContentDetails = () => {
       })
       .catch((err) => toast.error(err.message))
       .finally(() => setLoading(''))
-  }, [content?.campaignId,lastVersion,selectedVersion])
+  }, [content?.campaignId, lastVersion, selectedVersion])
 
   // REJECT CONTENT POST
   const handleReject = async (): Promise<void> => {
@@ -305,8 +305,8 @@ const ContentDetails = () => {
 
                 <div className='w-full border border-gray-100 rounded-xl shadow-sm'>
                   <p className='p-4 text-sm text-gray-800 '>
-                    {isStory && (content?.approved =='approved' || content?.approved =='posted') ? 'Content' : 'Please review the attached content for approval. Looking forward to your feedback!'}
-                     
+                    {isStory && (content?.approved == 'approved' || content?.approved == 'posted') ? 'Content' : 'Please review the attached content for approval. Looking forward to your feedback!'}
+
                   </p>
                   <div className='w-full justify-between px-4 pb-4 flex items-center gap-2 '>
                     {content?.approved == 'pending' || content?.approved == 'pending-review' ? (
@@ -321,7 +321,7 @@ const ContentDetails = () => {
                         background={getColorStatusContent(content?.approved as ContentStatus)?.background as ContentStatus} />
                     )}
                   </div>
-                  {content?.approved !== 'posted' && content?.approved !== 'declined'  &&  (isStory && content?.approved =='pending') && (
+                  {content?.approved !== 'posted' && content?.approved !== 'declined' && (isStory && content?.approved == 'pending') && (
                     <div className='bg-gray-100  flex gap-3 items-center p-4 justify-start'>
                       <ExclamationCircleIcon width={20} className='text-gray-500' />
                       <p className='w-[224px] text-sm text-gray-800'>Content approval time within 48 hours from submission for review</p>
@@ -343,7 +343,7 @@ const ContentDetails = () => {
                   <div className=' border w-full border-gray-200 rounded-xl flex flex-col '>
                     <span className='text-sm p-4 font-medium text-gray-800'>Instagram Post Link</span>
                     <p onClick={() => window.open(content?.permalink, "_blank")}
-                      className='text-blue-500 px-4 cursor-pointer'>{abbreviateLastName(content.permalink,35)}</p>
+                      className='text-blue-500 px-4 cursor-pointer'>{abbreviateLastName(content.permalink, 35)}</p>
                     <div className='flex gap-3 px-4 mt-5 pb-4'>
                       <Button onClick={() => setModalType('reject-content')} className='w-1/2' type='default' >Reject</Button>
                       <Button
@@ -390,7 +390,7 @@ const ContentDetails = () => {
                 )}
 
                 {/* Link website */}
-                {content?.trackingUrl && !isStory && (
+                {content?.trackingUrl && (isStory && (content.approved == 'posted' || content.approved == 'approved')) && (
                   <div className='w-full border border-gray-100 rounded-xl shadow-sm'>
                     <div className='flex items-start p-4 gap-3'>
                       <LinkIcon width={20} height={20} className='text-gray-500' />
