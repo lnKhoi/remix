@@ -304,7 +304,10 @@ const ContentDetails = () => {
                 {/* Influencer Requested */}
 
                 <div className='w-full border border-gray-100 rounded-xl shadow-sm'>
-                  <p className='p-4 text-sm text-gray-800 '>Please review the attached content for approval. Looking forward to your feedback!</p>
+                  <p className='p-4 text-sm text-gray-800 '>
+                    {isStory && (content?.approved =='approved' || content?.approved =='posted') ? 'Content' : 'Please review the attached content for approval. Looking forward to your feedback!'}
+                     
+                  </p>
                   <div className='w-full justify-between px-4 pb-4 flex items-center gap-2 '>
                     {content?.approved == 'pending' || content?.approved == 'pending-review' ? (
                       <>
@@ -318,7 +321,7 @@ const ContentDetails = () => {
                         background={getColorStatusContent(content?.approved as ContentStatus)?.background as ContentStatus} />
                     )}
                   </div>
-                  {content?.approved !== 'posted' && content?.approved !== 'declined' && (
+                  {content?.approved !== 'posted' && content?.approved !== 'declined'  &&  (isStory && content?.approved =='pending') && (
                     <div className='bg-gray-100  flex gap-3 items-center p-4 justify-start'>
                       <ExclamationCircleIcon width={20} className='text-gray-500' />
                       <p className='w-[224px] text-sm text-gray-800'>Content approval time within 48 hours from submission for review</p>
