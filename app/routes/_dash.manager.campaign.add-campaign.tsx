@@ -306,7 +306,7 @@ const CampaignForm = () => {
               name="duration"
               rules={[{ required: true, message: PLEASE_SELECT_DURATION }]}
             >
-              <Select className="custom-select" placeholder="Select duration">
+              <Select disabled={!contentFormat} className="custom-select" placeholder="Select duration">
                 {(contentFormat == 'story' ? storyDurationOptions : postDurationOptions).map(g => (
                   <Option key={g.value} value={g.value}>{g.label}</Option>
                 ))}

@@ -17,7 +17,6 @@ import { registerBrand } from '~/apis/auth';
 import LoginBanner from '~/assets/login-banner.png';
 import Logo from '~/assets/logo.svg';
 import PhoneNumberInput from '~/components/ui/input-country';
-import { INDUSTRIES } from '~/constants/auth.constant';
 import { SignupPayload } from '~/models/User.model';
 
 import { useNavigate } from '@remix-run/react';
@@ -93,26 +92,6 @@ export default function Page() {
                     {/* Phone Number Field */}
                     <Form.Item label="">
                         <PhoneNumberInput value={phone} onChange={setPhone} />
-                    </Form.Item>
-
-                    {/* Industry Selection */}
-                    <Form.Item
-                        label="Industry"
-                        name="category"
-                        rules={[{ required: false }]}
-                    >
-                        <Select
-                            mode="multiple"
-                            placeholder="Select industries"
-                            allowClear
-                            maxTagCount={3}
-                        >
-                            {INDUSTRIES.map(industry => (
-                                <Option key={industry.value} value={industry.value}>
-                                    {industry.label}
-                                </Option>
-                            ))}
-                        </Select>
                     </Form.Item>
 
                     {/* Password Field */}
