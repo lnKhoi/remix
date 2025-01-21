@@ -34,6 +34,7 @@ const AuthContextProvider: FC<AuthContextProviderProps> = ({ children }) => {
 
     const handleLogout = (): void => {
         localStorage.clear()
+        sessionStorage.clear()
         navigate('/logout')
     }
 
