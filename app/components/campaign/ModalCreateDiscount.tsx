@@ -191,8 +191,8 @@ const ModalCreateDiscount = ({ products, shopId, open, onClose, onrefresh }: Mod
                         </Select>
                     </Form.Item>
 
-                    <Form.Item label="Usage Limit" name="usageLimit">
-                        <InputNumber placeholder='0' className='bg-gray-100 w-full border-none' />
+                    <Form.Item initialValue={1} label="Usage Limit" name="usageLimit">
+                        <InputNumber  placeholder='1' className='bg-gray-100 w-full border-none' />
                     </Form.Item>
                     <div className='flex pb-5 items-start'>
                         <div className='flex pb-5 items-start'>
