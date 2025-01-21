@@ -63,7 +63,7 @@ function ContentCard({ content, loading }: ContentCardProps) {
                                     <p className='text-sm text-gray-500 '>{content?.creator?.email}</p>
                                 </div>
                             </div>
-                            <p className='text-gray-500 mt-2 text-sm leading-5 '>
+                            <p className='text-gray-500 mt-2 text-sm leading-5 text-ellipsis text-wrap overflow-hidden '>
                                 {abbreviateLastName(content?.caption, 200)}
                             </p>
                             <div className='h-[28px] rounded-lg bg-blue-100 text-xs text-blue-700 w-[158px]  items-center justify-center flex'>
