@@ -41,6 +41,8 @@ function ModalPreviewContent({ onClose, open, content }: ModalPreviewContentProp
     };
 
     const contentFormat = content?.campaign?.contentFormat?.[0]
+    const videoExtensions = ['mov', 'mp4'];
+    const isVideo = content?.urls?.[0] ? videoExtensions?.includes(content?.urls[0]?.slice(-3)) : false;
 
     return (
         <Drawer
@@ -169,7 +171,8 @@ function ModalPreviewContent({ onClose, open, content }: ModalPreviewContentProp
 
                         <div className="relative w-full h-full">
                             {/* Video or Image */}
-                            {content?.urls?.[0]?.endsWith('.mp4') ? (
+
+                            {isVideo ? (
                                 <video
                                     className="absolute top-0 left-0 w-full h-full object-cover"
                                     src={content?.urls?.[0]}
