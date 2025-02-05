@@ -1,8 +1,7 @@
 import axios, { InternalAxiosRequestConfig } from 'axios';
-import { API_URL } from '~/constants/env.constant';
 
 const axiosClient = axios.create({
-    baseURL: API_URL,
+    baseURL: 'https://stg.spiral.tego.global',
     timeout: 200000,
     headers: { contentType: "application/json", "ngrok-skip-browser-warning": "true", },
 });

@@ -7,82 +7,98 @@ import {
   Avatar,
   Button,
   Checkbox,
+  DatePicker,
 } from 'antd';
 import { CheckboxChangeEvent } from 'antd/es/checkbox';
+import dayjs from 'dayjs';
 import { toast } from 'react-toastify';
-import { inviteInfluencerToCampaign } from '~/apis/campaign';
 import DefaultAvatar from '~/assets/avatar.jpeg';
-import { INVITED_INFLUENCERS } from '~/constants/messages.constant';
+import IG_ICON from '~/assets/insta.svg';
+import { DATE_TIME_FORMAT } from '~/constants/time.constant';
 import { Creator } from '~/models/User.model';
 import { formatName } from '~/utils/formatNumber';
 
-import { CheckIcon } from '@radix-ui/react-icons';
-
+import { InviteInfluencer } from './ModalInviteInfluencerToCampaign';
 import ModalViewInfluencerProfile from './ModalViewInfluencerProfile';
 
 type InviteCardProps = {
     influencer: Creator
     checked: boolean
-    onSelect: (id: string, checked: boolean) => void
-    campaignId: string
+    onSelect: (id: string, checked: boolean, deadline: string) => void
+    selectedInfluencer: InviteInfluencer[]
+    globalDeadlineTrigger:string | null
 }
 
-function InviteCard({ influencer, checked, onSelect, campaignId }: InviteCardProps) {
+function InviteCard({ influencer, checked, onSelect, selectedInfluencer,globalDeadlineTrigger }: InviteCardProps) {
     const [invited, setInvited] = useState<boolean>(false)
-    const [loading, setLoading] = useState<boolean>(false)
     const [isModal, setIsModal] = useState<boolean>(false)
+    const [deadline, setDeadline] = useState<null | string>(null)
 
     const handleCheckboxChange = (e: CheckboxChangeEvent) => {
-        onSelect(influencer.id as string, e.target.checked);
+        if (!deadline) {
+            toast.warning('Please select Deadline', { position: 'top-center' })
+        } else {
+            e.target.checked == false && setDeadline(null)
+            onSelect(influencer.id as string, e.target.checked, deadline as string);
+        }
     };
-
-    const handleInviteInfluencer = async (): Promise<void> => {
-        setLoading(true)
-        const creatorIds = [influencer.id]
-        await inviteInfluencerToCampaign(campaignId, creatorIds as string[])
-            .then(() => {
-                setInvited(true)
-                toast.success(INVITED_INFLUENCERS)
-            })
-            .catch((err) => toast.error(err?.message))
-            .finally(() => setLoading(false))
-    }
 
     useEffect(() => {
         setInvited(influencer?.alreadyInvited as boolean)
-    }, [influencer?.alreadyInvited])
+    },[influencer.alreadyInvited])
 
+    useEffect(() => {
+        const defaultDeadline = selectedInfluencer.find(i => i?.id === influencer?.id)?.deadline
+        setDeadline(globalDeadlineTrigger || defaultDeadline || influencer?.deadline as string)
+    }, [influencer.deadline,globalDeadlineTrigger,globalDeadlineTrigger])
+
+    console.log(influencer)
     return (
-        <div className='p-4 rounded-md flex items-center justify-between border border-[#ESE7EB]'>
+        <div className='p-4 rounded-md hover:border-blue-500 transition-all flex items-center justify-between border border-gray-100'>
             <div className='w-full'>
                 <div className='flex items-start gap-4'>
                     <Checkbox
                         disabled={invited}
                         onChange={(e) => handleCheckboxChange(e)}
                         checked={checked} ></Checkbox>
-                    <div className='flex items-center justify-between w-full'>
-                        <div className='flex cursor-pointer items-start relative gap-4'>
-                            <Avatar onClick={() => setIsModal(true)} src={influencer?.avatarUrl || DefaultAvatar} />
-                            <div>
-                                <h5 className='text-[#1F2937] text-sm'>{formatName(influencer.name as string)}</h5>
-                                <span className='text-[#6B7280] text-sm'>{influencer.email}</span>
+                    <div className='flex flex-col items-start justify-between w-full'>
+                        <div className='flex flex-col  w-full cursor-pointer items-start relative'>
+                            <div className='flex items-center w-full justify-between'>
+                                <div className='flex gap-3 '>
+                                    <Avatar onClick={() => setIsModal(true)} src={influencer?.avatarUrl || DefaultAvatar} />
+                                    <div>
+                                        <h5 className='text-[#1F2937] text-sm'>{formatName(influencer.name as string)}</h5>
+                                        <span className='text-[#6B7280] text-sm'>{influencer.email}</span>
+                                    </div>
+                                </div>
+                                <div className='flex flex-col gap-2'>
+                                    <span className='text-sm font-medium'>Deadline</span>
+                                    <DatePicker
+                                        value={deadline ? dayjs(deadline) : null}
+                                        allowClear={false}
+                                        format={DATE_TIME_FORMAT}
+                                        disabledDate={(current) => {
+                                            return current && current <= dayjs().endOf("day");
+                                        }}
+                                        onChange={(e) => {
+                                            setDeadline(e.toISOString());
+                                            onSelect(influencer.id as string, true, e.toISOString() as string)
+                                        }
+                                        }
+                                        className='bg-gray-100 border-none hover:bg-gray-100 cursor-pointer' />
+                                </div>
                             </div>
-                            {/* <div className='absolute right-0 flex items-center gap-1 top-0'>
+                            <div className='flex mt-1 items-center gap-[6px]'>
                                 <img src={IG_ICON} alt="insta" />
-                                <span className='text-xs text-gray-800'>{influencer.followers}k</span>
-                            </div> */}
+                                <span className='text-xs text-gray-800 font-medium'>{influencer.followers}12k</span>
+                            </div>
                         </div>
-                        <div >
-                            {invited
-                                ? <div className='flex h-[28px] justify-center rounded-md w-[74px] items-center  bg-[#F3F4F6]'><CheckIcon width={20} />Invited</div>
-                                : <Button loading={loading} className='h-[28px]' onClick={handleInviteInfluencer} type='primary'>Invite</Button>
-                            }
-                        </div>
-                        <div className='hidden w-full  items-end border-dashed border-t border-t-gray-200 justify-between'>
+
+                        <div className=' w-full mt-3 items-end border-dashed border-t border-t-gray-200 justify-between'>
                             <div className='flex items-start mt-4  h-[28px] gap-2'>
-                                {/* <Button type='text' className='bg-gray-200 h-[28px]'>Age: {influencer.age}</Button>
-                                <Button type='text' className='bg-gray-200 h-[28px]'>{influencer.gender}</Button>
-                                <Button type='text' className='bg-gray-200 h-[28px]'>{influencer.country}</Button> */}
+                                <Button type='text' className='bg-gray-200 h-[28px]'>Age: 20 - 32</Button>
+                                <Button type='text' className='bg-gray-200 h-[28px]'>Gender: Female</Button>
+                                <Button type='text' className='bg-gray-200 h-[28px]'>Location: Vietnam</Button>
                             </div>
                         </div>
                     </div>

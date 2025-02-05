@@ -88,6 +88,7 @@ export type Creator = {
   portfolios?:InstagramPost[]
   connectedSocialMedias?:string []
   biography?:string
+  deadline?:string
   instagramFollowsCount?:number
   demographicAges?:Demographic[]
   demographicGenders?:Demographic[]
