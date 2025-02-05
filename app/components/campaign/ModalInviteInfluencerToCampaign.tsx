@@ -84,7 +84,7 @@ function ModalInviteInfluencerToCampaign({ onClose, open, campaignId }: ModalInv
     const handleGetInfluencers = async (filter: Filter) => {
         setLoading('get-list')
         await getListInfluencerInviteInCampaign(campaignId as string, 100, 1, filter)
-            .then((res) => setInfluencers(res?.data?.creatorsWithInvitationStatus))
+            .then((res) => setInfluencers(res?.data))
             .finally(() => setLoading(''))
     }
 
@@ -174,7 +174,7 @@ function ModalInviteInfluencerToCampaign({ onClose, open, campaignId }: ModalInv
                                             <div>
                                                 <Radio.Group onChange={(e) => setFilter({ ...filter, age: e.target.value })}>
                                                     <div className='grid w-[330px] mt-2 grid-cols-2 gap-2'>
-                                                        {ageAudience.map(a => (
+                                                        {ageAudience?.map(a => (
                                                             <Radio key={a.label} value={a.value} >{a.label}</Radio>
                                                         ))}
                                                     </div>
@@ -184,7 +184,7 @@ function ModalInviteInfluencerToCampaign({ onClose, open, campaignId }: ModalInv
                                         <div className='mt-3'>
                                             <span className='text-sm text-gray-800 font-medium'>Gender Audience</span>
                                             <div className='flex items-center gap-2 mt-2'>
-                                                {genderFilterOptions.map(g => (
+                                                {genderFilterOptions?.map(g => (
                                                     <div
                                                         onClick={() => handleSelectGender(g)}
                                                         key={g}
@@ -196,7 +196,7 @@ function ModalInviteInfluencerToCampaign({ onClose, open, campaignId }: ModalInv
                                             <div className='mt-4'>
                                                 <span className='text-sm text-gray-800 font-medium'>Social Media Platform</span>
                                                 <div className='flex items-center gap-2 mt-2'>
-                                                    {socials.map(s => (
+                                                    {socials?.map(s => (
                                                         <div
                                                             key={s.name}
                                                             onClick={() => handleSelectSocial(s.name)}
@@ -211,13 +211,13 @@ function ModalInviteInfluencerToCampaign({ onClose, open, campaignId }: ModalInv
                                                 <span className='text-sm text-gray-800 font-medium'>Location Audience</span>
                                                 <Select
                                                     placeholder="Select a country"
-                                                    value={filter.location}
+                                                    value={filter?.location}
                                                     showSearch
                                                     allowClear
                                                     optionFilterProp="children"
                                                     onChange={(l) => setFilter({ ...filter, location: l })}
                                                 >
-                                                    {countries.map((country) => (
+                                                    {countries?.map((country) => (
                                                         <Select.Option key={country.value} value={country.label}>
                                                             <span role="img" aria-label={country.label} className="mr-2">
                                                                 {country.flag}
@@ -263,7 +263,7 @@ function ModalInviteInfluencerToCampaign({ onClose, open, campaignId }: ModalInv
                                         <Skeleton key={index} active avatar paragraph={{ rows: 1 }} />
                                     </div>
                                 ))}</>
-                                : <> {influencers.map(i => (
+                                : <> {influencers?.map(i => (
                                     <InviteCard key={i.id} campaignId={campaignId} onSelect={handleSelectCard} checked={selectedInfluencers.includes(i.id as string)} influencer={i} />
                                 ))}</>
                             }
