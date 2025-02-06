@@ -45,7 +45,7 @@ export const getListInfluencerInviteInCampaign = (camaignId: string, limit: numb
 }
 
 export const inviteInfluencerToCampaign = (camaignId: string, creatorIds: InviteInfluencer[]) => {
-    return postData(`/api/v1/brand/${camaignId}/invite`, { creatorIds: creatorIds })
+    return postData(`/api/v1/brand/${camaignId}/invite`, { creators: creatorIds })
 }
 
 export const getInfluencerParticipantsInCampaign = (status: string, campaignId: string, limit: number, page: number) => {

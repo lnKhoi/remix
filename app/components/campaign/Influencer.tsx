@@ -15,7 +15,6 @@ import {
   getInfluencerParticipantsInCampaign,
 } from '~/apis/campaign';
 import { influencersParticipantsColumns } from '~/constants/creator.constant';
-import { Campaign } from '~/models/Campaign.model';
 import {
   Creator,
   InfluencerInCampaign,
@@ -30,7 +29,7 @@ import {
 import { useParams } from '@remix-run/react';
 
 import { InputSearch } from '../ui/input-search';
-import ModalViewInfluencerProfile from './ModalViewInfluencerProfile';
+import ModalReviewRequestDate from './ModalReviewRequestDate';
 
 const rowSelection: TableProps<InfluencerInCampaign>['rowSelection'] = {
   onChange: (selectedRowKeys: Key[], selectedRows: InfluencerInCampaign[]) => {
@@ -38,23 +37,18 @@ const rowSelection: TableProps<InfluencerInCampaign>['rowSelection'] = {
   },
 };
 
-type InfluencerProps = {
-  campaign: Campaign | null
-}
-
 const items: TabsProps['items'] = [
   { key: '', label: <div>Applicants</div> },
   { key: 'brand_declined_influencer', label: 'Rejected Applicants' },
 ];
 
-function Influencer({ campaign }: InfluencerProps) {
+function Influencer() {
   const { id } = useParams();
   const [tab, setTab] = useState<'' | 'brand_declined_influencer'>('')
   const [influencers, setInfluencers] = useState<InfluencerInCampaign[]>([])
   const [selectedInfluencer, setSelectedInfluencer] = useState<Creator | null>(null);
-  const [isDrawerVisible, setIsDrawerVisible] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false)
-
+  const [modalReviewDeadline, setModalReviewDeadline] = useState<boolean>(false)
 
   const handleGetInfluencersInCampaign = async () => {
     setLoading(true)
@@ -82,11 +76,11 @@ function Influencer({ campaign }: InfluencerProps) {
   }
 
   // Handle row click to open the drawer
-  const handleRowClick = (record: InfluencerInCampaign | Creator) => {
-    setSelectedInfluencer(record as Creator);
-    // setIsDrawerVisible(true); 
+  const handleRowClick = (record: { creator: Creator }) => {
+    setSelectedInfluencer(record.creator);
+    setModalReviewDeadline(true);
   };
-
+  
   return (
     <div>
       <Tabs defaultActiveKey="" items={items} onChange={(e) => setTab(e as any)} />
@@ -126,9 +120,12 @@ function Influencer({ campaign }: InfluencerProps) {
               : influencers
           }
         />
-        {isDrawerVisible && (
-          <ModalViewInfluencerProfile onClose={() => setIsDrawerVisible(false)} open={isDrawerVisible} />
-        )}
+        {/* Review Review Request Date */}
+        <ModalReviewRequestDate
+          onclose={() => setModalReviewDeadline(false)}
+          open={modalReviewDeadline}
+          campaignId={id as string}
+          influencer={selectedInfluencer as Creator} />
       </div>
     </div>
   )

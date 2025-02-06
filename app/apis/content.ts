@@ -16,3 +16,16 @@ export const getContentMetrics = (campaignId: string) => {
 export const approveContentLinkStory = (contentId: string, status: boolean, reason: string) => {
     return postData(`/api/v1/brand/${contentId}/approve-post-link`, { approve: status, reason: reason })
 }
+
+export const requestNewDeadlineForInfluencer = (campaignId: string, creatorId: string, deadline: string) => {
+    return postData(`/api/v1/brand/${campaignId}/${creatorId}/approve-suggested-deadline`, {
+        approved: false,
+        newDeadline: deadline
+    })
+}
+
+export const approveDeadlineFromInfluencer = (campaignId: string, creatorId: string) => {
+    return postData(`/api/v1/brand/${campaignId}/${creatorId}/approve-suggested-deadline`, {
+        approved: true
+    })
+}

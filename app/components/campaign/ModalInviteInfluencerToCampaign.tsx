@@ -17,7 +17,7 @@ import {
   Skeleton,
   Slider,
 } from 'antd';
-import dayjs from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 import { toast } from 'react-toastify';
 import {
   getListInfluencerInviteInCampaign,
@@ -116,24 +116,32 @@ function ModalInviteInfluencerToCampaign({ onClose, open, campaignId }: ModalInv
         if (selectedInfluencers.length === 0) return;
         setLoading('invite');
 
-        inviteInfluencerToCampaign(campaignId, selectedInfluencers)
+        // Check duplicate influencer has been invited before
+        const invitedIds = influencers?.filter(i => i?.deadline).map(e => e?.id).filter(id => id !== undefined) as string[];
+        const uniqueInfluencer = selectedInfluencers?.filter(e => e?.id && !invitedIds.includes(e.id));
+
+        inviteInfluencerToCampaign(campaignId, uniqueInfluencer)
             .then(() => {
                 toast.success(INVITED_INFLUENCERS);
                 setSelectedInfluencers([]);
                 handleGetInfluencers(filter);
+                setGlobalDeadline(null)
             })
             .catch((err) => toast.error(err?.message))
             .finally(() => setLoading(''));
     };
 
-
     useEffect(() => { handleGetInfluencers(filter) }, [alignValue])
 
     useEffect(() => {
-        selectedInfluencers.length === influencers.length && selectedInfluencers.length > 0
-            ? setSelectAll(true)
-            : setSelectAll(false)
-    }, [selectedInfluencers])
+        if (selectedInfluencers.length === influencers.length && selectedInfluencers.length > 0
+            || influencers.every(e => !!e.deadline)) {
+            setSelectAll(true)
+        } else {
+            setSelectAll(false)
+        }
+
+    }, [selectedInfluencers, influencers])
 
     const handleSelectSocial = (id: string): void => {
         setFilter((prevFilter) => ({
@@ -159,14 +167,20 @@ function ModalInviteInfluencerToCampaign({ onClose, open, campaignId }: ModalInv
         setModal(false)
     }
 
-    console.log(selectedInfluencers)
+    const handleSetGlobalDeadline = (d: Dayjs) => {
+        setGlobalDeadline(d.toISOString())
+        const invitedIds = influencers?.filter(i => i?.deadline).map(e => e?.id).filter(id => id !== undefined) as string[];
+        const uniqueInfluencer = selectedInfluencers?.filter(e => e?.id && !invitedIds.includes(e.id));
+        const updatedData = uniqueInfluencer?.map(item => ({ ...item, deadline: d?.toISOString() }));
+        setSelectedInfluencers(updatedData)
+    }
 
     return (
-        <Modal width={650} title='' open={open} onCancel={() => onClose(false)} footer={[
+        <Modal style={{ top: 30 }} width={750} title='' open={open} onCancel={() => onClose(false)} footer={[
             <div className='flex border-t border-t-gray-300 pt-5 items-center justify-end gap-2'>
                 <Button onClick={(): void => onClose(false)} type='default' >Close</Button>
                 <Button
-                    disabled={selectedInfluencers.every(e => e.deadline == null)}
+                    disabled={selectedInfluencers.every(e => e.deadline == null || e.deadline == '') || selectedInfluencers.some(i => i.deadline == "")}
                     loading={loading === 'invite' && selectedInfluencers.length > 0}
                     onClick={handleInviteInfluencers}
                     type='primary' >
@@ -176,8 +190,8 @@ function ModalInviteInfluencerToCampaign({ onClose, open, campaignId }: ModalInv
         ]} >
             <div>
                 <h2 className='text-center text-2xl font-semibold'>Invite Influencer</h2>
-                <h5 className='text-[#374151] text-center mt-1'>Invite your Influencer to review collaborate on this campaign.</h5>
-                <div className='flex w-full mx-auto justify-center mt-8' >
+                <h5 className='text-[#374151] text-center'>Invite your Influencer to review collaborate on this campaign.</h5>
+                <div className='flex w-full mx-auto justify-center mt-3' >
                     <Segmented
                         defaultValue="Influencer"
                         style={{ marginBottom: 8 }}
@@ -187,13 +201,16 @@ function ModalInviteInfluencerToCampaign({ onClose, open, campaignId }: ModalInv
                 </div>
                 {alignValue === 'Influencer' && (
                     <div>
-                        <div className='flex mt-5  items-center justify-between'>
+                        <div className='flex mt-2 items-center justify-between'>
                             <div className='flex items-center gap-1'>
-                                <Checkbox checked={selectAll} onChange={handleSelectAll} >Select All</Checkbox>
+                                <Checkbox
+                                    disabled={influencers.every(e => !!e?.deadline)}
+                                    checked={selectAll}
+                                    onChange={handleSelectAll} >Select All</Checkbox>
                                 <span className='text-gray-600'>Selected ({selectedInfluencers.length})</span>
                             </div>
                             <div className='flex items-center gap-3'>
-                                {selectAll && (
+                                {selectAll && !influencers.every(e => !!e.deadline) && (
                                     <div className='flex items-center '>
                                         <ExclamationCircleIcon className='text-gray-800 h-5 w-5' />
                                         <span className='text-sm ml-1 mr-3 font-medium text-gray-800'>Deadline</span>
@@ -202,8 +219,7 @@ function ModalInviteInfluencerToCampaign({ onClose, open, campaignId }: ModalInv
                                             disabledDate={(current) => {
                                                 return current && current <= dayjs().endOf("day");
                                             }}
-                                            onChange={(e) => { setGlobalDeadline(e.toISOString()); }
-                                            }
+                                            onChange={(e) => handleSetGlobalDeadline(e)}
                                             value={globalDeadline ? dayjs(globalDeadline) : null}
                                             allowClear={false} className='bg-gray-100 hover:bg-gray-100 border-none' />
                                     </div>
@@ -299,7 +315,7 @@ function ModalInviteInfluencerToCampaign({ onClose, open, campaignId }: ModalInv
                                 </Popover>
                             </div>
                         </div>
-                        <div className='h-[330px] mb-8 mt-4 pr-2 overflow-y-scroll w-full flex flex-col gap-3'>
+                        <div className='h-[410px] mb-8 mt-4 pr-2 overflow-y-scroll w-full flex flex-col gap-3'>
                             {loading === 'get-list'
                                 ? <> {Array.from({ length: 5 }).map((_, index) => (
                                     <div key={index} className="border border-gray-200 rounded-md p-4">
@@ -308,11 +324,12 @@ function ModalInviteInfluencerToCampaign({ onClose, open, campaignId }: ModalInv
                                 ))}</>
                                 : <> {influencers.map(i => (
                                     <InviteCard
-                                        key={i.id}
+                                        resetDeadline={selectedInfluencers.length > 0 && selectAll}
                                         selectedInfluencer={selectedInfluencers}
+                                        key={i.id}
                                         onSelect={handleSelectCard}
                                         globalDeadlineTrigger={globalDeadline}
-                                        checked={selectedInfluencers.some(e => i.id == e.id)}
+                                        checked={selectedInfluencers.some(e => i.id == e.id) || !!i.deadline}
                                         influencer={i} />
                                 ))}</>
                             }

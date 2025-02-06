@@ -79,6 +79,7 @@ export type Creator = {
   name?: string,
   age?:number,
   platform?: string,
+  instagramUsername?:string
   creatorId:string
   avatarUrl?:string
   expertises?:string [],
@@ -96,6 +97,7 @@ export type Creator = {
   instagramMediaCount?:number
   instagramFollowersNumber?:number
   country?: string,
+  followersNumber?:number
   gender?:string,
   score?: number
   status?: 'active' | 'inactive' | 'not registered' | 'registered',

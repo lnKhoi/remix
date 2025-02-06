@@ -98,13 +98,10 @@ type ColumnsProps = {
 };
 
 export const influencersParticipantsColumns = ({
-  handleApprove,
-  handleReject,
   loading
 }: ColumnsProps): TableColumnsType<InfluencerInCampaign> => [
     {
       title: 'Name',
-      dataIndex: 'name',
       render: (_, record) => (
         <div className="flex items-center gap-2">
           {loading
@@ -125,14 +122,24 @@ export const influencersParticipantsColumns = ({
     },
     {
       title: 'Participants',
-      dataIndex: 'Participants',
       render: () => <div>
         {loading ? <Skeleton.Input active size='small' /> : 'Invite'}
       </div>,
     },
     {
       title: 'Instagram',
-      dataIndex: 'instagram',
+      render: (_, record) => <div>
+        {loading ? <Skeleton.Input active size='small' /> : record?.creator?.instagramUsername}
+      </div>,
+    },
+    {
+      title: 'Content Deadline',
+      render: (_, record) => <div>
+        {loading ? <Skeleton.Input active size='small' /> : <div className='flex flex-col'>
+          <span className='text-sm font-normal text-gray-800'>19/12/2024</span>
+          <span className='text-sm font-normal text-blue-500'>Requested Date</span>
+        </div>}
+      </div>,
     },
     {
       title: 'Status',
@@ -146,30 +153,6 @@ export const influencersParticipantsColumns = ({
         </>
       },
     },
-    // {
-    //   title: 'Action',
-    //   dataIndex: 'action',
-    //   render: (_, record: InfluencerInCampaign) => {
-    //     return (
-    //       record.status == 'accepted_invitation' && (
-    //         <div className="flex gap-2">
-    //           <button
-    //             className="text-blue-600 hover:bg-gray-200 rounded-md transition-all px-3 py-1"
-    //             onClick={() => handleApprove(record.creator.id as string)}
-    //           >
-    //             Approve
-    //           </button>
-    //           <button
-    //             className="text-red-500 px-3 py-1 rounded"
-    //             onClick={() => handleReject(record.creator.id as string)}
-    //           >
-    //             Reject
-    //           </button>
-    //         </div>
-    //       )
-    //     );
-    //   },
-    // },
   ];
 
 export const genders = ['male', 'female', 'other', 'all']

@@ -25,11 +25,12 @@ type InviteCardProps = {
     influencer: Creator
     checked: boolean
     onSelect: (id: string, checked: boolean, deadline: string) => void
+    globalDeadlineTrigger: string | null
     selectedInfluencer: InviteInfluencer[]
-    globalDeadlineTrigger:string | null
+    resetDeadline: boolean
 }
 
-function InviteCard({ influencer, checked, onSelect, selectedInfluencer,globalDeadlineTrigger }: InviteCardProps) {
+function InviteCard({ influencer, checked, onSelect, globalDeadlineTrigger, resetDeadline, selectedInfluencer }: InviteCardProps) {
     const [invited, setInvited] = useState<boolean>(false)
     const [isModal, setIsModal] = useState<boolean>(false)
     const [deadline, setDeadline] = useState<null | string>(null)
@@ -44,15 +45,26 @@ function InviteCard({ influencer, checked, onSelect, selectedInfluencer,globalDe
     };
 
     useEffect(() => {
-        setInvited(influencer?.alreadyInvited as boolean)
-    },[influencer.alreadyInvited])
+        setInvited(!!influencer?.deadline)
+    }, [influencer.alreadyInvited])
+
+    // Reset Global Deadline with only influencer not invited yet
+    useEffect(() => {
+        if (resetDeadline && !invited) {
+            setDeadline(null)
+        }
+    }, [resetDeadline])
 
     useEffect(() => {
-        const defaultDeadline = selectedInfluencer.find(i => i?.id === influencer?.id)?.deadline
-        setDeadline(globalDeadlineTrigger || defaultDeadline || influencer?.deadline as string)
-    }, [influencer.deadline,globalDeadlineTrigger,globalDeadlineTrigger])
+        // Set Global Deadline with only influencer not invited yet
+        const shouldBeUpdate = !invited ? globalDeadlineTrigger : null
+        setDeadline(shouldBeUpdate || influencer?.deadline as string)
+    }, [influencer.deadline, globalDeadlineTrigger, globalDeadlineTrigger])
 
-    console.log(influencer)
+    const demographicAges = influencer?.demographicAges?.sort((a, b) => b?.valuePercentage - a?.valuePercentage)?.[0]
+    const demographicGender = influencer?.demographicGenders?.sort((a, b) => b?.valuePercentage - a?.valuePercentage)?.[0]
+    const demographicCities = influencer?.demographicCities?.sort((a, b) => b?.valuePercentage - a?.valuePercentage)?.[0]
+
     return (
         <div className='p-4 rounded-md hover:border-blue-500 transition-all flex items-center justify-between border border-gray-100'>
             <div className='w-full'>
@@ -63,7 +75,7 @@ function InviteCard({ influencer, checked, onSelect, selectedInfluencer,globalDe
                         checked={checked} ></Checkbox>
                     <div className='flex flex-col items-start justify-between w-full'>
                         <div className='flex flex-col  w-full cursor-pointer items-start relative'>
-                            <div className='flex items-center w-full justify-between'>
+                            <div className='flex items-start w-full justify-between'>
                                 <div className='flex gap-3 '>
                                     <Avatar onClick={() => setIsModal(true)} src={influencer?.avatarUrl || DefaultAvatar} />
                                     <div>
@@ -74,6 +86,7 @@ function InviteCard({ influencer, checked, onSelect, selectedInfluencer,globalDe
                                 <div className='flex flex-col gap-2'>
                                     <span className='text-sm font-medium'>Deadline</span>
                                     <DatePicker
+                                        disabled={!!influencer.deadline}
                                         value={deadline ? dayjs(deadline) : null}
                                         allowClear={false}
                                         format={DATE_TIME_FORMAT}
@@ -88,19 +101,23 @@ function InviteCard({ influencer, checked, onSelect, selectedInfluencer,globalDe
                                         className='bg-gray-100 border-none hover:bg-gray-100 cursor-pointer' />
                                 </div>
                             </div>
-                            <div className='flex mt-1 items-center gap-[6px]'>
-                                <img src={IG_ICON} alt="insta" />
-                                <span className='text-xs text-gray-800 font-medium'>{influencer.followers}12k</span>
-                            </div>
+                            {demographicAges?.valueCount && (
+                                <div className='flex items-center gap-[6px]'>
+                                    <img src={IG_ICON} alt="insta" />
+                                    <span className='text-xs text-gray-800 font-medium'>{influencer?.followersNumber} Followers</span>
+                                </div>
+                            )}
                         </div>
 
-                        <div className=' w-full mt-3 items-end border-dashed border-t border-t-gray-200 justify-between'>
-                            <div className='flex items-start mt-4  h-[28px] gap-2'>
-                                <Button type='text' className='bg-gray-200 h-[28px]'>Age: 20 - 32</Button>
-                                <Button type='text' className='bg-gray-200 h-[28px]'>Gender: Female</Button>
-                                <Button type='text' className='bg-gray-200 h-[28px]'>Location: Vietnam</Button>
+                        {demographicAges?.valueCount && (
+                            <div className=' w-full mt-2.5 items-end border-dashed border-t border-t-gray-200 justify-between'>
+                                <div className='flex items-start mt-3  h-[28px] gap-2'>
+                                    <Button type='text' className='bg-gray-200 h-[28px]'>Age: {demographicAges?.detail} ({demographicAges?.valuePercentage}%) </Button>
+                                    <Button type='text' className='bg-gray-200 h-[28px]'>Gender: {demographicGender?.detail} ({demographicGender?.valuePercentage}%)</Button>
+                                    <Button type='text' className='bg-gray-200 h-[28px]'>Location: {demographicCities?.detail} ({demographicCities?.valuePercentage}%)</Button>
+                                </div>
                             </div>
-                        </div>
+                        )}
                     </div>
                 </div>
                 {isModal && (
