@@ -76,10 +76,13 @@ function Influencer() {
   }
 
   // Handle row click to open the drawer
-  const handleRowClick = (record: { creator: Creator }) => {
-    setSelectedInfluencer(record.creator);
-    setModalReviewDeadline(true);
+  const handleRowClick = (record: Creator) => {
+    if(record.creatorSuggestedDeadline && record.status !=='joined_campaign' && record.isFinalDeadline !== 1) {
+      setSelectedInfluencer(record);
+      setModalReviewDeadline(true);
+    }
   };
+
   
   return (
     <div>
@@ -110,7 +113,7 @@ function Influencer() {
       <div className='mt-2 cursor-pointer'>
         <Table<InfluencerInCampaign>
           onRow={(record) => ({
-            onClick: () => handleRowClick(record),
+            onClick: () => handleRowClick(record as any),
           })}
           rowSelection={{ type: 'checkbox', ...rowSelection }}
           columns={influencersParticipantsColumns({ handleApprove, handleReject, loading })}
@@ -122,6 +125,7 @@ function Influencer() {
         />
         {/* Review Review Request Date */}
         <ModalReviewRequestDate
+          onRefresh={handleGetInfluencersInCampaign}
           onclose={() => setModalReviewDeadline(false)}
           open={modalReviewDeadline}
           campaignId={id as string}

@@ -19,7 +19,7 @@ export const approveContentLinkStory = (contentId: string, status: boolean, reas
 
 export const requestNewDeadlineForInfluencer = (campaignId: string, creatorId: string, deadline: string) => {
     return postData(`/api/v1/brand/${campaignId}/${creatorId}/approve-suggested-deadline`, {
-        approved: false,
+        approved: true,
         newDeadline: deadline
     })
 }

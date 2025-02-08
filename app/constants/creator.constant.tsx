@@ -3,6 +3,7 @@ import {
   TableColumnsType,
   TableProps,
 } from 'antd';
+import dayjs from 'dayjs';
 import DefaultAvatar from '~/assets/avatar.jpeg';
 import Ig from '~/assets/insta.svg';
 import TagColor from '~/components/ui/tagColor';
@@ -13,6 +14,8 @@ import {
   InfluencerInCampaign,
 } from '~/models/User.model';
 import { formatName } from '~/utils/formatNumber';
+
+import { DATE_TIME_FORMAT } from './time.constant';
 
 export const creatorColumns: TableProps<Creator>['columns'] = [
   {
@@ -71,7 +74,6 @@ export const influencerColumn: TableProps<Creator>['columns'] = [
 ];
 
 
-
 export const socials = [
   // {
   //   name: 'facebook',
@@ -112,7 +114,7 @@ export const influencersParticipantsColumns = ({
             : <>
               <img
                 className="w-[30px] h-[30px] rounded-[50%] object-cover"
-                src={record.creator.avatarUrl || DefaultAvatar}
+                src={record?.creator?.avatarUrl || DefaultAvatar}
                 alt="avatar"
               />
               {formatName(record?.creator?.name as string)}
@@ -136,8 +138,15 @@ export const influencersParticipantsColumns = ({
       title: 'Content Deadline',
       render: (_, record) => <div>
         {loading ? <Skeleton.Input active size='small' /> : <div className='flex flex-col'>
-          <span className='text-sm font-normal text-gray-800'>19/12/2024</span>
-          <span className='text-sm font-normal text-blue-500'>Requested Date</span>
+          {record.isFinalDeadline == 1 && record.creatorSuggestedDeadline && (
+            <span className='text-sm text-gray-500 line-through'>
+              {dayjs(record?.creatorSuggestedDeadline).format(DATE_TIME_FORMAT)}
+            </span>
+          )}
+          <span className='text-sm font-normal text-gray-800'>{dayjs(record.deadline).format(DATE_TIME_FORMAT)}</span>
+          {record?.creatorSuggestedDeadline && record?.isFinalDeadline == 0 && (
+            <span className='text-sm font-normal text-blue-500'>Requested Date</span>
+          )}
         </div>}
       </div>,
     },
