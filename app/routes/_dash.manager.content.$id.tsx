@@ -398,7 +398,7 @@ const ContentDetails = () => {
                         <p className='text-sm font-normal text-gray-500'>Link Product</p>
                         <CopyToClipboard
                           onCopy={() => messageApi.success('Copied to clipboard!')}
-                          text={content?.trackingUrl}
+                          text={content?.trackingUrl as string}
                         >
                           <div className='flex cursor-pointer items-center gap-2 justify-between w-full'>
                             <p className='text-gray-500 text-sm overflow-hidden text-ellipsis whitespace-nowrap'>{abbreviateLastName(content?.trackingUrl as string, 45)}</p>
