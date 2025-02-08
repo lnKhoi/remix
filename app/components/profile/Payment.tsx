@@ -145,7 +145,7 @@ function Payment() {
           <div className='flex items-center gap-3'>
             <ExclamationCircleIcon className='w-6 h-6 text-blue-500' />
             <p className='text-sm font-normal text-gray-800'>We need your attention! To start using tools, Please
-              <span className='text-blue-500 text-sm font-bold ml-2'>Add Payment Method</span>
+              <span onClick={() => setIsSelectPayment(true)} className='text-blue-500 cursor-pointer text-sm font-bold ml-2'>Add Payment Method</span>
             </p>
           </div>
           <XMarkIcon onClick={() => setWarning(false)} className='cursor-pointer w-6 h-6 text-gray-500' />

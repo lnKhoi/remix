@@ -390,7 +390,7 @@ const ContentDetails = () => {
                 )}
 
                 {/* Link website */}
-                {content?.trackingUrl && (isStory && (content.approved == 'posted' || content.approved == 'approved')) && (
+                {(content?.trackingUrl || (isStory && (content?.approved == 'posted' || content?.approved == 'approved'))) && (
                   <div className='w-full border border-gray-100 rounded-xl shadow-sm'>
                     <div className='flex items-start p-4 gap-3'>
                       <LinkIcon width={20} height={20} className='text-gray-500' />
@@ -398,10 +398,10 @@ const ContentDetails = () => {
                         <p className='text-sm font-normal text-gray-500'>Link Product</p>
                         <CopyToClipboard
                           onCopy={() => messageApi.success('Copied to clipboard!')}
-                          text={content?.trackingUrl}
+                          text={content?.trackingUrl as string}
                         >
                           <div className='flex cursor-pointer items-center gap-2 justify-between w-full'>
-                            <p className='text-gray-500 text-sm overflow-hidden text-ellipsis whitespace-nowrap'>{abbreviateLastName(content?.trackingUrl, 45)}</p>
+                            <p className='text-gray-500 text-sm overflow-hidden text-ellipsis whitespace-nowrap'>{abbreviateLastName(content?.trackingUrl as string, 45)}</p>
                             <DocumentDuplicateIcon width={20} height={20} className='text-gray-500 min-w-[20px]' />
                           </div>
                         </CopyToClipboard>

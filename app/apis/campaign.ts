@@ -1,4 +1,7 @@
-import { Filter } from '~/components/campaign/ModalInviteInfluencerToCampaign';
+import {
+  Filter,
+  InviteInfluencer,
+} from '~/components/campaign/ModalInviteInfluencerToCampaign';
 import { DateRange } from '~/components/ui/ModalSelectTimeRange';
 import { Campaign } from '~/models/Campaign.model';
 
@@ -41,8 +44,8 @@ export const getListInfluencerInviteInCampaign = (camaignId: string, limit: numb
     return getData(`/api/v1/brand/${camaignId}/creators-for-inviting?limit=${limit}&page=${page}&genders=${filter?.gender}&socialMedias=${filter.socialMedias}&location=${filter.location ?? ''}&followerCount=${(filter?.minFollow !== '' && filter?.maxFollow !== '') ? filter?.minFollow + ',' + filter?.maxFollow : ''}&age=${filter.age?.[0] !== 0 || filter?.age?.[1] !== 100 ? (filter?.age?.[0] + ',' + filter?.age?.[1]) : ''}`)
 }
 
-export const inviteInfluencerToCampaign = (camaignId: string, creatorIds: string[]) => {
-    return postData(`/api/v1/brand/${camaignId}/invite`, { creatorIds: creatorIds })
+export const inviteInfluencerToCampaign = (camaignId: string, creatorIds: InviteInfluencer[]) => {
+    return postData(`/api/v1/brand/${camaignId}/invite`, { creators: creatorIds })
 }
 
 export const getInfluencerParticipantsInCampaign = (status: string, campaignId: string, limit: number, page: number) => {
@@ -69,8 +72,8 @@ export const reviewContent = (campaignId: string, contentId: string, reason?: st
     return postData(`api/v1/brand/${campaignId}/${contentId}/approve-content`, { approved: status, reason: reason })
 }
 
-export const rejectContentLink = (contentId:string,reason:string) => {
-    return postData(`/api/v1/brand/${contentId}/approve-post-link`,{approve:false,reason:reason})
+export const rejectContentLink = (contentId: string, reason: string) => {
+    return postData(`/api/v1/brand/${contentId}/approve-post-link`, { approve: false, reason: reason })
 }
 
 export const getMedia = (campaignId: string, filename: string) => {

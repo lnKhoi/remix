@@ -20,10 +20,8 @@ import {
   login,
   login3rdParty,
 } from '~/apis/auth';
-import Gg_icon from '~/assets/google.svg';
 import Logo from '~/assets/logo.svg';
 import { Button } from '~/components/ui/button';
-import { CardDescription } from '~/components/ui/card';
 import { Input } from '~/components/ui/input';
 import { Tabs } from '~/components/ui/tabs';
 import {
@@ -180,32 +178,32 @@ export default function Page() {
                         Login
                       </Button>
 
-                      <CardDescription className="mt-4">
+                      {/* <CardDescription className="mt-4">
                         <div className="flex items-center">
                           <div className="flex-grow border-t border-gray-300"></div>
                           <span className="mx-4 text-gray-500">or Login with</span>
                           <div className="flex-grow border-t border-gray-300"></div>
                         </div>
-                      </CardDescription>
+                      </CardDescription> */}
 
                       {/* Social Login Buttons */}
                       {/* <Button type='button' variant="outline" className="w-full">
                         <img className="mr-1" src={Fb_icon} alt="Facebook" />
                         Login with Facebook
                       </Button> */}
-                      <a href="/auth/google">
+                      {/* <a href="/auth/google">
                         <Button type='button' variant="outline" className="w-full">
                           <img className="mr-1" src={Gg_icon} alt="Google" />
                           Login with Google
                         </Button>
-                      </a>
+                      </a> */}
                       {/* <Button type='button' variant="outline" className="w-full">
                         <img className="mr-1" src={Is_icon} alt="Instagram" />
                         Login with Instagram
                       </Button> */}
                     </div>
 
-                    <div className="mt-4 text-center text-sm">
+                    <div className="mt-6 text-center text-sm">
                       Don&apos;t have an account?{' '}
                       <Link to="/register" className="underline font-bold text-blue-500">
                         Sign up
