@@ -77,10 +77,15 @@ export type Demographic = {
 export type Creator = {
   id?:string,
   name?: string,
+  reason?:string
   age?:number,
   platform?: string,
+  instagramUsername?:string
+  creator?:Creator
   creatorId:string
+  isFinalDeadline?:number
   avatarUrl?:string
+  creatorSuggestedDeadline?:string | null
   expertises?:string [],
   instagramTotalLikes?:number
   category?:string []
@@ -88,6 +93,7 @@ export type Creator = {
   portfolios?:InstagramPost[]
   connectedSocialMedias?:string []
   biography?:string
+  deadline?:string
   instagramFollowsCount?:number
   demographicAges?:Demographic[]
   demographicGenders?:Demographic[]
@@ -95,9 +101,10 @@ export type Creator = {
   instagramMediaCount?:number
   instagramFollowersNumber?:number
   country?: string,
+  followersNumber?:number
   gender?:string,
   score?: number
-  status?: 'active' | 'inactive' | 'not registered' | 'registered',
+  status?: 'active' | 'inactive' | 'not registered' | 'registered' | 'joined_campaign',
   followers?:number
   alreadyInvited?:boolean
 }
@@ -118,9 +125,12 @@ export type InstagramPost =  {
 export type InfluencerContentStatus = 'waiting_to_apply' | "accepted_invitation" | 'joined_campaign' | 'brand_declined_influencer'
 
 export type InfluencerInCampaign = {
-  creator:Creator,
-  campaignId:string,
+  creator?:Creator,
+  campaignId?:string,
   status: InfluencerContentStatus
+  isFinalDeadline?:number
+  deadline?:string | null
+  creatorSuggestedDeadline?:string | null
 
 }
 

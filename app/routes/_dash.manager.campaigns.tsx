@@ -72,6 +72,9 @@ function Campaigns() {
 
   const noMore = total === campaigns.length
 
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  },[])
 
   return (
     <div>
