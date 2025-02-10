@@ -140,7 +140,7 @@ export const influencersParticipantsColumns = ({
         {loading ? <Skeleton.Input active size='small' /> : <div className='flex flex-col'>
           {record.isFinalDeadline == 1 && record.creatorSuggestedDeadline && (
             <span className='text-sm text-gray-500 line-through'>
-              {dayjs(record?.creatorSuggestedDeadline).format(DATE_TIME_FORMAT)}
+              {dayjs(record?.previousDeadline).format(DATE_TIME_FORMAT)}
             </span>
           )}
           <span className='text-sm font-normal text-gray-800'>{dayjs(record.deadline).format(DATE_TIME_FORMAT)}</span>

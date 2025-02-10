@@ -38,9 +38,8 @@ export type CardDetails = {
     last4:string
     brand: string;
   }
-  
+
   export type TokenTransaction = {
-    id:string,
     user_id:string,
     amount:number,
     status:string,

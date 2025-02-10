@@ -123,7 +123,7 @@ function Reports({ campaign, filter }: ReportsProps) {
           {loading
             ? <Skeleton.Button active block />
             : <span className='text-2xl font-bold'>
-              <CountUp decimals={reportData?.engagementRate == 0 ? 0 : 1} end={reportData?.engagementRate || 0} />%
+              <CountUp decimals={2} end={reportData?.engagementRate || 0} />%
             </span>
           }
         </div>
@@ -150,7 +150,7 @@ function Reports({ campaign, filter }: ReportsProps) {
           {loading
             ? <Skeleton.Button active block />
             : <span className='text-2xl font-bold'>
-              <CountUp end={reportData.totalCtr as number} />%
+              <CountUp decimals={2} end={reportData.totalCtr as number} />%
             </span>
           }
         </div>

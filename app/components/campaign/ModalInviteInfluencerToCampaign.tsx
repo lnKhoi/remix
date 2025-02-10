@@ -16,6 +16,7 @@ import {
   Select,
   Skeleton,
   Slider,
+  Tooltip,
 } from 'antd';
 import dayjs, { Dayjs } from 'dayjs';
 import { toast } from 'react-toastify';
@@ -212,13 +213,13 @@ function ModalInviteInfluencerToCampaign({ onClose, open, campaignId }: ModalInv
                             <div className='flex items-center gap-3'>
                                 {selectAll && !influencers.every(e => !!e.deadline) && (
                                     <div className='flex items-center '>
-                                        <ExclamationCircleIcon className='text-gray-800 h-5 w-5' />
+                                        <Tooltip className='cursor-pointer' title='Deadline for influencers to submit the first content version'>
+                                            <ExclamationCircleIcon className='text-gray-800 h-5 w-5' />
+                                        </Tooltip>
                                         <span className='text-sm ml-1 mr-3 font-medium text-gray-800'>Deadline</span>
                                         <DatePicker
                                             format={DATE_TIME_FORMAT}
-                                            disabledDate={(current) => {
-                                                return current && current <= dayjs().endOf("day");
-                                            }}
+                                            minDate={dayjs().add(14, 'day')}
                                             onChange={(e) => handleSetGlobalDeadline(e)}
                                             value={globalDeadline ? dayjs(globalDeadline) : null}
                                             allowClear={false} className='bg-gray-100 hover:bg-gray-100 border-none' />
@@ -259,7 +260,7 @@ function ModalInviteInfluencerToCampaign({ onClose, open, campaignId }: ModalInv
                                                                 key={s.name}
                                                                 onClick={() => handleSelectSocial(s.name)}
                                                                 className={`h-[34px] px-3 text-sm cursor-pointer ${filter.socialMedias.includes(s.name) ? 'bg-blue-500 text-white' : 'bg-gray-200  text-gray-800'} 
-                                                                 font-medium flex items-center justify-center rounded-lg capitalize`}>
+                                                                   font-medium flex items-center justify-center rounded-lg capitalize`}>
                                                                 {s.name}
                                                             </div>
                                                         ))}

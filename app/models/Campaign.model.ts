@@ -11,6 +11,7 @@ export type Campaign = {
     discountType: 'percentage' | 'fixed'; 
     status: CampaignStatus
     socialMedia: string[]; 
+    maximumParticipants?:number
     location: string; 
     discount: number; 
     campaignOverview: string; 

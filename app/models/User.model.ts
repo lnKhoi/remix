@@ -130,6 +130,7 @@ export type InfluencerInCampaign = {
   status: InfluencerContentStatus
   isFinalDeadline?:number
   deadline?:string | null
+  previousDeadline?:string
   creatorSuggestedDeadline?:string | null
 
 }
