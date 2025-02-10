@@ -71,8 +71,6 @@ export default function Page() {
   const [loading, setLoading] = useState<boolean>(false)
   const user: GoogleAccount = useLoaderData()
 
-  console.log('LOADED UAT ENV',user)
-
   useEffect(() => {
     const handleLogin3rdParty = async () => {
       await login3rdParty('brand', user.emails?.[0]?.value, user?.displayName, '')
