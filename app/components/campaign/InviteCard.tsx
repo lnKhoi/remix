@@ -87,6 +87,7 @@ function InviteCard({ influencer, checked, onSelect, globalDeadlineTrigger, rese
                                     <span className='text-sm font-medium'>Deadline</span>
                                     <DatePicker
                                         disabled={!!influencer.deadline}
+                                        minDate={dayjs().add(14, 'day')}
                                         value={deadline ? dayjs(deadline) : null}
                                         allowClear={false}
                                         format={DATE_TIME_FORMAT}

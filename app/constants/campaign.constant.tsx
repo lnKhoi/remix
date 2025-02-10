@@ -164,6 +164,7 @@ export const postDurationOptions = [
   { label: '1 Week', value: '1w' },
   { label: '2 Weeks', value: '2w' },
   { label: '1 Month', value: '1m' },
+  { label: 'Indefinite', value: 'indefinite' }
 ]
 
 export const storyDurationOptions = [
