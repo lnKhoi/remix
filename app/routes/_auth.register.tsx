@@ -18,6 +18,7 @@ import LoginBanner from '~/assets/login-banner.png';
 import Logo from '~/assets/logo.svg';
 import PhoneNumberInput from '~/components/ui/input-country';
 import { SignupPayload } from '~/models/User.model';
+import { passwordRules } from '~/validators/account.validator';
 
 import { useNavigate } from '@remix-run/react';
 
@@ -95,15 +96,15 @@ export default function Page() {
                     </Form.Item>
 
                     {/* Password Field */}
+                    <div className='pt-3'>
                     <Form.Item
                         label="Password"
                         name="password"
-                        rules={[
-                            { required: true, message: 'Password is required.' },
-                        ]}
+                        rules={passwordRules}
                     >
-                        <Input.Password placeholder="Password" />
+                        <Input type='password' />
                     </Form.Item>
+                    </div>
 
                     {/* Confirm Password Field */}
                     <Form.Item
@@ -122,7 +123,7 @@ export default function Page() {
                             }),
                         ]}
                     >
-                        <Input.Password placeholder="Confirm Password" />
+                        <Input type='password'/>
                     </Form.Item>
 
                     <div className="flex items-center gap-4">

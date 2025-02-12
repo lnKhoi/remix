@@ -74,7 +74,7 @@ function Campaigns() {
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
-  },[])
+  }, [])
 
   return (
     <div>
@@ -131,7 +131,7 @@ function Campaigns() {
               loading={loading == 'load-more'}
               onClick={() => handleGetCampaigns(true)}
               className='mx-auto mt-[44px] flex justify-center' >
-                 Load more...
+              Load more...
             </AntButton>
           )}
         </div>
