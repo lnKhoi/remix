@@ -17,6 +17,7 @@ export type Content ={
     isDeleted: boolean;
     conversionRate:number
     deletedAt: string | null;
+    screenshotUrls?:string []
     creator:User
     createdAt: string;
     post_due?:string,

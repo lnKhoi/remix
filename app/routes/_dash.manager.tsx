@@ -12,6 +12,7 @@ import {
 } from 'antd';
 import DefaultAvatar from '~/assets/avatar.jpeg';
 import Logo from '~/assets/logo.svg';
+import Notification from '~/components/notification/Notification';
 import {
   NavItem,
   navItems,
@@ -60,26 +61,41 @@ function SidebarMenu({
         item.children ? (
           <SubMenu
             key={item.to}
-            style={{fontSize:14}}
-            icon={renderIcon(item.icon)}
-            title={item.label}
+            title={
+              <div
+                className="flex items-center gap-2"
+                style={{
+                  fontSize: 14,
+                  alignItems: "center",
+                  height: 39,
+                  display: "flex",
+                  width: '100%',
+                  marginTop: 4,
+                  marginBottom: 4,
+                  marginLeft: 4,
+                }}
+              >
+                {renderIcon(item.icon)}
+                <span>{item.label}</span>
+              </div>
+            }
           >
             {item.children.map((child) => (
               <Menu.Item key={child.to}>
                 <Link to={child.to}>
                   <div className="flex items-center gap-2">
                     {renderIcon(child.icon)}
-                    {child.label}
+                    <span>{child.label}</span>
                   </div>
                 </Link>
               </Menu.Item>
             ))}
           </SubMenu>
         ) : (
-          <Menu.Item style={{ height: 40,padding:20 }} key={item.to}>
+          <Menu.Item style={{ height: 35, marginTop: 4, width: 160, marginLeft: 12, padding: 20, }} key={item.to}>
             <Link to={item.to}>
               <div
-                style={{ fontSize: 14 }}
+                style={{ fontSize: 14, display: 'flex' }}
                 className="flex items-center h-full gap-2"
               >
                 {renderIcon(item.icon)}
@@ -179,11 +195,16 @@ function Page() {
   return (
     <Layout style={{ height: "100vh" }}>
       <Sider width={200} className="h-[100vh] overflow-hidden">
-        <div className="h-[60px] flex items-center bg-[#F9FAFB] pr-5 pl-[27px] justify-between">
+        <div className="h-[60px] flex notification items-center bg-[#F9FAFB] pr-5 pl-[27px] justify-between">
           <img src={Logo} className="h-[24px]" alt="logo" />
-          <Badge size="small" className="cursor-pointer" count={5}>
-            <BellIcon width={20} color="#374151" />
-          </Badge>
+          <Popover
+            trigger="click"
+            placement='bottomLeft'
+            title={<div className='w-[475px] h-[350px]'><Notification /></div>}>
+            <Badge size="small" className="cursor-pointer" count={5}>
+              <BellIcon width={20} color="#374151" />
+            </Badge>
+          </Popover>
         </div>
         <SidebarMenu items={navItems} onLogout={handleLogout} />
         <UserProfilePopover
