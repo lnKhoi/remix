@@ -35,6 +35,7 @@ import { UserPlusIcon } from '@heroicons/react/24/outline';
 import {
   Link,
   MetaFunction,
+  useNavigate,
   useParams,
 } from '@remix-run/react';
 
@@ -45,6 +46,7 @@ export const meta: MetaFunction = () => {
 type Tab = 'Campaign Details' | 'Influencer' | 'Content' | 'Reports' | 'Order' | 'Finance'
 function page() {
   const { id } = useParams();
+  const navigate = useNavigate()
   const [loading, setLoading] = useState<boolean>(false)
   const [tab, setTab] = useState<Tab>('Campaign Details');
   const [modalInvite, setModalInvite] = useState<boolean>(false);
@@ -64,7 +66,7 @@ function page() {
       case 'Campaign Details':
         return <CampaignDetails loading={loading} campaign={campaign} />;
       case 'Influencer':
-        return <Influencer campaign={campaign} />;
+        return <Influencer />;
       case 'Content':
         return <Content campaign={campaign} />;
       case 'Reports':
@@ -72,7 +74,7 @@ function page() {
       case 'Order':
         return <Order campaign={campaign} />;
       case 'Finance':
-          return <Finance />;
+        return <Finance />;
       default:
         break;
     }
@@ -113,16 +115,25 @@ function page() {
               },
             ]}
           />
-          <Button
-            onClick={() => setModalInvite(true)}
-            className='bg-gray-100 hover:bg-gray-400 border-gray-100'
-            type='text'
-          >
-            <div className='flex items-center gap-1'>
-              <UserPlusIcon className='bg-gray-100' width={20} />
-              Invite Influencer
-            </div>
-          </Button>
+          <div className='flex items-center gap-3'>
+            <Button
+              onClick={() => navigate(`/manager/edit/${campaign?.id}`)}
+              disabled={campaign?.joinedCreators?.length as number > 0 }
+              className='bg-gray-100 hover:bg-gray-100 border-none' >
+              Edit Campaign
+            </Button>
+
+            <Button
+              onClick={() => setModalInvite(true)}
+              className='bg-gray-100 hover:bg-gray-400 border-gray-100'
+              type='text'
+            >
+              <div className='flex items-center gap-1'>
+                <UserPlusIcon className='bg-gray-100' width={20} />
+                Invite Influencer
+              </div>
+            </Button>
+          </div>
         </div>
       </div>
       <div className='mt-14'>

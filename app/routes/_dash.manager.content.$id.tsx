@@ -34,6 +34,7 @@ import {
 } from '~/apis/content';
 import DefaultAvatar from '~/assets/avatar.jpeg';
 import EmbedContent from '~/components/content/EmbedContent';
+import ModalDisputeStory from '~/components/content/ModalDisputeStory';
 import ModalPostingDate from '~/components/content/ModalPostingDate';
 import ModalPreviewContent from '~/components/content/ModalPreviewContent';
 import ContentDetailSkeleton
@@ -69,7 +70,7 @@ export const meta: MetaFunction = () => {
   return [{ title: 'Review Content' }]
 }
 
-type ModalType = 'confirm-posting-date' | 'reject-influencer-request' | 'approve-influencer-request' | 'reject-content' | ''
+type ModalType = 'confirm-posting-date' | 'reject-influencer-request' | 'approve-influencer-request' | 'reject-content' | 'dispute-story' | ''
 type LoadingType = 'approve-content-link' | 'reject-content-link' | 'get-content-details' | 'approve-content-post' | 'reject-content-post' | ''
 
 const settings = {
@@ -176,6 +177,8 @@ const ContentDetails = () => {
       .catch(err => toast.error(err?.message))
       .finally(() => setLoading(''))
   }
+
+
 
   return (
     <div className='custom-select'>
@@ -305,9 +308,23 @@ const ContentDetails = () => {
 
                 <div className='w-full border border-gray-100 rounded-xl shadow-sm'>
                   <p className='p-4 text-sm text-gray-800 '>
-                    {isStory && (content?.approved == 'approved' || content?.approved == 'posted') ? 'Content' : 'Please review the attached content for approval. Looking forward to your feedback!'}
-
+                    {isStory && (content?.approved == 'approved' || content?.approved == 'posted')
+                      ? 'Content'
+                      : 'Please review the attached content for approval. Looking forward to your feedback!'}
                   </p>
+
+                  {/* Warning reject for brand */}
+                  {(content?.versions?.length as number > 2 && lastVersion == (selectedVersion || id)) && content?.approved !== 'approved' && (
+                    <div className='flex items-center gap-3 p-4 m-4 mt-0 bg-orange-100 rounded-lg'>
+                      <ExclamationCircleIcon className='w-5 min-w-5 min-h-5 h-5 text-orange-500' />
+                      <p className='text-sm font-normal text-gray-800'>
+                        {content?.approved !== 'rejected'
+                          ? 'You has rejected the content for the second time. Please note that a maximum of three rejections is allowed.'
+                          : 'You has rejected the content for the third time. This is the final allowed rejection'
+                        }
+                      </p>
+                    </div>
+                  )}
                   <div className='w-full justify-between px-4 pb-4 flex items-center gap-2 '>
                     {content?.approved == 'pending' || content?.approved == 'pending-review' ? (
                       <>
@@ -331,7 +348,7 @@ const ContentDetails = () => {
 
 
                 {/* Reason */}
-                {content?.approved === 'rejected' || content?.approved == 'declined' && (
+                {(content?.approved === 'rejected' || content?.approved == 'declined') && (
                   <div className='p-4 border w-full border-gray-200 rounded-xl flex flex-col gap-4'>
                     <span className='text-sm font-medium text-gray-800'>Reason</span>
                     <p className='text-sm font-normal text-gray-800'>Your feedback has been sent to Influencer. You couldn’t edit reason or undo.</p>
@@ -345,13 +362,7 @@ const ContentDetails = () => {
                     <p onClick={() => window.open(content?.permalink, "_blank")}
                       className='text-blue-500 px-4 cursor-pointer'>{abbreviateLastName(content.permalink, 35)}</p>
                     <div className='flex gap-3 px-4 mt-5 pb-4'>
-                      <Button onClick={() => setModalType('reject-content')} className='w-1/2' type='default' >Reject</Button>
-                      <Button
-                        loading={loading == 'approve-content-link'}
-                        onClick={() => handleReviewContentLink(true)}
-                        className='w-1/2' type='primary' >
-                        Approve
-                      </Button>
+                      <Button onClick={() => setModalType('dispute-story')} className='w-full' type='primary'>Dispute</Button>
                     </div>
                     <div className='bg-gray-100  flex gap-3 items-center p-4 justify-start'>
                       <ExclamationCircleIcon width={20} className='text-gray-500' />
@@ -428,6 +439,24 @@ const ContentDetails = () => {
                   </div>
                 )}
 
+                {/* IG Screenshot for story */}
+
+                {content?.screenshotUrls?.[0] &&
+                  videoExtensions.includes(content.screenshotUrls[0].slice(-3)) ? (
+                  <video
+                    src={content.screenshotUrls[0]}
+                    className="w-full h-[400px] object-cover rounded-lg"
+                    controls
+                  />
+                ) : content?.screenshotUrls?.[0] ? (
+                  <img
+                    src={content.screenshotUrls[0]}
+                    className="w-full h-[400px] object-cover rounded-lg"
+                    alt="story"
+                  />
+                ) : null}
+
+
                 {/* Embed Post */}
                 {!isStory && (
                   <EmbedContent link={content?.permalink as string} />
@@ -468,14 +497,22 @@ const ContentDetails = () => {
 
               <Drawer
                 footer={
-                  <div className='flex items-center justify-end mr-7'><Button onClick={() => setIsViewReason(false)}>Close</Button></div>
+                  <div className='flex items-center justify-end mr-7'>
+                    <Button onClick={() => setIsViewReason(false)}>Close</Button></div>
                 }
                 title='Reason'
                 width={650}
                 open={isViewReason}
                 onClose={() => setIsViewReason(false)}>
-                <Editor showToolbar={false} value={content?.reason as string} />
+                <Editor showToolbar={false} disabled value={content?.reason as string} />
               </Drawer>
+
+              {/* Modal Dispute Story */}
+              <ModalDisputeStory
+                onSuccess={handleRefreshVersion}
+                open={modalType == 'dispute-story'}
+                onclose={() => setModalType('')} />
+
             </div>
           </>
       }

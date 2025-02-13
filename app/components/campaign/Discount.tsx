@@ -4,9 +4,11 @@ import {
 } from 'react';
 
 import {
+  Button,
   DatePicker,
   Form,
   FormInstance,
+  Modal,
   Select,
 } from 'antd';
 import {
@@ -35,7 +37,7 @@ const Discount = ({ form }: DiscountProps) => {
     const [products, setProducts] = useState<Product[]>([])
     const [shopId, setShopId] = useState<string>('')
     const formData = form.getFieldsValue()
-
+    const [modalConnectShopify, setModalConnectShopify] = useState<boolean>(false)
 
     const handleGetShopifyId = () => {
         getShopId().then(res => {
@@ -59,10 +61,19 @@ const Discount = ({ form }: DiscountProps) => {
 
 
     useEffect(() => {
-       formData?.discountCode &&  form.setFieldValue('removed',formData?.discountCode)
-    },[formData?.discountCode])
+        formData?.discountCode && form.setFieldValue('removed', formData?.discountCode)
+    }, [formData?.discountCode])
 
-    
+    const handleCreateDiscount = () => {
+        getShopId().then(res => {
+            if (res?.data?.length > 0) {
+                setModal(true)
+            } else {
+                setModalConnectShopify(true)
+            }
+        })
+    }
+
 
     return (
         <div className="flex flex-col pt-8 items-start mt-6 border-t border-t-gray-200">
@@ -90,12 +101,12 @@ const Discount = ({ form }: DiscountProps) => {
                             value: c?.value + c.title + c.value_type,
                             label: c?.title,
                             discountType: c?.value_type,
-                            discountValue:c?.value
+                            discountValue: c?.value
                         }))}
                     />
                 </Form.Item>
             </div>
-            <div onClick={() => setModal(true)} className="text-blue-500 cursor-pointer flex items-center gap-1 text-sm">
+            <div onClick={handleCreateDiscount} className="text-blue-500 cursor-pointer flex items-center gap-1 text-sm">
                 <PlusIcon
                     className="w-4 text-blue-500" />
                 Create discount
@@ -141,6 +152,35 @@ const Discount = ({ form }: DiscountProps) => {
                     products={products}
                 />
             )}
+
+            {/* Modal Connect Shopify */}
+            <Modal
+                width={356}
+                height={210}
+                open={modalConnectShopify}
+                onCancel={() => setModalConnectShopify(false)}
+                footer={<div className='flex w-full mt-7 items-center gap-3'>
+                    <Button
+                        className='w-1/2'
+                        onClick={() => setModalConnectShopify(false)}>
+                        Cancel
+                    </Button>
+                    <Button
+                        onClick={() => {
+                            localStorage.setItem('profile-tab', 'Intergration')
+                            window.open('/manager/my-profile', '_blank')
+                            setModalConnectShopify(false)
+                        }}
+                        className='w-1/2'
+                        type='primary'>
+                        Connect now
+                    </Button>
+                </div>}
+                title={<span className='text-xl text-center flex justify-center font-semibold text-gray-800'>Connect Shopify</span>}>
+                <p className='text-sm text-center font-normal text-gray-800'>Before creating a discount code, please connect your Shopify account to synchronize data and manage discount codes more easily.</p>
+
+            </Modal>
+
         </div>
     );
 };

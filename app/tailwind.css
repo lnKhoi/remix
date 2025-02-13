@@ -255,3 +255,23 @@ input::placeholder {
 .custom-editor-copy .ql-clipboard {
   display: none !important;
 }
+
+
+/* width */
+.notification::-webkit-scrollbar {
+  width: 5px !important;
+}
+
+/* Track */
+.notification::-webkit-scrollbar-track {
+  background: theme('colors.gray.100') !important;
+}
+
+/* Handle */
+.notification::-webkit-scrollbar-thumb {
+  background: theme('colors.gray.300');
+}
+
+.ant-popover-inner {
+  padding: 0 !important;
+}
