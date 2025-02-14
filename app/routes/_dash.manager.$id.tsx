@@ -31,7 +31,10 @@ import { campaignDetailsTabs } from '~/constants/campaign.constant';
 import { Campaign } from '~/models/Campaign.model';
 import { abbreviateLastName } from '~/utils/formatNumber';
 
-import { UserPlusIcon } from '@heroicons/react/24/outline';
+import {
+  PencilSquareIcon,
+  UserPlusIcon,
+} from '@heroicons/react/24/outline';
 import {
   Link,
   MetaFunction,
@@ -119,19 +122,18 @@ function page() {
             <Button
               onClick={() => navigate(`/manager/edit/${campaign?.id}`)}
               disabled={campaign?.joinedCreators?.length as number > 0 }
-              className='bg-gray-100 hover:bg-gray-100 border-none' >
+              className='bg-gray-100 text-sm font-semibold hover:bg-gray-100 border-none' >
+                <PencilSquareIcon className='w-5 h-5 text-gray-800' />
               Edit Campaign
             </Button>
 
             <Button
               onClick={() => setModalInvite(true)}
-              className='bg-gray-100 hover:bg-gray-400 border-gray-100'
+              className='bg-gray-100 hover:bg-gray-400 tesm font-semibold border-gray-100'
               type='text'
             >
-              <div className='flex items-center gap-1'>
-                <UserPlusIcon className='bg-gray-100' width={20} />
+                <UserPlusIcon className='bg-gray-100 text-gray-800 font-bold w-5 h-5' />
                 Invite Influencer
-              </div>
             </Button>
           </div>
         </div>

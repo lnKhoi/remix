@@ -1,20 +1,30 @@
 import React, { useState } from 'react';
 
 import { Modal } from 'antd';
+import { toast } from 'react-toastify';
+import { disputeContent } from '~/apis/content';
 import Editor from '~/plugins/editor';
 
 type ModalDisputeStoryProps = {
     open: boolean
     onclose: () => void
     onSuccess: () => void
+    contentId: string
 }
 
-function ModalDisputeStory({ onSuccess, onclose, open }: ModalDisputeStoryProps) {
+function ModalDisputeStory({ onSuccess, onclose, open, contentId }: ModalDisputeStoryProps) {
     const [reason, setReason] = useState<string>('')
-    const [loading,setLoading] = useState<boolean>(false)
+    const [loading, setLoading] = useState<boolean>(false)
 
     const handleDispute = () => {
         setLoading(true)
+        disputeContent(contentId, reason)
+            .then((res) => {
+                onSuccess()
+                toast.success('Dispute content successfully!')
+            })
+            .catch(err => toast.error(err?.message))
+            .finally(() => setLoading(false))
     }
 
     return (
@@ -24,6 +34,7 @@ function ModalDisputeStory({ onSuccess, onclose, open }: ModalDisputeStoryProps)
             onOk={handleDispute}
             okText='Send'
             confirmLoading={loading}
+            okButtonProps={{ disabled: reason == '' }}
             title='Dispute'
             onCancel={onclose}
         >
@@ -31,10 +42,10 @@ function ModalDisputeStory({ onSuccess, onclose, open }: ModalDisputeStoryProps)
                 Please let us know your reason for dispute the post
             </p>
             <div className='mb-8'>
-            <Editor
-                value={reason}
-                onChange={(v) => setReason(v)}
-            />
+                <Editor
+                    value={reason}
+                    onChange={(v) => setReason(v)}
+                />
             </div>
         </Modal>
     )
