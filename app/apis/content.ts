@@ -29,3 +29,7 @@ export const approveDeadlineFromInfluencer = (campaignId: string, creatorId: str
         approved: true
     })
 }
+
+export const disputeContent = (contentId: string, reason: string) => {
+    return postData(`/api/v1/brand/${contentId}/dispute-story-content`, { reason: reason })
+}
