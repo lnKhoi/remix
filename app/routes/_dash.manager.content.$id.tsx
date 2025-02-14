@@ -511,6 +511,7 @@ const ContentDetails = () => {
               <ModalDisputeStory
                 onSuccess={handleRefreshVersion}
                 open={modalType == 'dispute-story'}
+                contentId={content?.id as string}
                 onclose={() => setModalType('')} />
 
             </div>
