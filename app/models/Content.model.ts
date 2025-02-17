@@ -15,6 +15,7 @@ export type Content ={
     campaign:Campaign
     permalink?:string
     isDeleted: boolean;
+    postedAt?:string
     conversionRate:number
     deletedAt: string | null;
     screenshotUrls?:string []
