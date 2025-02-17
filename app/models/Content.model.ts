@@ -13,6 +13,7 @@ export type Content ={
     notes: string;
     engagementRate:number
     campaign:Campaign
+    postedAt:string
     permalink?:string
     isDeleted: boolean;
     conversionRate:number
