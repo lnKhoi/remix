@@ -445,7 +445,7 @@ const ContentDetails = () => {
                       <CalendarDateRangeIcon width={20} height={20} className='text-gray-500' />
                       <div className='flex flex-col gap-1 w-full'>
                         <p className='text-sm font-normal text-gray-500'>Live Post</p>
-                        <p className='text-gray-800 text-sm'>{dayjs(content?.post_due).format(DATE_TIME_FORMAT_V2)}</p>
+                        <p className='text-gray-800 text-sm'>{dayjs(content?.postedAt).format(DATE_TIME_FORMAT_V2)}</p>
                       </div>
                     </div>
                   </div>
