@@ -122,7 +122,7 @@ export type InstagramPost =  {
   comments_count: number;
 }
 
-export type InfluencerContentStatus = 'waiting_to_apply' | "accepted_invitation" | 'joined_campaign' | 'brand_declined_influencer'
+export type InfluencerContentStatus = 'waiting_to_apply' | "accepted_invitation" | 'joined_campaign' | 'brand_declined_influencer' | 'declined_invitation'
 
 export type InfluencerInCampaign = {
   creator?:Creator,
