@@ -21,6 +21,7 @@ function ModalDisputeStory({ onSuccess, onclose, open, contentId }: ModalDispute
         disputeContent(contentId, reason)
             .then((res) => {
                 onSuccess()
+                onclose()
                 toast.success('Dispute content successfully!')
             })
             .catch(err => toast.error(err?.message))

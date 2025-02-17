@@ -48,6 +48,7 @@ function ModalReviewRequestDate({ onclose, open, influencer, campaignId, onRefre
       .finally(() => setLoadingType(''))
   }
 
+
   const handleRequestNewDeadline = () => {
     setLoadingType('request-new-deadline')
     requestNewDeadlineForInfluencer(campaignId, influencer?.creator?.id as string, dayjs(date).toISOString())
@@ -127,7 +128,7 @@ function ModalReviewRequestDate({ onclose, open, influencer, campaignId, onRefre
           <DatePicker
             format={DATE_TIME_FORMAT}
             onChange={(d) => setDate(d)}
-            minDate={dayjs().add(1, 'day')}
+            minDate={dayjs().add(14, 'day')}
             className='bg-gray-100 border-gray-50 hover:bg-gray-100' />
         </div>
         <div className='mt-8 flex items-center gap-3'>
