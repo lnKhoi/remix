@@ -418,7 +418,6 @@ const ContentDetails = () => {
                         </CopyToClipboard>
                       </div>
                     </div>
-
                   </div>
                 )}
 
@@ -440,18 +439,27 @@ const ContentDetails = () => {
                 )}
 
                 {/* IG Screenshot for story */}
+                <div className='w-full border border-gray-200 -mb-5 rounded-tl-xl rounded-tr-xl shadow-sm'>
+                  <div className='flex items-start pt-4  px-3  pb-3 gap-3'>
+                    <CalendarDateRangeIcon width={20} height={20} className='text-gray-500' />
+                    <div className='flex flex-col gap-1 w-full'>
+                      <p className='text-sm font-normal text-gray-500'>Live Post</p>
+                      <p className='text-gray-800 text-sm'>{dayjs(content?.post_due).format(DATE_TIME_FORMAT_V2)}</p>
+                    </div>
+                  </div>
+                </div>
 
                 {content?.screenshotUrls?.[0] &&
                   videoExtensions.includes(content.screenshotUrls[0].slice(-3)) ? (
                   <video
                     src={content.screenshotUrls[0]}
-                    className="w-full h-[400px] object-cover rounded-lg"
+                    className="w-full h-[400px] object-cover rounded-bl-xl rounded-br-xl"
                     controls
                   />
                 ) : content?.screenshotUrls?.[0] ? (
                   <img
                     src={content.screenshotUrls[0]}
-                    className="w-full h-[400px] object-cover rounded-lg"
+                    className="w-full h-[400px] object-cover rounded-bl-xl rounded-br-xl"
                     alt="story"
                   />
                 ) : null}
