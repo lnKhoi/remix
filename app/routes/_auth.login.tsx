@@ -37,6 +37,7 @@ import {
 } from '~/services/sessions.server';
 import { createPasswordValidationSchema } from '~/validators/account.validator';
 
+import { EyeIcon } from '@heroicons/react/24/outline';
 import {
   LoaderFunction,
   MetaFunction,
@@ -70,6 +71,7 @@ export default function Page() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState<boolean>(false)
   const user: GoogleAccount = useLoaderData()
+  const [isPassword,setIsPassword] = useState<boolean>(true)
 
   useEffect(() => {
     const handleLogin3rdParty = async () => {
@@ -146,17 +148,22 @@ export default function Page() {
                         />
                       </div>
                       <div className="grid gap-2">
-                        <Field
+                       <div className='relative'>
+                       <Field
                           as={Input}
                           label='Password'
                           id="password"
                           name="password"
-                          type="password"
+                          type={isPassword ? 'password' : ''}
                           placeholder="Password"
                           hasError={touched.password && !!errors.password}
                           errorMessage={touched.password && errors.password ? errors.password : ''}
                           required
                         />
+                        <EyeIcon
+                         onClick={() => setIsPassword(!isPassword)}
+                         className='w-5 cursor-pointer h-5 absolute text-gray-500 right-3 top-9' />
+                       </div>
                         {/* Error Login */}
                         <Link
                           to="/forgot-password"
@@ -175,30 +182,6 @@ export default function Page() {
                       >
                         Login
                       </Button>
-
-                      {/* <CardDescription className="mt-4">
-                        <div className="flex items-center">
-                          <div className="flex-grow border-t border-gray-300"></div>
-                          <span className="mx-4 text-gray-500">or Login with</span>
-                          <div className="flex-grow border-t border-gray-300"></div>
-                        </div>
-                      </CardDescription> */}
-
-                      {/* Social Login Buttons */}
-                      {/* <Button type='button' variant="outline" className="w-full">
-                        <img className="mr-1" src={Fb_icon} alt="Facebook" />
-                        Login with Facebook
-                      </Button> */}
-                      {/* <a href="/auth/google">
-                        <Button type='button' variant="outline" className="w-full">
-                          <img className="mr-1" src={Gg_icon} alt="Google" />
-                          Login with Google
-                        </Button>
-                      </a> */}
-                      {/* <Button type='button' variant="outline" className="w-full">
-                        <img className="mr-1" src={Is_icon} alt="Instagram" />
-                        Login with Instagram
-                      </Button> */}
                     </div>
 
                     <div className="mt-6 text-center text-sm">

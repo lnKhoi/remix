@@ -123,9 +123,9 @@ export const influencersParticipantsColumns = ({
       ),
     },
     {
-      title: 'Participants',
+      title: 'Participants Source',
       render: () => <div>
-        {loading ? <Skeleton.Input active size='small' /> : 'Invite'}
+        {loading ? <Skeleton.Input active size='small' /> : 'Invited'}
       </div>,
     },
     {
