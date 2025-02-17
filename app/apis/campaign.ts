@@ -49,7 +49,7 @@ export const inviteInfluencerToCampaign = (camaignId: string, creatorIds: Invite
 }
 
 export const getInfluencerParticipantsInCampaign = (status: string, campaignId: string, limit: number, page: number) => {
-    return getData(`/api/v1/campaign/${campaignId}/influencers?limit=${limit}&page=${page}${status === '' ? '&status=waiting_to_apply,accepted_invitation,joined_campaign' : `&status=brand_declined_influencer`}`)
+    return getData(`/api/v1/campaign/${campaignId}/influencers?limit=${limit}&page=${page}${status === '' ? '&status=waiting_to_apply,accepted_invitation,joined_campaign' : `&status=declined_invitation`}`)
 }
 
 export const brandUpdateInvitationStatus = (campaignId: string, creatorId: string, status: boolean) => {
