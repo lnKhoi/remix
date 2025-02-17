@@ -20,6 +20,12 @@ import {
   FinanceMetrics,
 } from '~/models/finance.model';
 
+import { MetaFunction } from '@remix-run/react';
+
+export const meta: MetaFunction = () => {
+    return [{ title: 'Finance' }];
+};
+
 function Finance() {
     const [search, setSearch] = useState<string>('')
     const [loadingMetric, setLoadingMetric] = useState<boolean>(false)

@@ -20,6 +20,7 @@ import PhoneNumberInput from '~/components/ui/input-country';
 import { SignupPayload } from '~/models/User.model';
 import { passwordRules } from '~/validators/account.validator';
 
+import { EyeIcon } from '@heroicons/react/24/outline';
 import { useNavigate } from '@remix-run/react';
 
 const { Option } = Select;
@@ -29,6 +30,8 @@ export default function Page() {
     const [phone, setPhone] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(false);
     const [accepted, setAccepted] = useState<boolean>(true);
+    const [isShowPassword, setIsShowPassword] = useState<boolean>(true)
+    const [isShowCfPassword, setIsShowCfPassword] = useState<boolean>(true)
 
     const handleSubmit = async (values: SignupPayload) => {
         setLoading(true);
@@ -97,13 +100,16 @@ export default function Page() {
 
                     {/* Password Field */}
                     <div className='pt-3'>
-                    <Form.Item
-                        label="Password"
-                        name="password"
-                        rules={passwordRules}
-                    >
-                        <Input type='password' />
-                    </Form.Item>
+                        <Form.Item
+                            label="Password"
+                            name="password"
+                            rules={passwordRules}
+                        >
+                            <Input type={isShowPassword ? 'password' : 'text'} />
+                            <EyeIcon
+                                onClick={() => setIsShowPassword(!isShowPassword)}
+                                className='w-5 cursor-pointer h-5 absolute text-gray-500 right-3 top-2' />
+                        </Form.Item>
                     </div>
 
                     {/* Confirm Password Field */}
@@ -123,7 +129,10 @@ export default function Page() {
                             }),
                         ]}
                     >
-                        <Input type='password'/>
+                        <Input type={isShowCfPassword ? 'password' : 'text'} />
+                        <EyeIcon
+                            onClick={() => setIsShowCfPassword(!isShowCfPassword)}
+                            className='w-5 cursor-pointer h-5 absolute text-gray-500 right-3 top-2' />
                     </Form.Item>
 
                     <div className="flex items-center gap-4">

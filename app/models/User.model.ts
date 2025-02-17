@@ -148,3 +148,12 @@ export type InfluencerPerformance = {
   reach:number
   creator?:Creator
 }
+
+export type UserPermission = {
+  id:string,
+  name?:string,
+  email?:string,
+  role?:string,
+  lastActivity?:string,
+  joinedDate?:string
+}

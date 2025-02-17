@@ -127,7 +127,7 @@ function UserProfilePopover({
     <Popover
       content={
         <div>
-          <div className="pb-2.5 border-b border-b-gray-200 flex items-center gap-2">
+          <div className="p-3 border-b border-b-gray-200 flex items-center gap-2">
             <Avatar
               shape='circle'
               className="w-[36px] h-[36px] object-cover"
@@ -155,7 +155,7 @@ function UserProfilePopover({
               </Menu.Item>
             ))}
           </Menu>
-          <div className="pt-2 border-t border-t-gray-200">
+          <div className="p-3 border-t border-t-gray-200">
             <div
               className="flex text-sm text-gray-800 py-2 cursor-pointer hover:bg-gray-100 transition-all rounded-md items-center gap-2"
               onClick={onLogout}

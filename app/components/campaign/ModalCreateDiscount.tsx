@@ -140,6 +140,8 @@ const ModalCreateDiscount = ({ products, shopId, open, onClose, onrefresh }: Mod
                         {discountPrefix && (
                             <Form.Item className='w-1/2' label={discountPrefix === '%' ? 'Percentage' : 'Dollar'} name="value" rules={[{ required: true, message: "Please enter a discount value" }]}>
                                 <InputNumber
+                                    min={1}
+                                    precision={0}
                                     prefix={discountPrefix}
                                     className="bg-gray-100 border-none w-full"
                                 />
