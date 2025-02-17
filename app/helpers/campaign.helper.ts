@@ -52,7 +52,10 @@ export const getColorInfluencerContent = (status: InfluencerContentStatus) => {
             return { color: '#0F766E', background: '#CCFBF1', status: 'Approved' }
         case 'brand_declined_influencer':
             return { color: '#BE123C', background: '#FFE4E6', status: 'Rejected' }
+        case 'declined_invitation':
+            return { color: '#BE123C', background: '#FFE4E6', status: 'Rejected' }
         default:
+
             break;
     }
 }
