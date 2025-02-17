@@ -439,6 +439,8 @@ const ContentDetails = () => {
                 )}
 
                 {/* IG Screenshot for story */}
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
                 {content?.screenshotUrls?.length as number > 0 && (
                   <div className='w-full border border-gray-200 -mb-5 rounded-tl-xl rounded-tr-xl shadow-sm'>
                     <div className='flex items-start pt-4  px-3  pb-3 gap-3'>
@@ -449,6 +451,22 @@ const ContentDetails = () => {
                       </div>
                     </div>
                   </div>
+=======
+=======
+>>>>>>> Stashed changes
+                <div className='w-full border border-gray-200 -mb-5 rounded-tl-xl rounded-tr-xl shadow-sm'>
+                  <div className='flex items-start pt-4  px-3  pb-3 gap-3'>
+                    <CalendarDateRangeIcon width={20} height={20} className='text-gray-500' />
+                    <div className='flex flex-col gap-1 w-full'>
+                      <p className='text-sm font-normal text-gray-500'>Live Post</p>
+                      <p className='text-gray-800 text-sm'>{dayjs(content?.post_due).format(DATE_TIME_FORMAT_V2)}</p>
+                    </div>
+                  </div>
+                </div>
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
 
                 )}
                 {content?.screenshotUrls?.[0] &&
