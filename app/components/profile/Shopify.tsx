@@ -15,13 +15,14 @@ import {
 import ShopifyLogo from '~/assets/shopify.png';
 import type { Shopify } from '~/models/shopify.model';
 
-import { TrashIcon } from '@heroicons/react/24/outline';
+import { useNavigate } from '@remix-run/react';
 
 function Shopify() {
     const [shopUrl, setShopUrl] = useState<string>('')
     const [loading, setLoading] = useState<boolean>(false)
     const [isLoadingShopify, setIsLoadingShopify] = useState<boolean>(false)
     const [shopifyAccounts, setShopifyAccounts] = useState<Shopify[]>([])
+    const navigate = useNavigate()
 
     const handleConnectShopify = () => {
         setLoading(true)
@@ -51,7 +52,7 @@ function Shopify() {
                         <img className='w-[32px] object-contain ' src={ShopifyLogo} alt="shopify" />
                         <span>{shopifyAccounts?.[0]?.shopUrl}</span>
                     </div>
-                    <TrashIcon className='h-5 w-5 cursor-pointer text-gray-500' />
+                    {/* <TrashIcon className='h-5 w-5 cursor-pointer text-gray-500' /> */}
                 </div>
                 : (
                     <>
