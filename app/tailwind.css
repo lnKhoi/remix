@@ -275,3 +275,23 @@ input::placeholder {
 .ant-popover-inner {
   padding: 0 !important;
 }
+
+.custom-collab .ant-collapse-content-box {
+  padding: 0px !important;
+}
+
+/* Custom background color for the Select component */
+.custom-collab .ant-select-selector {
+  background-color: theme('colors.gray.100') !important;
+  border: none !important;
+}
+
+/* Custom background color for the dropdown */
+.custom-collab .ant-select-dropdown {
+  background-color: theme('colors.gray.100') !important;
+}
+
+/* Custom background color for selected item */
+.custom-collab .ant-select-item-option-selected:not(.ant-select-item-option-disabled) {
+  background-color: theme('colors.gray.100') !important;
+}
