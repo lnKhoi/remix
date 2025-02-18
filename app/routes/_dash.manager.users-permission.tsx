@@ -1,10 +1,15 @@
-import React, { Key } from 'react';
+import React, {
+  Key,
+  useState,
+} from 'react';
 
 import {
   Button,
   Table,
   TableProps,
 } from 'antd';
+import ModalCreateUser from '~/components/user/ModalCreateUser';
+import ModalViewUser from '~/components/user/ModalViewUser';
 import { RolesColumns } from '~/constants/roles.constant';
 import { UserPermission } from '~/models/User.model';
 
@@ -22,17 +27,22 @@ const rowSelection: TableProps<UserPermission>['rowSelection'] = {
 };
 
 function UsersPermission() {
-    // Handle actions with user ID
+    const [selectedId, setSelectedId] = useState<string>('')
+    const [modalType, setModalType] = useState<'view-user' | 'edit-user' | 'create-user' | ''>('')
+
+
     const handleViewUser = (id: string) => {
-        console.log(`Viewing user with ID: ${id}`);
-    };
+        setModalType('view-user')
+        setSelectedId(id)
+    }
 
     const handleEditUser = (id: string) => {
-        console.log(`Editing user with ID: ${id}`);
-    };
+        setSelectedId(id)
+        // setModalType('edit-user')
+    }
 
     const handleDeleteUser = (id: string) => {
-        console.log(`Deleting user with ID: ${id}`);
+        setSelectedId(id)
     };
 
     return (
@@ -42,7 +52,7 @@ function UsersPermission() {
                     <h2 className='text-2xl font-medium text-gray-800'>Users Permission</h2>
                     <p className='text-sm font-normal text-gray-800'>Manage who has access in your system</p>
                 </div>
-                <Button type='primary'>
+                <Button onClick={() => setModalType('create-user')} type='primary'>
                     <PlusIcon className='w-5 h-5 text-white' /> Add User
                 </Button>
             </div>
@@ -61,6 +71,23 @@ function UsersPermission() {
                     ]}
                 />
             </div>
+
+            {/* Create User */}
+            {modalType == 'create-user' && (
+                <ModalCreateUser
+                    onClose={() => setModalType('')}
+                    open={modalType == 'create-user'}
+                />
+            )}
+
+            {/* View User */}
+            {modalType == 'view-user' && (
+                <ModalViewUser
+                    id={selectedId}
+                    onClose={() => setModalType('')}
+                    open={modalType == 'view-user'}
+                />
+            )}
         </div>
     );
 }

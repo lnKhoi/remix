@@ -1,13 +1,8 @@
-import {
-  Dropdown,
-  Menu,
-  TableColumnsType,
-} from 'antd';
+import { TableColumnsType } from 'antd';
 import Avatar from '~/assets/avatar.jpeg';
 import { UserPermission } from '~/models/User.model';
 
 import {
-  EllipsisHorizontalIcon,
   EyeIcon,
   PencilSquareIcon,
   TrashIcon,
@@ -50,33 +45,21 @@ export const RolesColumns = ({
       align: 'justify',
       title: 'Action',
       render: (_, record) => {
-        const menu = (
-          <Menu
-            onClick={({ key }) => {
-              if (key === 'view') onViewUser(record.id);
-              if (key === 'edit') onEditUser(record.id);
-              if (key === 'delete') onDeleteUser(record.id);
-            }}
-          >
-            <Menu.Item key="view">
-              <EyeIcon className='w-5 h-5 mr-3 text-gray-800' /> View User
-            </Menu.Item>
-            <Menu.Item key="edit">
-              <PencilSquareIcon className='w-5 h-5 mr-3 text-gray-800' /> Edit User
-            </Menu.Item>
-            <Menu.Item key="delete">
-              <TrashIcon className='w-5 h-5 mr-3 text-gray-800' /> Delete User
-            </Menu.Item>
-          </Menu>
-        );
-
         return (
-          <div className="ml-2">
-            <Dropdown overlay={menu} trigger={['click']} placement="topRight">
-              <EllipsisHorizontalIcon className="w-5 h-5 cursor-pointer text-gray-800" />
-            </Dropdown>
+          <div className="flex items-center gap-3">
+            <EyeIcon onClick={() => onViewUser(record.id)} className='w-5 h-5 cursor-pointer  text-gray-800' />
+            <PencilSquareIcon onClick={() => onEditUser(record.id)} className='w-5 h-5 cursor-pointer  text-gray-800' />
+            <TrashIcon onClick={() => onDeleteUser(record.id)} className='w-5 h-5 cursor-pointer text-gray-800' />
           </div>
         );
       },
     },
   ];
+
+
+export const ROLES = [
+  { name: 'Administrator', value: 'administrator' },
+  { name: 'Manager', value: 'manager' },
+  { name: 'User', value: 'user' },
+  { name: 'Employee', value: 'employee' }
+]
