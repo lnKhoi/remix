@@ -18,6 +18,7 @@ import CampaignCard from '~/components/campaign/campaignCard';
 import ReviewCard from '~/components/custom/skeletons/CampaignCard';
 import { Button } from '~/components/ui/button';
 import { InputSearch } from '~/components/ui/input-search';
+import { useAuthContext } from '~/contexts/auth.context';
 import { Campaign } from '~/models/Campaign.model';
 
 import {
@@ -36,6 +37,7 @@ export const meta: MetaFunction = () => {
 }
 
 function Campaigns() {
+  const {hasPermission} = useAuthContext()
   const [search, setSearch] = useState<string>('')
   const [loading, setLoading] = useState<'get-list' | 'load-more' | ''>('')
   const [campaigns, setCampagins] = useState<Campaign[]>([])
@@ -84,11 +86,13 @@ function Campaigns() {
           <h2 className='text-2xl text-gray-900'>Campaigns</h2>
           <p className='text-sm text-gray-500 mt-1'>Manage your campaigns and view their sales performance.</p>
         </div>
-        <Link to='/manager/campaign/add-campaign'>
-          <Button type='button' size='sm' >
-            <PlusIcon className='mr-1' color='white' width={20} />  Add Campaign
-          </Button>
-        </Link>
+       {hasPermission('create-campaign') && (
+         <Link to='/manager/campaign/add-campaign'>
+         <Button type='button' size='sm' >
+           <PlusIcon className='mr-1' color='white' width={20} />  Add Campaign
+         </Button>
+       </Link>
+       )}
       </div>
       <div className='mt-5 flex items-end justify-between'>
         <InputSearch onChange={(e) => handleSearchCampaigns(e)} placeholder='Campaign name' className='w-[300px] h-[36px] ' />
