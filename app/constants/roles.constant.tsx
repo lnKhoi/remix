@@ -1,4 +1,7 @@
-import { TableColumnsType } from 'antd';
+import {
+  Skeleton,
+  TableColumnsType,
+} from 'antd';
 import Avatar from '~/assets/avatar.jpeg';
 import { UserPermission } from '~/models/User.model';
 
@@ -63,3 +66,55 @@ export const ROLES = [
   { name: 'User', value: 'user' },
   { name: 'Employee', value: 'employee' }
 ]
+
+
+export const UserColumns: TableColumnsType<UserPermission> = [
+  {
+    title: 'Name',
+    dataIndex: 'name',
+    key: 'name',
+    render: (_, record) => (
+      <div className="flex items-start gap-3">
+        <img src={Avatar} alt="avatar" className="w-9 h-9 rounded-[50%] object-cover" />
+        <div>
+          <p className="text-sm font-medium text-gray-800">{record?.name}</p>
+          <span className="text-sm font-normal text-gray-500">{record?.email}</span>
+        </div>
+      </div>
+    ),
+  },
+];
+
+export const UserAssignedColumns = (loading: boolean) => [
+  {
+    title: "Name",
+    dataIndex: "name",
+    key: "name",
+    render: (_: string, record: any) => (
+      <div className="flex items-center space-x-2">
+        {loading
+          ? <Skeleton.Avatar active style={{ width: 36, height: 36 }} />
+          : <img src={Avatar} alt="avatar" className="w-9 h-9 rounded-[50%] object-cover" />
+        }
+        <div>
+          <p className="font-medium flex items-center">
+            {loading ? <Skeleton.Input active style={{ height: 18 }} /> : record.name}
+          </p>
+          <p className="text-sm text-gray-500">
+            {loading ? <Skeleton.Input active style={{ height: 18 }} /> : record.email}
+          </p>
+        </div>
+      </div>
+    ),
+  },
+  {
+    title: "Action",
+    key: "action",
+    render: () => (
+      <div className='flex items-center gap-4'>
+        {loading ? <Skeleton.Input active style={{ height: 18 }} /> : <EyeIcon className='text-gray-800 w-5 h-5 cursor-pointer' />}
+        {loading ? <Skeleton.Input active style={{ height: 18 }} /> : <TrashIcon className='text-gray-800 w-5 h-5 cursor-pointer' />}
+      </div>
+    ),
+  },
+];

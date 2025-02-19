@@ -23,7 +23,7 @@ export type NavItem = {
   label: string;
   badge?: number;
   children?: NavItem[];
-  active?:string
+  active?: string
 }
 
 
@@ -61,6 +61,15 @@ export const navItems: NavItem[] = [
     to: "/manager/analytics",
     icon: ChartBarIcon,
     label: "Analytics",
+  },
+  {
+    to: "/",
+    icon: Cog6ToothIcon,
+    label: "Settings",
+    children: [
+      { label: 'Users', to: '/manager/users-permission', icon: null },
+      { label: 'Roles', to: '/manager/roles', icon: null },
+    ],
   },
 ];
 
