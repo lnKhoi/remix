@@ -30,10 +30,12 @@ function Roles() {
       </div>
 
       {/* Create Role */}
-      <ModalCreateRole
-        onClose={() => setModalType('')}
-        open={modalType == 'create-role'}
-      />
+      {modalType == 'create-role' && (
+        <ModalCreateRole
+          onClose={() => setModalType('')}
+          open={modalType == 'create-role'}
+        />
+      )}
     </div>
   )
 }

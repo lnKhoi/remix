@@ -9,6 +9,7 @@ import {
 } from 'react';
 
 import { getMe } from '~/apis/auth';
+import { Permission } from '~/models/role.model';
 import { User } from '~/models/User.model';
 
 import { useNavigate } from '@remix-run/react';
@@ -17,16 +18,17 @@ type AuthContextType = {
     userInfo: User | null;
     updateUserInfo: (newValue: User | null) => void;
     handleLogout: () => void
-    onPayment:boolean,
-    setOnPayment:Dispatch<SetStateAction<boolean>>
+    onPayment: boolean,
+    setOnPayment: Dispatch<SetStateAction<boolean>>
     handleRefreshUserInfo: () => void
+    hasPermission: (requiredPermissions: Permission | Permission[]) => boolean
 }
 const MyContext = createContext<AuthContextType | undefined>(undefined);
 type AuthContextProviderProps = { children: ReactNode }
 const AuthContextProvider: FC<AuthContextProviderProps> = ({ children }) => {
     const [userInfo, setUserInfo] = useState<User | null>(null);
     const navigate = useNavigate()
-    const [onPayment,setOnPayment] = useState<boolean>(false)
+    const [onPayment, setOnPayment] = useState<boolean>(false)
 
     const updateUserInfo = (info: User | null) => {
         setUserInfo(info);
@@ -44,8 +46,17 @@ const AuthContextProvider: FC<AuthContextProviderProps> = ({ children }) => {
         });
     };
 
+    const permissions = ['create-campaign','view-campaign','edit-campaign','delete-campaign','invite-imported-influencers']
+
+    const hasPermission = (requiredPermissions: string | string[]) => {
+        if (Array.isArray(requiredPermissions)) {
+            return requiredPermissions.every((perm) => permissions.includes(perm));
+        }
+        return permissions.includes(requiredPermissions);
+    };
+
     return (
-        <MyContext.Provider value={{ userInfo, updateUserInfo, handleLogout, handleRefreshUserInfo ,onPayment,setOnPayment}}>
+        <MyContext.Provider value={{ userInfo, updateUserInfo, handleLogout, handleRefreshUserInfo, onPayment, setOnPayment, hasPermission }}>
             {children}
         </MyContext.Provider>
     );
