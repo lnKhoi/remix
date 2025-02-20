@@ -14,7 +14,7 @@ import { Role } from '~/models/role.model';
 import { MetaFunction } from '@remix-run/react';
 
 export const meta: MetaFunction = () => {
-  return [{ title: 'Role' }];
+  return [{ title: 'Roles' }];
 };
 
 function Roles() {
