@@ -10,40 +10,36 @@ import {
   Skeleton,
   Table,
 } from 'antd';
-import { getPermissions } from '~/apis/permission';
+import { getRoleDetails } from '~/apis/role';
 import Permission from '~/components/custom/skeletons/Permission';
 import ModalAddUserToRole from '~/components/role/ModalAddUserToRole';
 import { UserAssignedColumns } from '~/constants/roles.constant';
+import { Role } from '~/models/role.model';
 
 import { PlusOutlined } from '@ant-design/icons';
 import { MetaFunction } from '@remix-run/cloudflare';
-import { Link } from '@remix-run/react';
+import {
+  Link,
+  useParams,
+} from '@remix-run/react';
 
 export const meta: MetaFunction = () => {
     return [{ title: 'Role Details' }]
 }
 
-const users = [
-    { id: 1, name: "[username]", email: "candel1992@gmail.com" },
-    { id: 2, name: "[username]", email: "Pulos1950@gmail.com" },
-    { id: 3, name: "[username]", email: "5sor@gmail.com" },
-    { id: 4, name: "[username]", email: "wiliam87@gmail.com" },
-    { id: 5, name: "[username]", email: "grew-sra@gmail.com" },
-    { id: 6, name: "[username]", email: "masst@gmail.com" },
-];
-
 const EmployeeRole: FC = () => {
+    const { id } = useParams()
+    const [role, setRole] = useState<Role | null>(null)
     const [modalAddUser, setModalAddUser] = useState<boolean>(false)
     const [loadingType, setLoadingType] = useState<'' | 'permissions'>('')
-    const [permissions, setPermissions] = useState<Record<string, string[]>>({});
 
-    const handleGetPermissions = () => {
+    const handleGetRoleDetails = () => {
         setLoadingType('permissions')
-        getPermissions().then(res => setPermissions(res.data))
+        getRoleDetails(id as string).then(res => setRole(res.data))
             .finally(() => setLoadingType(''))
     }
 
-    useEffect(() => { handleGetPermissions() }, [])
+    useEffect(() => { handleGetRoleDetails() }, [])
 
     return (
         <div >
@@ -54,7 +50,12 @@ const EmployeeRole: FC = () => {
                     { title: <p className='text-gray-800'>Role Details</p> },
                 ]}
             />
-            <h1 className="text-2xl font-medium mb-4 mt-10">Employee</h1>
+            <h1 className="text-2xl font-medium mb-4 mt-10">
+                {loadingType == 'permissions'
+                    ? <Skeleton.Input active style={{ height: 28 }} />
+                    : role?.name
+                }
+            </h1>
 
             <div className="flex flex-col lg:flex-row gap-4 items-start">
                 {/* Role Details */}
@@ -64,7 +65,7 @@ const EmployeeRole: FC = () => {
                         <p className="text-sm text-gray-600 font-normal  mt-4">
                             {loadingType == 'permissions' ? <Skeleton.Input active style={{ height: 17 }} /> : 'Role name'}
                         </p>
-                        <span className="font-medium text-sm text-gray-800 mt-1">Employee</span>
+                        <span className="font-medium text-sm text-gray-800 mt-1">{role?.name}</span>
                     </div>
                     <div className='flex flex-col border-b border-b-gray-200 pb-4 px-4 mt-4'>
                         <p className="text-sm font-normal text-gray-600">
@@ -73,19 +74,19 @@ const EmployeeRole: FC = () => {
                         <span className='font-medium text-sm text-gray-800'>
                             {loadingType == 'permissions'
                                 ? <Skeleton.Input active style={{ height: 17 }} />
-                                : ' In a laoreet purus. Integer turpis quam, laoreet id orci nec, ultrices lacinia nunc. Aliquam erat vo'}
+                                : role?.description}
                         </span>
                     </div>
 
                     <div className="flex px-4 justify-between items-center mt-4">
-                        <h3 className="font-medium">User Assigned ({users.length})</h3>
+                        <h3 className="font-medium">User Assigned ({role?.users.length})</h3>
                         <Button onClick={() => setModalAddUser(true)} type="primary" icon={<PlusOutlined />}>
                             Add User
                         </Button>
                     </div>
                     <Table
-                        dataSource={users}
-                        columns={UserAssignedColumns(loadingType =='permissions')}
+                        dataSource={loadingType == 'permissions' ? [1, 2, 3, 4] : role?.users}
+                        columns={UserAssignedColumns(loadingType == 'permissions')}
                         pagination={{ pageSize: 5 }}
                         rowKey="id"
                         className="mt-5 px-5"
@@ -98,13 +99,13 @@ const EmployeeRole: FC = () => {
                     <div className="flex flex-col m-4 border border-gray-200 rounded-xl">
                         {loadingType == 'permissions'
                             ? <Permission />
-                            : Object.entries(permissions).map(([k, v]) => (
+                            : role?.permissions ? Object?.entries(role?.permissions)?.map(([k, v]) => (
                                 <div key={k}>
                                     <div className="bg-gray-100 p-[10px] capitalize text-sm font-medium text-gray-800 w-full">
                                         {k}
                                     </div>
                                     <div className="grid grid-cols-2 ">
-                                        {v.map((per, index) => {
+                                        {Array.isArray(v) ? v?.map((per, index) => {
                                             const isLastRow = index >= v.length - (v.length % 2 === 0 ? 2 : 1);
                                             return (
                                                 <div
@@ -113,10 +114,10 @@ const EmployeeRole: FC = () => {
                                                     {per}
                                                 </div>
                                             );
-                                        })}
+                                        }) : null}
                                     </div>
                                 </div>
-                            ))}
+                            )) : null}
                     </div>
                 </div>
             </div>
