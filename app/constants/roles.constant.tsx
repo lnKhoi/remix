@@ -1,4 +1,5 @@
 import {
+  Button,
   Skeleton,
   TableColumnsType,
 } from 'antd';
@@ -68,24 +69,30 @@ export const ROLES = [
 ]
 
 
-export const UserColumns: TableColumnsType<UserPermission> = [
+export const UserColumns = (loading: boolean): TableColumnsType<UserPermission> => [
   {
     title: 'Name',
     dataIndex: 'name',
     key: 'name',
     render: (_, record) => (
       <div className="flex items-start gap-3">
-        <img src={Avatar} alt="avatar" className="w-9 h-9 rounded-[50%] object-cover" />
+        {loading
+          ? <Skeleton.Avatar active style={{ width: 36, height: 36 }} />
+          : <img src={Avatar} alt="avatar" className="w-9 h-9 rounded-[50%] object-cover" />}
         <div>
-          <p className="text-sm font-medium text-gray-800">{record?.name}</p>
-          <span className="text-sm font-normal text-gray-500">{record?.email}</span>
+          <p className="text-sm font-medium text-gray-800">
+            {loading ? <Skeleton.Input active style={{ height: 18 }} /> : record.name}
+          </p>
+          <span className="text-sm font-normal text-gray-500">
+            {loading ? <Skeleton.Input active style={{ height: 18 }} /> : record.email}
+          </span>
         </div>
       </div>
     ),
   },
 ];
 
-export const UserAssignedColumns = (loading: boolean) => [
+export const UserAssignedColumns = (loading: boolean, onDelete: (id: string) => void, deletingUserIds: string[]) => [
   {
     title: "Name",
     dataIndex: "name",
@@ -110,11 +117,28 @@ export const UserAssignedColumns = (loading: boolean) => [
   {
     title: "Action",
     key: "action",
-    render: () => (
-      <div className='flex items-center gap-4'>
-        {loading ? <Skeleton.Input active style={{ height: 18 }} /> : <EyeIcon className='text-gray-800 w-5 h-5 cursor-pointer' />}
-        {loading ? <Skeleton.Input active style={{ height: 18 }} /> : <TrashIcon className='text-gray-800 w-5 h-5 cursor-pointer' />}
-      </div>
-    ),
+    render: (_: string, record: UserPermission) => {
+      const isDeleting = deletingUserIds.includes(record.id);
+      return (
+        <div className="flex items-center gap-2">
+          {loading ? (
+            <Skeleton.Button active style={{ height: 18, width: 50 }} />
+          ) : (
+            <EyeIcon className="text-gray-800 w-5 h-5 cursor-pointer" />
+          )}
+          {loading ? (
+            <Skeleton.Button active style={{ height: 18, width: 50 }} />
+          ) : (
+            <Button loading={isDeleting} type='text' onClick={() => onDelete(record.id)}>
+              {!isDeleting && (
+                <TrashIcon
+                  className="text-gray-800 w-5 h-5 cursor-pointer"
+                />
+              )}
+            </Button>
+          )}
+        </div>
+      );
+    },
   },
 ];

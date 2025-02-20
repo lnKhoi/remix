@@ -17,12 +17,18 @@ import ModalAddUserToRole from './ModalAddUserToRole';
 
 type RoleCardProps = {
     role: Role
+    onUpdateRole: (newRole: Role) => void
 }
 
-const RoleCard = ({ role }: RoleCardProps) => {
+const RoleCard = ({ role, onUpdateRole }: RoleCardProps) => {
     const [modalAddUser, setModalAddUser] = useState<boolean>(false)
     const navigate = useNavigate()
-    
+
+    const handleGetNewUsers = () => {
+        // Get roles details and passing data here
+        onUpdateRole(role)
+    }
+
     return (
         <>
             <div
@@ -78,6 +84,8 @@ const RoleCard = ({ role }: RoleCardProps) => {
             {modalAddUser && (
                 <ModalAddUserToRole
                     open={modalAddUser}
+                    onSuccess={handleGetNewUsers}
+                    role={role}
                     onclose={() => setModalAddUser(false)}
                 />
             )}

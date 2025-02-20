@@ -1,9 +1,13 @@
 import React, {
+  useCallback,
   useEffect,
   useState,
 } from 'react';
 
-import { Button } from 'antd';
+import {
+  Button,
+  message,
+} from 'antd';
 import { getRoles } from '~/apis/role';
 import NoData from '~/assets/no-data.png';
 import RoleCardSkeleton from '~/components/custom/skeletons/RoleCardSkeleton';
@@ -21,6 +25,7 @@ function Roles() {
   const [modalType, setModalType] = useState<'create-role' | ''>('')
   const [roles, setRoles] = useState<Role[]>([])
   const [loadingType, setLoadingType] = useState<'get-roles' | 'create-role' | ''>('')
+  const [messageApi, contextHolder] = message.useMessage();
 
   const handleGetRoles = () => {
     setLoadingType('get-roles')
@@ -30,14 +35,24 @@ function Roles() {
 
   const handleRefresh = () => {
     setLoadingType('create-role')
-    getRoles().then(res => setRoles(res?.data?.data))
+    getRoles().then(res => {
+      setRoles(res?.data?.data)
+      messageApi.success('Create new role successfully!')
+    })
       .finally(() => setLoadingType(''))
   }
 
   useEffect(() => handleGetRoles(), [])
 
+  const handleUpdateRole = useCallback((newRole: Role) => {
+    setRoles((prevRoles) => (
+      prevRoles.map(r => r.id === newRole.id ? { ...r, users: newRole.users } : r)
+    ))
+  }, [])
+
   return (
     <div>
+      {contextHolder}
       <div className='flex items-center w-full justify-between'>
         <div>
           <h2 className='text-2xl font-medium text-gray-800'>Roles</h2>
@@ -52,10 +67,13 @@ function Roles() {
           [1, 2, 3, 4, 5, 6, 7, 8].map((_, index) => <RoleCardSkeleton key={index} />)
         ) : roles.length === 0 ? (
           <div className="w-full flex mt-9 justify-center items-center col-span-full">
-            {loadingType !=='create-role' && <img src={NoData} alt="No data" />}
+            {loadingType !== 'create-role' && <img src={NoData} alt="No data" />}
           </div>
         ) : (
-          roles.map(role => <RoleCard key={role.id} role={role} />)
+          roles.map(role => <RoleCard
+            onUpdateRole={(newRole) => handleUpdateRole(newRole)}
+            key={role.id}
+            role={role} />)
         )}
       </div>
 

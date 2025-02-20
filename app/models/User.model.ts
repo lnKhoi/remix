@@ -28,7 +28,7 @@ export type Brand = {
 }
 
 export type User = {
-  id?: string;
+  id: string;
   created_at?: number;
   updated_at?: number;
   deleted_at?: number | null;

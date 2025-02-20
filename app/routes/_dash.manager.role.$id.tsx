@@ -7,10 +7,14 @@ import React, {
 import {
   Breadcrumb,
   Button,
+  message,
   Skeleton,
   Table,
 } from 'antd';
-import { getRoleDetails } from '~/apis/role';
+import {
+  deleteUsersFromRole,
+  getRoleDetails,
+} from '~/apis/role';
 import Permission from '~/components/custom/skeletons/Permission';
 import ModalAddUserToRole from '~/components/role/ModalAddUserToRole';
 import { UserAssignedColumns } from '~/constants/roles.constant';
@@ -31,7 +35,9 @@ const EmployeeRole: FC = () => {
     const { id } = useParams()
     const [role, setRole] = useState<Role | null>(null)
     const [modalAddUser, setModalAddUser] = useState<boolean>(false)
-    const [loadingType, setLoadingType] = useState<'' | 'permissions'>('')
+    const [loadingType, setLoadingType] = useState<'' | 'permissions' | 'add-users'>('')
+    const [deletingUserIds, setDeletingUserIds] = useState<string[]>([])
+    const [messageApi, contextHolder] = message.useMessage();
 
     const handleGetRoleDetails = () => {
         setLoadingType('permissions')
@@ -41,8 +47,28 @@ const EmployeeRole: FC = () => {
 
     useEffect(() => { handleGetRoleDetails() }, [])
 
+    const getUsersInRole = () => {
+        setLoadingType('add-users')
+        getRoleDetails(id as string).then(res => setRole(res.data))
+            .finally(() => setLoadingType(''))
+    }
+    
+    const handleDeleteUserFromRole = async (id: string) => {
+        setDeletingUserIds((prev) => [...prev, id]); 
+    
+        deleteUsersFromRole(role?.id as string, [id])
+            .then(() => {
+                getUsersInRole(); 
+                messageApi.success('Remove user successfully!');
+            })
+            .catch((err) => {messageApi.error(err.message);})
+            .finally(() => {setDeletingUserIds((prev) => prev.filter((userId) => userId !== id));});
+    };
+    
+
     return (
         <div >
+            {contextHolder}
             <Breadcrumb
                 className='fixed h-[40px] w-full '
                 items={[
@@ -85,14 +111,13 @@ const EmployeeRole: FC = () => {
                         </Button>
                     </div>
                     <Table
-                        dataSource={loadingType == 'permissions' ? [1, 2, 3, 4] : role?.users}
-                        columns={UserAssignedColumns(loadingType == 'permissions')}
+                        dataSource={loadingType !== '' ? [1, 2, 3, 4] as any : role?.users}
+                        columns={UserAssignedColumns(loadingType !== '', (id) => handleDeleteUserFromRole(id), deletingUserIds)}
                         pagination={{ pageSize: 5 }}
                         rowKey="id"
                         className="mt-5 px-5"
                     />
                 </div>
-
                 {/* Role Permissions */}
                 <div className="bg-white py-4 border border-gray-200 rounded-xl hover:shadow-sm transition-all flex-1">
                     <div className="text-lg font-semibold px-4 pb-3 border-b border-b-gray-200">Role Permissions</div>
@@ -123,8 +148,10 @@ const EmployeeRole: FC = () => {
             </div>
 
             {/* Modal Add User To Role */}
-            {modalAddUser && (
+            {modalAddUser && role && (
                 <ModalAddUserToRole
+                    role={role}
+                    onSuccess={getUsersInRole}
                     open={modalAddUser}
                     onclose={() => setModalAddUser(false)}
                 />

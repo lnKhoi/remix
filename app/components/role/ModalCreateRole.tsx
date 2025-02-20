@@ -47,9 +47,19 @@ const ModalCreateRole: FC<ModalCreateRoleProps> = ({ open, onClose, onSuccess })
     const [categorySelected, setCategorySelected] = useState<Record<string, boolean>>({});
     const [permissions, setPermissions] = useState<Record<string, string[]>>({});
 
+    const roleName = Form.useWatch('name', form)
     const [messageApi, contextHolder] = message.useMessage();
     const [users, setUsers] = useState<User[]>([])
-    // const users = ["usr_01JK4SKS6AF6FQ9MBY526EH81Q", "usr_01JK4S7K51W8B07K7QDC2DSRR9", "usr_01JK7M8XP303S5MTH9HNYASYJF"];
+    
+    const [activePanels, setActivePanels] = useState<string[]>([]);
+
+    const handleToggleExpandAll = () => {
+        if (activePanels.length === Object.keys(permissions).length) {
+            setActivePanels([]); // Collapse all
+        } else {
+            setActivePanels(Object.keys(permissions)); // Expand all
+        }
+    };
 
     const handleUserChange = (value: string[]) => setSelectedUsers(value);
 
@@ -132,7 +142,7 @@ const ModalCreateRole: FC<ModalCreateRoleProps> = ({ open, onClose, onSuccess })
                 onSuccess()
                 handleReset()
             })
-            .catch((err) => message.warning(err.message))
+            .catch((err) => messageApi.warning(err.message))
             .finally(() => setLoadingType(''))
     };
 
@@ -152,6 +162,7 @@ const ModalCreateRole: FC<ModalCreateRoleProps> = ({ open, onClose, onSuccess })
         ]).finally(() => setLoadingType(''))
         setPermissions(permissionsRes?.data);
         setUsers(usersRes?.data?.data);
+        setActivePanels(Object.keys(permissionsRes?.data || {}))
     }
 
     useEffect(() => { handleGetUser() }, [])
@@ -167,7 +178,12 @@ const ModalCreateRole: FC<ModalCreateRoleProps> = ({ open, onClose, onSuccess })
             footer={
                 <div className="flex justify-end space-x-2 mt-4">
                     <Button onClick={onClose}>Cancel</Button>
-                    <Button loading={loadingType == 'create-permission'} type="primary" onClick={handleSubmit}>Create</Button>
+                    <Button
+                        disabled={roleName?.trim() == '' || !roleName}
+                        loading={loadingType == 'create-permission'}
+                        type="primary"
+                        onClick={handleSubmit}>Create
+                    </Button>
                 </div>
             }
         >
@@ -217,66 +233,73 @@ const ModalCreateRole: FC<ModalCreateRoleProps> = ({ open, onClose, onSuccess })
                     </Select>
                 </Form.Item>
 
-                <Form.Item
-                    label="Role Permissions"
-                    name="permissions"
-                    required
-                    validateTrigger="onSubmit"
-                >
-                    <div className='bg-gray-100 rounded-xl border border-gray-200'>
-                        <Collapse bordered={false} >
-                            <Checkbox className='text-gray-800 pl-[15px] pt-[10px]' checked={allSelected} onChange={(e) => handleSelectAll(e.target.checked)}>
+                <Form.Item label="Role Permissions" name="permissions" required>
+                    <div className="bg-gray-100 rounded-xl border border-gray-200">
+                        <div className="flex items-center justify-between p-3 pl-4">
+                            <Checkbox
+                                className="text-gray-800"
+                                checked={allSelected}
+                                onChange={(e) => handleSelectAll(e.target.checked)}
+                            >
                                 Select all Permissions
                             </Checkbox>
-                        </Collapse>
-                        <div className='w-full border-t border-t-gray-300 mt-3'></div>
-                        {loadingType == 'permissions'
-                            ? <Permission />
-                            : <>
-                                {Object.keys(permissions).length > 0 && (
-                                    <Collapse
-                                        defaultActiveKey={Object.keys(permissions)}
-                                        bordered={false}
-                                        expandIcon={({ isActive }) => <DownOutlined rotate={isActive ? 180 : 0} />}
-                                        expandIconPosition="right"
-                                    >
-                                        {Object.entries(permissions).map(([category, perms]) => {
-                                            const selectedCount = perms?.filter((perm) => checkedPermissions[perm]).length;
-                                            return (
-                                                <Panel
-                                                    key={category} // Ensure key is valid
-                                                    header={
-                                                        <div className="flex justify-between w-full">
-                                                            <Checkbox
-                                                                className="text-gray-800 capitalize"
-                                                                checked={categorySelected[category] || false}
-                                                                onChange={(e) => handleCategoryChange(category as PermissionCategories, e.target.checked)}
-                                                            >
-                                                                {category.replace(/([A-Z])/g, " $1")}
-                                                            </Checkbox>
-                                                            <span>
-                                                                {selectedCount}/{perms.length}
-                                                            </span>
-                                                        </div>
-                                                    }
-                                                >
-                                                    <div className="bg-white pl-4 gap-3 w-full grid grid-cols-2 p-[10px]">
-                                                        {perms.map((perm) => (
-                                                            <Checkbox
-                                                                key={perm}
-                                                                checked={checkedPermissions[perm] || false}
-                                                                onChange={(e) => handlePermissionChange(category as PermissionCategories, perm, e.target.checked)}
-                                                            >
-                                                                <span className="truncate max-w-[230px] block">{perm}</span>
-                                                            </Checkbox>
-                                                        ))}
-                                                    </div>
-                                                </Panel>
-                                            );
-                                        })}
-                                    </Collapse>
-                                )}
-                            </>}
+                            <span
+                                className="text-sm text-blue-500 font-medium cursor-pointer"
+                                onClick={handleToggleExpandAll}
+                            >
+                                {activePanels.length === Object.keys(permissions).length ? 'Collapse All' : 'Expand All'}
+                            </span>
+                        </div>
+
+                        <div className="w-full border-t border-t-gray-300"></div>
+
+                        {loadingType === 'permissions' ? (
+                            <Permission />
+                        ) : (
+                            <Collapse
+                                activeKey={activePanels}
+                                onChange={(keys) => setActivePanels(keys as string[])}
+                                bordered={false}
+                                expandIcon={({ isActive }) => <DownOutlined rotate={isActive ? 180 : 0} />}
+                                expandIconPosition="right"
+                            >
+                                {Object.entries(permissions).map(([category, perms]) => {
+                                    const selectedCount = perms?.filter((perm) => checkedPermissions[perm]).length;
+                                    return (
+                                        <Panel
+                                            key={category}
+                                            header={
+                                                <div  className="flex justify-between w-full">
+                                                    <Checkbox
+                                                        onClick={(e) => e.stopPropagation()} 
+                                                        className="text-gray-800 capitalize"
+                                                        checked={categorySelected[category] || false}
+                                                        onChange={(e) => handleCategoryChange(category as PermissionCategories, e.target.checked)}
+                                                    >
+                                                        <span onClick={(e) => e.stopPropagation()} >{category.replace(/([A-Z])/g, " $1")}</span>
+                                                    </Checkbox>
+                                                    <span>
+                                                        {selectedCount}/{perms.length}
+                                                    </span>
+                                                </div>
+                                            }
+                                        >
+                                            <div className="bg-white pl-4 gap-3 w-full grid grid-cols-2 p-[10px]">
+                                                {perms.map((perm) => (
+                                                    <Checkbox
+                                                        key={perm}
+                                                        checked={checkedPermissions[perm] || false}
+                                                        onChange={(e) => handlePermissionChange(category as PermissionCategories, perm, e.target.checked)}
+                                                    >
+                                                        <span className="truncate max-w-[230px] block">{perm}</span>
+                                                    </Checkbox>
+                                                ))}
+                                            </div>
+                                        </Panel>
+                                    );
+                                })}
+                            </Collapse>
+                        )}
                     </div>
                 </Form.Item>
             </Form>

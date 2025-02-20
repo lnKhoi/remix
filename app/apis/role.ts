@@ -20,3 +20,11 @@ export const getUsers = () => {
 export const getRoleDetails = (id: string) => {
   return getData(`/api/v1/role/${id}/role-details`)
 }
+
+export const addUsersToRole = (id: string, users: string[]) => {
+  return postData(`/api/v1/role/${id}?status=add-user`, users)
+}
+
+export const deleteUsersFromRole = (id: string, users: string[]) => {
+  return postData(`/api/v1/role/${id}?status=remove-user`, users)
+}
