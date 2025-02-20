@@ -26,7 +26,7 @@ const RoleCard = ({ role }: RoleCardProps) => {
     return (
         <>
             <div
-                onClick={() => navigate('/manager/role/5')}
+                onClick={() => navigate(`/manager/role/${role.id}`)}
                 className="p-4 border cursor-pointer border-gray-200 hover:shadow-md shadow-sm rounded-xl  w-full bg-white">
                 {/* Role Title */}
                 <h3 className="text-lg font-medium">{role.name}</h3>
