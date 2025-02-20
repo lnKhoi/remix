@@ -5,6 +5,7 @@ import React, {
 
 import { Button } from 'antd';
 import { getRoles } from '~/apis/role';
+import NoData from '~/assets/no-data.png';
 import RoleCardSkeleton from '~/components/custom/skeletons/RoleCardSkeleton';
 import ModalCreateRole from '~/components/role/ModalCreateRole';
 import RoleCard from '~/components/role/RoleCard';
@@ -44,16 +45,20 @@ function Roles() {
         </div>
         <Button onClick={() => setModalType('create-role')} type='primary'>Create Role</Button>
       </div>
-      <div className='mt-5 grid w-full grid-cols-2 md:grid-cols-3  2xl:grid-cols-4 gap-4'>
-        {loadingType == 'create-role' && (
-          <RoleCardSkeleton />
+      <div className='mt-5 grid w-full grid-cols-2 md:grid-cols-3 2xl:grid-cols-4 gap-4'>
+        {loadingType == 'create-role' && <RoleCardSkeleton />}
+
+        {loadingType == 'get-roles' ? (
+          [1, 2, 3, 4, 5, 6, 7, 8].map((_, index) => <RoleCardSkeleton key={index} />)
+        ) : roles.length === 0 ? (
+          <div className="w-full flex mt-9 justify-center items-center col-span-full">
+            {loadingType !=='create-role' && <img src={NoData} alt="No data" />}
+          </div>
+        ) : (
+          roles.map(role => <RoleCard key={role.id} role={role} />)
         )}
-        {loadingType == 'get-roles'
-          ? [1, 2, 3, 4, 5, 6, 7, 8].map(() => <RoleCardSkeleton />)
-          : roles.map(role => (
-            <RoleCard key={role.id} role={role} />
-          ))}
       </div>
+
       {/* Create Role */}
       {modalType == 'create-role' && (
         <ModalCreateRole
