@@ -16,12 +16,15 @@ import {
   Select,
 } from 'antd';
 import { getPermissions } from '~/apis/permission';
-import { createRole } from '~/apis/role';
-
 import {
-  DownOutlined,
-  UserOutlined,
-} from '@ant-design/icons';
+  createRole,
+  getUsers,
+} from '~/apis/role';
+import DefaultImage from '~/assets/avatar.jpeg';
+import { Role } from '~/models/role.model';
+import { User } from '~/models/User.model';
+
+import { DownOutlined } from '@ant-design/icons';
 
 import Permission from '../custom/skeletons/Permission';
 
@@ -32,9 +35,10 @@ const { Panel } = Collapse;
 interface ModalCreateRoleProps {
     open: boolean;
     onClose: () => void;
+    onSuccess: () => void
 }
 
-const ModalCreateRole: FC<ModalCreateRoleProps> = ({ open, onClose }) => {
+const ModalCreateRole: FC<ModalCreateRoleProps> = ({ open, onClose, onSuccess }) => {
     const [form] = Form.useForm();
     const [loadingType, setLoadingType] = useState<'permissions' | 'create-permission' | ''>('')
     const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
@@ -44,7 +48,8 @@ const ModalCreateRole: FC<ModalCreateRoleProps> = ({ open, onClose }) => {
     const [permissions, setPermissions] = useState<Record<string, string[]>>({});
 
     const [messageApi, contextHolder] = message.useMessage();
-    const users = ["usr_01JK4SKS6AF6FQ9MBY526EH81Q", "usr_01JK4S7K51W8B07K7QDC2DSRR9", "usr_01JK7M8XP303S5MTH9HNYASYJF"];
+    const [users, setUsers] = useState<User[]>([])
+    // const users = ["usr_01JK4SKS6AF6FQ9MBY526EH81Q", "usr_01JK4S7K51W8B07K7QDC2DSRR9", "usr_01JK7M8XP303S5MTH9HNYASYJF"];
 
     const handleUserChange = (value: string[]) => setSelectedUsers(value);
 
@@ -122,8 +127,9 @@ const ModalCreateRole: FC<ModalCreateRoleProps> = ({ open, onClose }) => {
             permissions: selectedPermissionsArray
         }
 
-        await createRole(payload)
+        await createRole(payload as Role)
             .then(res => {
+                onSuccess()
                 handleReset()
             })
             .catch((err) => message.warning(err.message))
@@ -138,13 +144,17 @@ const ModalCreateRole: FC<ModalCreateRoleProps> = ({ open, onClose }) => {
         setCheckedPermissions({})
     }
 
-    const handleGetPermissions = () => {
+    const handleGetUser = async () => {
         setLoadingType('permissions')
-        getPermissions().then(res => setPermissions(res.data))
-            .finally(() => setLoadingType(''))
+        const [permissionsRes, usersRes] = await Promise.all([
+            getPermissions(),
+            getUsers(),
+        ]).finally(() => setLoadingType(''))
+        setPermissions(permissionsRes?.data);
+        setUsers(usersRes?.data?.data);
     }
 
-    useEffect(() => { handleGetPermissions() }, [])
+    useEffect(() => { handleGetUser() }, [])
 
     return (
         <Drawer
@@ -197,10 +207,10 @@ const ModalCreateRole: FC<ModalCreateRoleProps> = ({ open, onClose }) => {
                         style={{ width: "100%" }}
                     >
                         {users.map((user) => (
-                            <Option key={user} value={user}>
+                            <Option key={user.id} value={user.id}>
                                 <div className="flex items-center">
-                                    <Avatar size="small" icon={<UserOutlined />} className="mr-2 w-5 h-5 object-cover" />
-                                    <span className="max-w-[150px] block">{user}</span>
+                                    <Avatar size="small" src={user.picture || DefaultImage} className="mr-2 w-5 h-5 object-cover" />
+                                    <span className="max-w-[150px] block">{user.name}</span>
                                 </div>
                             </Option>
                         ))}
