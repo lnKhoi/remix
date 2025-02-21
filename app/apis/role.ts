@@ -2,6 +2,7 @@ import { Role } from '~/models/role.model';
 
 import {
   getData,
+  patchData,
   postData,
 } from './axiosClient';
 
@@ -13,10 +14,18 @@ export const getRoles = () => {
   return getData(`/api/v1/role/roles`)
 }
 
-export const getUsers = () => {
-  return getData(`/api/v1/user/manager-list-for-brand`)
+export const getUsers = (page:number,pageSize:number) => {
+  return getData(`/api/v1/user/manager-list-for-brand?page=${page}&limit=${pageSize}`)
 }
 
 export const getRoleDetails = (id: string) => {
   return getData(`/api/v1/role/${id}/role-details`)
+}
+
+export const addUsersToRole = (id: string, users: string[]) => {
+  return patchData(`/api/v1/role/${id}?status=add-user`, {users:users})
+}
+
+export const deleteUsersFromRole = (id: string, users: string[]) => {
+  return patchData(`/api/v1/role/${id}?status=remove-user`, {users:users})
 }

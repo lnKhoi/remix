@@ -295,3 +295,12 @@ input::placeholder {
 .custom-collab .ant-select-item-option-selected:not(.ant-select-item-option-disabled) {
   background-color: theme('colors.gray.100') !important;
 }
+
+.ant-drawer-close {
+  position: absolute;
+  right: 0 !important;
+}
+
+.ant-drawer-footer .ant-btn {
+  font-weight: 600 !important;
+}

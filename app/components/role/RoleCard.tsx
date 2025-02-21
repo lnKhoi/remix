@@ -3,10 +3,15 @@ import React, {
   useState,
 } from 'react';
 
-import { Button } from 'antd';
+import {
+  Button,
+  message,
+} from 'antd';
 import dayjs from 'dayjs';
+import { getRoleDetails } from '~/apis/role';
 import Avatar from '~/assets/avatar.jpeg';
 import { DATE_TIME_FORMAT } from '~/constants/time.constant';
+import { useAuthContext } from '~/contexts/auth.context';
 import { Role } from '~/models/role.model';
 
 import { CalendarDaysIcon } from '@heroicons/react/24/outline';
@@ -17,16 +22,30 @@ import ModalAddUserToRole from './ModalAddUserToRole';
 
 type RoleCardProps = {
     role: Role
+    onUpdateRole: (newRole: Role) => void
 }
 
-const RoleCard = ({ role }: RoleCardProps) => {
+const RoleCard = ({ role, onUpdateRole }: RoleCardProps) => {
     const [modalAddUser, setModalAddUser] = useState<boolean>(false)
     const navigate = useNavigate()
-    
+    const [messageApi, contextHolder] = message.useMessage();
+    const { hasPermission } = useAuthContext()
+
+
+    const defaultRoles = ['Brand Manager', 'Brand User', 'Brand Admin']
+
+    const handleGetNewUsers = () => {
+        // Get roles details and passing data here
+        getRoleDetails(role.id).then((res) => {
+            onUpdateRole(res.data)
+        })
+    }
+
     return (
         <>
+            {contextHolder}
             <div
-                onClick={() => navigate(`/manager/role/${role.id}`)}
+                onClick={() => hasPermission('view-role') ? navigate(`/manager/role/${role.id}`) : null}
                 className="p-4 border cursor-pointer border-gray-200 hover:shadow-md shadow-sm rounded-xl  w-full bg-white">
                 {/* Role Title */}
                 <h3 className="text-lg font-medium">{role.name}</h3>
@@ -59,7 +78,10 @@ const RoleCard = ({ role }: RoleCardProps) => {
                         )}
                     </div>
                     <div
-                        onClick={(e) => { setModalAddUser(true); e.stopPropagation() }}
+                        onClick={(e) => {
+                            hasPermission('assign-user-to-role') ? setModalAddUser(true) : null;
+                            e.stopPropagation()
+                        }}
                         className='flex cursor-pointer items-center gap-2'>
                         <div className='w-9 h-9 rounded-[50%] border-dashed flex items-center justify-center ml-1 border border-gray-200'>
                             <PlusIcon className='w-5 h-5 text-gray-500' />
@@ -70,14 +92,16 @@ const RoleCard = ({ role }: RoleCardProps) => {
                 </div>
                 {/* Buttons */}
                 <div className="mt-5 flex gap-2">
-                    <Button className='w-[84px] bg-gray-100 border-none text-sm hover:bg-gray-200 font-semibold'>Edit</Button>
-                    <Button className='w-[101px] bg-gray-100 border-none text-sm font-semibold'>Delete Role</Button>
+                    <Button disabled={defaultRoles.includes(role.name)} className='w-[84px] bg-gray-100 border-none text-sm hover:bg-gray-200 font-semibold'>Edit</Button>
+                    <Button disabled={defaultRoles.includes(role.name)} className='w-[101px] bg-gray-100 border-none text-sm font-semibold'>Delete Role</Button>
                 </div>
 
             </div>
             {modalAddUser && (
                 <ModalAddUserToRole
                     open={modalAddUser}
+                    onSuccess={handleGetNewUsers}
+                    role={role}
                     onclose={() => setModalAddUser(false)}
                 />
             )}
