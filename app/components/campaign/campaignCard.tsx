@@ -69,6 +69,7 @@ function CampaignCard({ campaign, onReload }: CampaignCardProps) {
         <Menu className='custom-menu-card' onClick={(e) => { handleMenuClick(e.key); e.domEvent.stopPropagation(); }}>
             {campaignMenuItems.map((item) => {
                 const isDisabled = (item.key === 'delete' || item.key === 'edit') && (campaign.joinedCreators?.length as number) > 0;
+                
 
                 return (
                     <Menu.Item

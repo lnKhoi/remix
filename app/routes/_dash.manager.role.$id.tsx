@@ -67,7 +67,6 @@ const EmployeeRole: FC = () => {
             .finally(() => { setDeletingUserIds((prev) => prev.filter((userId) => userId !== id)); });
     };
 
-
     return (
         <div >
             {contextHolder}
@@ -87,7 +86,7 @@ const EmployeeRole: FC = () => {
 
             <div className="flex flex-col lg:flex-row gap-4 items-start">
                 {/* Role Details */}
-                <div className="bg-white py-4 border border-gray-200 rounded-xl hover:shadow-sm transition-all flex-1">
+                <div className="bg-white py-4 w-1/2 border border-gray-200 rounded-xl hover:shadow-sm transition-all flex-1">
                     <div className="text-lg font-semibold px-4 pb-3 border-b border-b-gray-200">Role Details</div>
                     <div className='flex flex-col px-4'>
                         <p className="text-sm text-gray-600 font-normal  mt-4">
@@ -99,11 +98,11 @@ const EmployeeRole: FC = () => {
                         <p className="text-sm font-normal text-gray-600">
                             Role description:
                         </p>
-                        <span className='font-medium text-sm text-gray-800'>
-                            {loadingType == 'permissions'
-                                ? <Skeleton.Input active style={{ height: 17 }} />
-                                : role?.description}
+                        <span className='font-medium w-full text-sm text-gray-800 break-words word-break'>
+                            {loadingType === 'permissions' ? <Skeleton.Input active style={{ height: 17 }} /> : role?.description}
                         </span>
+
+
                     </div>
 
                     <div className="flex px-4 justify-between items-center mt-4">
@@ -121,7 +120,7 @@ const EmployeeRole: FC = () => {
                     />
                 </div>
                 {/* Role Permissions */}
-                <div className="bg-white py-4 border border-gray-200 rounded-xl hover:shadow-sm transition-all flex-1">
+                <div className="bg-white w-1/2  py-4 border border-gray-200 rounded-xl hover:shadow-sm transition-all flex-1">
                     <div className="text-lg font-semibold px-4 pb-3 border-b border-b-gray-200">Role Permissions</div>
                     <div className="flex flex-col m-4 border border-gray-200 rounded-xl">
                         {loadingType == 'permissions'
