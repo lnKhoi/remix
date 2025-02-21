@@ -21,7 +21,7 @@ type AuthContextType = {
     onPayment: boolean,
     setOnPayment: Dispatch<SetStateAction<boolean>>
     handleRefreshUserInfo: () => void
-    hasPermission: (requiredPermissions: Permission | Permission[]) => boolean
+    hasPermission: (requiredPermissions: Permission | Permission[]) => boolean | undefined
 }
 const MyContext = createContext<AuthContextType | undefined>(undefined);
 type AuthContextProviderProps = { children: ReactNode }
@@ -46,13 +46,12 @@ const AuthContextProvider: FC<AuthContextProviderProps> = ({ children }) => {
         });
     };
 
-    const permissions = ['create-campaign','view-campaign','edit-campaign','delete-campaign','invite-imported-influencers']
 
-    const hasPermission = (requiredPermissions: string | string[]) => {
+    const hasPermission = (requiredPermissions: Permission | Permission[]) => {
         if (Array.isArray(requiredPermissions)) {
-            return requiredPermissions.every((perm) => permissions.includes(perm));
+            return requiredPermissions.every((perm) => userInfo?.permissions?.includes(perm));
         }
-        return permissions.includes(requiredPermissions);
+        return userInfo?.permissions.includes(requiredPermissions);
     };
 
     return (
