@@ -1,3 +1,5 @@
+import { Permission } from './role.model';
+
 export type UserType = 'creator' | 'brand'
 
 export type Auth = {
@@ -32,6 +34,7 @@ export type User = {
   created_at?: number;
   updated_at?: number;
   deleted_at?: number | null;
+  permissions: Permission[] | Permission
   email?: string;
   role?: 'MANAGER' | 'CREATOR';
   picture?: string | null;
@@ -153,6 +156,7 @@ export type UserPermission = {
   id:string,
   name?:string,
   email?:string,
+  create_at?:string
   role?:string,
   lastActivity?:string,
   joinedDate?:string

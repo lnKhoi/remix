@@ -18,6 +18,7 @@ import {
 import Permission from '~/components/custom/skeletons/Permission';
 import ModalAddUserToRole from '~/components/role/ModalAddUserToRole';
 import { UserAssignedColumns } from '~/constants/roles.constant';
+import { useAuthContext } from '~/contexts/auth.context';
 import { Role } from '~/models/role.model';
 
 import { PlusOutlined } from '@ant-design/icons';
@@ -38,6 +39,7 @@ const EmployeeRole: FC = () => {
     const [loadingType, setLoadingType] = useState<'' | 'permissions' | 'add-users'>('')
     const [deletingUserIds, setDeletingUserIds] = useState<string[]>([])
     const [messageApi, contextHolder] = message.useMessage();
+    const { hasPermission } = useAuthContext()
 
     const handleGetRoleDetails = () => {
         setLoadingType('permissions')
@@ -52,19 +54,19 @@ const EmployeeRole: FC = () => {
         getRoleDetails(id as string).then(res => setRole(res.data))
             .finally(() => setLoadingType(''))
     }
-    
+
     const handleDeleteUserFromRole = async (id: string) => {
-        setDeletingUserIds((prev) => [...prev, id]); 
-    
+        setDeletingUserIds((prev) => [...prev, id]);
+
         deleteUsersFromRole(role?.id as string, [id])
             .then(() => {
-                getUsersInRole(); 
+                getUsersInRole();
                 messageApi.success('Remove user successfully!');
             })
-            .catch((err) => {messageApi.error(err.message);})
-            .finally(() => {setDeletingUserIds((prev) => prev.filter((userId) => userId !== id));});
+            .catch((err) => { messageApi.error(err.message); })
+            .finally(() => { setDeletingUserIds((prev) => prev.filter((userId) => userId !== id)); });
     };
-    
+
 
     return (
         <div >
@@ -106,9 +108,9 @@ const EmployeeRole: FC = () => {
 
                     <div className="flex px-4 justify-between items-center mt-4">
                         <h3 className="font-medium">User Assigned ({role?.users.length})</h3>
-                        <Button onClick={() => setModalAddUser(true)} type="primary" icon={<PlusOutlined />}>
+                        {hasPermission('assign-user-to-role') && <Button onClick={() => setModalAddUser(true)} type="primary" icon={<PlusOutlined />}>
                             Add User
-                        </Button>
+                        </Button>}
                     </div>
                     <Table
                         dataSource={loadingType !== '' ? [1, 2, 3, 4] as any : role?.users}

@@ -13,6 +13,7 @@ import NoData from '~/assets/no-data.png';
 import RoleCardSkeleton from '~/components/custom/skeletons/RoleCardSkeleton';
 import ModalCreateRole from '~/components/role/ModalCreateRole';
 import RoleCard from '~/components/role/RoleCard';
+import { useAuthContext } from '~/contexts/auth.context';
 import { Role } from '~/models/role.model';
 
 import { MetaFunction } from '@remix-run/react';
@@ -26,6 +27,7 @@ function Roles() {
   const [roles, setRoles] = useState<Role[]>([])
   const [loadingType, setLoadingType] = useState<'get-roles' | 'create-role' | ''>('')
   const [messageApi, contextHolder] = message.useMessage();
+  const {hasPermission} = useAuthContext()
 
   const handleGetRoles = () => {
     setLoadingType('get-roles')
@@ -45,6 +47,7 @@ function Roles() {
   useEffect(() => handleGetRoles(), [])
 
   const handleUpdateRole = useCallback((newRole: Role) => {
+    messageApi.success(`Add users to ${newRole.name} successfully!`)
     setRoles((prevRoles) => (
       prevRoles.map(r => r.id === newRole.id ? { ...r, users: newRole.users } : r)
     ))
@@ -58,7 +61,7 @@ function Roles() {
           <h2 className='text-2xl font-medium text-gray-800'>Roles</h2>
           <p className='font-normal text-gray-500 text-sm'>View, Create and manage your roles with preferred configuration</p>
         </div>
-        <Button onClick={() => setModalType('create-role')} type='primary'>Create Role</Button>
+       {hasPermission('create-role') &&  <Button onClick={() => setModalType('create-role')} type='primary'>Create Role</Button>}
       </div>
       <div className='mt-5 grid w-full grid-cols-2 md:grid-cols-3 2xl:grid-cols-4 gap-4'>
         {loadingType == 'create-role' && <RoleCardSkeleton />}

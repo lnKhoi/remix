@@ -34,9 +34,10 @@ type ModalAddUserToRoleProps = {
 
 function ModalAddUserToRole({ onclose, open, role, onSuccess }: ModalAddUserToRoleProps) {
     const [search, setSearch] = useState<string>('');
-    const [users, setUsers] = useState<UserPermission[]>([])
+    const [users, setUsers] = useState<{ total: number, data: UserPermission[] }>({ total: 0, data: [] })
     const [loading, setLoading] = useState<boolean>(false)
     const [loadingInvite, setLoadingInvite] = useState<boolean>(false)
+    const [params, setParams] = useState<{ page: number, pageSize: number }>({ page: 1, pageSize: 10 })
 
     const [messageApi, contextHolder] = message.useMessage();
 
@@ -53,17 +54,18 @@ function ModalAddUserToRole({ onclose, open, role, onSuccess }: ModalAddUserToRo
 
     const getAllUsers = () => {
         setLoading(true)
-        getUsers().then(res => setUsers(res?.data?.data))
+        getUsers(params.page, params.pageSize).then(res => setUsers({ data: res?.data?.data, total: res?.data?.total }))
             .finally(() => setLoading(false))
     }
 
-    useEffect(() => { getAllUsers() }, [])
+    useEffect(() => { getAllUsers() }, [params.page,params.pageSize])
 
     const handleAddUsersToRole = () => {
         setLoadingInvite(true)
         addUsersToRole(role.id, selectedUser).then(res => {
-            messageApi.success(`Add users to ${role.name} successfully!`)
             onSuccess()
+            onclose()
+            
         })
             .finally(() => setLoadingInvite(false))
             .catch(err => messageApi.error(err?.message))
@@ -96,9 +98,17 @@ function ModalAddUserToRole({ onclose, open, role, onSuccess }: ModalAddUserToRo
             {/* Users */}
             <div className="mt-5">
                 <Table
+                    pagination={{
+                        pageSize: params.pageSize,
+                        current: params.page,
+                        total: users.total,
+                        onChange: (page, pageSize) => {
+                            setParams({ page: page, pageSize: pageSize })
+                        },
+                    }}
                     rowKey={'id'}
                     rowSelection={{ type: 'checkbox', ...rowSelection }}
-                    dataSource={loading ? [1, 2, 3, 4] as any : users}
+                    dataSource={loading ? [1, 2, 3, 4] as any : users.data}
                     columns={UserColumns(loading)} />
             </div>
         </Drawer>

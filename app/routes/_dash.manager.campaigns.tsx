@@ -124,12 +124,12 @@ function Campaigns() {
             </div>
           )}
           <div className='grid 2xl:grid-cols-4 xl:grid-cols-3 md:grid-cols-2 grid-cols-1  gap-5 mt-5'>
-            {campaigns?.map((c) => (
+            {hasPermission('view-campaign') && campaigns?.map((c) => (
               <CampaignCard onReload={handleReloadCampagins} key={c.id} campaign={c} />
             ))}
           </div>
 
-          {!noMore && (
+          {!noMore && hasPermission('view-campaign') && (
             <AntButton
               disabled={noMore}
               loading={loading == 'load-more'}

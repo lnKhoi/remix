@@ -27,9 +27,10 @@ import { UploadOutlined } from '@ant-design/icons';
 type ModalCreateUserProps = {
   open: boolean;
   onClose: () => void;
+  onSuccess: (name:string) => void
 };
 
-const ModalCreateUser: FC<ModalCreateUserProps> = ({ open, onClose }) => {
+const ModalCreateUser: FC<ModalCreateUserProps> = ({ open, onClose, onSuccess }) => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState<boolean>(false)
   const [roles, setRoles] = useState<Role[]>([])
@@ -38,10 +39,10 @@ const ModalCreateUser: FC<ModalCreateUserProps> = ({ open, onClose }) => {
   const handleFinish = (values: CreateUserPayload) => {
     setLoading(true);
   
-    createUserPermission(values)
+    createUserPermission({...values,avatarUrl:'https://cactusthemes.com/blog/wp-content/uploads/2018/01/tt_avatar_small.jpg'})
       .then(() => {
-        messageApi.success("Create user successfully!");
-        onClose();
+        onSuccess(values.name)
+        onClose()
       })
       .catch((err) => { messageApi.error(err.message);})
       .finally(() => {setLoading(false)});
@@ -83,7 +84,7 @@ const ModalCreateUser: FC<ModalCreateUserProps> = ({ open, onClose }) => {
         </div>
 
         {/* Full Name */}
-        <Form.Item name="fullName" label="Full name" rules={[{ required: true, message: "Please enter full name" }]}>
+        <Form.Item name="name" label="Full name" rules={[{ required: true, message: "Please enter full name" }]}>
           <Input placeholder="e.g. Emma Smith" />
         </Form.Item>
 
@@ -93,7 +94,7 @@ const ModalCreateUser: FC<ModalCreateUserProps> = ({ open, onClose }) => {
         </Form.Item>
 
         {/* Role Selection */}
-        <Form.Item name="role" label="Role" rules={[{ required: true, message: "Please select a role" }]}>
+        <Form.Item name="roles" label="Role" rules={[{ required: true, message: "Please select a role" }]}>
           <Select maxTagCount={2} mode="multiple" placeholder="Select role">
             {roles.map((r) => (
               <Select.Option key={r.id} value={r.id}>

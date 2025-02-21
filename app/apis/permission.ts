@@ -15,5 +15,5 @@ export type CreateUserPayload = {
 }
 
 export const createUserPermission = (user: CreateUserPayload) => {
-    return postData(`/api/v1/auth/register/brand-admin`, user)
+    return postData(`/api/v1/role/register/brand-admin`, user)
 }

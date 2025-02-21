@@ -158,7 +158,7 @@ const ModalCreateRole: FC<ModalCreateRoleProps> = ({ open, onClose, onSuccess })
         setLoadingType('permissions')
         const [permissionsRes, usersRes] = await Promise.all([
             getPermissions(),
-            getUsers(),
+            getUsers(1,1000),
         ]).finally(() => setLoadingType(''))
         setPermissions(permissionsRes?.data);
         setUsers(usersRes?.data?.data);
