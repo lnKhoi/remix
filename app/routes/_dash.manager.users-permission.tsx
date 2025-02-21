@@ -78,7 +78,7 @@ function UsersPermission() {
                 </div>
                 {hasPermission('create-user') && (
                     <Button onClick={() => setModalType('create-user')} type='primary'>
-                        <PlusIcon className='w-5 h-5 text-white' /> Add User
+                        <PlusIcon className='w-5 h-5 text-white' /> Create User
                     </Button>
                 )}
             </div>
