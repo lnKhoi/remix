@@ -46,7 +46,7 @@ export const RolesColumns = ({
     },
     {
       title: 'Role',
-      render: (_, record) => <>{loading ? <Skeleton.Input active style={{ height: 18 }} /> : record.role}</>
+      render: (_, record) => <>{loading ? <Skeleton.Input active style={{ height: 18 }} /> : Array.isArray(record.role) ? record?.role?.map(role => role.charAt(0).toUpperCase() + role.slice(1)).join(', ') : record.role}</>
     },
     {
       title: 'Last Activity',

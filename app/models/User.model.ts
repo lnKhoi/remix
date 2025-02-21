@@ -157,7 +157,7 @@ export type UserPermission = {
   name?:string,
   email?:string,
   create_at?:string
-  role?:string,
+  role?:string | string [],
   lastActivity?:string,
   joinedDate?:string
 }
