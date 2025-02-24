@@ -37,7 +37,7 @@ export const meta: MetaFunction = () => {
 }
 
 function Campaigns() {
-  const {hasPermission} = useAuthContext()
+  const { hasPermission } = useAuthContext()
   const [search, setSearch] = useState<string>('')
   const [loading, setLoading] = useState<'get-list' | 'load-more' | ''>('')
   const [campaigns, setCampagins] = useState<Campaign[]>([])
@@ -86,13 +86,13 @@ function Campaigns() {
           <h2 className='text-2xl text-gray-900'>Campaigns</h2>
           <p className='text-sm text-gray-500 mt-1'>Manage your campaigns and view their sales performance.</p>
         </div>
-       {hasPermission('create-campaign') && (
-         <Link to='/manager/campaign/add-campaign'>
-         <Button type='button' size='sm' >
-           <PlusIcon className='mr-1' color='white' width={20} />  Add Campaign
-         </Button>
-       </Link>
-       )}
+        {hasPermission('create-campaign') && (
+          <Link to='/manager/campaign/add-campaign'>
+            <Button type='button' size='sm' >
+              <PlusIcon className='mr-1' color='white' width={20} />  Add Campaign
+            </Button>
+          </Link>
+        )}
       </div>
       <div className='mt-5 flex items-end justify-between'>
         <InputSearch onChange={(e) => handleSearchCampaigns(e)} placeholder='Campaign name' className='w-[300px] h-[36px] ' />
@@ -118,9 +118,11 @@ function Campaigns() {
           {campaigns?.length === 0 && (
             <div className='flex items-center flex-col gap-3 justify-center w-full h-[calc(100vh-200px)]'>
               <img src={NoCampaigns} className='w-[370px]' />
-              <Link to='/manager/campaign/add-campaign'>
-                <Button className='h-[36px]' ><PlusIcon width={20} /> Add Campaign</Button>
-              </Link>
+              {hasPermission('create-campaign') && (
+                <Link to='/manager/campaign/add-campaign'>
+                  <Button className='h-[36px]' ><PlusIcon width={20} /> Add Campaign</Button>
+                </Link>
+              )}
             </div>
           )}
           <div className='grid 2xl:grid-cols-4 xl:grid-cols-3 md:grid-cols-2 grid-cols-1  gap-5 mt-5'>

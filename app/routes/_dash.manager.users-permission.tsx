@@ -57,7 +57,7 @@ function UsersPermission() {
 
     const handleGetUsers = () => {
         setLoading(true)
-        getUsers(params.page, params.pageSize).then(res => setUsers({ total: res.data.total, data: res.data.data }))
+        getUsers(params.page, params.pageSize,'').then(res => setUsers({ total: res.data.total, data: res.data.data }))
             .finally(() => setLoading(false))
     }
 
