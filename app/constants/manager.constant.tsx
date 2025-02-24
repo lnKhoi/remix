@@ -19,11 +19,11 @@ import {
 
 export type NavItem = {
   to: string;
-  icon: FC<{ className?: string }> | null;
   label: string;
-  badge?: number;
+  icon?: FC<{ className?: string }> | null; 
+  permissions?: string[];
   children?: NavItem[];
-  active?: string
+  active?: string;
 }
 
 
@@ -33,6 +33,7 @@ export const navItems: NavItem[] = [
     to: "/manager/campaigns",
     icon: FireIcon,
     label: "Campaigns",
+    permissions: ['view-campaign']
   },
   {
     to: "/manager/creators",
@@ -43,11 +44,13 @@ export const navItems: NavItem[] = [
     to: "/manager/contents",
     icon: DocumentChartBarIcon,
     label: "Contents",
+    permissions: ['view-content']
   },
   {
     to: "",
     icon: ArchiveBoxIcon,
     label: "Products",
+    permissions: ['view-influencer-orders'],
     children: [
       { label: 'Order Tracking', to: '/manager/products/order-tracking', icon: null },
     ],
@@ -56,6 +59,7 @@ export const navItems: NavItem[] = [
     to: "/manager/finance",
     icon: ChartBarSquareIcon,
     label: "Finance",
+    permissions: ['view-finance-overview']
   },
   {
     to: "/manager/analytics",
@@ -67,8 +71,8 @@ export const navItems: NavItem[] = [
     icon: Cog6ToothIcon,
     label: "Settings",
     children: [
-      { label: 'Users', to: '/manager/users-permission', icon: null },
-      { label: 'Roles', to: '/manager/roles', icon: null },
+      { label: 'Users', to: '/manager/users-permission', icon: null, permissions: ['view-user'] },
+      { label: 'Roles', to: '/manager/roles', icon: null, permissions: ['view-role'] },
     ],
   },
 ];
@@ -94,11 +98,13 @@ export const campaignMenuItems = [
     key: 'edit',
     icon: <PencilSquareIcon width={16} color='#1F2937' />,
     label: 'Edit',
+    permission:'edit-campaign'
   },
   {
     key: 'delete',
     icon: <TrashIcon width={16} color='#1F2937' />,
     label: 'Delete',
+    permission: 'delete-campaign'
   },
 ];
 

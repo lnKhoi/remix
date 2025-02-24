@@ -1,4 +1,5 @@
 import React, {
+  ChangeEvent,
   Key,
   useEffect,
   useState,
@@ -11,6 +12,7 @@ import {
   Table,
 } from 'antd';
 import { TableProps } from 'antd/lib';
+import debounce from 'lodash/debounce';
 import {
   addUsersToRole,
   getUsers,
@@ -54,22 +56,27 @@ function ModalAddUserToRole({ onclose, open, role, onSuccess }: ModalAddUserToRo
 
     const getAllUsers = () => {
         setLoading(true)
-        getUsers(params.page, params.pageSize).then(res => setUsers({ data: res?.data?.data, total: res?.data?.total }))
+        getUsers(params.page, params.pageSize,search).then(res => setUsers({ data: res?.data?.data, total: res?.data?.total }))
             .finally(() => setLoading(false))
     }
 
-    useEffect(() => { getAllUsers() }, [params.page,params.pageSize])
+    useEffect(() => { getAllUsers() }, [params, search])
 
     const handleAddUsersToRole = () => {
         setLoadingInvite(true)
         addUsersToRole(role.id, selectedUser).then(res => {
             onSuccess()
             onclose()
-            
+
         })
             .finally(() => setLoadingInvite(false))
             .catch(err => messageApi.error(err?.message))
     }
+
+    const handleSearchUser = debounce((e: ChangeEvent<HTMLInputElement>): void => {
+        setSearch(e.target.value)
+        setParams({ page: 1, pageSize: 10 })
+    }, 500);
 
     return (
         <Drawer
@@ -92,7 +99,7 @@ function ModalAddUserToRole({ onclose, open, role, onSuccess }: ModalAddUserToRo
                     <p className="text-sm font-medium text-gray-800">User Unassigned</p>
                     <span className="text-sm font-normal text-gray-500">Selected ({selectedUser.length})</span>
                 </div>
-                <InputSearch onChange={(e) => setSearch(e.target.value)} placeholder="Search name" />
+                <InputSearch onChange={(e) => handleSearchUser(e)} placeholder="Search name" />
             </div>
 
             {/* Users */}
@@ -108,7 +115,7 @@ function ModalAddUserToRole({ onclose, open, role, onSuccess }: ModalAddUserToRo
                     }}
                     rowKey={'id'}
                     rowSelection={{ type: 'checkbox', ...rowSelection }}
-                    dataSource={loading ? [1, 2, 3, 4] as any : users.data}
+                    dataSource={loading ? [1, 2, 3, 4,5,6,7,8,9,10] as any : users.data}
                     columns={UserColumns(loading)} />
             </div>
         </Drawer>
