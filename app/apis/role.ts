@@ -14,8 +14,8 @@ export const getRoles = () => {
   return getData(`/api/v1/role/roles`)
 }
 
-export const getUsers = (page:number,pageSize:number) => {
-  return getData(`/api/v1/user/manager-list-for-brand?page=${page}&limit=${pageSize}`)
+export const getUsers = (page:number,pageSize:number,search:string) => {
+  return getData(`/api/v1/user/manager-list-for-brand?page=${page}&limit=${pageSize}&name=${search || ''}`)
 }
 
 export const getRoleDetails = (id: string) => {

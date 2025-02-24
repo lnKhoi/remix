@@ -12,17 +12,13 @@ import {
   Input,
   message,
   Select,
-  Upload,
 } from 'antd';
 import {
   CreateUserPayload,
   createUserPermission,
 } from '~/apis/permission';
 import { getRoles } from '~/apis/role';
-import Avatar from '~/assets/upload-avatar.png';
 import { Role } from '~/models/role.model';
-
-import { UploadOutlined } from '@ant-design/icons';
 
 type ModalCreateUserProps = {
   open: boolean;
@@ -39,7 +35,7 @@ const ModalCreateUser: FC<ModalCreateUserProps> = ({ open, onClose, onSuccess })
   const handleFinish = (values: CreateUserPayload) => {
     setLoading(true);
   
-    createUserPermission({...values,avatarUrl:'https://cactusthemes.com/blog/wp-content/uploads/2018/01/tt_avatar_small.jpg'})
+    createUserPermission({...values})
       .then(() => {
         onSuccess(values.name)
         onClose()
@@ -71,17 +67,6 @@ const ModalCreateUser: FC<ModalCreateUserProps> = ({ open, onClose, onSuccess })
     >
       {contextHolder}
       <Form form={form} layout="vertical" onFinish={handleFinish}>
-        {/* Picture Upload */}
-        <p className="text-sm font-medium">Picture</p>
-        <p className="text-xs text-gray-500 mt-[2px]">Format: JPG, GIF, PNG. Max: 1MB</p>
-        <div className="flex gap-3 items-center my-5">
-          <img className="w-[128px] h-[128px] object-cover rounded-[50%]" src={Avatar} alt="avatar" />
-          <Upload showUploadList={false}>
-            <Button className="bg-gray-100 border-none" icon={<UploadOutlined />}>
-              Choose Picture
-            </Button>
-          </Upload>
-        </div>
 
         {/* Full Name */}
         <Form.Item name="name" label="Full name" rules={[{ required: true, message: "Please enter full name" }]}>
