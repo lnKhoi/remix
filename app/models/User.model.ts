@@ -159,5 +159,6 @@ export type UserPermission = {
   create_at?:string
   role?:string | string [],
   lastActivity?:string,
+  picture?:string
   joinedDate?:string
 }

@@ -1,7 +1,9 @@
 import {
   Button,
   Skeleton,
+  Switch,
   TableColumnsType,
+  Tooltip,
 } from 'antd';
 import dayjs from 'dayjs';
 import Avatar from '~/assets/avatar.jpeg';
@@ -28,8 +30,10 @@ export const RolesColumns = ({
 }): TableColumnsType<UserPermission> => [
     {
       title: 'Name',
+      minWidth:230,
+      fixed: 'left',
       render: (_, record) => (
-        <div className='flex gap-3 items-start'>
+        <div className='flex gap-3 w-full items-start'>
           {loading
             ? <Skeleton.Avatar active style={{ height: 36, width: 36 }} />
             : <img className='w-9 h-9 object-cover rounded-[50%]' src={Avatar} alt="avatar" />}
@@ -46,10 +50,30 @@ export const RolesColumns = ({
     },
     {
       title: 'Role',
-      render: (_, record) => <>{loading ? <Skeleton.Input active style={{ height: 18 }} /> : Array.isArray(record.role) ? record?.role?.map(role => role.charAt(0).toUpperCase() + role.slice(1)).join(', ') : record.role}</>
+      minWidth:200,
+      render: (_, record) => {
+        // Format the role text (same as your logic)
+        const roleText = loading
+          ? <Skeleton.Input active style={{ height: 18 }} />
+          : Array.isArray(record.role)
+            ? record.role.map(role => role.charAt(0).toUpperCase() + role.slice(1)).join(', ')
+            : record.role;
+    
+        // If loading, return the skeleton directly
+        if (loading) {
+          return <div>{roleText}</div>;
+        }
+    
+        return (
+          <Tooltip title={roleText} placement="top">
+            <div className='cursor-pointer w-[250px] truncate overflow-hidden text-ellipsis flex-nowrap' >{roleText}</div>
+          </Tooltip>
+        );
+      },
     },
     {
       title: 'Last Activity',
+      minWidth:150,
       render: (_, record) => <>{loading ? <Skeleton.Input active style={{ height: 18 }} /> : '1 hour ago'}</>
     },
     {
@@ -57,8 +81,17 @@ export const RolesColumns = ({
       render: (_, record) => <>{loading ? <Skeleton.Node active style={{ height: 18, width: 50 }} /> : dayjs(record.create_at).format(DATE_TIME_FORMAT)}</>
     },
     {
+      title: 'Status',
+      width:'10%',
+      render: (_, record) => <>{loading
+         ? <Skeleton.Node active style={{ height: 18, width: 120 }} /> 
+         : <div><Switch/></div>}</>
+    },
+    {
       align: 'justify',
       title: 'Action',
+      minWidth:100,
+      fixed: 'right',
       render: (_, record) => {
         return (
           <>

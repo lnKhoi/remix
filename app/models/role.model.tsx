@@ -1,12 +1,15 @@
-import { User } from './User.model';
+import {
+  User,
+  UserPermission,
+} from './User.model';
 
 export type Role = {
     name: string,
     description: string,
-    users: string[] | User[],
+    users: string[] | UserPermission[] | User[],
     id:string,
-    brandId:string,
-    createdAt:string
+    brandId?:string,
+    createdAt?:string
     permissions: string[]
     create_at?:string
 }
