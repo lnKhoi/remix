@@ -46,10 +46,10 @@ function Roles() {
 
   useEffect(() => handleGetRoles(), [])
 
-  const handleUpdateRole = useCallback((newRole: Role) => {
-    messageApi.success(`Add users to ${newRole.name} successfully!`)
+  const handleUpdateRole = useCallback((newRole: Role,type:'create' | 'edit') => {
+    messageApi.success(type == 'create' ? `Add users to ${newRole.name} successfully!` : 'Update Role successfully!')
     setRoles((prevRoles) => (
-      prevRoles.map(r => r.id === newRole.id ? { ...r, users: newRole.users } : r)
+      prevRoles.map(r => r.id === newRole.id ? newRole : r)
     ))
   }, [])
 
@@ -74,7 +74,7 @@ function Roles() {
           </div>
         ) : (
           roles.map(role => <RoleCard
-            onUpdateRole={(newRole) => handleUpdateRole(newRole)}
+            onUpdateRole={(newRole,type) => handleUpdateRole(newRole,type)}
             key={role.id}
             role={role} />)
         )}
@@ -83,6 +83,7 @@ function Roles() {
       {/* Create Role */}
       {modalType == 'create-role' && (
         <ModalCreateRole
+          type='create'
           onSuccess={handleRefresh}
           onClose={() => setModalType('')}
           open={modalType == 'create-role'}

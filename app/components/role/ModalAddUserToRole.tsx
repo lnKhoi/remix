@@ -75,7 +75,6 @@ function ModalAddUserToRole({ onclose, open, role, onSuccess }: ModalAddUserToRo
 
     const handleSearchUser = debounce((e: ChangeEvent<HTMLInputElement>): void => {
         setSearch(e.target.value)
-        setParams({ page: 1, pageSize: 10 })
     }, 500);
 
     return (
@@ -107,6 +106,8 @@ function ModalAddUserToRole({ onclose, open, role, onSuccess }: ModalAddUserToRo
                 <Table
                     pagination={{
                         pageSize: params.pageSize,
+                        showSizeChanger: true, 
+                        pageSizeOptions: ['10', '20', '50'], 
                         current: params.page,
                         total: users.total,
                         onChange: (page, pageSize) => {

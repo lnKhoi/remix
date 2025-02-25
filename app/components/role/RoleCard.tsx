@@ -19,14 +19,16 @@ import { PlusIcon } from '@radix-ui/react-icons';
 import { useNavigate } from '@remix-run/react';
 
 import ModalAddUserToRole from './ModalAddUserToRole';
+import ModalCreateRole from './ModalCreateRole';
 
 type RoleCardProps = {
     role: Role
-    onUpdateRole: (newRole: Role) => void
+    onUpdateRole: (newRole: Role, type: 'create' | 'edit') => void
 }
 
 const RoleCard = ({ role, onUpdateRole }: RoleCardProps) => {
     const [modalAddUser, setModalAddUser] = useState<boolean>(false)
+    const [modalEditRole, setModalEditRole] = useState<boolean>(false)
     const navigate = useNavigate()
     const [messageApi, contextHolder] = message.useMessage();
     const { hasPermission } = useAuthContext()
@@ -34,10 +36,9 @@ const RoleCard = ({ role, onUpdateRole }: RoleCardProps) => {
 
     const defaultRoles = ['Brand Manager', 'Brand User', 'Brand Admin']
 
-    const handleGetNewUsers = () => {
-        // Get roles details and passing data here
-        getRoleDetails(role.id).then((res) => {
-            onUpdateRole(res.data)
+    const handleGetNewUsers = (type: 'create' | 'edit') => {
+        getRoleDetails(role?.id as string).then((res) => {
+            onUpdateRole(res.data, type)
         })
     }
 
@@ -71,9 +72,9 @@ const RoleCard = ({ role, onUpdateRole }: RoleCardProps) => {
                                 ) : null
                             )}
 
-                        {role.users.length > 3 && (
+                        {role?.users?.length || 0 > 3 && (
                             <span className="w-9 h-9 flex items-center justify-center text-sm font-semibold bg-gray-200 rounded-full border-2 border-white">
-                                + {role.users.length - 3}
+                                + {role?.users?.length || 0 - 3}
                             </span>
                         )}
                     </div>
@@ -92,15 +93,37 @@ const RoleCard = ({ role, onUpdateRole }: RoleCardProps) => {
                 </div>
                 {/* Buttons */}
                 <div className="mt-5 flex gap-2">
-                    <Button disabled={defaultRoles.includes(role.name)} className='w-[84px] bg-gray-100 border-none text-sm hover:bg-gray-200 font-semibold'>Edit</Button>
-                    <Button disabled={defaultRoles.includes(role.name)} className='w-[101px] bg-gray-100 border-none text-sm font-semibold'>Delete Role</Button>
+                    <Button
+                        onClick={(e) => { e.stopPropagation(); setModalEditRole(true) }}
+                        disabled={defaultRoles.includes(role?.name as string)}
+                        className='w-[84px] bg-gray-100 border-none text-sm hover:bg-gray-200 font-semibold'>
+                        Edit
+                    </Button>
+                    <Button
+                        onClick={(e) => e.stopPropagation()}
+                        disabled={defaultRoles.includes(role?.name as string)}
+                        className='w-[101px] bg-gray-100 border-none text-sm font-semibold'>
+                        Delete Role
+                    </Button>
                 </div>
-
             </div>
+
+
+            {/* Edit Role */}
+            {modalEditRole && (
+                <ModalCreateRole
+                    initial={role}
+                    type="edit"
+                    onClose={() => setModalEditRole(false)}
+                    open={modalEditRole}
+                    onSuccess={() => handleGetNewUsers('edit')} />
+            )}
+
+            {/* Add User To Role */}
             {modalAddUser && (
                 <ModalAddUserToRole
                     open={modalAddUser}
-                    onSuccess={handleGetNewUsers}
+                    onSuccess={() => handleGetNewUsers('create')}
                     role={role}
                     onclose={() => setModalAddUser(false)}
                 />
