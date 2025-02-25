@@ -1,4 +1,5 @@
 import React, {
+  ChangeEvent,
   Key,
   useEffect,
   useState,
@@ -10,7 +11,9 @@ import {
   Table,
   TableProps,
 } from 'antd';
+import debounce from 'lodash/debounce';
 import { getUsers } from '~/apis/role';
+import { InputSearch } from '~/components/ui/input-search';
 import ModalCreateUser from '~/components/user/ModalCreateUser';
 import ModalViewUser from '~/components/user/ModalViewUser';
 import { RolesColumns } from '~/constants/roles.constant';
@@ -36,6 +39,7 @@ function UsersPermission() {
     const [modalType, setModalType] = useState<'view-user' | 'edit-user' | 'create-user' | ''>('')
     const [params, setParams] = useState<{ page: number, pageSize: number }>({ page: 1, pageSize: 10 })
     const { hasPermission } = useAuthContext()
+    const [search,setSearch] = useState<string>('')
 
     const [loading, setLoading] = useState<boolean>(false)
 
@@ -57,16 +61,21 @@ function UsersPermission() {
 
     const handleGetUsers = () => {
         setLoading(true)
-        getUsers(params.page, params.pageSize,'').then(res => setUsers({ total: res.data.total, data: res.data.data }))
+        getUsers(params.page, params.pageSize,search).then(res => setUsers({ total: res.data.total, data: res.data.data }))
             .finally(() => setLoading(false))
     }
 
-    useEffect(() => handleGetUsers(), [params.page, params.pageSize])
+    useEffect(() => handleGetUsers(), [params,search])
 
     const handleRefresh = (name: string) => {
         messageApi.success(`${name} has been invited`)
         handleGetUsers()
     }
+
+    const handleSearchUser = debounce((e: ChangeEvent<HTMLInputElement>): void => {
+        setSearch(e.target.value)
+    }, 500);
+
 
     return (
         <div>
@@ -82,16 +91,22 @@ function UsersPermission() {
                     </Button>
                 )}
             </div>
+          <div className='mt-5 w-[300px]'>
+          <InputSearch placeholder='Search name' onChange={(e) => handleSearchUser(e)}/>
+          </div>
             <div className='mt-5'>
                 <Table<UserPermission>
                     pagination={{
                         pageSize: params.pageSize,
                         current: params.page,
                         total: users.total,
+                        showSizeChanger: true, 
+                        pageSizeOptions: ['10', '20', '50'], 
                         onChange: (page, pageSize) => {
                             setParams({ page: page, pageSize: pageSize })
                         },
                     }}
+                    scroll={{ x: 'max-content' }}
                     rowSelection={{ type: 'checkbox', ...rowSelection }}
                     columns={RolesColumns({
                         onViewUser: handleViewUser,
