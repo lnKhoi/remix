@@ -188,8 +188,8 @@ const ModalCreateRole: FC<ModalCreateRoleProps> = ({ open, onClose, onSuccess, t
             };
 
             const API = type == 'create'
-                ? createRole(payload as Role)
-                : updateRole(initial?.id as string, payload as Role)
+                ? createRole(payload as any)
+                : updateRole(initial?.id as string, payload as any)
 
             await API.then(() => {
                 onSuccess();

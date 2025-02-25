@@ -64,7 +64,7 @@ function ModalAddUserToRole({ onclose, open, role, onSuccess }: ModalAddUserToRo
 
     const handleAddUsersToRole = () => {
         setLoadingInvite(true)
-        addUsersToRole(role.id, selectedUser).then(res => {
+        addUsersToRole(role?.id, selectedUser).then(res => {
             onSuccess()
             onclose()
 
