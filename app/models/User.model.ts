@@ -25,7 +25,7 @@ export type Brand = {
   category?: string[]
   created_at?: number;
   updated_at?: number;
-  timezone?:string
+  timezone?: string
   deleted_at?: number | null;
 }
 
@@ -41,8 +41,8 @@ export type User = {
   name?: string;
   brand_id?: string;
   brand?: Brand;
-  timezone?:string
-  avatarUrl:string
+  timezone?: string
+  avatarUrl: string
 }
 
 export type GoogleAccount = {
@@ -72,53 +72,53 @@ export type GoogleAccount = {
 }
 
 export type Demographic = {
-  detail:string,
-  valueCount:number,
-  valuePercentage:number
+  detail: string,
+  valueCount: number,
+  valuePercentage: number
 }
 
 export type Creator = {
-  id?:string,
+  id?: string,
   name?: string,
-  reason?:string
-  age?:number,
+  reason?: string
+  age?: number,
   platform?: string,
-  instagramUsername?:string
-  creator?:Creator
-  creatorId:string
-  isFinalDeadline?:number
-  avatarUrl?:string
-  creatorSuggestedDeadline?:string | null
-  expertises?:string [],
-  instagramTotalLikes?:number
-  category?:string []
+  instagramUsername?: string
+  creator?: Creator
+  creatorId: string
+  isFinalDeadline?: number
+  avatarUrl?: string
+  creatorSuggestedDeadline?: string | null
+  expertises?: string[],
+  instagramTotalLikes?: number
+  category?: string[]
   email?: string,
-  portfolios?:InstagramPost[]
-  connectedSocialMedias?:string []
-  biography?:string
-  deadline?:string
-  instagramFollowsCount?:number
-  demographicAges?:Demographic[]
-  demographicGenders?:Demographic[]
-  demographicCities?:Demographic[]
-  instagramMediaCount?:number
-  instagramFollowersNumber?:number
+  portfolios?: InstagramPost[]
+  connectedSocialMedias?: string[]
+  biography?: string
+  deadline?: string
+  instagramFollowsCount?: number
+  demographicAges?: Demographic[]
+  demographicGenders?: Demographic[]
+  demographicCities?: Demographic[]
+  instagramMediaCount?: number
+  instagramFollowersNumber?: number
   country?: string,
-  followersNumber?:number
-  gender?:string,
+  followersNumber?: number
+  gender?: string,
   score?: number
   status?: 'active' | 'inactive' | 'not registered' | 'registered' | 'joined_campaign',
-  followers?:number
-  alreadyInvited?:boolean
+  followers?: number
+  alreadyInvited?: boolean
 }
 
-export type InstagramPost =  {
+export type InstagramPost = {
   id: string;
   caption: string;
-  media_type: "CAROUSEL_ALBUM" | "IMAGE" | "VIDEO"; 
+  media_type: "CAROUSEL_ALBUM" | "IMAGE" | "VIDEO";
   media_url: string;
-  thumbnail_url?:string
-  share_count?:string,
+  thumbnail_url?: string
+  share_count?: string,
   permalink: string;
   timestamp: string;
   like_count: number;
@@ -128,37 +128,38 @@ export type InstagramPost =  {
 export type InfluencerContentStatus = 'waiting_to_apply' | "accepted_invitation" | 'joined_campaign' | 'brand_declined_influencer' | 'declined_invitation'
 
 export type InfluencerInCampaign = {
-  creator?:Creator,
-  campaignId?:string,
+  creator?: Creator,
+  campaignId?: string,
   status: InfluencerContentStatus
-  isFinalDeadline?:number
-  deadline?:string | null
-  previousDeadline?:string
-  creatorSuggestedDeadline?:string | null
+  isFinalDeadline?: number
+  deadline?: string | null
+  previousDeadline?: string
+  creatorSuggestedDeadline?: string | null
 
 }
 
 export type InfluencerPerformance = {
-  name:string,
-  email:string,
-  totalImpression:number,
-  conversionRate:number,
-  engagementRate:number,
-  roi:number,
-  likes:number,
-  totalPurchases:number
-  cpa:number
-  reach:number
-  creator?:Creator
+  name: string,
+  email: string,
+  totalImpression: number,
+  conversionRate: number,
+  engagementRate: number,
+  roi: number,
+  likes: number,
+  totalPurchases: number
+  cpa: number
+  reach: number
+  creator?: Creator
 }
 
 export type UserPermission = {
-  id:string,
-  name?:string,
-  email?:string,
-  create_at?:string
-  role?:string | string [],
-  lastActivity?:string,
-  picture?:string
-  joinedDate?:string
+  id: string,
+  name?: string,
+  email?: string,
+  create_at?: string
+  role?: string | string[] | { name?: string, id: string }[],
+  last_activity_time?: string
+  last_activity?: string,
+  picture?: string
+  joinedDate?: string
 }

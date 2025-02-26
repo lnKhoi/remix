@@ -72,9 +72,9 @@ const RoleCard = ({ role, onUpdateRole }: RoleCardProps) => {
                                 ) : null
                             )}
 
-                        {role?.users?.length || 0 > 3 && (
-                            <span className="w-9 h-9 flex items-center justify-center text-sm font-semibold bg-gray-200 rounded-full border-2 border-white">
-                                + {role?.users?.length || 0 - 3}
+                        {role?.users?.length > 3 && (
+                            <span className="w-9 h-9 flex items-center justify-center text-sm font-normal bg-gray-200 rounded-full border-2 border-white">
+                                +{role?.users?.length - 3}
                             </span>
                         )}
                     </div>

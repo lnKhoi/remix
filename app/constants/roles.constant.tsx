@@ -15,22 +15,23 @@ import {
   TrashIcon,
 } from '@heroicons/react/24/outline';
 
-import { DATE_TIME_FORMAT } from './time.constant';
+import {
+  DATE_TIME_FORMAT,
+  DATE_TIME_FORMAT_V2,
+} from './time.constant';
 
 export const RolesColumns = ({
   onViewUser,
   onEditUser,
-  onDeleteUser,
   loading
 }: {
   onViewUser: (id: string) => void;
-  onEditUser: (id: string) => void;
-  onDeleteUser: (id: string) => void;
+  onEditUser: (user: UserPermission) => void;
   loading: boolean
 }): TableColumnsType<UserPermission> => [
     {
       title: 'Name',
-      minWidth:230,
+      minWidth: 250,
       fixed: 'left',
       render: (_, record) => (
         <div className='flex gap-3 w-full items-start'>
@@ -38,8 +39,8 @@ export const RolesColumns = ({
             ? <Skeleton.Avatar active style={{ height: 36, width: 36 }} />
             : <img className='w-9 h-9 object-cover rounded-[50%]' src={Avatar} alt="avatar" />}
           <div className="flex flex-col">
-            <p className='text-sm font-medium text-gray-800'>
-              {loading ? <Skeleton.Input active style={{ height: 18 }} /> : record.name}
+            <p className='text-sm font-medium text-gray-800 '>
+              {loading ? <Skeleton.Input active style={{ height: 18 }} /> : record.name || ''}
             </p>
             <span className='text-sm text-gray-500 font-normal'>
               {loading ? <Skeleton.Input active style={{ height: 18 }} /> : record.email}
@@ -50,20 +51,31 @@ export const RolesColumns = ({
     },
     {
       title: 'Role',
-      minWidth:200,
+      minWidth: 200,
       render: (_, record) => {
         // Format the role text (same as your logic)
-        const roleText = loading
-          ? <Skeleton.Input active style={{ height: 18 }} />
-          : Array.isArray(record.role)
-            ? record.role.map(role => role.charAt(0).toUpperCase() + role.slice(1)).join(', ')
-            : record.role;
-    
+        const roleText = loading ? (
+          <Skeleton.Input active style={{ height: 18 }} />
+        ) : Array.isArray(record.role) ? (
+          record.role
+            .map((role) => {
+              if (typeof role === 'string') {
+                return role.charAt(0).toUpperCase() + role.slice(1);
+              } else if (role?.name) {
+                return role.name.charAt(0).toUpperCase() + role.name.slice(1);
+              }
+              return '';
+            })
+            .join(', ')
+        ) : (
+          typeof record.role === 'string' ? record.role : ''
+        );
+
         // If loading, return the skeleton directly
         if (loading) {
           return <div>{roleText}</div>;
         }
-    
+
         return (
           <Tooltip title={roleText} placement="top">
             <div className='cursor-pointer w-[250px] truncate overflow-hidden text-ellipsis flex-nowrap' >{roleText}</div>
@@ -73,8 +85,11 @@ export const RolesColumns = ({
     },
     {
       title: 'Last Activity',
-      minWidth:150,
-      render: (_, record) => <>{loading ? <Skeleton.Input active style={{ height: 18 }} /> : '1 hour ago'}</>
+      minWidth: 150,
+      render: (_, record) =>
+        <Tooltip placement='topLeft' title={record.last_activity_time ? dayjs(record?.last_activity_time).format(DATE_TIME_FORMAT_V2) : record.last_activity}>
+          <div className='capitalize cursor-pointer'>{loading ? <Skeleton.Input active style={{ height: 18 }} /> : record?.last_activity}</div>
+        </Tooltip>
     },
     {
       title: 'Joined Date',
@@ -82,15 +97,15 @@ export const RolesColumns = ({
     },
     {
       title: 'Status',
-      width:'10%',
+      width: '10%',
       render: (_, record) => <>{loading
-         ? <Skeleton.Node active style={{ height: 18, width: 120 }} /> 
-         : <div><Switch/></div>}</>
+        ? <Skeleton.Node active style={{ height: 18, width: 120 }} />
+        : <div><Switch /></div>}</>
     },
     {
       align: 'justify',
       title: 'Action',
-      minWidth:100,
+      minWidth: 80,
       fixed: 'right',
       render: (_, record) => {
         return (
@@ -102,8 +117,7 @@ export const RolesColumns = ({
             </div> :
               <div className="flex items-center gap-3">
                 <EyeIcon onClick={() => onViewUser(record.id)} className='w-5 h-5 cursor-pointer  text-gray-800' />
-                <PencilSquareIcon onClick={() => onEditUser(record.id)} className='w-5 h-5 cursor-pointer  text-gray-800' />
-                <TrashIcon onClick={() => onDeleteUser(record.id)} className='w-5 h-5 cursor-pointer text-gray-800' />
+                <PencilSquareIcon onClick={() => onEditUser(record)} className='w-5 h-5 cursor-pointer  text-gray-800' />
               </div>
             }
           </>

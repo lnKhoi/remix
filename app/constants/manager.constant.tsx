@@ -20,7 +20,7 @@ import {
 export type NavItem = {
   to: string;
   label: string;
-  icon?: FC<{ className?: string }> | null; 
+  icon?: FC<{ className?: string }> | null;
   permissions?: string[];
   children?: NavItem[];
   active?: string;
@@ -73,6 +73,7 @@ export const navItems: NavItem[] = [
     children: [
       { label: 'Users', to: '/manager/users-permission', icon: null, permissions: ['view-user'] },
       { label: 'Roles', to: '/manager/roles', icon: null, permissions: ['view-role'] },
+      { label: 'Permissions', to: '/manager/permissions', icon: null, permissions: ['view-permissions'] },
     ],
   },
 ];
@@ -98,7 +99,7 @@ export const campaignMenuItems = [
     key: 'edit',
     icon: <PencilSquareIcon width={16} color='#1F2937' />,
     label: 'Edit',
-    permission:'edit-campaign'
+    permission: 'edit-campaign'
   },
   {
     key: 'delete',

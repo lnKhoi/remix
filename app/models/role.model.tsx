@@ -62,4 +62,5 @@ export type Permission  =
 | 'view-shopify-products'
 | 'view-user'
 | 'view-wallet'
-| 'withdraw-tokens';
+| 'withdraw-tokens'
+| 'view-permissions'
