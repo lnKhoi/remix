@@ -39,7 +39,8 @@ function UsersPermission() {
     const [modalType, setModalType] = useState<'view-user' | 'edit-user' | 'create-user' | ''>('')
     const [params, setParams] = useState<{ page: number, pageSize: number }>({ page: 1, pageSize: 10 })
     const { hasPermission } = useAuthContext()
-    const [search,setSearch] = useState<string>('')
+    const [selectedUser,setSelectedUser] = useState<null | UserPermission>(null)
+    const [search, setSearch] = useState<string>('')
 
     const [loading, setLoading] = useState<boolean>(false)
 
@@ -50,25 +51,21 @@ function UsersPermission() {
         setSelectedId(id)
     }
 
-    const handleEditUser = (id: string) => {
-        setSelectedId(id)
-        // setModalType('edit-user')
+    const handleEditUser = (user: UserPermission) => {
+        setSelectedUser(user)
+        setModalType('edit-user')
     }
-
-    const handleDeleteUser = (id: string) => {
-        setSelectedId(id)
-    };
 
     const handleGetUsers = () => {
         setLoading(true)
-        getUsers(params.page, params.pageSize,search).then(res => setUsers({ total: res.data.total, data: res.data.data }))
+        getUsers(params.page, params.pageSize, search).then(res => setUsers({ total: res.data.total, data: res.data.data }))
             .finally(() => setLoading(false))
     }
 
-    useEffect(() => handleGetUsers(), [params,search])
+    useEffect(() => handleGetUsers(), [params, search])
 
     const handleRefresh = (name: string) => {
-        messageApi.success(`${name} has been invited`)
+        messageApi.success(name =='create-user' ? `You has been invited the user successfully.` : 'User changed successfully')
         handleGetUsers()
     }
 
@@ -91,17 +88,17 @@ function UsersPermission() {
                     </Button>
                 )}
             </div>
-          <div className='mt-5 w-[300px]'>
-          <InputSearch placeholder='Search name' onChange={(e) => handleSearchUser(e)}/>
-          </div>
+            <div className='mt-5 w-[300px]'>
+                <InputSearch placeholder='Search name' onChange={(e) => handleSearchUser(e)} />
+            </div>
             <div className='mt-5'>
                 <Table<UserPermission>
                     pagination={{
                         pageSize: params.pageSize,
                         current: params.page,
                         total: users.total,
-                        showSizeChanger: true, 
-                        pageSizeOptions: ['10', '20', '50'], 
+                        showSizeChanger: true,
+                        pageSizeOptions: ['10', '20', '50'],
                         onChange: (page, pageSize) => {
                             setParams({ page: page, pageSize: pageSize })
                         },
@@ -111,7 +108,6 @@ function UsersPermission() {
                     columns={RolesColumns({
                         onViewUser: handleViewUser,
                         onEditUser: handleEditUser,
-                        onDeleteUser: handleDeleteUser,
                         loading: loading
                     })}
                     dataSource={loading ? [1, 2, 3, 4, 5, 6, 7] as any : users.data}
@@ -119,11 +115,13 @@ function UsersPermission() {
             </div>
 
             {/* Create User */}
-            {modalType == 'create-user' && (
+            {(modalType == 'create-user' || modalType == 'edit-user') && (
                 <ModalCreateUser
+                    type={modalType}
+                    user={selectedUser || selectedId}
                     onSuccess={(name: string) => handleRefresh(name)}
                     onClose={() => setModalType('')}
-                    open={modalType == 'create-user'}
+                    open={modalType == 'create-user' || modalType == 'edit-user'}
                 />
             )}
 
