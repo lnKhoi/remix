@@ -1,5 +1,6 @@
 import {
   getData,
+  patchData,
   postData,
 } from './axiosClient';
 
@@ -8,12 +9,19 @@ export const getPermissions = () => {
 }
 
 export type CreateUserPayload = {
-    name: string,
+    emails: string[],
+    roles: string[]
+}
+
+export type EditUserPayload = {
     email: string,
     roles: string[]
-    avatarUrl?: string
 }
 
 export const createUserPermission = (user: CreateUserPayload) => {
     return postData(`/api/v1/role/register/brand-admin`, user)
+}
+
+export const editUserPermission = (user: EditUserPayload, id: string) => {
+    return patchData(`/api/v1/role/${id}/update-brand-user`, user)
 }
