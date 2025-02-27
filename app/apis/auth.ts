@@ -45,6 +45,12 @@ export type OTPPayload = {
   userId: string
 }
 
+export type ChangePasswordPayload = {
+  oldPassword: string,
+  newPassword: string,
+  confirmPassword: string
+}
+
 export const verifyOTP = (payload: OTPPayload) => {
   return postData('/api/v1/auth/validate-otp/active-user', payload)
 }
@@ -57,6 +63,14 @@ export const resendOTP = (payload: { email: string }) => {
   return postData('/api/v1/auth/resend-otp/reset-password', payload)
 }
 
-export const updateUserInfo = (payload:Brand) => {
-  return patchData(`/api/v1/brand/update`,payload)
+export const updateUserInfo = (payload: Brand) => {
+  return patchData(`/api/v1/brand/update`, payload)
+}
+
+export const changePassword = (payload: ChangePasswordPayload) => {
+  return patchData(`/api/v1/auth/change-password`, payload)
+}
+
+export const archiveUser = (id: string, status: boolean) => {
+  return patchData(`api/v1/role/${id}/update-brand-user`, { archive: status })
 }

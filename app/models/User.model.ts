@@ -33,12 +33,14 @@ export type User = {
   id: string;
   created_at?: number;
   updated_at?: number;
+  isTemporaryPassword?:boolean
   deleted_at?: number | null;
   permissions: Permission[] | Permission
   email?: string;
   role?: 'MANAGER' | 'CREATOR';
   picture?: string | null;
   name?: string;
+  permission?:Permission[] | Permission
   brand_id?: string;
   brand?: Brand;
   timezone?: string
@@ -157,6 +159,7 @@ export type UserPermission = {
   name?: string,
   email?: string,
   create_at?: string
+  isArchived?:boolean
   role?: string | string[] | { name?: string, id: string }[],
   last_activity_time?: string
   last_activity?: string,

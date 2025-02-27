@@ -30,6 +30,7 @@ import { useParams } from '@remix-run/react';
 
 import { InputSearch } from '../ui/input-search';
 import ModalReviewRequestDate from './ModalReviewRequestDate';
+import ModalViewInfluencerProfile from './ModalViewInfluencerProfile';
 
 const rowSelection: TableProps<InfluencerInCampaign>['rowSelection'] = {
   onChange: (selectedRowKeys: Key[], selectedRows: InfluencerInCampaign[]) => {
@@ -49,6 +50,7 @@ function Influencer() {
   const [selectedInfluencer, setSelectedInfluencer] = useState<Creator | null>(null);
   const [loading, setLoading] = useState<boolean>(false)
   const [modalReviewDeadline, setModalReviewDeadline] = useState<boolean>(false)
+  const [selectedUserId, setSelectedUserId] = useState<string>('')
 
   const handleGetInfluencersInCampaign = async () => {
     setLoading(true)
@@ -77,13 +79,17 @@ function Influencer() {
 
   // Handle row click to open the drawer
   const handleRowClick = (record: Creator) => {
-    if(record.creatorSuggestedDeadline && record.status !=='joined_campaign' && record.isFinalDeadline !== 1) {
+    if (record.creatorSuggestedDeadline && record.status !== 'joined_campaign' && record.isFinalDeadline !== 1) {
       setSelectedInfluencer(record);
       setModalReviewDeadline(true);
     }
   };
 
-  
+  const handleViewUser = (record: InfluencerInCampaign) => {
+    setSelectedUserId(record.creator?.id as string)
+  }
+
+
   return (
     <div>
       <Tabs defaultActiveKey="" items={items} onChange={(e) => setTab(e as any)} />
@@ -116,7 +122,7 @@ function Influencer() {
             onClick: () => handleRowClick(record as any),
           })}
           rowSelection={{ type: 'checkbox', ...rowSelection }}
-          columns={influencersParticipantsColumns({ handleApprove, handleReject, loading })}
+          columns={influencersParticipantsColumns({ handleApprove, handleReject, loading, handleViewUser })}
           dataSource={
             loading
               ? [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] as any
@@ -130,6 +136,14 @@ function Influencer() {
           open={modalReviewDeadline}
           campaignId={id as string}
           influencer={selectedInfluencer as Creator} />
+
+        {/* View User Profile */}
+        {selectedUserId !== '' && (
+          <ModalViewInfluencerProfile
+            id={selectedUserId}
+            open={selectedUserId !== ''}
+            onClose={() => setSelectedUserId('')} />
+        )}
       </div>
     </div>
   )
