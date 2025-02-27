@@ -87,8 +87,6 @@ const ModalViewUser: FC<ModalViewUserProps> = ({ open, onClose, id }) => {
     handlegGetRoles()
   }, [id])
 
-  console.log(user)
-
   return (
     <Drawer open={open} onClose={onClose} title="View User" width={700}
       footer={
