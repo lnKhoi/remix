@@ -25,3 +25,7 @@ export const createUserPermission = (user: CreateUserPayload) => {
 export const editUserPermission = (user: EditUserPayload, id: string) => {
     return patchData(`/api/v1/role/${id}/update-brand-user`, user)
 }
+
+export const getUserDetails = (id:string) => {
+    return getData(`/api/v1/user/${id}/user-detail-for-brand`)
+}

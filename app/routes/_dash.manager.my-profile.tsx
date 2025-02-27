@@ -10,6 +10,7 @@ import {
   Segmented,
 } from 'antd';
 import { ToastContainer } from 'react-toastify';
+import ChangePassword from '~/components/profile/ChangePassword';
 import MyProfile from '~/components/profile/MyProfile';
 import Payment from '~/components/profile/Payment';
 import ProfileDetails from '~/components/profile/ProfileDetails';
@@ -24,7 +25,7 @@ export const meta: MetaFunction = () => {
   return [{ title: 'My Profile' }];
 };
 
-type Tab = 'Profile Details' | 'Billing' | 'Intergration';
+type Tab = 'Profile Details' | 'Billing' | 'Intergration' | 'Change Password'
 
 const Page: React.FC = () => {
   const { id } = useParams();
@@ -43,6 +44,8 @@ const Page: React.FC = () => {
         return <Payment />;
       case 'Intergration':
         return <MyProfile />;
+      case 'Change Password':
+        return <ChangePassword />;
       default:
         return null;
     }
@@ -76,6 +79,7 @@ const Page: React.FC = () => {
           onChange={(value) => handleChangeProfileTab(value as Tab)}
           options={[
             { label: 'Profile Details', value: 'Profile Details' },
+            { label: 'Change Password', value: 'Change Password' },
             { label: 'Billing & Payment', value: 'Billing' },
             { label: 'Integration', value: 'Intergration' },
           ]}
