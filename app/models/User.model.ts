@@ -39,6 +39,7 @@ export type User = {
   email?: string;
   role?: 'MANAGER' | 'CREATOR';
   picture?: string | null;
+  isDefaultPassword?:boolean
   name?: string;
   permission?:Permission[] | Permission
   brand_id?: string;

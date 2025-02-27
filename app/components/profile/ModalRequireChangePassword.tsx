@@ -4,6 +4,7 @@ import {
   Button,
   Modal,
 } from 'antd';
+import { updatePasswordDefault } from '~/apis/auth';
 
 import { LockClosedIcon } from '@heroicons/react/24/outline';
 import { useNavigate } from '@remix-run/react';
@@ -17,7 +18,8 @@ function ModalRequireChangePassword({ onclose, open }: ModalRequireChangePasswor
     const navigate = useNavigate()
 
     const handleSkipChangePassword = () => {
-
+        updatePasswordDefault()
+        onclose()
     }
 
     return (
@@ -34,6 +36,7 @@ function ModalRequireChangePassword({ onclose, open }: ModalRequireChangePasswor
                     onClick={() => {
                         navigate('/manager/my-profile')
                         localStorage.setItem('profile-tab', 'Change Password')
+                        updatePasswordDefault()
                     }} 
                     className='w-full font-semibold' type='primary'>Change Password</Button>
                 </div>

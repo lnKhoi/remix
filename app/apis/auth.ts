@@ -74,3 +74,7 @@ export const changePassword = (payload: ChangePasswordPayload) => {
 export const archiveUser = (id: string, status: boolean) => {
   return patchData(`api/v1/role/${id}/update-brand-user`, { archive: status })
 }
+
+export const updatePasswordDefault = () => {
+  return patchData(`/api/v1/auth/postpone-password-change`, { isDefaultPassword: true })
+}

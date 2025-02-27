@@ -9,6 +9,7 @@ import {
 import {
   changePassword,
   ChangePasswordPayload,
+  updatePasswordDefault,
 } from '~/apis/auth';
 import { PASSWORD_REGEX } from '~/constants/regex.constant';
 
@@ -35,6 +36,7 @@ const ChangePassword: React.FC = () => {
   const onFinish = (values: ChangePasswordPayload) => {
     setLoading(true)
     changePassword(values).then(res => {
+      updatePasswordDefault()
       messageApi.success('New password has been updated successfully!')
       form.resetFields()
     })

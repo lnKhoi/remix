@@ -13,7 +13,7 @@ function Dashboard() {
 
   // Require change password with invited account
   useEffect(() => {
-    userInfo?.isTemporaryPassword ? setRequireChangePw(true) : setRequireChangePw(false)
+    userInfo?.isDefaultPassword ? setRequireChangePw(true) : setRequireChangePw(false)
   }, [userInfo])
 
   return (
