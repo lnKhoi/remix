@@ -6,6 +6,7 @@ import {
   Tooltip,
 } from 'antd';
 import dayjs from 'dayjs';
+import { archiveUser } from '~/apis/auth';
 import Avatar from '~/assets/avatar.jpeg';
 import { UserPermission } from '~/models/User.model';
 
@@ -98,9 +99,18 @@ export const RolesColumns = ({
     {
       title: 'Status',
       width: '10%',
-      render: (_, record) => <>{loading
-        ? <Skeleton.Node active style={{ height: 18, width: 120 }} />
-        : <div><Switch /></div>}</>
+      render: (_, record) => {
+        const handleArchiveUser = (value:boolean) => {
+          archiveUser(record.id,value)
+        }
+
+        return (
+          <>{loading
+            ? <Skeleton.Node active style={{ height: 18, width: 120 }} />
+            : <div><Switch defaultChecked={record.isArchived || false} onChange={(e) => handleArchiveUser(e)} /></div>}
+          </>
+        )
+      }
     },
     {
       align: 'justify',

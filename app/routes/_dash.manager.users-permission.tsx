@@ -89,7 +89,7 @@ function UsersPermission() {
                 )}
             </div>
             <div className='mt-5 w-[300px]'>
-                <InputSearch placeholder='Search name' onChange={(e) => handleSearchUser(e)} />
+                <InputSearch placeholder='Search name, email' onChange={(e) => handleSearchUser(e)} />
             </div>
             <div className='mt-5'>
                 <Table<UserPermission>

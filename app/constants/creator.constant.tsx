@@ -97,10 +97,11 @@ type ColumnsProps = {
   handleApprove: (id: string) => void;
   handleReject: (id: string) => void;
   loading: boolean
+  handleViewUser: (handleViewUser:InfluencerInCampaign) => void
 };
 
 export const influencersParticipantsColumns = ({
-  loading
+  loading,handleViewUser
 }: ColumnsProps): TableColumnsType<InfluencerInCampaign> => [
     {
       title: 'Name',
@@ -113,6 +114,7 @@ export const influencersParticipantsColumns = ({
             </>
             : <>
               <img
+              onClick={() =>handleViewUser(record)}
                 className="w-[30px] h-[30px] rounded-[50%] object-cover"
                 src={record?.creator?.avatarUrl || DefaultAvatar}
                 alt="avatar"
