@@ -100,14 +100,14 @@ export const RolesColumns = ({
       title: 'Status',
       width: '10%',
       render: (_, record) => {
-        const handleArchiveUser = (value:boolean) => {
-          archiveUser(record.id,value)
+        const handleArchiveUser = (value: boolean) => {
+          archiveUser(record.id, value)
         }
 
         return (
           <>{loading
             ? <Skeleton.Node active style={{ height: 18, width: 120 }} />
-            : <div><Switch defaultChecked={record.isArchived || false} onChange={(e) => handleArchiveUser(e)} /></div>}
+            : <div><Switch defaultChecked={record?.archive == 'archive'} onChange={(e) => handleArchiveUser(e)} /></div>}
           </>
         )
       }

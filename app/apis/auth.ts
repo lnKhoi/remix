@@ -76,5 +76,5 @@ export const archiveUser = (id: string, status: boolean) => {
 }
 
 export const updatePasswordDefault = () => {
-  return patchData(`/api/v1/auth/postpone-password-change`, { isDefaultPassword: true })
+  return patchData(`/api/v1/auth/postpone-password-change`, { isDefaultPassword: false })
 }
