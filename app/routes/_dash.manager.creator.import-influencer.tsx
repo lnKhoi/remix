@@ -1,7 +1,10 @@
 import 'react-quill/dist/quill.snow.css';
 import 'react-toastify/dist/ReactToastify.css';
 
-import { useState } from 'react';
+import {
+  useEffect,
+  useState,
+} from 'react';
 
 import {
   Breadcrumb,
@@ -22,7 +25,10 @@ import { Creator } from '~/models/User.model';
 
 import { CloudArrowUpIcon } from '@heroicons/react/24/outline';
 import { MetaFunction } from '@remix-run/cloudflare';
-import { Link } from '@remix-run/react';
+import {
+  Link,
+  useNavigate,
+} from '@remix-run/react';
 
 export const meta: MetaFunction = () => {
     return [{ title: 'Invite Influencer' }]
@@ -32,8 +38,10 @@ const { Dragger } = Upload;
 
 
 const InviteInfluencer = () => {
-    const { userInfo } = useAuthContext()
+    const { userInfo ,hasPermission} = useAuthContext()
     const [influencers, setInfluencers] = useState<Creator[]>([])
+
+    const navigate = useNavigate()
 
     const handleImportCSV = async (info: any): Promise<void> => {
         const file = info.file.originFileObj;
@@ -54,6 +62,12 @@ const InviteInfluencer = () => {
                 toast.success('Import Influencer Successfully')
             })
     }
+
+    useEffect(() => {
+        userInfo && !hasPermission('import-influencer-csv') && navigate('/page-not-found')
+    },[userInfo])
+
+    if(!userInfo) return <></>
 
     return (
         <div className='custom-select'>
@@ -89,7 +103,7 @@ const InviteInfluencer = () => {
                 {/* INFLUENCER */}
                 {influencers.length > 0 && (
                     <div className='mt-4'>
-                        <Table<Creator> columns={creatorColumns} dataSource={influencers} />
+                        <Table<Creator> columns={creatorColumns as any} dataSource={influencers} />
                     </div>
                 )}
             </div>

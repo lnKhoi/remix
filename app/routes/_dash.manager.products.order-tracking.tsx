@@ -7,16 +7,20 @@ import { Table } from 'antd';
 import { getOrdersInCampagin } from '~/apis/shopify';
 import { InputSearch } from '~/components/ui/input-search';
 import { OrderTrackingColumns } from '~/constants/product.constant';
+import { useAuthContext } from '~/contexts/auth.context';
 import { Order } from '~/models/shopify.model';
 
 import {
   AdjustmentsHorizontalIcon,
   ChevronUpDownIcon,
 } from '@heroicons/react/24/outline';
+import { useNavigate } from '@remix-run/react';
 
 function OrderTracking() {
     const [orders, setOrders] = useState<Order[]>([])
     const [loading, setLoading] = useState<boolean>(false)
+    const {userInfo,hasPermission} = useAuthContext()
+    const navigate = useNavigate()
 
     const handleSearchProducts = (e: string) => {
     }
@@ -30,6 +34,10 @@ function OrderTracking() {
     useEffect(() => {
         handleGetOrdersTracking()
     }, [])
+
+    useEffect(() => {
+        userInfo && !hasPermission('view-influencer-orders') && navigate('/page-not-found')
+    },[userInfo])
 
     return (
         <div>

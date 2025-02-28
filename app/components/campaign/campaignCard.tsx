@@ -42,7 +42,7 @@ function CampaignCard({ campaign, onReload }: CampaignCardProps) {
     const handleMenuClick = (key: string) => {
         switch (key) {
             case 'invite':
-                setIsModal(true);
+                hasPermission('invite-imported-influencers') && setIsModal(true);
                 break;
             case 'view':
                 navigate(`/manager/${campaign.id}`);
@@ -161,7 +161,7 @@ function CampaignCard({ campaign, onReload }: CampaignCardProps) {
                     </div>
                 </div>
                 <div className="flex items-center">
-                    {(campaign.joinedCreators?.length ?? 0) === 0 && (
+                    {hasPermission('invite-imported-influencers') && (campaign.joinedCreators?.length ?? 0) === 0 && (
                         <button
                             onClick={(e) => {
                                 setIsModal(true);

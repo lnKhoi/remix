@@ -39,6 +39,7 @@ export const navItems: NavItem[] = [
     to: "/manager/creators",
     icon: UserIcon,
     label: "Creators",
+    permissions: ['view-imported-influencer']
   },
   {
     to: "/manager/contents",
@@ -52,7 +53,7 @@ export const navItems: NavItem[] = [
     label: "Products",
     permissions: ['view-influencer-orders'],
     children: [
-      { label: 'Order Tracking', to: '/manager/products/order-tracking', icon: null },
+      { label: 'Order Tracking', to: '/manager/products/order-tracking', icon: null,  permissions: ['view-influencer-orders'], },
     ],
   },
   {
@@ -87,6 +88,7 @@ export const profileTab = [
 export const campaignMenuItems = [
   {
     key: 'invite',
+    permission:'invite-imported-influencers',
     icon: <UserPlusIcon width={16} color='#1F2937' />,
     label: 'Invite',
   },
