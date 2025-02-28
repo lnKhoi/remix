@@ -8,7 +8,7 @@ export const UserTab: TabsProps['items'] = [
     },
     {
         key: 'role',
-        label: 'Permissions',
+        label: 'Role',
         children: null,
     },
 ];
