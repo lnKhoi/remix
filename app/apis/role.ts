@@ -33,3 +33,7 @@ export const deleteUsersFromRole = (id: string, users: string[]) => {
 export const updateRole = (id: string, payload: Role) => {
   return patchData(`/api/v1/role/${id}?status=edit-role`, payload)
 }
+
+export const getPermissionOfRole = (id:string) => {
+  return getData(`/api/v1/role/permissions?roleId=${id}`)
+}

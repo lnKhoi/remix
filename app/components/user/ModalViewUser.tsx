@@ -19,13 +19,18 @@ import {
   editUserPermission,
   getUserDetails,
 } from '~/apis/permission';
-import { getRoles } from '~/apis/role';
+import {
+  getPermissionOfRole,
+  getRoles,
+} from '~/apis/role';
 import Avatar from '~/assets/upload-avatar.png';
 import { UserTab } from '~/constants/permission.constant';
 import { Role } from '~/models/role.model';
 import { User } from '~/models/User.model';
 
 import { PencilSquareIcon } from '@heroicons/react/24/outline';
+
+import Permission from '../custom/skeletons/Permission';
 
 type ModalViewUserProps = {
   open: boolean;
@@ -42,6 +47,9 @@ const ModalViewUser: FC<ModalViewUserProps> = ({ open, onClose, id }) => {
   const [roles, setRoles] = useState<Role[]>([])
   const [loadingEdit, setLoadingEdit] = useState<boolean>(false)
   const [messageApi, contextHolder] = message.useMessage();
+  const [selectedRoleId, setSelectedRoleId] = useState<string>('')
+  const [permissions, setPermissions] = useState({})
+  const [loadingRole, setLoadingRole] = useState<boolean>(false)
 
   const handleFinish = (values: any) => {
     setLoadingEdit(true)
@@ -72,6 +80,12 @@ const ModalViewUser: FC<ModalViewUserProps> = ({ open, onClose, id }) => {
     })
   }
 
+  const handleGetPermissionOfRole = () => {
+    setLoadingRole(true)
+    getPermissionOfRole(selectedRoleId).then(res => setPermissions(res.data))
+    .finally(() => setLoadingRole(false))
+  }
+
   useEffect(() => {
     form.setFieldsValue({
       email: user?.email,
@@ -80,12 +94,18 @@ const ModalViewUser: FC<ModalViewUserProps> = ({ open, onClose, id }) => {
         ? user?.role.map((e: User) => typeof e == 'object' ? e?.id : '')
         : []
     })
+
+    setSelectedRoleId(user?.role?.[0]?.id)
   }, [user])
 
   useEffect(() => {
     handleGetUserDetails('loading')
     handlegGetRoles()
   }, [id])
+
+  useEffect(() => {
+    selectedRoleId && selectedRoleId !== '' && handleGetPermissionOfRole()
+  }, [selectedRoleId])
 
   return (
     <Drawer open={open} onClose={onClose} title="View User" width={700}
@@ -180,28 +200,45 @@ const ModalViewUser: FC<ModalViewUserProps> = ({ open, onClose, id }) => {
         )}
 
         {/* Role */}
-        
+
         {tab == 'role' && (
           <div className='mt-1'>
-            {Object?.entries(user?.permission || [])?.map(([k, v]) => (
-              <div key={k}>
-                <div className="bg-gray-100 p-[10px] capitalize text-sm font-medium text-gray-800 w-full">
-                  {k}
-                </div>
-                <div className="grid grid-cols-2 ">
-                  {Array.isArray(v) ? v?.map((per, index) => {
-                    const isLastRow = index >= v.length - (v.length % 2 === 0 ? 2 : 1);
-                    return (
-                      <div
-                        key={per}
-                        className={`text-sm font-medium border-l-0 cursor-pointer hover:bg-gray-50 transition-all text-gray-800 capitalize px-[10px] h-[40px] flex items-center border-gray-200 ${!isLastRow ? 'border-b' : ''}  `}>
-                        {per}
-                      </div>
-                    );
-                  }) : null}
-                </div>
-              </div>
-            ))}
+            <div className='flex mb-4 items-center gap-3'>
+              <p className='text-sm font-medium'>Role name:</p>
+              <Select
+                onChange={(e) => setSelectedRoleId(e)}
+                defaultValue={selectedRoleId}
+                className='w-[150px]'
+              >
+                {Array.isArray(user?.role) && user?.role?.map(e => (
+                  <Select.Option value={e.id} key={e.id}>{e.name}</Select.Option>
+                ))}
+              </Select>
+            </div>
+            {loadingRole
+              ? <Permission />
+              : <>
+                {Object?.entries(permissions || [])?.map(([k, v]) => (
+                  <div key={k}>
+                    <div className="bg-gray-100 p-[10px] capitalize text-sm font-medium text-gray-800 w-full">
+                      {k}
+                    </div>
+                    <div className="grid grid-cols-2 ">
+                      {Array.isArray(v) ? v?.map((per, index) => {
+                        const isLastRow = index >= v.length - (v.length % 2 === 0 ? 2 : 1);
+                        return (
+                          <div
+                            key={per}
+                            className={`text-sm font-medium border-l-0 cursor-pointer hover:bg-gray-50 transition-all text-gray-800 capitalize px-[10px] h-[40px] flex items-center border-gray-200 ${!isLastRow ? 'border-b' : ''}  `}>
+                            {per}
+                          </div>
+                        );
+                      }) : null}
+                    </div>
+                  </div>
+                ))}
+              </>
+            }
           </div>
         )}
       </Form>
