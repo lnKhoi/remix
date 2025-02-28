@@ -29,7 +29,6 @@ import {
 } from '~/apis/campaign';
 import {
   approveContent,
-  approveContentLinkStory,
   publishContent,
 } from '~/apis/content';
 import DefaultAvatar from '~/assets/avatar.jpeg';
@@ -41,6 +40,7 @@ import ContentDetailSkeleton
   from '~/components/custom/skeletons/ContentDetailSkeleton';
 import TagColor from '~/components/ui/tagColor';
 import { DATE_TIME_FORMAT_V2 } from '~/constants/time.constant';
+import { useAuthContext } from '~/contexts/auth.context';
 import {
   ContentStatus,
   getColorStatusContent,
@@ -85,6 +85,7 @@ const settings = {
 const ContentDetails = () => {
   const { id } = useParams()
   const navigation = useNavigate()
+  const { userInfo, hasPermission } = useAuthContext()
   const [selectedVersion, setSelectedVersion] = useState<string>('')
 
   const [reason, setReason] = useState<string>('')
@@ -98,6 +99,9 @@ const ContentDetails = () => {
   const videoExtensions = ['mov', 'mp4'];
   const isStory = content?.campaign?.contentFormat?.includes('story')
   const lastVersion = content?.versions?.[0]?.contentId
+  const allowReview = hasPermission('review-content')
+  const allowToPost = hasPermission('post-content-on-behalf')
+  const allowToDispute = hasPermission('dispute-content')
 
   // GET CONTENT DETAILS
   const handleGetContentDetails = async () => {
@@ -165,20 +169,10 @@ const ContentDetails = () => {
       .then((res) => setContent(res.data))
   }, [selectedVersion])
 
-  // APPROVE CONTENT LINK (STORY)
-  const handleReviewContentLink = (status: boolean) => {
-    status ? setLoading('approve-content-link') : setLoading('reject-content-link')
 
-    approveContentLinkStory(lastVersion as string, status, reason)
-      .then(() => {
-        toast.success('Approved Content Link Successfully')
-        handleGetContentDetails()
-      })
-      .catch(err => toast.error(err?.message))
-      .finally(() => setLoading(''))
-  }
-
-
+  useEffect(() => {
+    userInfo && !hasPermission('view-content') && navigation('/page-not-found')
+  }, [userInfo])
 
   return (
     <div className='custom-select'>
@@ -328,8 +322,8 @@ const ContentDetails = () => {
                   <div className='w-full justify-between px-4 pb-4 flex items-center gap-2 '>
                     {content?.approved == 'pending' || content?.approved == 'pending-review' ? (
                       <>
-                        <Button onClick={() => setModalType('reject-content')} className='w-1/2' type='default' >Reject</Button>
-                        <Button onClick={() => setModalType('confirm-posting-date')} className='w-1/2' type='primary' >Approve</Button>
+                        <Button disabled={!allowReview} onClick={() => setModalType('reject-content')} className='w-1/2' type='default' >Reject</Button>
+                        <Button disabled={!allowReview} onClick={() => setModalType('confirm-posting-date')} className='w-1/2' type='primary' >Approve</Button>
                       </>
                     ) : (
                       <TagColor
@@ -362,7 +356,7 @@ const ContentDetails = () => {
                     <p onClick={() => window.open(content?.permalink, "_blank")}
                       className='text-blue-500 px-4 cursor-pointer'>{abbreviateLastName(content.permalink, 35)}</p>
                     <div className='flex gap-3 px-4 mt-5 pb-4'>
-                      <Button onClick={() => setModalType('dispute-story')} className='w-full' type='primary'>Dispute</Button>
+                      <Button disabled={!allowToDispute} onClick={() => setModalType('dispute-story')} className='w-full' type='primary'>Dispute</Button>
                     </div>
                     <div className='bg-gray-100  flex gap-3 items-center p-4 justify-start'>
                       <ExclamationCircleIcon width={20} className='text-gray-500' />
@@ -384,7 +378,12 @@ const ContentDetails = () => {
                     </div>
                     {content?.approved == 'approved' && !isStory && (
                       <div onClick={handlePostContentToProfileInfluent} className='w-full px-5 pb-4'>
-                        <Button loading={loading === 'approve-content-post'} disabled={loading === 'approve-content-post'} className='w-full' type='primary'>Post to social</Button>
+                        <Button
+                          loading={loading === 'approve-content-post'}
+                          disabled={loading === 'approve-content-post' || !allowToPost}
+                          className='w-full' type='primary'>
+                          Post to social
+                        </Button>
                       </div>
                     )}
                   </div>

@@ -66,13 +66,12 @@ export const contentFormatOptions = [
 
 export const campaignDetailsTabs = [
   { label: 'Campaign Details', value: 'Campaign Details' },
-  { label: 'Influencer', value: 'Influencer' },
-  { label: 'Content', value: 'Content' },
-  { label: 'Reports', value: 'Reports' },
-  { label: 'Order Tracking', value: 'Order' },
-  { label: 'Finance', value: 'Finance' },
+  { label: 'Influencer', value: 'Influencer', permission: 'view-applicants' },
+  { label: 'Content', value: 'Content', permission: 'view-content' },
+  { label: 'Reports', value: 'Reports', permission: 'view-report' },
+  { label: 'Order Tracking', value: 'Order', permission: 'view-influencer-orders' },
+  { label: 'Finance', value: 'Finance', permission: 'view-finance-overview' },
 ]
-
 
 export const orderColumns = (loading: boolean): TableColumnsType<Order> => [
   {

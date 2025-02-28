@@ -224,7 +224,7 @@ const ModalCreateRole: FC<ModalCreateRoleProps> = ({ open, onClose, onSuccess, t
         <Option key={user.id} value={user.id}>
             <div className="flex items-center">
                 <Avatar size="small" src={user.picture || DefaultImage} className="mr-2 w-5 h-5 object-cover" />
-                <span className="max-w-[150px] block">{user.name}</span>
+                <span className="max-w-[150px] block">{user.email}</span>
             </div>
         </Option>
     );

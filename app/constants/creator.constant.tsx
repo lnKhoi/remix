@@ -125,10 +125,11 @@ type ColumnsProps = {
   handleReject: (id: string) => void;
   loading: boolean
   handleViewUser: (handleViewUser:InfluencerInCampaign) => void
+  allowReviewDeadline?:boolean
 };
 
 export const influencersParticipantsColumns = ({
-  loading,handleViewUser
+  loading,handleViewUser,allowReviewDeadline
 }: ColumnsProps): TableColumnsType<InfluencerInCampaign> => [
     {
       title: 'Name',
@@ -174,7 +175,7 @@ export const influencersParticipantsColumns = ({
           )}
           <span className='text-sm font-normal text-gray-800'>{dayjs(record.deadline).format(DATE_TIME_FORMAT)}</span>
           {record?.creatorSuggestedDeadline && record?.isFinalDeadline == 0 && (
-            <span className='text-sm font-normal text-blue-500'>Requested Date</span>
+            <span  className={`text-sm font-normal text-blue-500 ${allowReviewDeadline ? 'block' : 'hidden'}`}>Requested Date</span>
           )}
         </div>}
       </div>,

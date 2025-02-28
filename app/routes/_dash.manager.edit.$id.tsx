@@ -47,12 +47,14 @@ import {
   PLEASE_SELECT_GENDER,
   REQUIRED,
 } from '~/constants/messages.constant';
+import { useAuthContext } from '~/contexts/auth.context';
 import { Campaign } from '~/models/Campaign.model';
 import Editor from '~/plugins/editor';
 
 import { MetaFunction } from '@remix-run/cloudflare';
 import {
   Link,
+  useNavigate,
   useParams,
 } from '@remix-run/react';
 
@@ -65,6 +67,7 @@ const { Option } = Select;
 const CampaignForm = () => {
   const [form] = Form.useForm();
   const [content, setContent] = useState('')
+  const {hasPermission,userInfo} = useAuthContext()
   const [loading, setLoading] = useState<boolean>(false)
   const [selectedSocials, setSelectedSocials] = useState<string[]>([]);
   const [modalConfirmToken, setModalConfirmToken] = useState<boolean>(false)
@@ -73,6 +76,7 @@ const CampaignForm = () => {
   const budget = Form.useWatch('budget', form);
   const contentStatus = Form.useWatch('status', form)
   const contentFormat = Form.useWatch('contentFormat', form)
+  const navigate = useNavigate()
   const maximumParticipants = Form.useWatch('maximumParticipants', form);
 
   const onFinish = async (): Promise<void> => {
@@ -143,6 +147,10 @@ const CampaignForm = () => {
       form.setFieldsValue({ totalBudget });
     }
   }, [budget, maximumParticipants]);
+
+  useEffect(() => {
+    !hasPermission('edit-campaign') && navigate('/page-not-found')
+  },[userInfo])
 
   return (
     <div className='custom-select custom-form'>
