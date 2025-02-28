@@ -24,11 +24,13 @@ import {
 export const RolesColumns = ({
   onViewUser,
   onEditUser,
-  loading
+  loading,
+  onUpdateStatus
 }: {
   onViewUser: (id: string) => void;
   onEditUser: (user: UserPermission) => void;
   loading: boolean
+  onUpdateStatus:(status:boolean) => void
 }): TableColumnsType<UserPermission> => [
     {
       title: 'Name',
@@ -107,7 +109,10 @@ export const RolesColumns = ({
         return (
           <>{loading
             ? <Skeleton.Node active style={{ height: 18, width: 120 }} />
-            : <div><Switch defaultChecked={record?.archive == 'archive'} onChange={(e) => handleArchiveUser(e)} /></div>}
+            : <div><Switch defaultChecked={record?.archive == 'unarchive'} onChange={(e) => {
+              handleArchiveUser(!e);
+              onUpdateStatus(e)
+              }} /></div>}
           </>
         )
       }

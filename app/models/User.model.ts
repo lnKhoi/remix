@@ -160,6 +160,7 @@ export type UserPermission = {
   name?: string,
   email?: string,
   create_at?: string
+  archive?:string
   isArchived?:boolean
   role?: string | string[] | { name?: string, id: string }[],
   last_activity_time?: string

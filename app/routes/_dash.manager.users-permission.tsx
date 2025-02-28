@@ -73,6 +73,9 @@ function UsersPermission() {
         setSearch(e.target.value)
     }, 500);
 
+    const handleUpdateUserStatus = (archive:boolean) => {
+        messageApi.success(!archive ? 'Archive user successfully!' : 'Active user successfully!')
+    } 
 
     return (
         <div>
@@ -108,7 +111,8 @@ function UsersPermission() {
                     columns={RolesColumns({
                         onViewUser: handleViewUser,
                         onEditUser: handleEditUser,
-                        loading: loading
+                        loading: loading,
+                        onUpdateStatus:handleUpdateUserStatus
                     })}
                     dataSource={loading ? [1, 2, 3, 4, 5, 6, 7] as any : users.data}
                 />
