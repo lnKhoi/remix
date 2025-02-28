@@ -27,11 +27,20 @@ export const meta: MetaFunction = () => {
 };
 
 const Page: FC = () => {
+  const [hiddenEmails, setHiddenEmails] = useState<{ [key: string]: boolean }>({});
   const [influencers, setInfluencers] = useState<{ total: number, data: Creator[] }>({ total: 0, data: [] });
   const [loading, setLoading] = useState<boolean>(true);
   const [selectedInfluencer, setSelectedInfluencer] = useState<Creator | null>(null);
   const [isDrawerVisible, setIsDrawerVisible] = useState(false);
   const [params, setParams] = useState<{ page: number, pageSize: number }>({ page: 1, pageSize: 10 })
+
+  const toggleEmailVisibility = (email: string) => {
+    setHiddenEmails((prev) => ({
+      ...prev,
+      [email]: !prev[email], // Toggle visibility correctly
+    }));
+  };
+  
 
   const handleGetListInfluencerImported = async (): Promise<void> => {
 
@@ -71,7 +80,7 @@ const Page: FC = () => {
 
       <Spin spinning={loading}>
         <Table<Creator>
-          columns={creatorColumns}
+         columns={creatorColumns(toggleEmailVisibility, hiddenEmails)}
           pagination={{
             total: influencers.total,
             onChange: (page, pageSize) => {

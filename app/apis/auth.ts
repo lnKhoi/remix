@@ -78,3 +78,7 @@ export const archiveUser = (id: string, status: boolean) => {
 export const updatePasswordDefault = () => {
   return patchData(`/api/v1/auth/postpone-password-change`, { isDefaultPassword: false })
 }
+
+export const resendOtp = (email: string) => {
+  return postData(`/api/v1/auth/resend-otp/active-user`, { email })
+}

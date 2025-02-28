@@ -6,7 +6,10 @@ import React, {
   useState,
 } from 'react';
 
-import { Button as AntButton } from 'antd';
+import {
+  Button,
+  Button as AntButton,
+} from 'antd';
 import debounce from 'lodash/debounce';
 import {
   toast,
@@ -16,7 +19,6 @@ import { getCampaigns } from '~/apis/campaign';
 import NoCampaigns from '~/assets/no-campaign.png';
 import CampaignCard from '~/components/campaign/campaignCard';
 import ReviewCard from '~/components/custom/skeletons/CampaignCard';
-import { Button } from '~/components/ui/button';
 import { InputSearch } from '~/components/ui/input-search';
 import { useAuthContext } from '~/contexts/auth.context';
 import { Campaign } from '~/models/Campaign.model';
@@ -88,8 +90,8 @@ function Campaigns() {
         </div>
         {hasPermission('create-campaign') && (
           <Link to='/manager/campaign/add-campaign'>
-            <Button type='button' size='sm' >
-              <PlusIcon className='mr-1' color='white' width={20} />  Add Campaign
+            <Button icon={<PlusIcon className='w-5 h-5 text-white' />} type='primary'>
+              Add Campaign
             </Button>
           </Link>
         )}
