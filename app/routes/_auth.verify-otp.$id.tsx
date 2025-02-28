@@ -11,6 +11,7 @@ import {
 } from 'react-toastify';
 import {
   OTPPayload,
+  resendOtp,
   verifyOTP,
 } from '~/apis/auth';
 import LoginBanner from '~/assets/login-banner.png';
@@ -43,12 +44,20 @@ export default function Page() {
 
   const handleReset = (): void => {
     reset2();
+    handleResendOtp()
     resetCountdown();
     startCountdown();
     start2();
     setOtp(Array(6).fill('')); // Reset OTP
     setErr(''); // Clear error
   };
+
+  const handleResendOtp = () => {
+    console.log(location.state.email)
+    resendOtp(location?.state?.email).then(() => {
+      toast.success('Please check email to get new OTP');
+    })
+  }
 
   const handleVerifyOTP = async (): Promise<void> => {
     setLoading(true);
@@ -151,9 +160,8 @@ export default function Page() {
           <button
             onClick={() => (isRunning ? null : handleReset())}
             disabled={isRunning}
-            className={`text-sm font-bold ${
-              isRunning ? 'text-gray-400 cursor-not-allowed' : 'text-blue-600 hover:underline'
-            }`}
+            className={`text-sm font-bold ${isRunning ? 'text-gray-400 cursor-not-allowed' : 'text-blue-600 hover:underline'
+              }`}
           >
             Resend Code {isRunning && <span>({time2}s)</span>}
           </button>

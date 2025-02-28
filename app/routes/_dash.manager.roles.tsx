@@ -16,6 +16,7 @@ import RoleCard from '~/components/role/RoleCard';
 import { useAuthContext } from '~/contexts/auth.context';
 import { Role } from '~/models/role.model';
 
+import { PlusIcon } from '@heroicons/react/24/outline';
 import { MetaFunction } from '@remix-run/react';
 
 export const meta: MetaFunction = () => {
@@ -27,7 +28,7 @@ function Roles() {
   const [roles, setRoles] = useState<Role[]>([])
   const [loadingType, setLoadingType] = useState<'get-roles' | 'create-role' | ''>('')
   const [messageApi, contextHolder] = message.useMessage();
-  const {hasPermission} = useAuthContext()
+  const { hasPermission } = useAuthContext()
 
   const handleGetRoles = () => {
     setLoadingType('get-roles')
@@ -46,7 +47,7 @@ function Roles() {
 
   useEffect(() => handleGetRoles(), [])
 
-  const handleUpdateRole = useCallback((newRole: Role,type:'create' | 'edit') => {
+  const handleUpdateRole = useCallback((newRole: Role, type: 'create' | 'edit') => {
     messageApi.success(type == 'create' ? `Add users to ${newRole.name} successfully!` : 'Update Role successfully!')
     setRoles((prevRoles) => (
       prevRoles.map(r => r.id === newRole.id ? newRole : r)
@@ -61,7 +62,10 @@ function Roles() {
           <h2 className='text-2xl font-medium text-gray-800'>Roles</h2>
           <p className='font-normal text-gray-500 text-sm'>View, Create and manage your roles with preferred configuration</p>
         </div>
-       {hasPermission('create-role') &&  <Button onClick={() => setModalType('create-role')} type='primary'>Create Role</Button>}
+        {hasPermission('create-role') &&
+          <Button icon={<PlusIcon className='w-5 h-5 text-white' />} onClick={() => setModalType('create-role')} type='primary'>
+            Create Role
+          </Button>}
       </div>
       <div className='mt-5 grid w-full grid-cols-2 md:grid-cols-3 2xl:grid-cols-4 gap-4'>
         {loadingType == 'create-role' && <RoleCardSkeleton />}
@@ -74,7 +78,7 @@ function Roles() {
           </div>
         ) : (
           roles.map(role => <RoleCard
-            onUpdateRole={(newRole,type) => handleUpdateRole(newRole,type)}
+            onUpdateRole={(newRole, type) => handleUpdateRole(newRole, type)}
             key={role.id}
             role={role} />)
         )}

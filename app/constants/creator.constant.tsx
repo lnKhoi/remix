@@ -15,9 +15,17 @@ import {
 } from '~/models/User.model';
 import { formatName } from '~/utils/formatNumber';
 
+import {
+  EyeIcon,
+  EyeSlashIcon,
+} from '@heroicons/react/24/outline';
+
 import { DATE_TIME_FORMAT } from './time.constant';
 
-export const creatorColumns: TableProps<Creator>['columns'] = [
+export const creatorColumns = (
+  toggleEmailVisibility: (email: string) => void,
+  hiddenEmails: { [key: string]: boolean }
+): TableProps<Creator>['columns'] => [
   {
     title: 'Name',
     dataIndex: 'fullName',
@@ -28,23 +36,42 @@ export const creatorColumns: TableProps<Creator>['columns'] = [
     title: 'Email',
     dataIndex: 'email',
     key: 'email',
+    minWidth:200,
+    render: (email: string) => {
+      const isHidden = hiddenEmails[email] ?? true;
+      return (
+        <div className="flex items-center gap-2">
+          <div className="min-w-[100px]">
+            {isHidden ? `${email.slice(0, 3)}..........${email.slice(-2)}` : email}
+          </div>
+          <button onClick={(e) => {toggleEmailVisibility(email);e.stopPropagation()}}>
+            {isHidden ? (
+              <EyeSlashIcon className="w-5 h-5 text-gray-500" />
+            ) : (
+              <EyeIcon className="w-5 h-5 text-gray-500" />
+            )}
+          </button>
+        </div>
+      );
+    },
   },
   {
     title: 'Status',
     dataIndex: 'hasAccount',
     key: 'hasAccount',
-    render: (text) => {
-      const registered = text === 1
+    render: (hasAccount) => {
+      const registered = hasAccount === 1;
       return (
-        <div className={`inline-flex items-center px-4   gap-1 rounded-[50px] h-[28px]  ${registered ? 'bg-teal-100' : 'bg-red-100'} `}>
-          <div className={` w-2 h-2 rounded-[50%] ${registered ? 'bg-teal-700' : 'bg-red-700'}`}></div>
-          <span className={`text-[12px] capitalize ${registered ? 'text-teal-700' : 'text-red-700'}`}>{registered ? 'Registered' : 'Not Registered'}</span>
+        <div className={`inline-flex items-center px-4 gap-1 rounded-[50px] h-[28px] ${registered ? 'bg-teal-100' : 'bg-red-100'}`}>
+          <div className={`w-2 h-2 rounded-full ${registered ? 'bg-teal-700' : 'bg-red-700'}`}></div>
+          <span className={`text-[12px] capitalize ${registered ? 'text-teal-700' : 'text-red-700'}`}>
+            {registered ? 'Registered' : 'Not Registered'}
+          </span>
         </div>
-      )
-    }
+      );
+    },
   },
 ];
-
 export const influencerColumn: TableProps<Creator>['columns'] = [
   {
     title: 'Name',

@@ -83,7 +83,7 @@ export default function Page() {
                 If you haven't received an email in 5 minutes, check your spam,
                 <br />
                 <span onClick={handleResendOTP} className='underline text-blue-500 font-semibold cursor-pointer'>resend</span>, or try a different 
-                <span onClick={(): void => setIsConfirmed(false)} className='underline cursor-pointer text-blue-500 font-semibold'>email</span>.
+                <span onClick={(): void => setIsConfirmed(false)} className='underline cursor-pointer text-blue-500 font-semibold ml-[2px]'>email</span>.
               </span>
             )}
           </Formik>

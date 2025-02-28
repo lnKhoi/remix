@@ -95,6 +95,7 @@ const ModalViewUser: FC<ModalViewUserProps> = ({ open, onClose, id }) => {
         : []
     })
 
+    // @ts-ignore
     setSelectedRoleId(user?.role?.[0]?.id)
   }, [user])
 
