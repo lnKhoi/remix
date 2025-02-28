@@ -2,6 +2,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import React, {
   useEffect,
+  useMemo,
   useState,
 } from 'react';
 
@@ -28,7 +29,9 @@ import ModalSelectTimeRange, {
   DateRange,
 } from '~/components/ui/ModalSelectTimeRange';
 import { campaignDetailsTabs } from '~/constants/campaign.constant';
+import { useAuthContext } from '~/contexts/auth.context';
 import { Campaign } from '~/models/Campaign.model';
+import { Permission } from '~/models/role.model';
 import { abbreviateLastName } from '~/utils/formatNumber';
 
 import {
@@ -49,6 +52,7 @@ export const meta: MetaFunction = () => {
 type Tab = 'Campaign Details' | 'Influencer' | 'Content' | 'Reports' | 'Order' | 'Finance'
 function page() {
   const { id } = useParams();
+  const { hasPermission, userInfo } = useAuthContext()
   const navigate = useNavigate()
   const [loading, setLoading] = useState<boolean>(false)
   const [tab, setTab] = useState<Tab>('Campaign Details');
@@ -96,6 +100,18 @@ function page() {
     setTab(prevScreen as Tab || 'Campaign Details')
   }, [id])
 
+
+  useEffect(() => {
+    (userInfo && !hasPermission('view-campaign')) && navigate('/page-not-found')
+  }, [userInfo])
+
+
+const filteredTab = useMemo(() => {
+  return campaignDetailsTabs.filter(item => 
+    !item.permission || userInfo?.permissions.includes(item.permission as Permission) )
+},[userInfo])
+
+
   return (
     <div>
       <ToastContainer />
@@ -119,22 +135,26 @@ function page() {
             ]}
           />
           <div className='flex items-center gap-3'>
-            <Button
-              onClick={() => navigate(`/manager/edit/${campaign?.id}`)}
-              disabled={campaign?.joinedCreators?.length as number > 0 }
-              className='bg-gray-100 text-sm font-semibold hover:bg-gray-100 border-none' >
+            {hasPermission('edit-campaign') && (
+              <Button
+                onClick={() => navigate(`/manager/edit/${campaign?.id}`)}
+                disabled={campaign?.joinedCreators?.length as number > 0}
+                className='bg-gray-100 text-sm font-semibold hover:bg-gray-100 border-none' >
                 <PencilSquareIcon className='w-5 h-5 text-gray-800' />
-              Edit Campaign
-            </Button>
+                Edit Campaign
+              </Button>
+            )}
 
-            <Button
-              onClick={() => setModalInvite(true)}
-              className='bg-gray-100 hover:bg-gray-400 tesm font-semibold border-gray-100'
-              type='text'
-            >
+            {hasPermission('invite-imported-influencers') && (
+              <Button
+                onClick={() => setModalInvite(true)}
+                className='bg-gray-100 hover:bg-gray-400 tesm font-semibold border-gray-100'
+                type='text'
+              >
                 <UserPlusIcon className='bg-gray-100 text-gray-800 font-bold w-5 h-5' />
                 Invite Influencer
-            </Button>
+              </Button>
+            )}
           </div>
         </div>
       </div>
@@ -146,7 +166,7 @@ function page() {
             value={tab}
             style={{ marginBottom: 8 }}
             onChange={(value) => { setTab(value as Tab); localStorage.setItem('campaignTab', value) }}
-            options={campaignDetailsTabs}
+            options={filteredTab}
           />
           {/* <ModalSelectTimeRange/> */}
           {tab === 'Reports' && (

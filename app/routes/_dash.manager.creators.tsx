@@ -14,12 +14,14 @@ import NoCSV from '~/assets/no-csv.png';
 import ModalViewInfluencerProfile
   from '~/components/campaign/ModalViewInfluencerProfile';
 import { creatorColumns } from '~/constants/creator.constant';
+import { useAuthContext } from '~/contexts/auth.context';
 import { Creator } from '~/models/User.model';
 
 import { CloudArrowDownIcon } from '@heroicons/react/24/outline';
 import {
   Link,
   MetaFunction,
+  useNavigate,
 } from '@remix-run/react';
 
 export const meta: MetaFunction = () => {
@@ -27,6 +29,7 @@ export const meta: MetaFunction = () => {
 };
 
 const Page: FC = () => {
+  const {hasPermission,userInfo} = useAuthContext()
   const [hiddenEmails, setHiddenEmails] = useState<{ [key: string]: boolean }>({});
   const [influencers, setInfluencers] = useState<{ total: number, data: Creator[] }>({ total: 0, data: [] });
   const [loading, setLoading] = useState<boolean>(true);
@@ -34,13 +37,14 @@ const Page: FC = () => {
   const [isDrawerVisible, setIsDrawerVisible] = useState(false);
   const [params, setParams] = useState<{ page: number, pageSize: number }>({ page: 1, pageSize: 10 })
 
+  const navigate = useNavigate()
+
   const toggleEmailVisibility = (email: string) => {
     setHiddenEmails((prev) => ({
       ...prev,
       [email]: !prev[email], // Toggle visibility correctly
     }));
   };
-  
 
   const handleGetListInfluencerImported = async (): Promise<void> => {
 
@@ -63,6 +67,12 @@ const Page: FC = () => {
       setIsDrawerVisible(true);
     }
   };
+
+  useEffect(() => {
+    userInfo && !hasPermission('view-imported-influencer') && navigate('/page-not-found')
+  },[userInfo])
+
+  if(!userInfo) return <></>
 
 
   return (

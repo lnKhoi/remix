@@ -56,16 +56,6 @@ function CampaignDetails({ campaign, loading }: CampaignDetailsProps) {
         </div>
       </div>
       <div className='w-[32%] border border-gray-200 rounded-xl p-5 h-[440px]'>
-        {/* <h6 className='text-gray-800 font-semibold mb-3'>Content Deadline</h6>
-        <div className='flex items-center justify-between'>
-          <span className='text-gray-500'>End date</span>
-          <span className='text-gray-800 font-semibold'>
-            {loading
-              ? <Skeleton.Input size='small' active />
-              : dayjs(campaign?.deadline).format(DATE_TIME_FORMAT)
-            }
-          </span>
-        </div> */}
         <h6 className='font-semibold text-gray-800 mb-3 mt-4'>Discount</h6>
         <div className='h-[48px] w-full rounded-xl flex gap-2 items-center p-3 bg-rose-100'>
           <TicketIcon className='text-rose-500 w-[20px]' />

@@ -15,6 +15,7 @@ import {
   getInfluencerParticipantsInCampaign,
 } from '~/apis/campaign';
 import { influencersParticipantsColumns } from '~/constants/creator.constant';
+import { useAuthContext } from '~/contexts/auth.context';
 import {
   Creator,
   InfluencerInCampaign,
@@ -45,12 +46,14 @@ const items: TabsProps['items'] = [
 
 function Influencer() {
   const { id } = useParams();
+  const {hasPermission} = useAuthContext()
   const [tab, setTab] = useState<'' | 'brand_declined_influencer'>('')
   const [influencers, setInfluencers] = useState<InfluencerInCampaign[]>([])
   const [selectedInfluencer, setSelectedInfluencer] = useState<Creator | null>(null);
   const [loading, setLoading] = useState<boolean>(false)
   const [modalReviewDeadline, setModalReviewDeadline] = useState<boolean>(false)
   const [selectedUserId, setSelectedUserId] = useState<string>('')
+  const allowReviewDeadline = hasPermission('review-content-deadline')
 
   const handleGetInfluencersInCampaign = async () => {
     setLoading(true)
@@ -79,7 +82,7 @@ function Influencer() {
 
   // Handle row click to open the drawer
   const handleRowClick = (record: Creator) => {
-    if (record.creatorSuggestedDeadline && record.status !== 'joined_campaign' && record.isFinalDeadline !== 1) {
+    if (allowReviewDeadline && record.creatorSuggestedDeadline && record.status !== 'joined_campaign' && record.isFinalDeadline !== 1) {
       setSelectedInfluencer(record);
       setModalReviewDeadline(true);
     }
@@ -122,7 +125,7 @@ function Influencer() {
             onClick: () => handleRowClick(record as any),
           })}
           rowSelection={{ type: 'checkbox', ...rowSelection }}
-          columns={influencersParticipantsColumns({ handleApprove, handleReject, loading, handleViewUser })}
+          columns={influencersParticipantsColumns({ handleApprove, handleReject, loading, handleViewUser, allowReviewDeadline })}
           dataSource={
             loading
               ? [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] as any

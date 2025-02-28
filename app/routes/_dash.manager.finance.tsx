@@ -15,12 +15,16 @@ import {
 } from '~/apis/finance';
 import { InputSearch } from '~/components/ui/input-search';
 import { FinanceColumns } from '~/constants/finance.constant';
+import { useAuthContext } from '~/contexts/auth.context';
 import {
   CampaignsInFinance,
   FinanceMetrics,
 } from '~/models/finance.model';
 
-import { MetaFunction } from '@remix-run/react';
+import {
+  MetaFunction,
+  useNavigate,
+} from '@remix-run/react';
 
 export const meta: MetaFunction = () => {
     return [{ title: 'Finance' }];
@@ -33,6 +37,9 @@ function Finance() {
     const [financeMetrics, setFinanceMetrics] = useState<FinanceMetrics | null>(null)
     const [campaignsInFinance, setCampaignsInFinance]
         = useState<{ total: number, data: CampaignsInFinance[] }>({ total: 0, data: [] })
+
+    const {hasPermission,userInfo} = useAuthContext()
+    const navigate = useNavigate()
 
     const [params, setParams] = useState<{ page: number, pageSize: number }>({ page: 1, pageSize: 10 })
 
@@ -56,6 +63,10 @@ function Finance() {
 
     useEffect(() => handleGetFinanceMetrics(), [])
     useEffect(() => { getMemberInFinance() }, [params, search])
+
+    useEffect(() => {
+        userInfo && !hasPermission('view-finance-overview') && navigate('/page-not-found')
+    },[userInfo])
 
     return (
         <div>
