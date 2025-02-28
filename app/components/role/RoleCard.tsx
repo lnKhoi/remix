@@ -49,7 +49,7 @@ const RoleCard = ({ role, onUpdateRole }: RoleCardProps) => {
                 onClick={() => hasPermission('view-role') ? navigate(`/manager/role/${role.id}`) : null}
                 className="p-4 border cursor-pointer border-gray-200 hover:shadow-md shadow-sm rounded-xl  w-full bg-white">
                 {/* Role Title */}
-                <h3 className="text-lg font-medium">{role.name}</h3>
+                <h3 className="text-lg font-medium truncate">{role.name}</h3>
 
                 {/* Created Date */}
                 <div className="flex items-center text-gray-500 text-sm mt-1">
