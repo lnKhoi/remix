@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 
-import { Select } from 'antd';
+import {
+  message,
+  Select,
+} from 'antd';
+import { EMAIL_REGEX } from '~/constants/regex.constant';
 
 const { Option } = Select;
 
@@ -19,10 +23,19 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
   const [value, setValue] = useState<string[]>([]);
   const [searchText, setSearchText] = useState(""); // Track search input
 
+  const isValidEmail = (email: string) => {
+    return EMAIL_REGEX.test(email);
+  };
+
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter" && searchText.trim()) {
       event.preventDefault();
-      const newValue = searchText.trim();
+      const newValue = searchText.trim().toLowerCase();
+
+      if (!isValidEmail(newValue)) {
+        message.error("Invalid email format!");
+        return;
+      }
 
       if (!options.includes(newValue)) {
         setOptions([...options, newValue]);
