@@ -54,7 +54,7 @@ const ModalViewUser: FC<ModalViewUserProps> = ({ open, onClose, id ,onsuccess}) 
 
   const handleFinish = (values: any) => {
     setLoadingEdit(true)
-    editUserPermission(values, id).then(() => {
+    editUserPermission({...values,name:values.name || ''}, id).then(() => {
       handleGetUserDetails('no-loading')
       messageApi.success('Update User successfully!')
       setIsEdit(false)
