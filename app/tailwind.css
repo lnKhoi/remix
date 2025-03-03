@@ -304,3 +304,13 @@ input::placeholder {
 .ant-drawer-footer .ant-btn {
   font-weight: 600 !important;
 }
+
+.ant-collapse-header {
+  height: 40px !important;
+  padding: 9px 10px !important;
+  border-bottom: 0.5px solid theme('colors.gray.50') !important;
+}
+
+.ant-collapse-content-box {
+  padding: 0 !important;
+}
