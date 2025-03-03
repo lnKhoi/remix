@@ -41,11 +41,11 @@ export const RolesColumns = ({
           {loading
             ? <Skeleton.Avatar active style={{ height: 36, width: 36 }} />
             : <img className='w-9 h-9 object-cover rounded-[50%]' src={Avatar} alt="avatar" />}
-          <div className="flex flex-col">
-            <p className='text-sm font-medium text-gray-800 '>
-              {loading ? <Skeleton.Input active style={{ height: 18 }} /> : record.name || ''}
+          <div className="flex flex-col  justify-center">
+            <p className='text-sm truncate max-w-[250px] font-medium text-gray-800 '>
+              {loading ? <Skeleton.Input active style={{ height: 18 }} /> : record.name }
             </p>
-            <span className='text-sm text-gray-500 font-normal'>
+            <span className={`text-sm text-gray-500 font-normal ${record.name ? 'mt-0' : 'mt-2'}`}>
               {loading ? <Skeleton.Input active style={{ height: 18 }} /> : record.email}
             </span>
           </div>
@@ -99,7 +99,7 @@ export const RolesColumns = ({
       render: (_, record) => <>{loading ? <Skeleton.Node active style={{ height: 18, width: 50 }} /> : dayjs(record.create_at).format(DATE_TIME_FORMAT)}</>
     },
     {
-      title: 'Status',
+      title: 'Active',
       width: '10%',
       render: (_, record) => {
         const handleArchiveUser = (value: boolean) => {
