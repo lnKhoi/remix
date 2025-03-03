@@ -50,11 +50,19 @@ function Permissions() {
           </div>
         }
       >
-        <div className="bg-white pl-3 gap-3 w-full grid grid-cols-2 p-[10px]">
-          {perms.map((perm) => (
-            <div className="truncate block">{perm}</div>
+        <div className="bg-white w-full grid grid-cols-2 border-t border-t-gray-200">
+          {perms.map((perm, index) => (
+            <div
+              key={index}
+              className="truncate h-[40px] pl-3 border-t border-gray-200 flex items-center"
+            >
+              {perm}
+            </div>
           ))}
+          {/* Add an empty div if the count is odd to maintain grid structure */}
+          {perms.length % 2 !== 0 && <div className="border-t border-t-gray-200"></div>}
         </div>
+
       </Panel>
     );
   };
