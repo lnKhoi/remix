@@ -212,10 +212,16 @@ function UserProfilePopover({
 
 // Main Page Component with Route Protection
 function Page() {
-  const { handleLogout, userInfo } = useAuthContext();
+  const { userInfo } = useAuthContext();
   const navigate = useNavigate();
   const location = useLocation();
   const [isCalculating, setIsCalculating] = useState(true);
+
+  const handleLogout = () => {
+    navigate('/login')
+    localStorage.clear()
+    sessionStorage.clear()
+  }
 
   // Memoize filteredItems with timing
   const filteredItems = useMemo(() => {
