@@ -178,7 +178,7 @@ const ModalViewUser: FC<ModalViewUserProps> = ({ open, onClose, id }) => {
                 </div>
               </div>
               : <>
-                <Form.Item name="name" label="Full name" rules={[{ required: true, message: "Please enter full name" }]}>
+                <Form.Item name="name" label="Full name" >
                   <Input placeholder="e.g. Emma Smith" />
                 </Form.Item>
                 {/* Email */}

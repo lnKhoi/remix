@@ -12,6 +12,7 @@ import {
   updatePasswordDefault,
 } from '~/apis/auth';
 import { PASSWORD_REGEX } from '~/constants/regex.constant';
+import { useAuthContext } from '~/contexts/auth.context';
 
 import {
   EyeInvisibleOutlined,
@@ -23,6 +24,7 @@ const ChangePassword: React.FC = () => {
   const [loading,setLoading] = useState<boolean>(false)
   const [passwordError, setPasswordError] = useState<string>('');
   const [messageApi, contextHolder] = message.useMessage();
+  const {handleRefreshUserInfo} = useAuthContext()
 
   const validatePassword = (_: any, value: string) => {
     if (!value || PASSWORD_REGEX.test(value)) {
@@ -39,6 +41,7 @@ const ChangePassword: React.FC = () => {
       updatePasswordDefault()
       messageApi.success('New password has been updated successfully!')
       form.resetFields()
+      handleRefreshUserInfo()
     })
     .catch(err => messageApi.error(err?.message))
     .finally(() => setLoading(false))
