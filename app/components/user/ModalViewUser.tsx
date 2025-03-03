@@ -23,14 +23,18 @@ import {
   getPermissionOfRole,
   getRoles,
 } from '~/apis/role';
-import Avatar from '~/assets/upload-avatar.png';
-import { UserTab } from '~/constants/permission.constant';
+import Avatar from '~/assets/avatar.jpeg';
+import {
+  getColorStatusUser,
+  UserTab,
+} from '~/constants/permission.constant';
 import { Role } from '~/models/role.model';
 import { User } from '~/models/User.model';
 
 import { PencilSquareIcon } from '@heroicons/react/24/outline';
 
 import Permission from '../custom/skeletons/Permission';
+import TagColor from '../ui/tagColor';
 
 type ModalViewUserProps = {
   open: boolean;
@@ -39,7 +43,7 @@ type ModalViewUserProps = {
   onsuccess: () => void
 };
 
-const ModalViewUser: FC<ModalViewUserProps> = ({ open, onClose, id ,onsuccess}) => {
+const ModalViewUser: FC<ModalViewUserProps> = ({ open, onClose, id, onsuccess }) => {
   const [form] = Form.useForm();
   const [tab, setTab] = useState<'profile' | 'role'>('profile')
   const [isEdit, setIsEdit] = useState<boolean>(false)
@@ -54,7 +58,7 @@ const ModalViewUser: FC<ModalViewUserProps> = ({ open, onClose, id ,onsuccess}) 
 
   const handleFinish = (values: any) => {
     setLoadingEdit(true)
-    editUserPermission({...values,name:values.name || ''}, id).then(() => {
+    editUserPermission({ ...values, name: values.name || '' }, id).then(() => {
       handleGetUserDetails('no-loading')
       messageApi.success('Update User successfully!')
       setIsEdit(false)
@@ -86,7 +90,7 @@ const ModalViewUser: FC<ModalViewUserProps> = ({ open, onClose, id ,onsuccess}) 
   const handleGetPermissionOfRole = () => {
     setLoadingRole(true)
     getPermissionOfRole(selectedRoleId).then(res => setPermissions(res.data))
-    .finally(() => setLoadingRole(false))
+      .finally(() => setLoadingRole(false))
   }
 
   useEffect(() => {
@@ -177,6 +181,18 @@ const ModalViewUser: FC<ModalViewUserProps> = ({ open, onClose, id ,onsuccess}) 
                     {loading
                       ? <Skeleton.Input active style={{ height: 18 }} />
                       : Array.isArray(user?.role) ? user?.role.map(r => r.name).join(', ') : ''}
+                  </p>
+                </div>
+                <div className='flex items-center'>
+                  <p className='w-[400px] font-medium text-sm text-gray-500'>Status:</p>
+                  <p className='w-full font-medium text-sm text-gray-800'>
+                    {loading
+                      ? <Skeleton.Input active style={{ height: 18 }} />
+                      : <TagColor
+                        status={getColorStatusUser(user?.archive || 'unarchive')?.status as string}
+                        background={getColorStatusUser(user?.archive || 'unarchive')?.background as string}
+                        color={getColorStatusUser(user?.archive || 'unarchive')?.color as string}
+                      />}
                   </p>
                 </div>
               </div>
