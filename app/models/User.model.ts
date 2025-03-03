@@ -33,6 +33,7 @@ export type User = {
   id: string;
   created_at?: number;
   updated_at?: number;
+  archive?:'archive' | 'unarchive',
   isTemporaryPassword?:boolean
   deleted_at?: number | null;
   permissions: Permission[] | Permission

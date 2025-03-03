@@ -82,7 +82,7 @@ function UsersPermission() {
             {contextHolder}
             <div className='flex items-center justify-between w-full'>
                 <div>
-                    <h2 className='text-2xl font-medium text-gray-800'>Users Permission</h2>
+                    <h2 className='text-2xl font-medium text-gray-800'>Users</h2>
                     <p className='text-sm font-normal text-gray-800'>Manage who has access in your system</p>
                 </div>
                 {hasPermission('create-user') && (
