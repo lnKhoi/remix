@@ -135,6 +135,7 @@ function UsersPermission() {
                     id={selectedId}
                     onClose={() => setModalType('')}
                     open={modalType == 'view-user'}
+                    onsuccess={() => handleGetUsers()}
                 />
             )}
         </div>

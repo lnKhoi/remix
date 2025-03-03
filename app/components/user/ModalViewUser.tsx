@@ -36,9 +36,10 @@ type ModalViewUserProps = {
   open: boolean;
   onClose: () => void;
   id: string
+  onsuccess: () => void
 };
 
-const ModalViewUser: FC<ModalViewUserProps> = ({ open, onClose, id }) => {
+const ModalViewUser: FC<ModalViewUserProps> = ({ open, onClose, id ,onsuccess}) => {
   const [form] = Form.useForm();
   const [tab, setTab] = useState<'profile' | 'role'>('profile')
   const [isEdit, setIsEdit] = useState<boolean>(false)
@@ -57,6 +58,8 @@ const ModalViewUser: FC<ModalViewUserProps> = ({ open, onClose, id }) => {
       handleGetUserDetails('no-loading')
       messageApi.success('Update User successfully!')
       setIsEdit(false)
+      onClose()
+      onsuccess()
     })
       .catch(err => messageApi.error(err.message))
       .finally(() => setLoadingEdit(false))
@@ -178,7 +181,7 @@ const ModalViewUser: FC<ModalViewUserProps> = ({ open, onClose, id }) => {
                 </div>
               </div>
               : <>
-                <Form.Item name="name" label="Full name" rules={[{ required: true, message: "Please enter full name" }]}>
+                <Form.Item name="name" label="Full name" >
                   <Input placeholder="e.g. Emma Smith" />
                 </Form.Item>
                 {/* Email */}
