@@ -17,7 +17,10 @@ import { useAuthContext } from '~/contexts/auth.context';
 import { Role } from '~/models/role.model';
 
 import { PlusIcon } from '@heroicons/react/24/outline';
-import { MetaFunction } from '@remix-run/react';
+import {
+  MetaFunction,
+  useNavigate,
+} from '@remix-run/react';
 
 export const meta: MetaFunction = () => {
   return [{ title: 'Roles' }];
@@ -28,7 +31,9 @@ function Roles() {
   const [roles, setRoles] = useState<Role[]>([])
   const [loadingType, setLoadingType] = useState<'get-roles' | 'create-role' | ''>('')
   const [messageApi, contextHolder] = message.useMessage();
-  const { hasPermission } = useAuthContext()
+  const { hasPermission, userInfo } = useAuthContext()
+
+  const navigate = useNavigate()
 
   const handleGetRoles = () => {
     setLoadingType('get-roles')
@@ -53,6 +58,12 @@ function Roles() {
       prevRoles.map(r => r.id === newRole.id ? newRole : r)
     ))
   }, [])
+
+
+  useEffect(() => {
+    userInfo && !hasPermission('view-role') && navigate('/page-not-found')
+  }, [userInfo])
+
 
   return (
     <div>

@@ -65,7 +65,7 @@ const ModalCreateRole: FC<ModalCreateRoleProps> = ({ open, onClose, onSuccess, t
     const fetchInitialData = async () => {
         setLoadingType('permissions');
         try {
-            const [permissionsRes, usersRes] = await Promise.all([getPermissions(), getUsers(1, 1000, '')]);
+            const [permissionsRes, usersRes] = await Promise.all([getPermissions(), getUsers(1, 500, '')]);
             setPermissions(permissionsRes?.data || {});
             setUsers(usersRes?.data?.data || initial?.users || []);
             setActivePanels(Object.keys(permissionsRes?.data || {}));
@@ -229,6 +229,7 @@ const ModalCreateRole: FC<ModalCreateRoleProps> = ({ open, onClose, onSuccess, t
         </Option>
     );
 
+
     const renderPermissionPanel = ([category, perms]: [string, string[]]) => {
         const selectedCount = perms.filter((perm) => checkedPermissions[perm]).length;
         return (
@@ -328,7 +329,7 @@ const ModalCreateRole: FC<ModalCreateRoleProps> = ({ open, onClose, onSuccess, t
                             </span>
                         </div>
                         <div className="w-full border-t border-t-gray-300" />
-                        {loadingType === 'permissions' ? (
+                        {Object.keys(permissions).length == 0 ? (
                             <Permission />
                         ) : (
                             <Collapse

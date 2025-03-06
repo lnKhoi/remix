@@ -1,7 +1,5 @@
 import {
   createElement,
-  useEffect,
-  useMemo,
   useState,
 } from 'react';
 
@@ -56,20 +54,6 @@ function SidebarMenu({
 }) {
   const location = useLocation();
 
-  const filteredItems = useMemo(() => {
-    const result = items.filter((item) => {
-      if (item.children) {
-        const filteredChildren = item.children.filter((child) =>
-          hasMatchingPermission(child, permissions)
-        );
-        return filteredChildren.length > 0 || hasMatchingPermission(item, permissions)
-          ? { ...item, children: filteredChildren }
-          : null;
-      }
-      return hasMatchingPermission(item, permissions) ? item : null;
-    });
-    return result;
-  }, [items, permissions]);
 
   return (
     <Menu
@@ -81,7 +65,7 @@ function SidebarMenu({
         backgroundColor: "#F9FAFB",
       }}
     >
-      {filteredItems.map((item) =>
+      {items.map((item) =>
         item.children ? (
           <SubMenu
             key={item.to}
@@ -214,8 +198,7 @@ function UserProfilePopover({
 function Page() {
   const { userInfo } = useAuthContext();
   const navigate = useNavigate();
-  const location = useLocation();
-  const [isCalculating, setIsCalculating] = useState(true);
+  const location = useLocation()
 
   const handleLogout = () => {
     navigate('/login')
@@ -223,48 +206,24 @@ function Page() {
     sessionStorage.clear()
   }
 
-  // Memoize filteredItems with timing
-  const filteredItems = useMemo(() => {
-    const result = navItems.filter((item) => {
-      if (item.children) {
-        const filteredChildren = item.children.filter((child) =>
-          hasMatchingPermission(child, userInfo?.permissions as Permission[] || [])
-        );
-        return filteredChildren.length > 0 || hasMatchingPermission(item, userInfo?.permissions as Permission[] || [])
-          ? { ...item, children: filteredChildren }
-          : null;
-      }
-      return hasMatchingPermission(item, userInfo?.permissions as Permission[] || []) ? item : null;
-    });
-    setIsCalculating(false); // Mark calculation as done
-    return result;
-  }, [userInfo?.permissions]);
 
-  // Memoize valid routes
-  const validRoutes = useMemo(() => {
-    const routes = new Set<string>();
-    filteredItems.forEach((item) => {
-      if (item.to && item.to !== "") routes.add(item.to.replace(/\/$/, ''));
-      if (item.children) {
-        item.children.forEach((child) => {
-          if (child.to) routes.add(child.to.replace(/\/$/, ''));
-        });
-      }
-    });
-    return routes;
-  }, [filteredItems]);
+  const filterMenu = (menu: NavItem[], userPermissions: Permission[]): NavItem[] => {
+    return menu
+      .map(item => {
+        const hasPermission =
+          !item?.permissions || item?.permissions?.some(p => userPermissions?.includes(p as Permission));
 
-  // Redirect only if URL is not in filteredItems, after calculation
-  useEffect(() => {
-    if (isCalculating) return; // Wait until calculation is complete
+        if (!hasPermission) return null; // Exclude item if user lacks permissions
 
-    const currentRoute = location.pathname.replace(/\/$/, '');
-    const homeRoute = "/manager/dashboard";
+        // If the item has children, filter them recursively
+        const filteredChildren = item?.children ? filterMenu(item?.children, userPermissions) : [];
 
-    if (!validRoutes.has(currentRoute)) {
-      // navigate(homeRoute, { replace: true });
-    }
-  }, [location.pathname, validRoutes, navigate, isCalculating]);
+        if (item?.children && filteredChildren?.length === 0) return null; // Remove if no valid children
+
+        return { ...item, children: filteredChildren?.length > 0 ? filteredChildren : undefined };
+      })
+      .filter((item) => item !== null); // Remove null values and ensure correct type
+  };
 
   const handleNavigate = (to: string) => {
     navigate(to);
@@ -286,7 +245,7 @@ function Page() {
           </Popover>
         </div>
         <SidebarMenu
-          items={navItems}
+          items={filterMenu(navItems, userInfo?.permissions as Permission[])}
           onLogout={handleLogout}
           permissions={userInfo?.permissions as Permission[] || []}
         />

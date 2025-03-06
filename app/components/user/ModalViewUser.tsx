@@ -28,6 +28,7 @@ import {
   getColorStatusUser,
   UserTab,
 } from '~/constants/permission.constant';
+import { useAuthContext } from '~/contexts/auth.context';
 import { Role } from '~/models/role.model';
 import { User } from '~/models/User.model';
 
@@ -55,6 +56,7 @@ const ModalViewUser: FC<ModalViewUserProps> = ({ open, onClose, id, onsuccess })
   const [selectedRoleId, setSelectedRoleId] = useState<string>('')
   const [permissions, setPermissions] = useState({})
   const [loadingRole, setLoadingRole] = useState<boolean>(false)
+  const {hasPermission} = useAuthContext()
 
   const handleFinish = (values: any) => {
     setLoadingEdit(true)
@@ -149,13 +151,15 @@ const ModalViewUser: FC<ModalViewUserProps> = ({ open, onClose, id, onsuccess })
         {(tab == 'profile' && !loading) && (
           <div className='flex items-center justify-between'>
             <p className='text-sm font-medium text-blue-600'>Public Profile</p>
-            <Button
+            {hasPermission('edit-user') && (
+              <Button
               onClick={() => setIsEdit(!isEdit)}
               className='text-blue-600 font-medium'
               type='text'
               icon={<PencilSquareIcon className='w-5 text-blue-600 h-5' />} >
               Edit
             </Button>
+            )}
           </div>
         )}
 

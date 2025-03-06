@@ -63,11 +63,10 @@ function Finance() {
 
     useEffect(() => handleGetFinanceMetrics(), [])
     useEffect(() => { getMemberInFinance() }, [params, search])
-
+    
     useEffect(() => {
         userInfo && !hasPermission('view-finance-overview') && navigate('/page-not-found')
     },[userInfo])
-
     return (
         <div>
             <div className='flex items-center justify-between'>

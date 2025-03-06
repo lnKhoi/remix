@@ -25,12 +25,14 @@ export const RolesColumns = ({
   onViewUser,
   onEditUser,
   loading,
-  onUpdateStatus
+  onUpdateStatus,
+  allowEdit,
 }: {
   onViewUser: (id: string) => void;
   onEditUser: (user: UserPermission) => void;
   loading: boolean
-  onUpdateStatus:(status:boolean) => void
+  onUpdateStatus: (status: boolean) => void
+  allowEdit: boolean
 }): TableColumnsType<UserPermission> => [
     {
       title: 'Name',
@@ -43,7 +45,7 @@ export const RolesColumns = ({
             : <img className='w-9 h-9 object-cover rounded-[50%]' src={Avatar} alt="avatar" />}
           <div className="flex flex-col  justify-center">
             <p className='text-sm truncate max-w-[250px] font-medium text-gray-800 '>
-              {loading ? <Skeleton.Input active style={{ height: 18 }} /> : record.name }
+              {loading ? <Skeleton.Input active style={{ height: 18 }} /> : record.name}
             </p>
             <span className={`text-sm text-gray-500 font-normal ${record.name ? 'mt-0' : 'mt-2'}`}>
               {loading ? <Skeleton.Input active style={{ height: 18 }} /> : record.email}
@@ -109,10 +111,12 @@ export const RolesColumns = ({
         return (
           <>{loading
             ? <Skeleton.Node active style={{ height: 18, width: 120 }} />
-            : <div><Switch defaultChecked={record?.archive == 'unarchive'} onChange={(e) => {
-              handleArchiveUser(!e);
-              onUpdateStatus(e)
-              }} /></div>}
+            : <div>
+              <Switch disabled={!allowEdit} defaultChecked={record?.archive == 'unarchive'} onChange={(e) => {
+                handleArchiveUser(!e);
+                onUpdateStatus(e)
+              }} />
+            </div>}
           </>
         )
       }
@@ -173,7 +177,7 @@ export const UserColumns = (loading: boolean): TableColumnsType<UserPermission> 
   },
 ];
 
-export const UserAssignedColumns = (loading: boolean, onDelete: (id: string) => void, deletingUserIds: string[]) => [
+export const UserAssignedColumns = (loading: boolean, onDelete: (id: string) => void, deletingUserIds: string[],allowEdit:boolean) => [
   {
     title: "Name",
     dataIndex: "name",
@@ -210,7 +214,7 @@ export const UserAssignedColumns = (loading: boolean, onDelete: (id: string) => 
           {loading ? (
             <Skeleton.Button active style={{ height: 18, width: 50 }} />
           ) : (
-            <Button loading={isDeleting} type='text' onClick={() => onDelete(record.id)}>
+            <Button disabled={!allowEdit} loading={isDeleting} type='text' onClick={() => onDelete(record.id)}>
               {!isDeleting && (
                 <TrashIcon
                   className="text-gray-800 w-5 h-5 cursor-pointer"
