@@ -115,7 +115,7 @@ const EmployeeRole: FC = () => {
 
                     <div className="flex px-4 justify-between items-center mt-4">
                         <h3 className="font-medium">User Assigned ({role?.users.length})</h3>
-                        {hasPermission('assign-user-to-role') && <Button onClick={() => setModalAddUser(true)} type="primary" icon={<PlusOutlined />}>
+                        {hasPermission('edit-role') && <Button onClick={() => setModalAddUser(true)} type="primary" icon={<PlusOutlined />}>
                             Add User
                         </Button>}
                     </div>
