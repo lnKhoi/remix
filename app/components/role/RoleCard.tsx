@@ -81,7 +81,7 @@ const RoleCard = ({ role, onUpdateRole }: RoleCardProps) => {
                     {hasPermission('edit-role') && (
                         <div
                             onClick={(e) => {
-                                hasPermission('assign-user-to-role') ? setModalAddUser(true) : null;
+                                hasPermission('edit-role') ? setModalAddUser(true) : null;
                                 e.stopPropagation()
                             }}
                             className='flex cursor-pointer items-center gap-2'>
