@@ -6,9 +6,13 @@ import React, {
 import { Collapse } from 'antd';
 import { getPermissions } from '~/apis/permission';
 import Permission from '~/components/custom/skeletons/Permission';
+import { useAuthContext } from '~/contexts/auth.context';
 
 import { DownOutlined } from '@ant-design/icons';
-import { MetaFunction } from '@remix-run/react';
+import {
+  MetaFunction,
+  useNavigate,
+} from '@remix-run/react';
 
 export const meta: MetaFunction = () => {
   return [{ title: 'Permissions' }];
@@ -20,6 +24,9 @@ function Permissions() {
   const [loading, setLoading] = useState<boolean>(false)
   const [permissions, setPermissions] = useState<PermissionsMap>({});
   const [activePanels, setActivePanels] = useState<string[]>([]);
+  const { userInfo, hasPermission } = useAuthContext()
+
+  const navigate = useNavigate()
 
   const handleGetPermissions = () => {
     setLoading(true)
@@ -38,6 +45,11 @@ function Permissions() {
   // Event Handlers
   const handleTogglePanels = () =>
     setActivePanels(activePanels.length === Object.keys(permissions).length ? [] : Object.keys(permissions));
+
+
+  useEffect(() => {
+    userInfo && !hasPermission('view-permissions') && navigate('/page-not-found')
+  }, [userInfo])
 
 
   const renderPermissionPanel = ([category, perms]: [string, string[]]) => {
@@ -68,7 +80,7 @@ function Permissions() {
   };
 
   return (
-    <div>
+    <div className='custom-panel'>
       <div className='mb-5'>
         <h2 className='text-2xl font-medium text-gray-800'>Permissions</h2>
         <p className='font-normal text-gray-500 text-sm'>Manage all permissions of internal user</p>

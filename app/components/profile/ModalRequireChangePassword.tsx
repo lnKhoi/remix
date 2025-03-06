@@ -17,11 +17,6 @@ type ModalRequireChangePasswordProps = {
 function ModalRequireChangePassword({ onclose, open }: ModalRequireChangePasswordProps) {
     const navigate = useNavigate()
 
-    const handleSkipChangePassword = () => {
-        updatePasswordDefault()
-        onclose()
-    }
-
     return (
         <Modal open={open} width={380} onCancel={onclose} title='' footer={null}>
             <div className='flex flex-col items-center justify-center'>
@@ -31,7 +26,6 @@ function ModalRequireChangePassword({ onclose, open }: ModalRequireChangePasswor
                 <h6 className='text-xl mt-5 font-semibold text-gray-800 text-center'>Update for Security</h6>
                 <p className='mt-[6px] text-sm font-normal text-gray-500 text-center'>You are using a temporary password. Please change your password to secure your account.</p>
                 <div className='mt-8 flex items-center gap-3 justify-between w-full'>
-                    <Button onClick={handleSkipChangePassword} className='w-full font-semibold'>Later</Button>
                     <Button 
                     onClick={() => {
                         navigate('/manager/my-profile')
