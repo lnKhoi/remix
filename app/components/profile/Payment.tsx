@@ -59,7 +59,7 @@ type LoadingType = 'payment-info' | 'delete-payment' | 'verify-user' | 'list-pay
 function Payment() {
   const [cards, setCards] = useState<CreditCard[]>([])
   const [warning, setWarning] = useState<boolean>(true)
-  const { setOnPayment, onPayment } = useAuthContext()
+  const { setOnPayment, onPayment, hasPermission } = useAuthContext()
 
   const [selectedCard, setSelectedCard] = useState<string>('')
   const [addedToken, setAddedToken] = useState<number>(0)
@@ -140,7 +140,7 @@ function Payment() {
     <div>
       {contextHolder}
       {/* WARNING IF NO PAYMENT METHOD LINKED */}
-      {warning && emptyCard && loadingType !== 'payment-info' && (
+      {warning && emptyCard && loadingType !== 'payment-info' && hasPermission('link-payment-method') && (
         <div className='flex items-center mb-6 justify-between px-3 h-[54px] rounded-lg bg-blue-100'>
           <div className='flex items-center gap-3'>
             <ExclamationCircleIcon className='w-6 h-6 text-blue-500' />
@@ -198,14 +198,14 @@ function Payment() {
           <div className='flex mt-5 items-center gap-3'>
             <Button
               onClick={() => setModalType('buy-token')}
-              disabled={emptyCard}
+              disabled={emptyCard || !hasPermission('buy-tokens')}
               className='w-[50px]'
               type='primary'>
               Buy
             </Button>
             <Button
               loading={loadingType === 'verify-user'}
-              disabled={emptyCard}
+              disabled={emptyCard || !hasPermission('withdraw-tokens')}
               onClick={handleWithdraw}
               className='bg-gray-100 border-gray-100'>Withdraw</Button>
           </div>
@@ -216,7 +216,12 @@ function Payment() {
         <div className='flex items-center justify-between px-5 pb-5 border-b border-b-gray-200'>
           <p className='text-lg font-semibold text-gray-800'>Payment Methods</p>
           {!isSelectPayment
-            ? <Button disabled={cards.length >= 5} onClick={() => setIsSelectPayment(true)} type='primary'>Add New</Button>
+            ? <Button
+              disabled={cards.length >= 5 || !hasPermission('link-payment-method')}
+              onClick={() => setIsSelectPayment(true)}
+              type='primary'>
+              Add New
+            </Button>
             : <Button onClick={() => { setIsSelectPayment(false); setPaymentMethod('') }}>Cancel</Button>
           }
         </div>
@@ -321,7 +326,9 @@ function Payment() {
       </div>
 
       {/* PAYMENT TRANSACTION + TOKEN TRANSACTION */}
-      <Tabs defaultActiveKey="1" items={paymentTabs} className='mt-3' />
+     {hasPermission('view-payment-token-history') && (
+       <Tabs defaultActiveKey="1" items={paymentTabs} className='mt-3' />
+     )}
 
       {/* MODAL PAYMENT SUCCESS */}
       {modalType == 'payment-success' && (

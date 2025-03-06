@@ -25,6 +25,7 @@ import { PlusOutlined } from '@ant-design/icons';
 import { MetaFunction } from '@remix-run/cloudflare';
 import {
   Link,
+  useNavigate,
   useParams,
 } from '@remix-run/react';
 
@@ -39,7 +40,10 @@ const EmployeeRole: FC = () => {
     const [loadingType, setLoadingType] = useState<'' | 'permissions' | 'add-users'>('')
     const [deletingUserIds, setDeletingUserIds] = useState<string[]>([])
     const [messageApi, contextHolder] = message.useMessage();
-    const { hasPermission } = useAuthContext()
+    const { hasPermission,userInfo } = useAuthContext()
+
+    const navigate = useNavigate()
+
 
     const handleGetRoleDetails = () => {
         setLoadingType('permissions')
@@ -66,6 +70,10 @@ const EmployeeRole: FC = () => {
             .catch((err) => { messageApi.error(err.message); })
             .finally(() => { setDeletingUserIds((prev) => prev.filter((userId) => userId !== id)); });
     };
+
+    useEffect(() => {
+        userInfo && !hasPermission('view-role') && navigate('/page-not-found')
+    },[userInfo])
 
     return (
         <div >
@@ -113,7 +121,7 @@ const EmployeeRole: FC = () => {
                     </div>
                     <Table
                         dataSource={loadingType !== '' ? [1, 2, 3, 4] as any : role?.users}
-                        columns={UserAssignedColumns(loadingType !== '', (id) => handleDeleteUserFromRole(id), deletingUserIds)}
+                        columns={UserAssignedColumns(loadingType !== '', (id) => handleDeleteUserFromRole(id), deletingUserIds,hasPermission('edit-role') as boolean)}
                         pagination={{ pageSize: 5 }}
                         rowKey="id"
                         className="mt-5 px-5"

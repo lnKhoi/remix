@@ -21,7 +21,10 @@ import { useAuthContext } from '~/contexts/auth.context';
 import { UserPermission } from '~/models/User.model';
 
 import { PlusIcon } from '@heroicons/react/24/outline';
-import { MetaFunction } from '@remix-run/react';
+import {
+  MetaFunction,
+  useNavigate,
+} from '@remix-run/react';
 
 export const meta: MetaFunction = () => {
     return [{ title: 'Users Permission' }];
@@ -38,9 +41,11 @@ function UsersPermission() {
     const [users, setUsers] = useState<{ total: number, data: UserPermission[] }>({ total: 0, data: [] })
     const [modalType, setModalType] = useState<'view-user' | 'edit-user' | 'create-user' | ''>('')
     const [params, setParams] = useState<{ page: number, pageSize: number }>({ page: 1, pageSize: 10 })
-    const { hasPermission } = useAuthContext()
-    const [selectedUser,setSelectedUser] = useState<null | UserPermission>(null)
+    const { hasPermission, userInfo } = useAuthContext()
+    const [selectedUser, setSelectedUser] = useState<null | UserPermission>(null)
     const [search, setSearch] = useState<string>('')
+
+    const navigate = useNavigate()
 
     const [loading, setLoading] = useState<boolean>(false)
 
@@ -65,7 +70,7 @@ function UsersPermission() {
     useEffect(() => handleGetUsers(), [params, search])
 
     const handleRefresh = (name: string) => {
-        messageApi.success(name =='create-user' ? `You has been invited the user successfully.` : 'User changed successfully')
+        messageApi.success(name == 'create-user' ? `You has been invited the user successfully.` : 'User changed successfully')
         handleGetUsers()
     }
 
@@ -73,9 +78,14 @@ function UsersPermission() {
         setSearch(e.target.value)
     }, 500);
 
-    const handleUpdateUserStatus = (archive:boolean) => {
+    const handleUpdateUserStatus = (archive: boolean) => {
         messageApi.success(!archive ? 'Archive user successfully!' : 'Active user successfully!')
-    } 
+    }
+
+    useEffect(() => {
+        userInfo && !hasPermission('view-user') && navigate('/page-not-found')
+    }, [userInfo])
+
 
     return (
         <div>
@@ -112,7 +122,8 @@ function UsersPermission() {
                         onViewUser: handleViewUser,
                         onEditUser: handleEditUser,
                         loading: loading,
-                        onUpdateStatus:handleUpdateUserStatus
+                        onUpdateStatus: handleUpdateUserStatus,
+                        allowEdit: hasPermission('edit-user') as boolean
                     })}
                     dataSource={loading ? [1, 2, 3, 4, 5, 6, 7] as any : users.data}
                 />

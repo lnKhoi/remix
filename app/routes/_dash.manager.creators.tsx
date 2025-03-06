@@ -29,7 +29,7 @@ export const meta: MetaFunction = () => {
 };
 
 const Page: FC = () => {
-  const {hasPermission,userInfo} = useAuthContext()
+  const { hasPermission, userInfo } = useAuthContext()
   const [hiddenEmails, setHiddenEmails] = useState<{ [key: string]: boolean }>({});
   const [influencers, setInfluencers] = useState<{ total: number, data: Creator[] }>({ total: 0, data: [] });
   const [loading, setLoading] = useState<boolean>(true);
@@ -49,7 +49,7 @@ const Page: FC = () => {
   const handleGetListInfluencerImported = async (): Promise<void> => {
 
     setLoading(true);
-    await getInfluencerImported(params.pageSize,params.page)
+    await getInfluencerImported(params.pageSize, params.page)
       .then(res => {
         setInfluencers({ total: res?.data?.total, data: res?.data?.paginatedInfluencersData })
       })
@@ -74,27 +74,28 @@ const Page: FC = () => {
 
   if(!userInfo) return <></>
 
-
   return (
     <div>
       <div className='flex w-full justify-end mb-5'>
         <Link to='/manager/creator/import-influencer'>
-          <Button className='bg-gray-100 mt-3 hover:bg-gray-400 border-gray-100' type='text'>
-            <div className='flex items-center gap-1'>
-              <CloudArrowDownIcon width={20} className='mr-1' />
-              Import CSV
-            </div>
-          </Button>
+          {hasPermission('import-influencer-csv') && (
+            <Button className='bg-gray-100 mt-3 hover:bg-gray-400 border-gray-100' type='text'>
+              <div className='flex items-center gap-1'>
+                <CloudArrowDownIcon width={20} className='mr-1' />
+                Import CSV
+              </div>
+            </Button>
+          )}
         </Link>
       </div>
 
       <Spin spinning={loading}>
         <Table<Creator>
-         columns={creatorColumns(toggleEmailVisibility, hiddenEmails)}
+          columns={creatorColumns(toggleEmailVisibility, hiddenEmails)}
           pagination={{
             total: influencers.total,
             onChange: (page, pageSize) => {
-              setParams({page:page,pageSize:pageSize})
+              setParams({ page: page, pageSize: pageSize })
             },
           }}
           dataSource={influencers.data}

@@ -1,9 +1,6 @@
 import 'react-toastify/dist/ReactToastify.css';
 
-import {
-  useEffect,
-  useState,
-} from 'react';
+import { useState } from 'react';
 
 import {
   Field,
@@ -18,7 +15,6 @@ import * as Yup from 'yup';
 import {
   getMe,
   login,
-  login3rdParty,
 } from '~/apis/auth';
 import Logo from '~/assets/logo.svg';
 import { Button } from '~/components/ui/button';
@@ -30,21 +26,12 @@ import {
   ONLY_MANAGER,
 } from '~/constants/messages.constant';
 import { useAuthContext } from '~/contexts/auth.context';
-import { GoogleAccount } from '~/models/User.model';
-import {
-  authenticator,
-  getSession,
-} from '~/services/sessions.server';
 import { createPasswordValidationSchema } from '~/validators/account.validator';
 
 import { EyeIcon } from '@heroicons/react/24/outline';
-import {
-  LoaderFunction,
-  MetaFunction,
-} from '@remix-run/cloudflare';
+import { MetaFunction } from '@remix-run/cloudflare';
 import {
   Link,
-  useLoaderData,
   useNavigate,
 } from '@remix-run/react';
 
@@ -58,32 +45,12 @@ const validationSchema = Yup.object().shape({
   password: createPasswordValidationSchema(),
 });
 
-export const loader: LoaderFunction = async ({ request }) => {
-  const session = await getSession(request.headers.get("Cookie"));
-  const user = session.get("user");
-  authenticator.logout
-
-  return user || null;
-};
 
 export default function Page() {
   const { updateUserInfo } = useAuthContext()
   const navigate = useNavigate();
   const [loading, setLoading] = useState<boolean>(false)
-  const user: GoogleAccount = useLoaderData()
   const [isPassword,setIsPassword] = useState<boolean>(true)
-
-  useEffect(() => {
-    const handleLogin3rdParty = async () => {
-      await login3rdParty('brand', user.emails?.[0]?.value, user?.displayName, '')
-        .then((res) => {
-          localStorage.setItem('remix_us_tk', res?.data?.id)
-          navigate('/manager/dashboard')
-        }
-        )
-    }
-    user && handleLogin3rdParty()
-  }, [])
 
   const handleSubmit = async (values: { email: string; password: string }) => {
     setLoading(true)
@@ -102,7 +69,7 @@ export default function Page() {
         toast.error(ONLY_MANAGER)
       }else {
         updateUserInfo(res.data)
-        navigate('/')
+        navigate('/manager/dashboard')
       }
     }).catch((err) => toast.error(err?.message))
   }

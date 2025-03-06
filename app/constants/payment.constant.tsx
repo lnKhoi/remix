@@ -21,7 +21,8 @@ import { DATE_TIME_FORMAT_V2 } from './time.constant';
 
 export const paymentHistoryColumns = (
   loading: boolean,
-  handleDownload: (record: Payment) => void
+  handleDownload: (record: Payment) => void,
+  allowToDownload: boolean
 ): TableColumnsType<Payment> => [
     {
       title: 'Date Time',
@@ -87,7 +88,7 @@ export const paymentHistoryColumns = (
           <Skeleton.Input style={{ width: 150 }} active size="small" />
         ) : (
           <p
-            className="text-blue-500 cursor-pointer"
+            className={`text-blue-500 cursor-pointer ${allowToDownload ? 'block' : 'hidden'}`}
             onClick={() => handleDownload(record)}
           >
             Download Invoice

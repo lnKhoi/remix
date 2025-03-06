@@ -78,24 +78,26 @@ const RoleCard = ({ role, onUpdateRole }: RoleCardProps) => {
                             </span>
                         )}
                     </div>
-                    <div
-                        onClick={(e) => {
-                            hasPermission('assign-user-to-role') ? setModalAddUser(true) : null;
-                            e.stopPropagation()
-                        }}
-                        className='flex cursor-pointer items-center gap-2'>
-                        <div className='w-9 h-9 rounded-[50%] border-dashed flex items-center justify-center ml-1 border border-gray-200'>
-                            <PlusIcon className='w-5 h-5 text-gray-500' />
+                    {hasPermission('edit-role') && (
+                        <div
+                            onClick={(e) => {
+                                hasPermission('assign-user-to-role') ? setModalAddUser(true) : null;
+                                e.stopPropagation()
+                            }}
+                            className='flex cursor-pointer items-center gap-2'>
+                            <div className='w-9 h-9 rounded-[50%] border-dashed flex items-center justify-center ml-1 border border-gray-200'>
+                                <PlusIcon className='w-5 h-5 text-gray-500' />
+                            </div>
+                            <span className='text-sm font-normal text-gray-800'>Add User</span>
                         </div>
-                        <span className='text-sm font-normal text-gray-800'>Add User</span>
-                    </div>
+                    )}
 
                 </div>
                 {/* Buttons */}
                 <div className="mt-5 flex gap-2">
                     <Button
                         onClick={(e) => { e.stopPropagation(); setModalEditRole(true) }}
-                        disabled={defaultRoles.includes(role?.name as string)}
+                        disabled={defaultRoles.includes(role?.name as string) || !hasPermission('edit-role')}
                         className='w-[84px] bg-gray-100 border-none text-sm hover:bg-gray-200 font-semibold'>
                         Edit
                     </Button>
