@@ -14,13 +14,17 @@ import {
 import { updateUserInfo } from '~/apis/auth';
 import Avatar from '~/assets/avatar.jpeg';
 import { useAuthContext } from '~/contexts/auth.context';
+import useFileUpload from '~/hooks/useFileUpload';
 
 import { PencilSquareIcon } from '@heroicons/react/24/outline';
+
+import FileUploadTrigger from '../FileUploadTrigger';
 
 const ProfileDetails: FC = () => {
     const [isEditing, setIsEditing] = useState<boolean>(false);
     const { userInfo, handleRefreshUserInfo } = useAuthContext();
     const [loading, setLoading] = useState<boolean>(false);
+    const { fileUrl, uploadFile } = useFileUpload();
 
     const [selectedTimezone, setSelectedTimezone] = useState<ITimezone | string>(
         userInfo?.brand?.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone
@@ -81,6 +85,11 @@ const ProfileDetails: FC = () => {
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
+    const handleFileSelect = async (file: File) => {
+      const uploadedUrl = await uploadFile(file);
+      console.log("Uploaded File URL:", uploadedUrl);
+    };
+
     return (
         <div className="w-full mx-auto bg-white py-5 rounded-2xl border border-gray-200">
             <ToastContainer />
@@ -97,11 +106,13 @@ const ProfileDetails: FC = () => {
             </div>
             <div className="flex items-center px-8 mt-8 mb-6">
                 <div className="w-[128px] h-[128px] rounded-full overflow-hidden">
+                    <FileUploadTrigger  onFileSelect={handleFileSelect}>
                     <img
                         src={Avatar}
                         alt="Profile"
                         className="w-full h-full object-cover"
-                    />
+                        />
+                        </FileUploadTrigger>
                 </div>
             </div>
             <div className="space-y-4 px-8 pb-3">
