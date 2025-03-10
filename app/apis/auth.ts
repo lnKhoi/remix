@@ -82,3 +82,7 @@ export const updatePasswordDefault = () => {
 export const resendOtp = (email: string) => {
   return postData(`/api/v1/auth/resend-otp/active-user`, { email })
 }
+
+export const uploadMedia = (file: FormData) => {
+  return postData(`/api/v1/r2/upload-image`, file)
+}
