@@ -18,7 +18,7 @@ function ModalRequireChangePassword({ onclose, open }: ModalRequireChangePasswor
     const navigate = useNavigate()
 
     return (
-        <Modal open={open} width={380} onCancel={onclose} title='' footer={null}>
+        <Modal closeIcon={null} open={open} width={380} onCancel={onclose} title='' footer={null}>
             <div className='flex flex-col items-center justify-center'>
                 <div className='w-[44px] h-[44px] rounded-[50%] bg-blue-100 flex items-center justify-center'>
                     <LockClosedIcon className='w-5 h-5 text-blue-500' />
