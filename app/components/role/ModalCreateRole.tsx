@@ -311,7 +311,10 @@ const ModalCreateRole: FC<ModalCreateRoleProps> = ({ open, onClose, onSuccess, t
                         onChange={handleUserChange}
                         style={{ width: '100%' }}
                     >
-                        {users.map(renderUserOption as any)}
+                        {(users as UserPermission[])?.filter(
+                            (u) => u?.archive === "unarchive"
+                        )?.map(renderUserOption)}
+
                     </Select>
                 </Form.Item>
 
