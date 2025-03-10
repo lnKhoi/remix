@@ -59,7 +59,7 @@ const ChangePassword: React.FC = () => {
             <Input.Password className="h-10" iconRender={visible => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)} />
           </Form.Item>
 
-          <Form.Item label="New password" name="newPassword" rules={[{ validator: validatePassword }]}
+          <Form.Item required label="New password" name="newPassword" rules={[{ validator: validatePassword }]}
             validateStatus={passwordError ? 'error' : ''} help={passwordError}>
             <Input.Password className="h-10" iconRender={visible => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)} />
           </Form.Item>
