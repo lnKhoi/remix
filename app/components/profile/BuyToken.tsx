@@ -10,6 +10,7 @@ import { toast } from 'react-toastify';
 import { buyToken } from '~/apis/stripe';
 import Balance from '~/assets/balance.png';
 import { paymentMethodBrandLogo } from '~/constants/payment.constant';
+import { useAuthContext } from '~/contexts/auth.context';
 import { CreditCard } from '~/models/payment.model';
 
 import ConfirmBuyToken from './ConfirmBuyToken';
@@ -27,8 +28,9 @@ function BuyToken({ cards, onclose, open, onPayment,balance }: BuyTokenProps) {
     const cardPrimary = cards.find(c => c.is_primary == 1)
     const [loading, setLoading] = useState<boolean>(false)
     const [confirmBuyToken, setConfirmBuyToken] = useState<boolean>(false)
+    const {userInfo} = useAuthContext()
 
-    const transactionFee = totalTokens * 0.1
+    const transactionFee = totalTokens * (userInfo?.brand?.credit_fee as number / 100)
     const total = totalTokens + transactionFee
 
     const handleBuyToken = () => {
@@ -87,7 +89,7 @@ function BuyToken({ cards, onclose, open, onPayment,balance }: BuyTokenProps) {
 
                         <div className='flex items-end  flex-col justify-end'>
                             <div className='flex mt-5  items-center justify-end gap-2'>
-                                <span className='font-medium text-gray-500 text-sm'>Transaction Fee (10%):</span>
+                                <span className='font-medium text-gray-500 text-sm'>Credit Fee ({userInfo?.brand?.credit_fee}%):</span>
                                 <p className='font-medium text-gray-500 text-sm'>{transactionFee.toFixed(2)} $</p>
                             </div>
                             <div className='flex items-center mt-2 justify-end gap-2'>
