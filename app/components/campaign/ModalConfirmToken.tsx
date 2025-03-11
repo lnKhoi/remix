@@ -10,6 +10,7 @@ import {
 } from 'antd';
 import { getTotalTokens } from '~/apis/stripe';
 import Balance from '~/assets/balance.png';
+import { useAuthContext } from '~/contexts/auth.context';
 
 import { ExclamationCircleIcon } from '@heroicons/react/24/outline';
 
@@ -22,10 +23,11 @@ type ModalConfirmTokenProps = {
 }
 function ModalConfirmToken({ onclose, open, maximumParticipants, perInfluencerBudget, onConfirm }: ModalConfirmTokenProps) {
     const [loading, setLoading] = useState<boolean>(false)
+    const {userInfo} = useAuthContext()
     const [totalBalance, setTotalBalance] = useState<number>(0)
 
     const totalInfluencerBudget = maximumParticipants * perInfluencerBudget
-    const totalCommissionFee = totalInfluencerBudget * 0.15
+    const totalCommissionFee = totalInfluencerBudget * (userInfo?.brand?.commission_fee as number / 100)
     const totalBudget = totalCommissionFee + totalInfluencerBudget
 
     const notEnoughTokens: boolean = totalBalance < totalBudget
@@ -107,7 +109,7 @@ function ModalConfirmToken({ onclose, open, maximumParticipants, perInfluencerBu
                     <span className='font-medium text-sm text-gray-800'>${perInfluencerBudget?.toFixed(2) || '0.00'}</span>
                 </div>
                 <div className='flex items-center justify-between pt-3 mt-2 border-t border-t-gray-200'>
-                    <span className='text-sm font-medium text-gray-800 flex items-center'>Commision Fee (15%)
+                    <span className='text-sm font-medium text-gray-800 flex items-center'>Commision Fee ({userInfo?.brand?.commission_fee}%)
                         <ExclamationCircleIcon className='text-gray-500 ml-1 cursor-pointer w-4 h-4' />
                     </span>
                     <span className='font-medium text-sm text-gray-800'>${(totalCommissionFee || 0)?.toFixed(2)}</span>

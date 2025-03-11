@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { Modal } from 'antd';
+import { useAuthContext } from '~/contexts/auth.context';
 
 type ConfirmWithdrawTokenProps = {
     open: boolean
@@ -9,7 +10,11 @@ type ConfirmWithdrawTokenProps = {
     paymentMethod: string
     total: number
 }
+
 function ConfirmWithdrawToken({ open, onclose, onConfirm, total, paymentMethod }: ConfirmWithdrawTokenProps) {
+    const {userInfo} = useAuthContext()
+
+    const creditFee = total * (userInfo?.brand?.credit_fee as number / 100)
 
     return (
         <Modal onOk={() => { onConfirm(); onclose() }} width={356} title='' open={open} onCancel={onclose}>
@@ -33,6 +38,10 @@ function ConfirmWithdrawToken({ open, onclose, onConfirm, total, paymentMethod }
                         <p className='text-sm font-normal text-gray-500'>{paymentMethod}</p>
                     </div>
                     <span className='h-[1px] w-full bg-gray-200'></span>
+                    <div className='flex items-center justify-between'>
+                        <p className='text-sm font-medium text-gray-500'>Credit Fee</p>
+                        <p className='text-sm font-normal text-gray-500'>{creditFee.toFixed(2)}$</p>
+                    </div>
                     <div className='flex items-center mb-4 justify-between'>
                         <p className='text-base font-bold text-gray-500'>Total</p>
                         <p className='text-base font-bold text-gray-500'>${total.toFixed(2)}</p>

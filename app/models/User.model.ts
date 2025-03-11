@@ -26,7 +26,11 @@ export type Brand = {
   created_at?: number;
   updated_at?: number;
   timezone?: string
+  monthly_fee?:number
+  credit_fee?:number
+  commission_fee?:number
   deleted_at?: number | null;
+
 }
 
 export type User = {

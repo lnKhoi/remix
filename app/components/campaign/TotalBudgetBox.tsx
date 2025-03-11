@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { Tooltip } from 'antd';
+import { useAuthContext } from '~/contexts/auth.context';
 
 import { ExclamationCircleIcon } from '@heroicons/react/24/outline';
 
@@ -10,9 +11,10 @@ type TotalBudgetBoxProps = {
 }
 
 function TotalBudgetBox({maximumParticipants,perInfluencerBudget}:TotalBudgetBoxProps) {
+    const {userInfo} = useAuthContext()
 
     const totalInfluencerBudget = maximumParticipants * perInfluencerBudget
-    const totalCommissionFee = totalInfluencerBudget * 0.15
+    const totalCommissionFee = totalInfluencerBudget * (userInfo?.brand?.commission_fee as number / 100)
     const totalBudget = totalCommissionFee + totalInfluencerBudget
 
     return (
@@ -35,7 +37,7 @@ function TotalBudgetBox({maximumParticipants,perInfluencerBudget}:TotalBudgetBox
                 </div>
                 <span className='w-full bg-gray-200 my-2 h-[1px]'></span>
                 <div className='flex items-center justify-between'>
-                    <p className='text-sm font-medium text-gray-800 flex gap-2'>Commission Fee (15%)
+                    <p className='text-sm font-medium text-gray-800 flex gap-2'>Commission Fee ({userInfo?.brand?.commission_fee}%)
                     <Tooltip placement='topLeft' title='The commision fee is calculated as 15% of the Influencer Budget. This fee compenstates the influencer for their work in promoting your campaign '>
                         <ExclamationCircleIcon className='w-5 h-5 cursor-pointer text-gray-500' />
                     </Tooltip>

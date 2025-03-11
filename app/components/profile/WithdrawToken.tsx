@@ -18,6 +18,7 @@ import {
 } from '~/apis/stripe';
 import Balance from '~/assets/balance.png';
 import BankLogo from '~/assets/bank-logo.png';
+import { useAuthContext } from '~/contexts/auth.context';
 import { Payment } from '~/models/payment.model';
 
 import { ExclamationCircleIcon } from '@heroicons/react/24/outline';
@@ -38,6 +39,7 @@ function WithdrawToken({ onclose, open, onWithdrawSuccess, balance }: WithdrawTo
     const [bankInfo, setBankInfo] = useState<Payment | null>(null)
     const [confirmWithdrawToken, setConfirmWithdrawToken] = useState<boolean>(false)
     const [messageApi, contextHolder] = message.useMessage();
+    const {userInfo} = useAuthContext()
 
     const handleWithdrawToken = () => {
         setLoading(true)
@@ -61,6 +63,8 @@ function WithdrawToken({ onclose, open, onWithdrawSuccess, balance }: WithdrawTo
     const handleEditStripeAccount = () => {
         getOnboardLink().then(res => window.open(res?.data?.onboardingLink,'_bank'))
     }
+
+    const creditFee = totalTokens * (userInfo?.brand?.credit_fee as number / 100)
 
     return (
         <>
@@ -99,17 +103,22 @@ function WithdrawToken({ onclose, open, onWithdrawSuccess, balance }: WithdrawTo
                         <div className='mt-5 mx-5'>
                             <p className='text-sm text-gray-800 font-medium'>Amount</p>
                             <InputNumber
-                                min={50}
+                                min={500}
                                 step={0.01}
                                 precision={2}
-                                max={balance}
+                                max={9999}
                                 onChange={(num) => setTotalTokens(Number(num))}
-                                className='mt-1 w-full bg-gray-100 border-none h-[44px]' suffix='Token' />
+                                className='mt-1 w-full bg-gray-100 border-none mb-1 h-[44px]' suffix='Token' />
+                                <span className='text-gray-500 mt-2'>Must be a number between 500 Tokens to 9,999 Tokens</span>
                         </div>
-                        <div className='flex items-end  mx-5 flex-col justify-end'>
+                        <div className='flex items-end   mx-5 flex-col justify-end mt-4'>
+                             <div className='flex items-center mt-2 justify-end gap-2'>
+                                <span className='font-normal text-gray-800 text-sm'>Credit Fee ({userInfo?.brand?.credit_fee}%) :</span>
+                                <p className='font-normal text-gray-800 text-sm'>{creditFee.toFixed(2)}$</p>
+                            </div>
                             <div className='flex items-center mt-2 justify-end gap-2'>
                                 <span className='font-bold text-gray-800 text-base'>Total:</span>
-                                <p className='font-bold text-gray-800 text-base'>{totalTokens.toFixed(2)} $</p>
+                                <p className='font-bold text-gray-800 text-base'>{totalTokens.toFixed(2)}$</p>
                             </div>
                         </div>
 
