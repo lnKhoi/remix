@@ -168,7 +168,7 @@ const Discount = ({ form }: DiscountProps) => {
                     <Button
                         onClick={() => {
                             localStorage.setItem('profile-tab', 'Intergration')
-                            window.open('/manager/my-profile', '_blank')
+                            window.open('/manager/brand-details', '_blank')
                             setModalConnectShopify(false)
                         }}
                         className='w-1/2'
