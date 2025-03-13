@@ -66,6 +66,7 @@ function WithdrawToken({ onclose, open, onWithdrawSuccess, balance }: WithdrawTo
 
     const creditFee = totalTokens * (userInfo?.brand?.credit_fee as number / 100)
 
+
     return (
         <>
         {contextHolder}
@@ -118,7 +119,7 @@ function WithdrawToken({ onclose, open, onWithdrawSuccess, balance }: WithdrawTo
                             </div>
                             <div className='flex items-center mt-2 justify-end gap-2'>
                                 <span className='font-bold text-gray-800 text-base'>Total:</span>
-                                <p className='font-bold text-gray-800 text-base'>{totalTokens.toFixed(2)}$</p>
+                                <p className='font-bold text-gray-800 text-base'>{(totalTokens - creditFee).toFixed(2)}$</p>
                             </div>
                         </div>
 
