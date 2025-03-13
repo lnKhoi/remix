@@ -22,7 +22,10 @@ import { useAuthContext } from '~/contexts/auth.context';
 import { Permission } from '~/models/role.model';
 import { User } from '~/models/User.model';
 
-import { BellIcon } from '@heroicons/react/24/outline';
+import {
+  BellIcon,
+  RocketLaunchIcon,
+} from '@heroicons/react/24/outline';
 import {
   Link,
   Outlet,
@@ -142,7 +145,7 @@ function UserProfilePopover({
             <Avatar
               shape="circle"
               className="w-[36px] h-[36px] object-cover"
-              src={DefaultAvatar}
+              src={userInfo?.brand?.logoUrl || DefaultAvatar}
             />
             <div className="flex w-[100px] flex-col">
               <h6 className="text-gray-900 font-medium">{userInfo?.name}</h6>
@@ -156,8 +159,8 @@ function UserProfilePopover({
                 onNavigate('/manager/brand-details')
                 setModalOpen(false)
               }}>
-              <div className='flex items-center gap-2 transform -translate-y-1.5'>
-                <Avatar className='w-5 h-5' />
+              <div className='flex items-center gap-2 mt-1.5 transform -translate-y-1.5'>
+                <RocketLaunchIcon className='w-5 h-5' />
                 {userInfo?.brand?.name}
               </div>
             </Menu.Item>
@@ -193,7 +196,7 @@ function UserProfilePopover({
       onOpenChange={() => setModalOpen(!modalOpen)}
     >
       <div className="absolute m-5 cursor-pointer bottom-0 left-0 flex items-center gap-2">
-        <img style={{ width: 36, height: 36, borderRadius: 36 }} src={DefaultAvatar} alt="avatar" />
+        <img className='object-cover' style={{ width: 36, height: 36, borderRadius: 36 }} src={userInfo?.brand?.logoUrl || DefaultAvatar} alt="avatar" />
         <div className="flex w-[100px] flex-col">
           <h6 className="text-gray-900 font-medium">{userInfo?.name}</h6>
           <p className="text-gray-500 text-sm">

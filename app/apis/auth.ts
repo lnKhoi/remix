@@ -87,10 +87,15 @@ export const uploadMedia = (file: FormData) => {
   return postData(`/api/v1/r2/upload-image`, file)
 }
 
-export const editProfile = (values) => {
-  return postData(`/api/v1/profile`,values)
+// Brand
+export const editProfile = (values: Brand) => {
+  return patchData(`/api/v1/brand/update`, values)
 }
 
-export const editContactPoint = (values) => {
-  return postData(`/api/v1/contact`,values)
+export const editContactPoint = (values: Brand) => {
+  return patchData(`/api/v1/brand/update`, values)
+}
+
+export const editUserProfile = (values: Brand) => {
+  return patchData(`/api/v1/user/update-profile`, values)
 }

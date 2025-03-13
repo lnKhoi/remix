@@ -21,14 +21,19 @@ type AuthContextType = {
     onPayment: boolean,
     setOnPayment: Dispatch<SetStateAction<boolean>>
     handleRefreshUserInfo: () => void
+    isLoading: boolean
+    setIsLoading: Dispatch<SetStateAction<boolean>>
     hasPermission: (requiredPermissions: Permission | Permission[]) => boolean | undefined
 }
 const MyContext = createContext<AuthContextType | undefined>(undefined);
 type AuthContextProviderProps = { children: ReactNode }
+
 const AuthContextProvider: FC<AuthContextProviderProps> = ({ children }) => {
     const [userInfo, setUserInfo] = useState<User | null>(null);
     const navigate = useNavigate()
     const [onPayment, setOnPayment] = useState<boolean>(false)
+    const [isLoading, setIsLoading] = useState<boolean>(false)
+
 
     const updateUserInfo = (info: User | null) => {
         setUserInfo(info);
@@ -41,9 +46,11 @@ const AuthContextProvider: FC<AuthContextProviderProps> = ({ children }) => {
     }
 
     const handleRefreshUserInfo = async (): Promise<void> => {
+        setIsLoading(true)
         await getMe().then((res) => {
             setUserInfo(res?.data);
-        });
+        })
+            .finally(() => setIsLoading(false))
     };
 
 
@@ -55,7 +62,7 @@ const AuthContextProvider: FC<AuthContextProviderProps> = ({ children }) => {
     };
 
     return (
-        <MyContext.Provider value={{ userInfo, updateUserInfo, handleLogout, handleRefreshUserInfo, onPayment, setOnPayment, hasPermission }}>
+        <MyContext.Provider value={{ isLoading, setIsLoading, userInfo, updateUserInfo, handleLogout, handleRefreshUserInfo, onPayment, setOnPayment, hasPermission }}>
             {children}
         </MyContext.Provider>
     );

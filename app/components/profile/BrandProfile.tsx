@@ -1,5 +1,6 @@
 import React, {
   FC,
+  useEffect,
   useState,
 } from 'react';
 
@@ -19,6 +20,7 @@ import AvatarUser from '~/assets/avatar.jpeg';
 import { INDUSTRIES } from '~/constants/auth.constant';
 import { useAuthContext } from '~/contexts/auth.context';
 import useFileUpload from '~/hooks/useFileUpload';
+import { Brand } from '~/models/User.model';
 
 import { PencilSquareIcon } from '@heroicons/react/24/outline';
 
@@ -29,26 +31,28 @@ const { Option } = Select;
 const BrandProfile: FC = () => {
     const [isEditing, setIsEditing] = useState<boolean>(false);
     const [editContact, setEditContact] = useState<boolean>(false)
-    const { userInfo, handleRefreshUserInfo } = useAuthContext();
+    const { userInfo, handleRefreshUserInfo, isLoading } = useAuthContext();
     const [loading, setLoading] = useState<boolean>(false);
     const { fileUrl, uploadFile } = useFileUpload();
     const [form] = Form.useForm();
-    const [logo, setLogo] = useState<File | null>(null)
+    const [logo, setLogo] = useState<File | null | string>(null)
 
     const handleFileSelect = async (file: File) => {
         setLogo(file)
         await uploadFile(file);
     };
 
-    const handleProfileSubmit = (values: any) => {
+    const handleProfileSubmit = (values: Brand) => {
         setLoading(true);
         const sanitizedValues = Object.fromEntries(
             Object.entries(values).map(([key, value]) => [key, value ?? ""])
         );
 
-        editProfile({ ...sanitizedValues, logo: fileUrl ?? "default" })
+        editProfile({ ...sanitizedValues, logoUrl: fileUrl || logo as string })
             .then((res) => {
-                // Handle success if needed
+                handleRefreshUserInfo()
+                message.success('Update Successfully!')
+                setIsEditing(false)
             })
             .catch((err) => {
                 message.error(err.message);
@@ -56,7 +60,7 @@ const BrandProfile: FC = () => {
             .finally(() => setLoading(false));
     };
 
-    const handleContactSubmit = (values: any) => {
+    const handleContactSubmit = (values: Brand) => {
         setLoading(true);
         const sanitizedValues = Object.fromEntries(
             Object.entries(values).map(([key, value]) => [key, value ?? ""])
@@ -64,7 +68,9 @@ const BrandProfile: FC = () => {
 
         editContactPoint(sanitizedValues)
             .then((res) => {
-                // Handle success if needed
+                handleRefreshUserInfo()
+                message.success('Update Successfully!')
+                setEditContact(false)
             })
             .catch((err) => {
                 message.error(err.message);
@@ -72,9 +78,13 @@ const BrandProfile: FC = () => {
             .finally(() => setLoading(false));
     };
 
+    useEffect(() => {
+        form.setFieldsValue(userInfo?.brand)
+        setLogo(userInfo?.brand?.logoUrl as string)
+    }, [userInfo])
 
     return (
-        <div className='flex flex-col gap-6'>
+        <div className='flex -mt-6 flex-col gap-6'>
             {/* Brand Infomation */}
             <ToastContainer />
             <div className="w-full mx-auto bg-white pfy-5 overflow-hidden rounded-2xl border border-gray-200">
@@ -94,27 +104,32 @@ const BrandProfile: FC = () => {
                     <div className='flex m-6 flex-col gap-4'>
                         <div className='flex items-center'>
                             <span className='font-medium w-[250px] text-sm text-gray-500'>Logo</span>
-                            <img src={logo ? URL.createObjectURL(logo) : AvatarUser} alt="logo" className='w-12 h-12 object-cover rounded-[50%]' />
+                            <img
+                                src={typeof logo == 'string' ? logo : logo ? URL.createObjectURL(logo) : AvatarUser}
+                                alt="logo"
+                                className='w-12 h-12 object-cover rounded-[50%]' />
                         </div>
                         <div className='flex'>
                             <span className='font-medium w-[250px] text-sm text-gray-500'>Brand Name</span>
-                            <p className='font-medium text-sm text-gray-500'>Elysian Ben</p>
+                            <p className='font-medium text-sm text-gray-500'>{userInfo?.brand?.name}</p>
                         </div>
                         <div className='flex'>
                             <span className='font-medium w-[250px] text-sm text-gray-500'>Business Email</span>
-                            <p className='font-medium text-sm text-gray-500'>khoilam.dev@gmail.com</p>
+                            <p className='font-medium text-sm text-gray-500'>{userInfo?.brand?.businessEmail}</p>
                         </div>
                         <div className='flex'>
                             <span className='font-medium w-[250px] text-sm text-gray-500'>Industry</span>
-                            <p className='font-medium text-sm text-gray-500'>Elysian Ben</p>
+                            <p className='font-medium text-sm text-gray-500 capitalize'>
+                                {Array.isArray(userInfo?.brand?.industry) ? userInfo?.brand?.industry.map(e => e).join(', ') : '--'}
+                            </p>
                         </div>
                         <div className='flex'>
                             <span className='font-medium w-[250px] text-sm text-gray-500'>Address</span>
-                            <p className='font-medium text-sm text-gray-500'>--</p>
+                            <p className='font-medium text-sm text-gray-500'>{userInfo?.brand?.address || '--'}</p>
                         </div>
                         <div className='flex'>
                             <span className='font-medium w-[250px] text-sm text-gray-500'>Website</span>
-                            <p className='font-medium text-sm text-gray-500'>--</p>
+                            <p className='font-medium text-sm text-gray-500'>{userInfo?.brand?.websiteUrl || '--'}</p>
                         </div>
 
                     </div>
@@ -134,12 +149,12 @@ const BrandProfile: FC = () => {
                             <div className="pb-3 mx-8 ">
                                 <div className='flex mb-5 items-center'>
                                     <label className='w-[150px]'>Logo</label>
-                                    <img src={logo ? URL.createObjectURL(logo) : AvatarUser} alt="logo" className='w-12 h-12 object-cover rounded-[50%]' />
+                                    <img src={typeof logo == 'string' ? logo : logo ? URL.createObjectURL(logo) : AvatarUser} alt="logo" className='w-12 h-12 object-cover rounded-[50%]' />
                                     <FileUploadTrigger onFileSelect={handleFileSelect}>
                                         <Button className='ml-3 font-semibold'>Choose Picture</Button>
                                     </FileUploadTrigger>
                                 </div>
-                                <Form.Item label="Brand Name" name="brandName"
+                                <Form.Item label="Brand Name" name="name"
                                     rules={[{ required: true, message: "Please enter your Brand Name" }]}
                                 >
                                     <Input />
@@ -148,7 +163,7 @@ const BrandProfile: FC = () => {
                                 <Form.Item label="Business Email" name="businessEmail"
                                     rules={[{ required: true, message: "Please enter your Business Email" }]}
                                 >
-                                    <Input />
+                                    <Input disabled />
                                 </Form.Item>
 
                                 <Form.Item label="Industry" name="industry"
@@ -160,8 +175,8 @@ const BrandProfile: FC = () => {
                                         ))}
                                     </Select>
                                 </Form.Item>
-                                <Form.Item label="Address" name="address"> <Input /></Form.Item>
-                                <Form.Item label="Website" name="website"><Input /></Form.Item>
+                                <Form.Item label="Address" name="address"><Input /></Form.Item>
+                                <Form.Item label="Website" name="websiteUrl"><Input /></Form.Item>
                             </div>
 
                             <div className="flex justify-end mb-4 px-8 gap-3">
@@ -200,19 +215,19 @@ const BrandProfile: FC = () => {
                     <div className='flex m-6 flex-col gap-4'>
                         <div className='flex'>
                             <span className='font-medium w-[250px] text-sm text-gray-500'>Title</span>
-                            <p className='font-medium text-sm text-gray-500'>CTO</p>
+                            <p className='font-medium text-sm text-gray-500'>{userInfo?.brand?.contactPointTitle}</p>
                         </div>
                         <div className='flex'>
                             <span className='font-medium w-[250px] text-sm text-gray-500'>First Name</span>
-                            <p className='font-medium text-sm text-gray-500'>khoi lam</p>
+                            <p className='font-medium text-sm text-gray-500'>{userInfo?.brand?.contactPointFirstName}</p>
                         </div>
                         <div className='flex'>
                             <span className='font-medium w-[250px] text-sm text-gray-500'>Last Name</span>
-                            <p className='font-medium text-sm text-gray-500'>Lam</p>
+                            <p className='font-medium text-sm text-gray-500'>{userInfo?.brand?.contactPointLastName}</p>
                         </div>
                         <div className='flex'>
                             <span className='font-medium w-[250px] text-sm text-gray-500'>Personal Email</span>
-                            <p className='font-medium text-sm text-gray-500'>khoilam.dev@gmail.com</p>
+                            <p className='font-medium text-sm text-gray-500'>{userInfo?.brand?.contactPointEmail}</p>
                         </div>
                     </div>
                 )}
@@ -229,10 +244,10 @@ const BrandProfile: FC = () => {
                             wrapperCol={{ flex: 1 }}
                         >
                             <div className="pb-3 mx-8 ">
-                                <Form.Item label="Title" name="name"><Input placeholder='Enter title' /></Form.Item>
-                                <Form.Item label="First Name" name="firstName"><Input placeholder='Enter first name' /></Form.Item>
-                                <Form.Item label="Last Name" name="lastName"><Input placeholder='Enter last name' /></Form.Item>
-                                <Form.Item label="Personal Email" name="personalEmail"><Input placeholder='Enter email' /></Form.Item>
+                                <Form.Item label="Title" name="contactPointTitle"><Input placeholder='Enter title' /></Form.Item>
+                                <Form.Item label="First Name" name="contactPointFirstName"><Input placeholder='Enter first name' /></Form.Item>
+                                <Form.Item label="Last Name" name="contactPointLastName"><Input placeholder='Enter last name' /></Form.Item>
+                                <Form.Item label="Personal Email" name="contactPointEmail"><Input placeholder='Enter email' /></Form.Item>
                             </div>
 
                             <div className="flex justify-end mb-4 px-8 gap-3">

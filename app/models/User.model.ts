@@ -20,11 +20,24 @@ export type SignupPayload = {
 export type Brand = {
   name?: string;
   id?: string;
+  firstName?:string
   phone?: string;
+  lastName?:string
   industry?: string[];
   category?: string[]
+  websiteUrl?:string
   created_at?: number;
+  bussinessEmail?:string
+  picture?:string | null
+  userRole?:string
+  address?:string
   updated_at?: number;
+  contactPointEmail?:string
+  contactPointFirstName?:string
+  logoUrl?:string | null
+  businessEmail?:string
+  contactPointTitle?:string
+  contactPointLastName?:string
   timezone?: string
   monthly_fee?:number
   credit_fee?:number
@@ -35,9 +48,13 @@ export type Brand = {
 
 export type User = {
   id: string;
+  lastName?:string
+  userRole?:string
   created_at?: number;
   updated_at?: number;
+  firstName?:string
   archive?:'archive' | 'unarchive',
+  roleName?:string
   isTemporaryPassword?:boolean
   deleted_at?: number | null;
   permissions: Permission[] | Permission
@@ -46,6 +63,7 @@ export type User = {
   picture?: string | null;
   isDefaultPassword?:boolean
   name?: string;
+  phone?:string
   permission?:Permission[] | Permission
   brand_id?: string;
   brand?: Brand;
