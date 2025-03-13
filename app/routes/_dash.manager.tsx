@@ -34,7 +34,7 @@ const { Sider } = Layout;
 const { SubMenu } = Menu;
 
 // Utility to render icons dynamically
-const renderIcon = (Icon: React.ComponentType<any> | null, className = "h-4 w-4") => {
+const renderIcon = (Icon: React.ComponentType<any> | null, className = "h-5 w-5") => {
   return Icon ? createElement(Icon, { className }) : null;
 };
 
@@ -150,6 +150,17 @@ function UserProfilePopover({
             </div>
           </div>
           <Menu style={{ borderRight: 0, width: 220 }}>
+            <Menu.Item
+              className=' flex items-center'
+              onClick={() => {
+                onNavigate('/manager/brand-details')
+                setModalOpen(false)
+              }}>
+              <div className='flex items-center gap-2 transform -translate-y-1.5'>
+                <Avatar className='w-5 h-5' />
+                {userInfo?.brand?.name}
+              </div>
+            </Menu.Item>
             {profileTab.map((tab) => (
               <Menu.Item
                 key={tab.label}

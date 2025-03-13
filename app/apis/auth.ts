@@ -86,3 +86,11 @@ export const resendOtp = (email: string) => {
 export const uploadMedia = (file: FormData) => {
   return postData(`/api/v1/r2/upload-image`, file)
 }
+
+export const editProfile = (values) => {
+  return postData(`/api/v1/profile`,values)
+}
+
+export const editContactPoint = (values) => {
+  return postData(`/api/v1/contact`,values)
+}

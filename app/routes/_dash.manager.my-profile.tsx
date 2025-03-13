@@ -11,8 +11,6 @@ import {
 } from 'antd';
 import { ToastContainer } from 'react-toastify';
 import ChangePassword from '~/components/profile/ChangePassword';
-import MyProfile from '~/components/profile/MyProfile';
-import Payment from '~/components/profile/Payment';
 import ProfileDetails from '~/components/profile/ProfileDetails';
 
 import {
@@ -40,10 +38,6 @@ const Page: React.FC = () => {
     switch (tab) {
       case 'Profile Details':
         return <ProfileDetails />;
-      case 'Billing':
-        return <Payment />;
-      case 'Intergration':
-        return <MyProfile />;
       case 'Change Password':
         return <ChangePassword />;
       default:
@@ -80,8 +74,6 @@ const Page: React.FC = () => {
           options={[
             { label: 'Profile Details', value: 'Profile Details' },
             { label: 'Change Password', value: 'Change Password' },
-            { label: 'Billing & Payment', value: 'Billing' },
-            { label: 'Integration', value: 'Intergration' },
           ]}
         />
         <div className="pt-14">{getCampaignTab()}</div>
