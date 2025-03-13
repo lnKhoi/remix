@@ -5,6 +5,7 @@ import facebookIcon from '~/assets/facebook.svg';
 import instagramIcon from '~/assets/insta.svg';
 import tiktokIcon from '~/assets/tiktok.svg';
 import youtubeIcon from '~/assets/youtube.svg';
+import { useAuthContext } from '~/contexts/auth.context';
 import { Campaign } from '~/models/Campaign.model';
 import Editor from '~/plugins/editor';
 
@@ -24,9 +25,10 @@ export const socialMediaIcons: { [key: string]: string } = {
 
 
 function CampaignDetails({ campaign, loading }: CampaignDetailsProps) {
+  const {userInfo} = useAuthContext()
 
   const totalInfluencerBudget = (campaign?.maximumParticipants || 0) * (campaign?.budget || 0)
-  const totalCommissionFee = totalInfluencerBudget * 0.15
+  const totalCommissionFee = totalInfluencerBudget * (userInfo?.brand?.commission_fee as number / 100)
   const totalBudget = totalCommissionFee + totalInfluencerBudget
 
   return (
