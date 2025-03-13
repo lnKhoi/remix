@@ -44,7 +44,7 @@ function ConfirmWithdrawToken({ open, onclose, onConfirm, total, paymentMethod }
                     </div>
                     <div className='flex items-center mb-4 justify-between'>
                         <p className='text-base font-bold text-gray-500'>Total</p>
-                        <p className='text-base font-bold text-gray-500'>${total.toFixed(2)}</p>
+                        <p className='text-base font-bold text-gray-500'>${(total - creditFee).toFixed(2)}</p>
                     </div>
                 </div>
             </div>

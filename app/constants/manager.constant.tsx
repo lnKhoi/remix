@@ -81,8 +81,7 @@ export const navItems: NavItem[] = [
 
 export const profileTab = [
   { to: "/manager/my-profile", icon: UserCircleIcon, label: "My Profile", active: 'Profile Details' },
-  { to: "#", icon: Cog6ToothIcon, label: "Setting", active: 'Profile Details' },
-  { to: "/manager/my-profile", icon: CreditCardIcon, label: "Payment Methods", active: 'Billing' },
+  { to: "/manager/brand-details", icon: CreditCardIcon, label: "Payment Methods", active: 'Billing' },
 ];
 
 export const campaignMenuItems = [

@@ -12,7 +12,7 @@ import {
 } from 'antd';
 import { ToastContainer } from 'react-toastify';
 import BrandProfile from '~/components/profile/BrandProfile';
-import MyProfile from '~/components/profile/MyProfile';
+import Integration from '~/components/profile/Integration';
 import Payment from '~/components/profile/Payment';
 import { useAuthContext } from '~/contexts/auth.context';
 
@@ -43,7 +43,7 @@ const BrandDetails: FC = () => {
             case 'Billing':
                 return <Payment />;
             case 'Intergration':
-                return <MyProfile />;
+                return <Integration />;
             default:
                 return null;
         }

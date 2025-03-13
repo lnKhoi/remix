@@ -9,9 +9,8 @@ import {
   Form,
   Input,
   message,
-  Select,
 } from 'antd';
-import { editProfile } from '~/apis/auth';
+import { editUserProfile } from '~/apis/auth';
 import { getRoles } from '~/apis/role';
 import AvatarUser from '~/assets/avatar.jpeg';
 import { useAuthContext } from '~/contexts/auth.context';
@@ -28,10 +27,10 @@ const ProfileDetails: FC = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const { fileUrl, uploadFile } = useFileUpload();
     const [form] = Form.useForm();
-    const [roles,setRoles] = useState<Role[]>([])
-    const {hasPermission} = useAuthContext()
+    const [roles, setRoles] = useState<Role[]>([])
+    const { hasPermission } = useAuthContext()
 
-    const [logo, setLogo] = useState<File | null>(null)
+    const [logo, setLogo] = useState<File | null | string>(null)
 
     const handleFileSelect = async (file: File) => {
         setLogo(file)
@@ -44,9 +43,11 @@ const ProfileDetails: FC = () => {
             Object.entries(values).map(([key, value]) => [key, value ?? ""])
         );
 
-        editProfile({ ...sanitizedValues, logo: fileUrl ?? "default" })
+        editUserProfile({ ...sanitizedValues, picture: fileUrl || logo as string })
             .then((res) => {
-                // Handle success if needed
+                handleRefreshUserInfo()
+                message.success('Update Profile successfully!')
+                setIsEditing(false)
             })
             .catch((err) => {
                 message.error(err.message);
@@ -60,7 +61,13 @@ const ProfileDetails: FC = () => {
 
     useEffect(() => {
         handleGetRoles()
-    },[])
+    }, [])
+
+    useEffect(() => {
+        form.setFieldsValue(userInfo)
+        setLogo(userInfo?.picture as string)
+    }, [userInfo])
+
 
     return (
         <div className="w-full mx-auto bg-white pfy-5 overflow-hidden rounded-2xl border border-gray-200">
@@ -80,27 +87,29 @@ const ProfileDetails: FC = () => {
                 <div className='flex m-6 flex-col gap-4'>
                     <div className='flex items-center'>
                         <span className='font-medium w-[250px] text-sm text-gray-500'>Avatar</span>
-                        <img src={logo ? URL.createObjectURL(logo) : AvatarUser} alt="avatar" className='w-12 h-12 object-cover rounded-[50%]' />
+                        <img
+                            src={typeof logo == 'string' ? logo : logo ? URL.createObjectURL(logo) : AvatarUser}
+                            alt="avatar" className='w-12 h-12 object-cover rounded-[50%]' />
                     </div>
                     <div className='flex'>
                         <span className='font-medium w-[250px] text-sm text-gray-500'>First Name</span>
-                        <p className='font-medium text-sm text-gray-500'>Elysian Ben</p>
+                        <p className='font-medium text-sm text-gray-500'>{userInfo?.firstName}</p>
                     </div>
                     <div className='flex'>
                         <span className='font-medium w-[250px] text-sm text-gray-500'>Last Name</span>
-                        <p className='font-medium text-sm text-gray-500'>khoilam.dev@gmail.com</p>
+                        <p className='font-medium text-sm text-gray-500'>{userInfo?.lastName}</p>
                     </div>
                     <div className='flex'>
                         <span className='font-medium w-[250px] text-sm text-gray-500'>Email</span>
-                        <p className='font-medium text-sm text-gray-500'>--</p>
+                        <p className='font-medium text-sm text-gray-500'>{userInfo?.email}</p>
                     </div>
                     <div className='flex'>
                         <span className='font-medium w-[250px] text-sm text-gray-500'>Phone Number</span>
-                        <p className='font-medium text-sm text-gray-500'>--</p>
+                        <p className='font-medium text-sm text-gray-500'>{userInfo?.phone}</p>
                     </div>
                     <div className='flex'>
                         <span className='font-medium w-[250px] text-sm text-gray-500'>Role Name</span>
-                        <p className='font-medium text-sm text-gray-500'>CTO</p>
+                        <p className='font-medium text-sm text-gray-500'>{userInfo?.userRole}</p>
                     </div>
 
                 </div>
@@ -120,7 +129,9 @@ const ProfileDetails: FC = () => {
                         <div className="pb-3 mx-8 ">
                             <div className='flex mb-5 items-center'>
                                 <label className='w-[150px]'>Avatar</label>
-                                <img src={logo ? URL.createObjectURL(logo) : AvatarUser} alt="avatar" className='w-12 h-12 object-cover rounded-[50%]' />
+                                <img
+                                    src={typeof logo == 'string' ? logo : logo ? URL.createObjectURL(logo) : AvatarUser}
+                                    alt="avatar" className='w-12 h-12 object-cover rounded-[50%]' />
                                 <FileUploadTrigger onFileSelect={handleFileSelect}>
                                     <Button className='ml-3 font-semibold'>Choose Picture</Button>
                                 </FileUploadTrigger>
@@ -134,16 +145,16 @@ const ProfileDetails: FC = () => {
                             >
                                 <Input />
                             </Form.Item>
-                            <Form.Item label="Email" name="email"> <Input /></Form.Item>
-                            <Form.Item label="Phone Number" name="phoneNumber"><Input /></Form.Item>
-                            <Form.Item label="Role Name" name="role">
+                            <Form.Item label="Email" name="email"> <Input disabled value={userInfo?.email} /></Form.Item>
+                            <Form.Item label="Phone Number" name="phone"><Input /></Form.Item>
+                            {/* <Form.Item label="Role Name" name="role">
                                 <Select disabled={!hasPermission('edit-role')} maxTagCount={3} mode='multiple' >
                                     {roles?.map(r => (
-                                    <Select.Option value={r?.id} key={r?.id} >{r?.name}</Select.Option>
+                                        <Select.Option value={r?.id} key={r?.id} >{r?.name}</Select.Option>
                                     ))}
                                 </Select>
 
-                            </Form.Item>
+                            </Form.Item> */}
                         </div>
 
                         <div className="flex justify-end mb-4 px-8 gap-3">
