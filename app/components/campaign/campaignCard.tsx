@@ -74,7 +74,9 @@ function CampaignCard({ campaign, onReload }: CampaignCardProps) {
             {campaignMenuItems.map((item) => {
                 const isDisabledByCreators = (item.key === 'delete' || item.key === 'edit') && (campaign.joinedCreators?.length ?? 0) > 0;
                 const isDisabledByPermission = item.permission ? !hasPermission(item.permission as Permission) : false;
-                const isDisabled = isDisabledByCreators || isDisabledByPermission;
+                const isDisabledEdit = item.key ==='edit' && campaign.status =='draft'
+                const isDisabledInvite = item.key === 'invite' && campaign.status =='draft'
+                const isDisabled = isDisabledByCreators || isDisabledByPermission || isDisabledEdit || isDisabledInvite;
 
                 return (
                     <Menu.Item
