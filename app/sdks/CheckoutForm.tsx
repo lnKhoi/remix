@@ -33,7 +33,7 @@ const CheckoutForm: React.FC = () => {
         const { setupIntent, error } = await stripe.confirmSetup({
             elements,
             confirmParams: {
-                return_url: `${DOMAIN}/manager/my-profile`, 
+                return_url: `${DOMAIN}/manager/brand-details`, 
             },
         });
 
