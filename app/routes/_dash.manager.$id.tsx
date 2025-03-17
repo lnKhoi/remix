@@ -135,7 +135,7 @@ const filteredTab = useMemo(() => {
             ]}
           />
           <div className='flex items-center gap-3'>
-            {hasPermission('edit-campaign') && (
+            {campaign && campaign?.status !== 'active' && campaign.status !=='draft' && hasPermission('edit-campaign') && (
               <Button
                 onClick={() => navigate(`/manager/edit/${campaign?.id}`)}
                 disabled={campaign?.joinedCreators?.length as number > 0}
@@ -145,7 +145,7 @@ const filteredTab = useMemo(() => {
               </Button>
             )}
 
-            {hasPermission('invite-imported-influencers') && (
+            {campaign && campaign.status !=='draft' && hasPermission('invite-imported-influencers') && (
               <Button
                 onClick={() => setModalInvite(true)}
                 className='bg-gray-100 hover:bg-gray-400 tesm font-semibold border-gray-100'
