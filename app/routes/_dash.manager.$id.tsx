@@ -135,7 +135,7 @@ const filteredTab = useMemo(() => {
             ]}
           />
           <div className='flex items-center gap-3'>
-            {campaign && campaign?.status !== 'active' && campaign.status !=='draft' && hasPermission('edit-campaign') && (
+            {campaign && campaign?.status !== 'active' && hasPermission('edit-campaign') && (
               <Button
                 onClick={() => navigate(`/manager/edit/${campaign?.id}`)}
                 disabled={campaign?.joinedCreators?.length as number > 0}
