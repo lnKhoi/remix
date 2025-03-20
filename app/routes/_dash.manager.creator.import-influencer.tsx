@@ -40,20 +40,25 @@ const { Dragger } = Upload;
 const InviteInfluencer = () => {
     const { userInfo ,hasPermission} = useAuthContext()
     const [influencers, setInfluencers] = useState<Creator[]>([])
-
+    const [hiddenEmails, setHiddenEmails] = useState<{ [key: string]: boolean }>({});
     const navigate = useNavigate()
 
     const handleImportCSV = async (info: any): Promise<void> => {
-        const file = info.file.originFileObj;
+        const file = info.file;
         const formData = new FormData();
         formData.append('file', file);
 
-        if (info.file.status !== 'uploading') {
             await importCSV(formData).then(() => {
                 handleGetListInfluencerImported()
             })
-        }
     };
+
+    const toggleEmailVisibility = (email: string) => {
+        setHiddenEmails((prev) => ({
+          ...prev,
+          [email]: !prev[email], // Toggle visibility correctly
+        }));
+      };
 
     const handleGetListInfluencerImported = async (): Promise<void> => {
         await getInfluencerImported( 100, 1)
@@ -62,6 +67,7 @@ const InviteInfluencer = () => {
                 toast.success('Import Influencer Successfully')
             })
     }
+
 
     useEffect(() => {
         userInfo && !hasPermission('import-influencer-csv') && navigate('/page-not-found')
@@ -88,7 +94,7 @@ const InviteInfluencer = () => {
                     <p className='text-sm text-gray-900'>Don't have the template? <span className='text-blue-500 cursor-pointer' >Download Template</span></p>
                 </div>
                 <div className='mt-2 h-[152px]'>
-                    <Dragger showUploadList={false} onChange={(file) => handleImportCSV(file)} >
+                    <Dragger beforeUpload={() => false} showUploadList={false} onChange={(file) => handleImportCSV(file)} >
                         <div className='flex items-center flex-col justify-center'>
                             <div className="h-[44px] w-[44px] rounded-[50%] bg-gray-100 flex items-center justify-center">
                                 <CloudArrowUpIcon className='text-gray-500' width={20} />
@@ -103,7 +109,7 @@ const InviteInfluencer = () => {
                 {/* INFLUENCER */}
                 {influencers.length > 0 && (
                     <div className='mt-4'>
-                        <Table<Creator> columns={creatorColumns as any} dataSource={influencers} />
+                        <Table<Creator>   columns={creatorColumns(toggleEmailVisibility, hiddenEmails)} dataSource={influencers} />
                     </div>
                 )}
             </div>
