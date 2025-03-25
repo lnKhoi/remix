@@ -3,6 +3,7 @@ import {
   Modal,
 } from 'antd';
 import Success from '~/assets/success.png';
+import { useAuthContext } from '~/contexts/auth.context';
 
 type ModalSuccessPayment = {
     open: boolean
@@ -11,6 +12,10 @@ type ModalSuccessPayment = {
 }
 
 function ModalSuccessPayment({ onClose, open, newToken}: ModalSuccessPayment) {
+    const {userInfo} = useAuthContext()
+
+    const transactionFee = newToken * (userInfo?.brand?.credit_fee as number / 100)
+    const total = newToken + transactionFee
 
     const handleOk = () => {
         onClose()
@@ -27,7 +32,9 @@ function ModalSuccessPayment({ onClose, open, newToken}: ModalSuccessPayment) {
                 <p className='text-xl mt-5 font-semibold'>Successfull Payment!</p>
                 <span className='text-sm mt-[5px] text-gray-500 font-normal text-center '>Your transaction was completed successfully. <br /> Thank you for your purcharse</span>
                 <p className='mt-5 text-sm font-normal text-gray-500'>Actual Balance</p>
-                <span className='mt-[6px] text-xl font-semibold  text-gray-800'>{newToken?.toFixed(2)} Tokens</span>
+                <span className='mt-[6px] text-xl font-semibold  text-gray-800'>
+                    {total?.toFixed(2)} Tokens
+                </span>
                 <Button onClick={handleOk} type='primary' className='mt-8 w-full' >OK</Button>
             </div>
         </Modal>
