@@ -174,6 +174,7 @@ const ContentDetails = () => {
     userInfo && !hasPermission('view-content') && navigation('/page-not-found')
   }, [userInfo])
 
+
   return (
     <div className='custom-select'>
 
@@ -309,6 +310,7 @@ const ContentDetails = () => {
 
                   {/* Warning reject for brand */}
                   {(content?.versions?.length as number > 2 && lastVersion == (selectedVersion || id)) && content?.approved !== 'approved' && (
+                   <div className='w-full'>
                     <div className='flex items-center gap-3 p-4 m-4 mt-0 bg-orange-100 rounded-lg'>
                       <ExclamationCircleIcon className='w-5 min-w-5 min-h-5 h-5 text-orange-500' />
                       <p className='text-sm font-normal text-gray-800'>
@@ -318,6 +320,10 @@ const ContentDetails = () => {
                         }
                       </p>
                     </div>
+                     {lastVersion == (selectedVersion || id) && content?.approved =='rejected' && (
+                       <Button  className='flex-1 w-[89%] mx-5 mt-2 mb-3' type='primary'>Dispute</Button>
+                     )}
+                   </div>
                   )}
                   <div className='w-full justify-between px-4 pb-4 flex items-center gap-2 '>
                     {content?.approved == 'pending' || content?.approved == 'pending-review' ? (
