@@ -57,3 +57,9 @@ export function abbreviateLastName(name: string, maxLength: number): string {
 // Example usage
 // console.log(abbreviateLastName("cathy pieerse land", 20)); 
 // Output: "cathy pieerse l..."
+
+
+export const getContentUrlDownload = (url:string) => {
+    const startIndex = url.indexOf('.dev/') + 5;
+    return url.substring(startIndex);
+}
