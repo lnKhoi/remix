@@ -1,60 +1,111 @@
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
-import React from 'react';
+import React, { useState } from 'react';
 
-import { Drawer } from 'antd';
-//@ts-ignore
+// @ts-ignore
 import Slider from 'react-slick';
 import DefaultAvatar from '~/assets/avatar.jpeg';
-import Timeline from '~/assets/time-line.png';
+import { API_URL } from '~/constants/env.constant';
 import { Content } from '~/models/Content.model';
 import {
   abbreviateLastName,
   formatName,
+  getContentUrlDownload,
 } from '~/utils/formatNumber';
 
 import {
+  ArrowDownTrayIcon,
   BookmarkIcon,
   ChatBubbleOvalLeftIcon,
-  EllipsisHorizontalIcon,
   HeartIcon,
-  MusicalNoteIcon,
   PaperAirplaneIcon,
-  XMarkIcon,
 } from '@heroicons/react/24/outline';
 
-type ModalPreviewContentProps = {
-    open: boolean,
-    onClose: () => void
-    content: Content
+// Component Props
+interface ModalPreviewContentProps {
+    content: Content;
 }
 
-function ModalPreviewContent({ onClose, open, content }: ModalPreviewContentProps) {
+// Slider Configuration
+const sliderSettings = {
+    dots: true,
+    infinite: false,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    dotsClass: 'slick-dots custom-dots',
+    customPaging: (i: number) => (
+        <button>
+            <div className="w-2 h-2 bg-gray-400 rounded-full transition-all duration-300 hover:bg-gray-600" />
+        </button>
+    ),
+};
 
-    const settings = {
-        dots: false,
-        infinite: false,
-        speed: 500,
-        slidesToShow: 1,
-        slidesToScroll: 1,
-    };
+// Download Button Component
+const DownloadButton: React.FC<{ url: string }> = ({ url }) => (
+    <div className="w-8 h-8 rounded-md flex items-center justify-center bg-gray-600 cursor-pointer">
+        <a
+            href={`${API_URL}/api/v1/content/media/${getContentUrlDownload(url)}?action=download`}
+            download="media-content"
+            target="_blank"
+            rel="noopener noreferrer"
+        >
+            <ArrowDownTrayIcon className="w-5 h-5 text-white" />
+        </a>
+    </div>
+);
 
-    const contentFormat = content?.campaign?.contentFormat?.[0]
+// Caption Component
+const Caption: React.FC<{ caption: string | undefined; isExpanded: boolean; toggleExpand: () => void }> = ({
+    caption,
+    isExpanded,
+    toggleExpand,
+}) => (
+    <p className="flex flex-col gap-1">
+        <p className="flex w-full items-center gap-2">
+            <span className="break-all">
+                {isExpanded ? caption : abbreviateLastName(caption as string, 60)}
+                {caption?.length || 0 > 60 && (
+                    <span
+                        onClick={toggleExpand}
+                        className="text-gray-500 cursor-pointer hover:underline"
+                    >
+                        {isExpanded ? ' less' : ' more'}
+                    </span>
+                )}
+            </span>
+        </p>
+    </p>
+);
+
+const ModalPreviewContent: React.FC<ModalPreviewContentProps> = ({ content }) => {
+    const [isExpanded, setIsExpanded] = useState(false);
+    const contentFormat = content?.campaign?.contentFormat?.[0];
     const videoExtensions = ['mov', 'mp4'];
-    const isVideo = content?.urls?.[0] ? videoExtensions?.includes(content?.urls[0]?.slice(-3)) : false;
+    const isVideo = content?.urls?.[0]?.slice(-3) && videoExtensions.includes(content.urls[0].slice(-3));
+
+    const toggleExpand = () => setIsExpanded(prev => !prev);
+
+    // Profile Header Component
+    const ProfileHeader: React.FC<{ name: string; avatarUrl?: string }> = ({ name, avatarUrl }) => (
+        <div className="flex items-center">
+            <img
+                className="w-10 h-10 rounded-full object-cover"
+                src={avatarUrl || DefaultAvatar}
+                alt="Profile"
+            />
+            <div className="ml-3 pb-2">
+                <p className="font-semibold text-white">{formatName(name)}</p>
+            </div>
+        </div>
+    );
 
     return (
-        <Drawer
-            width={600}
-            title="Preview"
-            open={open}
-            onClose={onClose}
-        >
+        <div className="w-full">
             {/* POST */}
             {contentFormat === 'post' && (
-                <div className="max-w-sm mx-auto bg-white border border-gray-200 rounded-md shadow-md">
-                    {/* Header */}
+                <div className="max-w-sm mx-auto bg-white border border-gray-200 rounded-lg shadow-md">
                     <div className="flex items-center p-3">
                         <img
                             className="w-10 h-10 rounded-full object-cover"
@@ -66,174 +117,104 @@ function ModalPreviewContent({ onClose, open, content }: ModalPreviewContentProp
                         </div>
                     </div>
 
-                    {/* Image */}
-                    <Slider {...settings}>
-                        {content?.urls?.map(url => (
-                            <img
-                                src={url}
-                                alt="Post"
-                                className="w-[393px] h-[393px] object-cover"
-                            />
-                        ))}
-                    </Slider>
+                    <div className="relative">
+                        <Slider {...sliderSettings}>
+                            {content?.urls?.map((url, index) => (
+                                <div key={index} className="relative">
+                                    <img
+                                        src={url}
+                                        alt={`Post ${index}`}
+                                        className="w-[393px] h-[353px] object-cover"
+                                    />
+                                    <div className="absolute bottom-[310px] right-2 z-20">
+                                        <DownloadButton url={url} />
+                                    </div>
+                                </div>
+                            ))}
+                        </Slider>
+                    </div>
 
-                    {/* Actions */}
                     <div className="flex items-center justify-between px-4 py-2">
                         <div className="flex items-center space-x-3">
-                            <HeartIcon className='w-[23px] h-[23px]' />
-                            <ChatBubbleOvalLeftIcon className='w-[23px] h-[23px]' />
-                            <PaperAirplaneIcon className='w-[23px] -rotate-[45deg] h-[23px] transform -translate-y-[2px]' />
+                            <HeartIcon className="w-[23px] h-[23px]" />
+                            <ChatBubbleOvalLeftIcon className="w-[23px] h-[23px]" />
+                            <PaperAirplaneIcon className="w-[23px] h-[23px] -rotate-[45deg] transform -translate-y-[2px]" />
                         </div>
-                        <BookmarkIcon className='w-[23px] h-[23px]' />
+                        <BookmarkIcon className="w-[23px] h-[23px]" />
                     </div>
 
-                    {/* Likes */}
-                    <div className="px-4">
-                        <p className="font-semibold">0 like</p>
+                    <div className="px-4 py-2 mb-3">
+                        <Caption caption={content?.caption} isExpanded={isExpanded} toggleExpand={toggleExpand} />
                     </div>
-
-                    {/* Caption */}
-                    <div className="px-4 py-2">
-                        <p>
-                            <span className="font-semibold">{formatName(content?.creator?.name as string)}</span>
-                            {abbreviateLastName(content?.caption, 40)}
-                        </p>
-                    </div>
-
-                    {/* Time */}
-                    <div className="px-4 pb-4 text-sm text-gray-500">0 minute ago</div>
                 </div>
             )}
 
             {/* REEL */}
             {contentFormat === 'reel' && (
                 <div className="max-w-sm mx-auto relative bg-white border border-gray-200 rounded-md shadow-md">
-                    {/* Image Slider */}
-                    <div
-                        className="relative rounded-lg w-[393px] h-[590px] overflow-hidden"
-                    >
-                        {/* Profile Section */}
-                        <div className="flex items-center p-3 absolute z-20 left-0 bottom-16 ">
-                            <img
-                                className="w-8 h-8 rounded-full object-cover"
-                                src={content?.creator?.avatarUrl || DefaultAvatar}
-                                alt="Profile"
-                            />
-                            <div className="ml-3  flex-1">
-                                <p className="font-semibold text-white">{formatName(content?.creator?.name as string)}</p>
-                            </div>
+                    <div className="relative rounded-lg w-[393px] h-[590px] overflow-hidden">
+                        <div className="flex items-center p-3 absolute z-20 left-0 bottom-20">
+                            <ProfileHeader name={content?.creator?.name as string} avatarUrl={content?.creator?.avatarUrl} />
                         </div>
+
                         <video
                             autoPlay
                             loop
+                            controls
                             muted
                             src={content?.urls?.[0]}
-                            className="w-full h-full object-cover"
+                            className="w-full h-full object-cover relative z-10"
                         />
-                        <div
-                            className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"
-                        ></div>
-                    </div>
 
-                    {/* Action Buttons */}
-                    <div className="flex flex-col absolute right-0 bottom-[20%] items-center justify-between px-4 py-2">
-                        <div className="flex items-center flex-col gap-6">
-                            <div className='flex flex-col items-center'>
-                                <HeartIcon className="w-6 h-6 text-white" />
-                            </div>
-                            <div className='flex flex-col items-center'>
-                                <ChatBubbleOvalLeftIcon className="w-6 h-6 text-white" />
-                            </div>
-                            <div className='flex flex-col items-center'>
-                                <PaperAirplaneIcon className="w-6 h-6 text-white transform" />
-                            </div>
+                        <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent z-0" />
+                        <div className="absolute right-0 top-2 z-20">
+                            <DownloadButton url={content?.urls?.[0] || ''} />
                         </div>
                     </div>
 
-                    {/* Caption */}
-                    <div className="px-4 absolute bottom-0 flex flex-col items-start left-0 py-2">
-                        <p className='text-gray-100'>
-                            {abbreviateLastName(content?.caption, 40)}
-                        </p>
-                        {/* Song Section */}
-                        <div className="py-2 flex items-center gap-1">
-                            <MusicalNoteIcon className='w-4 h-4 text-white' />
-                            <p className="text-sm text-gray-100">song name · Original audio</p>
-                        </div>
-                    </div>
+                    <p className="flex absolute bottom-16 left-3 z-20 text-gray-100 w-full">
+                        <Caption caption={content?.caption} isExpanded={isExpanded} toggleExpand={toggleExpand} />
+                    </p>
                 </div>
             )}
 
+            {/* STORY */}
             {contentFormat === 'story' && (
-                <div className='w-full h-full flex items-center justify-center'>
-                    <div className='w-[360px] rounded-xl overflow-hidden shadow-md relative h-[590px] '>
-                        <img className='absolute top-1 left-0 w-full z-10' src={Timeline} alt="timeline" />
-
-                        <div className="relative w-full h-full">
-                            {/* Video or Image */}
-
-                            {isVideo ? (
-                                <video
-                                    className="absolute top-0 left-0 w-full h-full object-cover"
-                                    src={content?.urls?.[0]}
-                                    autoPlay
-                                    muted
-                                    loop
-                                />
-                            ) : (
-                                <div
-                                    style={{
-                                        backgroundImage: `url(${content?.urls?.[0]})`,
-                                        backgroundSize: "cover",
-                                        backgroundPosition: "center",
-                                        width: "100%",
-                                        height: "100%",
-                                    }}
-                                    className="absolute top-0 left-0"
-                                />
-                            )}
-
-                            {/* Gradient Overlay */}
-                            <div
-                                className="absolute top-0 left-0 w-full h-full"
-                                style={{
-                                    background: "linear-gradient(rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.25))",
-                                }}
+                <div className="w-full h-full flex items-center justify-center">
+                    <div className="w-[360px] rounded-xl overflow-hidden shadow-md relative h-[590px]">
+                        {isVideo ? (
+                            <video
+                                className="absolute top-0 left-0 w-full h-full object-cover"
+                                src={content?.urls?.[0]}
+                                autoPlay
+                                muted
+                                loop
                             />
-                        </div>
+                        ) : (
+                            <div
+                                style={{
+                                    backgroundImage: `url(${content?.urls?.[0]})`,
+                                    backgroundSize: 'cover',
+                                    backgroundPosition: 'center',
+                                    width: '100%',
+                                    height: '100%',
+                                }}
+                                className="absolute top-0 left-0"
+                            />
+                        )}
 
-                        {/* Overlay Content */}
-                        <div className="flex absolute bg-[rgba(0,0,0,0.03)] top-3 left-0 w-full justify-between items-center p-3">
-                            <div className='flex items-center'>
-                                <img
-                                    className="w-10 h-10 rounded-full object-cover"
-                                    src={content?.creator?.avatarUrl || DefaultAvatar}
-                                    alt="Profile"
-                                />
-                                <div className="ml-3 pb-2">
-                                    <p className="font-semibold text-white">{formatName(content?.creator?.name as string)}</p>
-                                </div>
-                            </div>
-                            <div className='flex items-center gap-2'>
-                                <EllipsisHorizontalIcon className='text-white w-5 h-5' />
-                                <XMarkIcon className='text-white h-6 w-6' />
-                            </div>
-                        </div>
-
-                        <div className='absolute bottom-3 bg-[rgba(0,0,0,0.03)] h-[40px] px-3 flex items-center justify-between left-0 w-full'>
-                            <div className='w-[80%] border border-gray-200 flex items-center px-3 rounded-[100px] text-gray-200 h-[36px]'>
-                                Send message
-                            </div>
-                            <div className='flex items-center gap-2 justify-between'>
-                                <HeartIcon className='w-6 h-6 text-white' />
-                                <PaperAirplaneIcon className=' -rotate-[45deg] text-white w-6 h-6 transform -translate-y-[2px]' />
+                        <div className="absolute top-0 left-0 w-full h-full bg-[rgba(0,0,0,0.25)]" />
+                        <div className="flex absolute top-1 left-0 w-full justify-between items-center p-3 bg-[rgba(0,0,0,0.03)]">
+                            <ProfileHeader name={content?.creator?.name as string} avatarUrl={content?.creator?.avatarUrl} />
+                            <div className="z-20">
+                                <DownloadButton url={content?.urls?.[0] || ''} />
                             </div>
                         </div>
                     </div>
                 </div>
             )}
-        </Drawer>
-    )
-}
+        </div>
+    );
+};
 
-export default ModalPreviewContent
+export default ModalPreviewContent;
