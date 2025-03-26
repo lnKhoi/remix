@@ -86,6 +86,7 @@ const ModalPreviewContent: React.FC<ModalPreviewContentProps> = ({ content }) =>
     const isVideo = content?.urls?.[0]?.slice(-3) && videoExtensions.includes(content.urls[0].slice(-3));
 
     const toggleExpand = () => setIsExpanded(prev => !prev);
+    const isPostedContent = content?.approved =='posted' || content?.approved =='approved'
 
     // Profile Header Component
     const ProfileHeader: React.FC<{ name: string; avatarUrl?: string }> = ({ name, avatarUrl }) => (
@@ -127,7 +128,7 @@ const ModalPreviewContent: React.FC<ModalPreviewContentProps> = ({ content }) =>
                                         className="w-[393px] h-[353px] object-cover"
                                     />
                                     <div className="absolute bottom-[310px] right-2 z-20">
-                                        <DownloadButton url={url} />
+                                       {isPostedContent && <DownloadButton url={url} />}  
                                     </div>
                                 </div>
                             ))}
@@ -159,6 +160,7 @@ const ModalPreviewContent: React.FC<ModalPreviewContentProps> = ({ content }) =>
 
                         <video
                             autoPlay
+                            controlsList="nodownload" 
                             loop
                             controls
                             muted
@@ -168,7 +170,7 @@ const ModalPreviewContent: React.FC<ModalPreviewContentProps> = ({ content }) =>
 
                         <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent z-0" />
                         <div className="absolute right-0 top-2 z-20">
-                            <DownloadButton url={content?.urls?.[0] || ''} />
+                        {isPostedContent &&  <DownloadButton url={content?.urls?.[0] || ''} />}  
                         </div>
                     </div>
 
@@ -188,6 +190,7 @@ const ModalPreviewContent: React.FC<ModalPreviewContentProps> = ({ content }) =>
                                 src={content?.urls?.[0]}
                                 autoPlay
                                 muted
+                                controlsList="nodownload" 
                                 loop
                             />
                         ) : (
@@ -207,7 +210,7 @@ const ModalPreviewContent: React.FC<ModalPreviewContentProps> = ({ content }) =>
                         <div className="flex absolute top-1 left-0 w-full justify-between items-center p-3 bg-[rgba(0,0,0,0.03)]">
                             <ProfileHeader name={content?.creator?.name as string} avatarUrl={content?.creator?.avatarUrl} />
                             <div className="z-20">
-                                <DownloadButton url={content?.urls?.[0] || ''} />
+                            {isPostedContent &&  <DownloadButton url={content?.urls?.[0] || ''} />}  
                             </div>
                         </div>
                     </div>
