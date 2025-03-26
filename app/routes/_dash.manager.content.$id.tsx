@@ -31,7 +31,6 @@ import {
   approveContent,
   publishContent,
 } from '~/apis/content';
-import DefaultAvatar from '~/assets/avatar.jpeg';
 import EmbedContent from '~/components/content/EmbedContent';
 import ModalDisputeStory from '~/components/content/ModalDisputeStory';
 import ModalPostingDate from '~/components/content/ModalPostingDate';
@@ -39,6 +38,7 @@ import ModalPreviewContent from '~/components/content/ModalPreviewContent';
 import ContentDetailSkeleton
   from '~/components/custom/skeletons/ContentDetailSkeleton';
 import TagColor from '~/components/ui/tagColor';
+import { API_URL } from '~/constants/env.constant';
 import { DATE_TIME_FORMAT_V2 } from '~/constants/time.constant';
 import { useAuthContext } from '~/contexts/auth.context';
 import {
@@ -49,7 +49,7 @@ import { Content } from '~/models/Content.model';
 import Editor from '~/plugins/editor';
 import {
   abbreviateLastName,
-  formatName,
+  getContentUrlDownload,
 } from '~/utils/formatNumber';
 
 import {
@@ -210,7 +210,7 @@ const ContentDetails = () => {
 
                         onChange={(v) => setSelectedVersion(v)}
                         defaultValue={content?.id}
-                        className='bg-gray-200 w-[140px] rounded-lg'>
+                        className='bg-gray-200 min-w-[140px] rounded-lg'>
                         {content?.versions.map(v => (
                           <Select.Option value={v.contentId} >{v.version}</Select.Option>
                         ))}
@@ -220,72 +220,11 @@ const ContentDetails = () => {
                       )}
                     </div>
                   </div>
-                  <div className='flex p-4 items-start mt-1 gap-3'>
-                    <img className='w-[36px] h-[36px] rounded-[50%] object-cover'
-                      src={content?.creator?.avatarUrl || DefaultAvatar}
-                      alt="avatar" />
-                    <div className='flex flex-col items-start'>
-                      <p className='text-sm font-medium text-gray-800'>{formatName(content?.creator.name as string)}</p>
-                      <p className='text-gray-500 text-sm font-normal'>Submission date : {dayjs(content?.createdAt).format(DATE_TIME_FORMAT_V2)}</p>
-                    </div>
+                  {/* Content Preview */}
+                  <div className='flex p-5 bg-gray-100 items-start gap-3'>
+                    <ModalPreviewContent content={content as Content} />
                   </div>
-                  <div className='px-4 slider-container pt-2 pb-4'>
-                    {content?.urls.length as number > 4 && (
-                      <Slider {...settings}>
-                        {content?.urls?.map((url, index) => {
-                          const isVideo = videoExtensions.includes(url.slice(-3));
 
-                          return (
-                            <div key={index} style={{ margin: "0 10px" }}>
-                              {isVideo ? (
-                                <video
-                                  autoPlay
-                                  loop
-                                  muted
-                                  controls
-                                  className="w-[120px] h-[120px] rounded-lg object-cover"
-                                  src={url}
-                                />
-                              ) : (
-                                <img
-                                  className="w-[120px] h-[120px] rounded-lg object-cover"
-                                  src={url}
-                                  alt="content"
-                                />
-                              )}
-                            </div>
-                          );
-                        })}
-                      </Slider>
-                    )}
-                    <div className='flex items-center gap-2'>
-                      {content?.urls.length as number <= 4 && content?.urls?.map((url, index) => {
-                        const isVideo = videoExtensions.includes(url.slice(-3));
-
-                        return (
-                          <div key={index} style={{ margin: "0 10px" }}>
-                            {isVideo ? (
-                              <video
-                                autoPlay
-                                loop
-                                muted
-                                controls
-                                className="w-[120px] h-[120px] rounded-lg object-cover"
-                                src={url}
-                              />
-                            ) : (
-                              <img
-                                className="w-[120px] h-[120px] rounded-lg object-cover"
-                                src={url}
-                                alt="content"
-                              />
-                            )}
-                          </div>
-                        );
-                      })}
-                    </div>
-                    <p className='text-sm font-normal text-gray-500 mt-4'>{content?.caption} </p>
-                  </div>
                 </div>
 
                 {/* Note */}
@@ -310,20 +249,26 @@ const ContentDetails = () => {
 
                   {/* Warning reject for brand */}
                   {(content?.versions?.length as number > 2 && lastVersion == (selectedVersion || id)) && content?.approved !== 'approved' && (
-                   <div className='w-full'>
-                    <div className='flex items-center gap-3 p-4 m-4 mt-0 bg-orange-100 rounded-lg'>
-                      <ExclamationCircleIcon className='w-5 min-w-5 min-h-5 h-5 text-orange-500' />
-                      <p className='text-sm font-normal text-gray-800'>
-                        {content?.approved !== 'rejected'
-                          ? 'You has rejected the content for the second time. Please note that a maximum of three rejections is allowed.'
-                          : 'You has rejected the content for the third time. This is the final allowed rejection'
-                        }
-                      </p>
+                    <div className='w-full'>
+                      <div className='flex items-center gap-3 p-4 m-4 mt-0 bg-orange-100 rounded-lg'>
+                        <ExclamationCircleIcon className='w-5 min-w-5 min-h-5 h-5 text-orange-500' />
+                        <p className='text-sm font-normal text-gray-800'>
+                          {content?.approved !== 'rejected'
+                            ? 'You has rejected the content for the second time. Please note that a maximum of three rejections is allowed.'
+                            : 'You has rejected the content for the third time. This is the final allowed rejection'
+                          }
+                        </p>
+                      </div>
+                      {lastVersion == (selectedVersion || id) && content?.approved == 'rejected' && (
+                        <a href={`${API_URL}/api/v1/content/media/${getContentUrlDownload(content?.urls?.[0])}?action=download`}
+                          download="my-image.jpg"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <Button className='flex-1 w-[89%] mx-5 mt-2 mb-3' type='primary'>Dispute</Button>
+                        </a>
+                      )}
                     </div>
-                     {lastVersion == (selectedVersion || id) && content?.approved =='rejected' && (
-                       <Button  className='flex-1 w-[89%] mx-5 mt-2 mb-3' type='primary'>Dispute</Button>
-                     )}
-                   </div>
                   )}
                   <div className='w-full justify-between px-4 pb-4 flex items-center gap-2 '>
                     {content?.approved == 'pending' || content?.approved == 'pending-review' ? (
@@ -504,11 +449,6 @@ const ContentDetails = () => {
                 loading={loading === 'approve-content-post'}
                 onclose={() => setModalType('')}
               />
-
-              {/* Modal Preview Content */}
-              <ModalPreviewContent
-                content={content as Content} open={previewType === 'preview'}
-                onClose={() => setPreviewType('')} />
 
               <Drawer
                 footer={

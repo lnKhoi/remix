@@ -314,3 +314,54 @@ input::placeholder {
 .custom-panel .ant-collapse-content-box {
   padding: 0 !important;
 }
+
+/* ModalPreviewContent.css */
+.custom-dots {
+  bottom: 15px !important;
+  display: flex !important;
+  justify-content: center !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.custom-dots li {
+  margin: 0 3px !important;
+  width: 8px !important;
+  height: 8px !important;
+}
+
+.custom-dots li button {
+  width: 8px !important;
+  height: 8px !important;
+  padding: 0 !important;
+}
+
+.custom-dots li button:before {
+  content: '' !important;
+  width: 8px !important;
+  height: 8px !important;
+  /* background-color: #d1d5db !important; */
+  border-radius: 50% !important;
+  background: transparent !important;
+  border-color: #d1d5db !important;
+  opacity: 0.5 !important;
+  transition: all 0.3s ease !important;
+}
+
+.custom-dots li.slick-active button:before {
+  background-color: #ffffff !important;
+  opacity: 1 !important;
+}
+
+.slick-arrow {
+  display: block !important;
+  width: 32px !important;
+  height: 32px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+}
+
+.slick-prev:before,
+.slick-next:before {
+  display: none !important;
+}
