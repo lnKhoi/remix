@@ -86,7 +86,7 @@ const ModalPreviewContent: React.FC<ModalPreviewContentProps> = ({ content }) =>
     const isVideo = content?.urls?.[0]?.slice(-3) && videoExtensions.includes(content.urls[0].slice(-3));
 
     const toggleExpand = () => setIsExpanded(prev => !prev);
-    const isPostedContent = content?.approved =='posted' || content?.approved =='approved'
+    const isPostedContent = content?.approved =='posted' || content?.approved =='approved' || content?.approved =='processing'
 
     // Profile Header Component
     const ProfileHeader: React.FC<{ name: string; avatarUrl?: string }> = ({ name, avatarUrl }) => (
