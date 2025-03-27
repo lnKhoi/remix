@@ -24,7 +24,7 @@ const EmbedContent = ({ link }: InstagramEmbedProps) => {
                 <blockquote
                     className="instagram-media w-full"
                     data-instgrm-captioned
-                    style={{ width: 400, minWidth: 400, maxWidth: 400 }}
+                    // style={{ width: 400, minWidth: 400, maxWidth: 400 }}
                     data-instgrm-permalink={`${link}?utm_source=ig_embed&amp;utm_campaign=loading`}
                     data-instgrm-version="14"
                 ></blockquote>

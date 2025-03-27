@@ -87,12 +87,14 @@ export const paymentHistoryColumns = (
         loading ? (
           <Skeleton.Input style={{ width: 150 }} active size="small" />
         ) : (
-          <p
-            className={`text-blue-500 cursor-pointer ${allowToDownload ? 'block' : 'hidden'}`}
-            onClick={() => handleDownload(record)}
-          >
-            Download Invoice
-          </p>
+          record.invoice_id !== '' && (
+            <p
+              className={`text-blue-500 cursor-pointer ${allowToDownload ? 'block' : 'hidden'}`}
+              onClick={() => handleDownload(record)}
+            >
+              Download Invoice
+            </p>
+          )
         ),
     },
   ];
