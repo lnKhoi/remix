@@ -38,7 +38,6 @@ import ModalPreviewContent from '~/components/content/ModalPreviewContent';
 import ContentDetailSkeleton
   from '~/components/custom/skeletons/ContentDetailSkeleton';
 import TagColor from '~/components/ui/tagColor';
-import { API_URL } from '~/constants/env.constant';
 import { DATE_TIME_FORMAT_V2 } from '~/constants/time.constant';
 import { useAuthContext } from '~/contexts/auth.context';
 import {
@@ -47,10 +46,7 @@ import {
 } from '~/helpers/campaign.helper';
 import { Content } from '~/models/Content.model';
 import Editor from '~/plugins/editor';
-import {
-  abbreviateLastName,
-  getContentUrlDownload,
-} from '~/utils/formatNumber';
+import { abbreviateLastName } from '~/utils/formatNumber';
 
 import {
   CalendarDateRangeIcon,
@@ -215,9 +211,6 @@ const ContentDetails = () => {
                           <Select.Option value={v.contentId} >{v.version}</Select.Option>
                         ))}
                       </Select>
-                      {content?.approved !== 'posted' && (
-                        <Button onClick={() => setPreviewType('preview')} className='bg-gray-100'>Preview</Button>
-                      )}
                     </div>
                   </div>
                   {/* Content Preview */}
@@ -260,13 +253,7 @@ const ContentDetails = () => {
                         </p>
                       </div>
                       {lastVersion == (selectedVersion || id) && content?.approved == 'rejected' && (
-                        <a href={`${API_URL}/api/v1/content/media/${getContentUrlDownload(content?.urls?.[0])}?action=download`}
-                          download="my-image.jpg"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
                           <Button className='flex-1 w-[89%] mx-5 mt-2 mb-3' type='primary'>Dispute</Button>
-                        </a>
                       )}
                     </div>
                   )}
@@ -418,9 +405,11 @@ const ContentDetails = () => {
 
 
                 {/* Embed Post */}
-                {!isStory && (
+               <div className='w-full block overflow-hidden'>
+               {!isStory && (
                   <EmbedContent link={content?.permalink as string} />
                 )}
+               </div>
               </div>
 
               {/* Modal Reject content*/}
