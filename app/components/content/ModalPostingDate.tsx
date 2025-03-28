@@ -1,14 +1,20 @@
-import React, { useEffect, useState } from 'react';
+import React, {
+  useEffect,
+  useState,
+} from 'react';
 
 import {
-    DatePicker,
-    Modal,
-    Select,
-    Space
+  DatePicker,
+  Modal,
+  Select,
+  Space,
 } from 'antd';
 import dayjs, { Dayjs } from 'dayjs';
 import { DATE_TIME_FORMAT } from '~/constants/time.constant';
-import { generateTimeOptions, getCurrentTime } from '~/helpers/content.helper';
+import {
+  generateTimeOptions,
+  getCurrentTime,
+} from '~/helpers/content.helper';
 
 type ModalPostingDateProps = {
     loading: boolean;
@@ -21,6 +27,11 @@ function ModalPostingDate({ loading, open, onApproveContent, onclose }: ModalPos
     const minDateTime = dayjs().add(1, 'hour');
     const [submitTime, setSubmitTime] = useState<Dayjs>(minDateTime);
     const [isValidDate, setIsValidDate] = useState<boolean>(false);
+
+    useEffect(() => {
+        const [hour, minute] = getCurrentTime().split(':').map(Number);
+        setSubmitTime((prev) => prev.set('hour', hour).set('minute', minute));
+    },[])
 
     return (
         <Modal

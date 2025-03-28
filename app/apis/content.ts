@@ -1,4 +1,7 @@
-import { postData } from './axiosClient';
+import {
+  getData,
+  postData,
+} from './axiosClient';
 
 export const approveContent = (campaignId: string, contentId: string, status: boolean, date: string, reason: string) => {
     return postData(`api/v1/brand/${campaignId}/${contentId}/approve-content`,
@@ -32,4 +35,8 @@ export const approveDeadlineFromInfluencer = (campaignId: string, creatorId: str
 
 export const disputeContent = (contentId: string, reason: string) => {
     return postData(`/api/v1/brand/${contentId}/dispute-story-content`, { reason: reason })
+}
+
+export const getContents = (page:number,limit:number) => {
+    return getData(`/api/v1/content?limit=${limit}&page=${page}`)
 }
