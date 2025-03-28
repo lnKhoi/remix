@@ -12,6 +12,7 @@ export type Content ={
     caption: string;
     notes: string;
     engagementRate:number
+    contentFormat?:'post' | 'reel' | 'story'
     campaign:Campaign
     postedAt:string
     permalink?:string

@@ -169,7 +169,7 @@ const ModalPreviewContent: React.FC<ModalPreviewContentProps> = ({ content }) =>
                         />
 
                         <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent z-0" />
-                        <div className="absolute right-0 top-2 z-20">
+                        <div className="absolute right-2 top-2 z-20">
                         {isPostedContent &&  <DownloadButton url={content?.urls?.[0] || ''} />}  
                         </div>
                     </div>
@@ -209,7 +209,7 @@ const ModalPreviewContent: React.FC<ModalPreviewContentProps> = ({ content }) =>
                         <div className="absolute top-0 left-0 w-full h-full bg-[rgba(0,0,0,0.25)]" />
                         <div className="flex absolute top-1 left-0 w-full justify-between items-center p-3 bg-[rgba(0,0,0,0.03)]">
                             <ProfileHeader name={content?.creator?.name as string} avatarUrl={content?.creator?.avatarUrl} />
-                            <div className="z-20">
+                            <div className="z-20 top-2 absolute right-2">
                             {isPostedContent &&  <DownloadButton url={content?.urls?.[0] || ''} />}  
                             </div>
                         </div>

@@ -66,8 +66,8 @@ export const meta: MetaFunction = () => {
   return [{ title: 'Review Content' }]
 }
 
-type ModalType = 'confirm-posting-date' | 'reject-influencer-request' | 'approve-influencer-request' | 'reject-content' | 'dispute-story' | ''
-type LoadingType = 'approve-content-link' | 'reject-content-link' | 'get-content-details' | 'approve-content-post' | 'reject-content-post' | ''
+export type ModalType = 'confirm-posting-date' | 'reject-influencer-request' | 'approve-influencer-request' | 'reject-content' | 'dispute-story' | ''
+export type LoadingType = 'approve-content-link' | 'reject-content-link' | 'get-content-details' | 'approve-content-post' | 'reject-content-post' | ''
 
 const settings = {
   dots: false,
