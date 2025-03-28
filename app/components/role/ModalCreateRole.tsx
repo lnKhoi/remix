@@ -14,6 +14,7 @@ import {
   Input,
   message,
   Select,
+  Skeleton,
 } from 'antd';
 import { getPermissions } from '~/apis/permission';
 import {
@@ -153,17 +154,127 @@ const ModalCreateRole: FC<ModalCreateRoleProps> = ({ open, onClose, onSuccess, t
         setAllSelected(Object.keys(permissions).every((cat) => permissions[cat].every((p) => updatedPermissions[p])));
     };
 
-    // Change Permissions
-    const handlePermissionChange = (category: string, perm: string, checked: boolean) => {
-        setCheckedPermissions((prev: any) => {
-            const updated = { ...prev, [perm]: checked };
-            const selectedCount = permissions[category].filter((p) => updated[p]).length;
-            setCategorySelected((prev) => ({ ...prev, [category]: selectedCount === permissions[category].length }));
-            setAllSelected(Object.keys(permissions).every((cat) => permissions[cat].every((p) => updated[p])));
-            return updated;
+    // Utility function to determine related permissions
+    const getRelatedPermissions = (perm: string, allPerms: string[], isChecking: boolean): string[] => {
+        const related: string[] = [];
+        const permLower = perm.toLowerCase();
+
+        // Helper to check if a permission exists in the category
+        const exists = (action: string) => {
+            const target = allPerms.find(p => p.toLowerCase().includes(action.toLowerCase()));
+            return target && !related.includes(target) ? target : null;
+        };
+
+        // Create + View pair
+        if (permLower.includes('create') && isChecking) {
+            const viewPerm = exists('view');
+            if (viewPerm) related.push(viewPerm);
+        }
+
+        // Edit + View pair
+        if (permLower.includes('edit') && isChecking) {
+            const viewPerm = exists('view');
+            if (viewPerm) related.push(viewPerm);
+        }
+
+        // Delete + View pair
+        if ((permLower.includes('delete') || permLower.includes('remove')) && isChecking) {
+            const viewPerm = exists('view');
+            if (viewPerm) related.push(viewPerm);
+        }
+
+        // Export + View pair
+        if ((permLower.includes('export') || permLower.includes('download')) && isChecking) {
+            const viewPerm = exists('view');
+            if (viewPerm) related.push(viewPerm);
+        }
+
+        // Approve/Reject + View pair
+        if ((permLower.includes('approve') || permLower.includes('reject')) && isChecking) {
+            const viewPerm = exists('view');
+            if (viewPerm) related.push(viewPerm);
+        }
+
+        // For unchecking, return related View permission
+        if (!isChecking) {
+            if (permLower.includes('create') || permLower.includes('edit') ||
+                permLower.includes('delete') || permLower.includes('remove') ||
+                permLower.includes('export') || permLower.includes('download') ||
+                permLower.includes('approve') || permLower.includes('reject')) {
+                const viewPerm = exists('view');
+                if (viewPerm) related.push(viewPerm);
+            }
+        }
+
+        return related;
+    };
+
+    // Helper function to check if any primary action is active
+    const hasPrimaryActionChecked = (categoryPerms: string[], checkedPerms: any): boolean => {
+        return categoryPerms.some(p => {
+            const pLower = p.toLowerCase();
+            return (pLower.includes('create') || pLower.includes('edit') ||
+                pLower.includes('delete') || pLower.includes('remove') ||
+                pLower.includes('export') || pLower.includes('download') ||
+                pLower.includes('approve') || pLower.includes('reject')) && checkedPerms[p];
         });
     };
 
+    // Updated handlePermissionChange function
+    const handlePermissionChange = (category: string, perm: string, checked: boolean) => {
+        setCheckedPermissions((prev: any) => {
+            const updated = { ...prev, [perm]: checked };
+
+            // Get all permissions in the current category
+            const categoryPerms = permissions[category];
+
+            // Find related permissions based on whether we're checking or unchecking
+            const relatedPerms = getRelatedPermissions(perm, categoryPerms, checked);
+
+            // If checking a permission, auto-check related permissions
+            if (checked) {
+                relatedPerms.forEach(related => {
+                    updated[related] = true;
+                });
+            }
+            // If unchecking a permission, handle logic
+            else {
+                const permLower = perm.toLowerCase();
+                if (permLower.includes('create') || permLower.includes('edit') ||
+                    permLower.includes('delete') || permLower.includes('remove') ||
+                    permLower.includes('export') || permLower.includes('download') ||
+                    permLower.includes('approve') || permLower.includes('reject')) {
+                    relatedPerms.forEach(related => {
+                        // Only uncheck View if no primary actions remain checked
+                        if (!hasPrimaryActionChecked(categoryPerms, { ...updated, [perm]: false })) {
+                            updated[related] = false;
+                        }
+                    });
+                }
+                // If unchecking View, force it back to true if any primary action is checked
+                else if (permLower.includes('view') && hasPrimaryActionChecked(categoryPerms, updated)) {
+                    updated[perm] = true; // Force View back to true
+                }
+            }
+
+            // Ensure View is true if any primary action is checked
+            const viewPerm = categoryPerms.find(p => p.toLowerCase().includes('view'));
+            if (viewPerm && hasPrimaryActionChecked(categoryPerms, updated)) {
+                updated[viewPerm] = true;
+            }
+
+            const selectedCount = categoryPerms.filter((p) => updated[p]).length;
+            setCategorySelected((prev) => ({
+                ...prev,
+                [category]: selectedCount === categoryPerms.length
+            }));
+            setAllSelected(Object.keys(permissions).every((cat) =>
+                permissions[cat].every((p) => updated[p])
+            ));
+
+            return updated;
+        });
+    };
     // Submit => Create , Edit Role
     const handleSubmit = async () => {
         try {
@@ -228,7 +339,6 @@ const ModalCreateRole: FC<ModalCreateRoleProps> = ({ open, onClose, onSuccess, t
             </div>
         </Option>
     );
-
 
     const renderPermissionPanel = ([category, perms]: [string, string[]]) => {
         const selectedCount = perms.filter((perm) => checkedPermissions[perm]).length;
@@ -303,19 +413,22 @@ const ModalCreateRole: FC<ModalCreateRoleProps> = ({ open, onClose, onSuccess, t
                 </Form.Item>
 
                 <Form.Item label="Add user" name="users">
-                    <Select
-                        mode="multiple"
-                        placeholder="Select users"
-                        maxTagCount={2}
-                        value={selectedUsers as string[]}
-                        onChange={handleUserChange}
-                        style={{ width: '100%' }}
-                    >
-                        {(users as UserPermission[])?.filter(
-                            (u) => u?.archive === "unarchive"
-                        )?.map(renderUserOption)}
-
-                    </Select>
+                    <div className='flex items-center'>
+                        {loadingType == 'permissions'
+                            ? <Skeleton.Node active style={{ height: 35, width: 586 }} />
+                            : <Select
+                                mode="multiple"
+                                placeholder="Select users"
+                                maxTagCount={1}
+                                value={selectedUsers as string[]}
+                                onChange={handleUserChange}
+                                style={{ width: '100%' }}
+                            >
+                                {(users as UserPermission[])?.filter(
+                                    (u) => u?.archive === "unarchive"
+                                )?.map(renderUserOption)}
+                            </Select>}
+                    </div>
                 </Form.Item>
 
                 <Form.Item label="Role Permissions" name="permissions" required>
