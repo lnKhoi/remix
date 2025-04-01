@@ -33,7 +33,7 @@ const BrandProfile: FC = () => {
     const [editContact, setEditContact] = useState<boolean>(false)
     const { userInfo, handleRefreshUserInfo, isLoading } = useAuthContext();
     const [loading, setLoading] = useState<boolean>(false);
-    const { fileUrl, uploadFile } = useFileUpload();
+    const { fileUrl, uploadFile,loading:updatingAvatar } = useFileUpload();
     const [form] = Form.useForm();
     const [logo, setLogo] = useState<File | null | string>(null)
 
@@ -187,7 +187,7 @@ const BrandProfile: FC = () => {
                                     htmlType='submit'
                                     disabled={loading}
                                     type="primary"
-                                    loading={loading}
+                                    loading={loading || updatingAvatar}
                                 >
                                     Save
                                 </Button>

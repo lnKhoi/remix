@@ -25,7 +25,7 @@ const ProfileDetails: FC = () => {
     const [isEditing, setIsEditing] = useState<boolean>(false);
     const { userInfo, handleRefreshUserInfo } = useAuthContext();
     const [loading, setLoading] = useState<boolean>(false);
-    const { fileUrl, uploadFile } = useFileUpload();
+    const { fileUrl, uploadFile, loading:updatingAvatar } = useFileUpload();
     const [form] = Form.useForm();
     const [roles, setRoles] = useState<Role[]>([])
     const { hasPermission } = useAuthContext()
@@ -165,7 +165,7 @@ const ProfileDetails: FC = () => {
                                 htmlType='submit'
                                 disabled={loading}
                                 type="primary"
-                                loading={loading}
+                                loading={loading || updatingAvatar}
                             >
                                 Save
                             </Button>
