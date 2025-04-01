@@ -38,7 +38,7 @@ const { Dragger } = Upload;
 
 
 const InviteInfluencer = () => {
-    const { userInfo ,hasPermission} = useAuthContext()
+    const { userInfo, hasPermission } = useAuthContext()
     const [influencers, setInfluencers] = useState<Creator[]>([])
     const [hiddenEmails, setHiddenEmails] = useState<{ [key: string]: boolean }>({});
     const navigate = useNavigate()
@@ -48,20 +48,20 @@ const InviteInfluencer = () => {
         const formData = new FormData();
         formData.append('file', file);
 
-            await importCSV(formData).then(() => {
-                handleGetListInfluencerImported()
-            })
+        await importCSV(formData).then(() => {
+            handleGetListInfluencerImported()
+        })
     };
 
     const toggleEmailVisibility = (email: string) => {
         setHiddenEmails((prev) => ({
-          ...prev,
-          [email]: !prev[email], // Toggle visibility correctly
+            ...prev,
+            [email]: !prev[email], // Toggle visibility correctly
         }));
-      };
+    };
 
     const handleGetListInfluencerImported = async (): Promise<void> => {
-        await getInfluencerImported( 100, 1)
+        await getInfluencerImported(100, 1, '')
             .then((res) => {
                 setInfluencers(res?.data?.paginatedInfluencersData)
                 toast.success('Import Influencer Successfully')
@@ -71,9 +71,9 @@ const InviteInfluencer = () => {
 
     useEffect(() => {
         userInfo && !hasPermission('import-influencer-csv') && navigate('/page-not-found')
-    },[userInfo])
+    }, [userInfo])
 
-    if(!userInfo) return <></>
+    if (!userInfo) return <></>
 
     return (
         <div className='custom-select'>
@@ -91,7 +91,11 @@ const InviteInfluencer = () => {
             <div className='w-[1024px] mt-14 mx-auto'>
                 <div className='flex items-center justify-between'>
                     <h2 className='text-gray-900  mb-5 text-lg font-medium text-center'>Upload CSV</h2>
-                    <p className='text-sm text-gray-900'>Don't have the template? <span className='text-blue-500 cursor-pointer' >Download Template</span></p>
+                    <p className='text-sm text-gray-900'>Don't have the template?
+                        <a href="https://pub-54f6adefc0214ea48c96bbdfe306b4cd.r2.dev/Lavaart_Resources/import_influencer_template.csv" download>
+                            <span className='text-blue-500 cursor-pointer' > Download Template</span>
+                        </a>
+                    </p>
                 </div>
                 <div className='mt-2 h-[152px]'>
                     <Dragger beforeUpload={() => false} showUploadList={false} onChange={(file) => handleImportCSV(file)} >
@@ -109,7 +113,7 @@ const InviteInfluencer = () => {
                 {/* INFLUENCER */}
                 {influencers.length > 0 && (
                     <div className='mt-4'>
-                        <Table<Creator>   columns={creatorColumns(toggleEmailVisibility, hiddenEmails)} dataSource={influencers} />
+                        <Table<Creator> columns={creatorColumns(toggleEmailVisibility, hiddenEmails)} dataSource={influencers} />
                     </div>
                 )}
             </div>
