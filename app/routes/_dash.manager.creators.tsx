@@ -1,4 +1,5 @@
 import React, {
+  ChangeEvent,
   FC,
   useEffect,
   useState,
@@ -9,10 +10,12 @@ import {
   Spin,
   Table,
 } from 'antd';
+import debounce from 'lodash/debounce';
 import { getInfluencerImported } from '~/apis/creator';
 import NoCSV from '~/assets/no-csv.png';
 import ModalViewInfluencerProfile
   from '~/components/campaign/ModalViewInfluencerProfile';
+import { InputSearch } from '~/components/ui/input-search';
 import { creatorColumns } from '~/constants/creator.constant';
 import { useAuthContext } from '~/contexts/auth.context';
 import { Creator } from '~/models/User.model';
@@ -37,6 +40,8 @@ const Page: FC = () => {
   const [isDrawerVisible, setIsDrawerVisible] = useState(false);
   const [params, setParams] = useState<{ page: number, pageSize: number }>({ page: 1, pageSize: 10 })
 
+  const [search, setSearch] = useState<string>('')
+
   const navigate = useNavigate()
 
   const toggleEmailVisibility = (email: string) => {
@@ -49,7 +54,7 @@ const Page: FC = () => {
   const handleGetListInfluencerImported = async (): Promise<void> => {
 
     setLoading(true);
-    await getInfluencerImported(params.pageSize, params.page)
+    await getInfluencerImported(params.pageSize, params.page,search)
       .then(res => {
         setInfluencers({ total: res?.data?.total, data: res?.data?.paginatedInfluencersData })
       })
@@ -58,7 +63,7 @@ const Page: FC = () => {
 
   useEffect(() => {
     handleGetListInfluencerImported();
-  }, [params]);
+  }, [params,search]);
 
   // Handle row click to open the drawer
   const handleRowClick = (record: any) => {
@@ -70,13 +75,27 @@ const Page: FC = () => {
 
   useEffect(() => {
     userInfo && !hasPermission('view-imported-influencer') && navigate('/page-not-found')
-  },[userInfo])
+  }, [userInfo])
 
-  if(!userInfo) return <></>
+  if (!userInfo) return <></>
+
+
+  const handleSearchCampaigns = debounce(
+    (e: ChangeEvent<HTMLInputElement>): void => {
+      setSearch(e.target.value);
+    }, 500);
 
   return (
     <div>
-      <div className='flex w-full justify-end mb-5'>
+        <div className='flex flex-col'>
+          <h2 className='text-2xl text-gray-900'>Creators</h2>
+        </div>
+      <div className='flex mt-4 w-full justify-between items-center mb-5'>
+        <InputSearch
+          onChange={(e) => handleSearchCampaigns(e)}
+          placeholder='Creator name'
+          className='w-[300px] h-[36px] '
+        />
         <Link to='/manager/creator/import-influencer'>
           {hasPermission('import-influencer-csv') && (
             <Button className='bg-gray-100 mt-3 hover:bg-gray-400 border-gray-100' type='text'>
