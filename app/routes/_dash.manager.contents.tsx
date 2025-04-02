@@ -40,6 +40,7 @@ const Contents = () => {
           showSizeChanger: false,
           defaultCurrent: 1,
         }}
+        scroll={{ x: "max-content" }}
         className="shadow-md rounded-lg overflow-hidden"
       />
     </div>

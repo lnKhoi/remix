@@ -163,9 +163,9 @@ const ProfileDetails: FC = () => {
                             </Button>
                             <Button
                                 htmlType='submit'
-                                disabled={loading}
+                                disabled={loading || updatingAvatar}
                                 type="primary"
-                                loading={loading || updatingAvatar}
+                                loading={loading}
                             >
                                 Save
                             </Button>

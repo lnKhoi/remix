@@ -93,7 +93,7 @@ const Page: FC = () => {
       <div className='flex mt-4 w-full justify-between items-center mb-5'>
         <InputSearch
           onChange={(e) => handleSearchCampaigns(e)}
-          placeholder='Creator name'
+          placeholder='Creator name or email'
           className='w-[300px] h-[36px] '
         />
         <Link to='/manager/creator/import-influencer'>
