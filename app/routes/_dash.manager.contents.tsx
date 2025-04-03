@@ -45,10 +45,15 @@ const Contents = () => {
       setSearch(e.target.value);
     }, 500);
 
-  const handleFilter = useCallback((filter: FormData) => {
-    console.log('hi', filter)
+  const handleFilter = useCallback((filter: FormData | null) => {
+    setIsFilter(false)
     handleGetContents(true, filter)
   }, [])
+
+  // Add this new handler for closing the popover
+  const handleVisibleChange = (visible: boolean) => {
+    setIsFilter(visible);
+  };
 
   return (
     <div>
@@ -57,10 +62,20 @@ const Contents = () => {
       </div>
       <div className='flex items-center gap-3 mt-[21px]'>
         <InputSearch onChange={(e) => handleSearchCampaigns(e)} className='w-[300px] h-[36px]' placeholder='Influencer name or campaign name' />
-        <Popover trigger={['click']} placement={'rightBottom'} content={<ModalFilterContent onFilter={handleFilter} />}>
+        <Popover
+          open={isFilter}
+          trigger={['click']}
+          placement={'rightBottom'}
+          content={<ModalFilterContent onFilter={handleFilter} />}
+          onOpenChange={handleVisibleChange} // Add this prop
+        >
           <Button
-            onClick={() => setIsFilter(!isFilter)} className='bg-gray-100 font-semibold border-gray-100'
-            icon={<FunnelIcon className='w-5 h-5' />} >Filter</Button>
+            onClick={() => setIsFilter(!isFilter)}
+            className='bg-gray-100 font-semibold border-gray-100'
+            icon={<FunnelIcon className='w-5 h-5' />}
+          >
+            Filter
+          </Button>
         </Popover>
       </div>
       <Table
