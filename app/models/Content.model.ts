@@ -5,7 +5,11 @@ export type Content ={
     id: string;
     campaignId: string;
     creatorId: string;
+    totalPurchases?:number
     urls: string[];
+    totalRevenue?:number
+    totalClicks?:number
+    costPerClick?:number
     approved: 'pending' | 'approved' | 'rejected' |'posted' | 'influencer-approved' | 'pending-review' | 'declined' | 'processing'
     approvedBy: string | null;
     reason: string | null;
