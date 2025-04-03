@@ -10,9 +10,9 @@ import {
   message,
   Skeleton,
   TableColumnsType,
+  Tooltip,
 } from 'antd';
 import dayjs, { Dayjs } from 'dayjs';
-import { CheckCircle } from 'lucide-react';
 import {
   rejectContentLink,
   reviewContent,
@@ -25,6 +25,7 @@ import { ModalType } from '~/routes/_dash.manager.content.$id';
 import { abbreviateLastName } from '~/utils/formatNumber';
 
 import { EllipsisOutlined } from '@ant-design/icons';
+import { CheckCircleIcon } from '@heroicons/react/24/outline';
 import { Link } from '@remix-run/react';
 
 import { DATE_TIME_FORMAT_V2 } from './time.constant';
@@ -233,12 +234,14 @@ export const ContentsColumns = ({
         <>
           {loading
             ? <Skeleton.Node style={{ height: 40 }} active />
-            : <p className='capitalize items-center flex'>
-              {record.post_due && dayjs(record.post_due).format(DATE_TIME_FORMAT_V2)}
+            : <div className='capitalize items-center w-full  flex gap-3'>
+              <p className='w-[80px] ' >  {record.post_due && dayjs(record.post_due).format(DATE_TIME_FORMAT_V2)}</p>
               {record.approved === 'posted' && (
-                <CheckCircle className='w-5 h-5 text-green-500' />
+                <Tooltip title='The content has been posted to social'>
+                  <CheckCircleIcon className='w-5 cursor-pointer h-5 text-green-500' />
+                </Tooltip>
               )}
-            </p>}
+            </div>}
         </>
       ),
     },
@@ -249,7 +252,10 @@ export const ContentsColumns = ({
       width: 150,
       render: (_, record) => (
         <>
-          {loading ? <Skeleton.Node style={{ height: 40 }} active /> : <p>{record?.engagementRate ?? '---'}</p>}
+          {loading ? <Skeleton.Node style={{ height: 40 }} active /> :
+            <p>
+              {record.engagementRate == null ? '---' : `${record.engagementRate}%`}
+            </p>}
         </>
       ),
     },
@@ -260,7 +266,7 @@ export const ContentsColumns = ({
       width: 150,
       render: (_, record) => (
         <>
-          {loading ? <Skeleton.Node style={{ height: 40 }} active /> : <p>{record?.totalRevenue ?? '---'}</p>}
+          {loading ? <Skeleton.Node style={{ height: 40 }} active /> : <p> {record.totalRevenue == null ? '---' : `${record.totalRevenue}$`}</p>}
         </>
       ),
     },
@@ -282,7 +288,7 @@ export const ContentsColumns = ({
       align: 'center',
       render: (_, record) => (
         <>
-          {loading ? <Skeleton.Node style={{ height: 40 }} active /> : <p>{record?.costPerClick ?? '---'}</p>}
+          {loading ? <Skeleton.Node style={{ height: 40 }} active /> : <p>{record.costPerClick == null ? '---' : `${record.costPerClick}$`}</p>}
         </>
       ),
     },
@@ -304,7 +310,7 @@ export const ContentsColumns = ({
       align: 'center',
       render: (_, record) => (
         <>
-          {loading ? <Skeleton.Node style={{ height: 40 }} active /> : <p>{record.conversionRate ?? '---'}</p>}
+          {loading ? <Skeleton.Node style={{ height: 40 }} active /> : <p>{record.conversionRate == null ? '---' : `${record.conversionRate}%`}</p>}
         </>
       ),
     },
