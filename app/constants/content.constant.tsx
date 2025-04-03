@@ -12,6 +12,7 @@ import {
   TableColumnsType,
 } from 'antd';
 import dayjs, { Dayjs } from 'dayjs';
+import { CheckCircle } from 'lucide-react';
 import {
   rejectContentLink,
   reviewContent,
@@ -85,7 +86,7 @@ const ActionDropdown: React.FC<{
             <Link to={`/manager/content/${record.id}`}>
               <Menu.Item key="view">View details</Menu.Item>
             </Link>
-            {isReview && (
+            {/* {isReview && (
               <>
                 <Menu.Item
                   key="approve"
@@ -100,6 +101,14 @@ const ActionDropdown: React.FC<{
                   Decline
                 </Menu.Item>
               </>
+            )} */}
+            {record.permalink && (
+              <Menu.Item
+              >
+                <span onClick={() => window.open(record.permalink, "_blank")}>
+                  View on social
+                </span>
+              </Menu.Item>
             )}
           </Menu>
         }
@@ -222,7 +231,14 @@ export const ContentsColumns = ({
       width: 150,
       render: (_, record: Content) => (
         <>
-          {loading ? <Skeleton.Node style={{ height: 40 }} active /> : <p className='capitalize'>{record.post_due && dayjs(record.post_due).format(DATE_TIME_FORMAT_V2)}</p>}
+          {loading
+            ? <Skeleton.Node style={{ height: 40 }} active />
+            : <p className='capitalize items-center flex'>
+              {record.post_due && dayjs(record.post_due).format(DATE_TIME_FORMAT_V2)}
+              {record.approved === 'posted' && (
+                <CheckCircle className='w-5 h-5 text-green-500' />
+              )}
+            </p>}
         </>
       ),
     },
@@ -233,7 +249,7 @@ export const ContentsColumns = ({
       width: 150,
       render: (_, record) => (
         <>
-          {loading ? <Skeleton.Node style={{ height: 40 }} active /> : <p>{record?.engagementRate || '---'}</p>}
+          {loading ? <Skeleton.Node style={{ height: 40 }} active /> : <p>{record?.engagementRate ?? '---'}</p>}
         </>
       ),
     },
@@ -244,7 +260,7 @@ export const ContentsColumns = ({
       width: 150,
       render: (_, record) => (
         <>
-          {loading ? <Skeleton.Node style={{ height: 40 }} active /> : <p>{record?.totalRevenue || '---'}</p>}
+          {loading ? <Skeleton.Node style={{ height: 40 }} active /> : <p>{record?.totalRevenue ?? '---'}</p>}
         </>
       ),
     },
@@ -255,7 +271,7 @@ export const ContentsColumns = ({
       align: 'center',
       render: (_, record) => (
         <>
-          {loading ? <Skeleton.Node style={{ height: 40 }} active /> : <p>{record?.totalClicks || '---'}</p>}
+          {loading ? <Skeleton.Node style={{ height: 40 }} active /> : <p>{record?.totalClicks ?? '---'}</p>}
         </>
       ),
     },
@@ -266,7 +282,7 @@ export const ContentsColumns = ({
       align: 'center',
       render: (_, record) => (
         <>
-          {loading ? <Skeleton.Node style={{ height: 40 }} active /> : <p>{record?.costPerClick || '---'}</p>}
+          {loading ? <Skeleton.Node style={{ height: 40 }} active /> : <p>{record?.costPerClick ?? '---'}</p>}
         </>
       ),
     },
@@ -277,7 +293,7 @@ export const ContentsColumns = ({
       align: 'center',
       render: (_, record) => (
         <>
-          {loading ? <Skeleton.Node style={{ height: 40 }} active /> : <p>{record.totalPurchases || '---'}</p>}
+          {loading ? <Skeleton.Node style={{ height: 40 }} active /> : <p>{record.totalPurchases ?? '---'}</p>}
         </>
       ),
     },
@@ -288,7 +304,7 @@ export const ContentsColumns = ({
       align: 'center',
       render: (_, record) => (
         <>
-          {loading ? <Skeleton.Node style={{ height: 40 }} active /> : <p>{record.conversionRate || '---'}</p>}
+          {loading ? <Skeleton.Node style={{ height: 40 }} active /> : <p>{record.conversionRate ?? '---'}</p>}
         </>
       ),
     },
