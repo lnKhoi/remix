@@ -49,7 +49,7 @@ export interface FormData extends BaseFormData {
 }
 
 type ModalFilterContentProps = {
-  onFilter: (payload: FormData) => void;
+  onFilter: (payload: FormData | null) => void;
 }
 
 const ModalFilterContent = ({ onFilter }: ModalFilterContentProps) => {
@@ -101,6 +101,7 @@ const ModalFilterContent = ({ onFilter }: ModalFilterContentProps) => {
       to: formData.to?.toISOString(),
     };
     onFilter(payload as FormData)
+
   };
 
   const handleReset = () => {
@@ -109,13 +110,15 @@ const ModalFilterContent = ({ onFilter }: ModalFilterContentProps) => {
       to: null,
       campaignIds: [],
       influencerIds: [],
-      engagementRate: [0, 150],
+      engagementRate: [0, 300],
       conversionRate: [],
-      costPerClick: [0, 1000000],
+      costPerClick: [0, 100000],
       revenue: [0, 1000000],
       clicks: [0, 1000000],
       purchases: [0, 100000],
     });
+
+    onFilter(null)
   };
 
   const handleFetchData = () => {
@@ -182,8 +185,8 @@ const ModalFilterContent = ({ onFilter }: ModalFilterContentProps) => {
       </div>
 
       {[
-        { key: 'engagementRate', label: 'Engagement Rate', min: 0, max: 150, suffix: '%', step: 10 },
-        { key: 'costPerClick', label: 'Cost Per Click (CPC)', min: 0, max: 1000000, suffix: '$', step: 10000 },
+        { key: 'engagementRate', label: 'Engagement Rate', min: 0, max: 300, suffix: '%', step: 10 },
+        { key: 'costPerClick', label: 'Cost Per Click (CPC)', min: 0, max: 100000, suffix: '$', step: 10000 },
         { key: 'revenue', label: 'Revenue', min: 0, max: 1000000, suffix: '$', step: 10000 },
         { key: 'clicks', label: 'Clicks', min: 0, max: 1000000, suffix: '', step: 10000 },
         { key: 'purchases', label: 'Purchases', min: 0, max: 100000, suffix: '', step: 1000 }
