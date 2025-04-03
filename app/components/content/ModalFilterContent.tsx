@@ -182,12 +182,12 @@ const ModalFilterContent = ({ onFilter }: ModalFilterContentProps) => {
       </div>
 
       {[
-        { key: 'engagementRate', label: 'Engagement Rate', min: 0, max: 150, suffix: '%' },
-        { key: 'costPerClick', label: 'Cost Per Click (CPC)', min: 0, max: 1000000, suffix: '$' },
-        { key: 'revenue', label: 'Revenue', min: 0, max: 1000000, suffix: '$' },
-        { key: 'clicks', label: 'Clicks', min: 0, max: 1000000, suffix: '' },
-        { key: 'purchases', label: 'Purchases', min: 0, max: 100000, suffix: '' },
-      ].map(({ key, label, min, max, suffix }) => (
+        { key: 'engagementRate', label: 'Engagement Rate', min: 0, max: 150, suffix: '%', step: 10 },
+        { key: 'costPerClick', label: 'Cost Per Click (CPC)', min: 0, max: 1000000, suffix: '$', step: 10000 },
+        { key: 'revenue', label: 'Revenue', min: 0, max: 1000000, suffix: '$', step: 10000 },
+        { key: 'clicks', label: 'Clicks', min: 0, max: 1000000, suffix: '', step: 10000 },
+        { key: 'purchases', label: 'Purchases', min: 0, max: 100000, suffix: '', step: 1000 }
+      ].map(({ key, label, min, max, suffix, step }) => (
         <div key={key} className="mb-4">
           <h3 className="text-gray-700 font-medium mb-2">{label}</h3>
           <div className="flex items-center gap-2 w-full">
@@ -197,6 +197,7 @@ const ModalFilterContent = ({ onFilter }: ModalFilterContentProps) => {
               className="w-full"
               min={min}
               max={max}
+              step={step}
               value={formData[key as keyof FormData] as number[]}
               onChange={(value: number[]) => setFormData({ ...formData, [key]: value })}
             />
