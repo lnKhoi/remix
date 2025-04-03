@@ -155,151 +155,157 @@ export const ContentsColumns = ({
   loading,
   onRefresh
 }: ContentColumnProps): TableColumnsType<Content> => [
-  {
-    title: "Content image",
-    dataIndex: "contentImage",
-    key: "contentImage",
-    fixed: "left",
-    width: 80,
-    render: (_, record: Content) => {
-      const videoExtensions = ['mov', 'mp4'];
-      const isVideo = record?.urls?.[0]?.slice(-3) && videoExtensions.includes(record.urls[0].slice(-3));
+    {
+      title: "Content image",
+      dataIndex: "contentImage",
+      key: "contentImage",
+      fixed: "left",
+      width: 80,
+      render: (_, record: Content) => {
+        const videoExtensions = ['mov', 'mp4'];
+        const isVideo = record?.urls?.[0]?.slice(-3) && videoExtensions.includes(record.urls[0].slice(-3));
 
-      return (
-        <div className="w-[53px] h-[53px] bg-gray-300 rounded-md">
+        return (
+          <div className="w-[53px] h-[53px] bg-gray-300 rounded-md">
+            {loading
+              ? <Skeleton.Node active style={{ width: 53, height: 53, borderRadius: 12 }} />
+              : isVideo
+                ? <video
+                  src={record?.urls?.[0]}
+                  autoPlay
+                  muted
+                  controlsList="nodownload"
+                  loop
+                  className='w-full rounded-md h-full object-cover'
+                />
+                : <img
+                  src={record?.urls?.[0]}
+                  className='w-full rounded-md h-full object-cover'
+                  alt="content"
+                />
+            }
+          </div>
+        )
+      }
+    },
+    {
+      title: "Influencer name",
+      dataIndex: "influencer",
+      key: "influencer",
+      fixed: "left",
+      width: 180,
+      render: (_, record: Content) => (
+        <div className="flex items-center space-x-2">
           {loading
-            ? <Skeleton.Node active style={{ width: 53, height: 53, borderRadius: 12 }} />
-            : isVideo
-              ? <video
-                src={record?.urls?.[0]}
-                autoPlay
-                muted
-                controlsList="nodownload"
-                loop
-                className='w-full rounded-md h-full object-cover'
-              />
-              : <img
-                src={record?.urls?.[0]}
-                className='w-full rounded-md h-full object-cover'
-                alt="content"
-              />
-          }
+            ? <Skeleton.Node active style={{ width: 36, height: 36, borderRadius: 36 }} />
+            : <Avatar
+              className='w-9 h-9 object-cover rounded-[50%]'
+              src={record?.creator?.avatarUrl}
+            />}
+          {loading ? <Skeleton.Input style={{ height: 20, width: 80 }} active /> : <span>{abbreviateLastName(record?.creator?.name as string, 20)}</span>}
         </div>
-      )
-    }
-  },
-  {
-    title: "Influencer name",
-    dataIndex: "influencer",
-    key: "influencer",
-    fixed: "left",
-    width: 180,
-    render: (_, record: Content) => (
-      <div className="flex items-center space-x-2">
-        {loading
-          ? <Skeleton.Node active style={{ width: 36, height: 36, borderRadius: 36 }} />
-          : <Avatar
-            className='w-9 h-9 object-cover rounded-[50%]'
-            src={record?.creator?.avatarUrl}
-          />}
-        {loading ? <Skeleton.Input style={{ height: 20, width: 80 }} active /> : <span>{abbreviateLastName(record?.creator?.name as string, 20)}</span>}
-      </div>
-    ),
-  },
-  {
-    title: "Campaign name",
-    key: "campaignName",
-    width: 200,
-    render: (_, record: Content) => (
-      <Link to={`/manager/${record.campaignId}`}>
-        {loading ? <Skeleton.Input style={{ height: 20, width: 100 }} active /> : <p className='capitalize text-blue-500'>{abbreviateLastName(record?.campaign?.name, 25)}</p>}
-      </Link>
-    ),
-  },
-  {
-    title: "Posting date",
-    key: "postingDate",
-    width: 150,
-    render: (_, record: Content) => (
-      <>
-        {loading ? <Skeleton.Node style={{ height: 40 }} active /> : <p className='capitalize'>{record.post_due && dayjs(record.post_due).format(DATE_TIME_FORMAT_V2)}</p>}
-      </>
-    ),
-  },
-  {
-    title: "Engagement Rate",
-    key: "engagementRate",
-    width: 150,
-    render: () => (
-      <>
-        {loading ? <Skeleton.Node style={{ height: 40 }} active /> : <p>3.90%</p>}
-      </>
-    ),
-  },
-  {
-    title: "Revenue",
-    key: "revenue",
-    width: 150,
-    render: () => (
-      <>
-        {loading ? <Skeleton.Node style={{ height: 40 }} active /> : <p>$145.33</p>}
-      </>
-    ),
-  },
-  {
-    title: "Clicks",
-    key: "Clicks",
-    width: 150,
-    render: () => (
-      <>
-        {loading ? <Skeleton.Node style={{ height: 40 }} active /> : <p>454</p>}
-      </>
-    ),
-  },
-  {
-    title: "Cost Per Click (CPC)",
-    key: "CPC",
-    width: 180,
-    render: () => (
-      <>
-        {loading ? <Skeleton.Node style={{ height: 40 }} active /> : <p>$343.32</p>}
-      </>
-    ),
-  },
-  {
-    title: "Purchases",
-    key: "purchases",
-    width: 150,
-    render: () => (
-      <>
-        {loading ? <Skeleton.Node style={{ height: 40 }} active /> : <p>343</p>}
-      </>
-    ),
-  },
-  {
-    title: "Conversion Rate",
-    key: "cr",
-    width: 150,
-    render: () => (
-      <>
-        {loading ? <Skeleton.Node style={{ height: 40 }} active /> : <p>34%</p>}
-      </>
-    ),
-  },
-  {
-    title: "Action",
-    align: 'center',
-    key: "action",
-    fixed: "right",
-    width: 50,
-    render: (_, record: Content) => (
-      <>
-        {loading ? <Skeleton.Node style={{ maxWidth: 50, height: 20 }} active /> :
-          <ActionDropdown
-            record={record}
-            onRefresh={onRefresh}
-          />}
-      </>
-    ),
-  },
-];
+      ),
+    },
+    {
+      title: "Campaign name",
+      key: "campaignName",
+      width: 200,
+      render: (_, record: Content) => (
+        <Link to={`/manager/${record.campaignId}`}>
+          {loading ? <Skeleton.Input style={{ height: 20, width: 100 }} active /> : <p className='capitalize text-blue-500'>{abbreviateLastName(record?.campaign?.name, 25)}</p>}
+        </Link>
+      ),
+    },
+    {
+      title: "Posting date",
+      key: "postingDate",
+      width: 150,
+      render: (_, record: Content) => (
+        <>
+          {loading ? <Skeleton.Node style={{ height: 40 }} active /> : <p className='capitalize'>{record.post_due && dayjs(record.post_due).format(DATE_TIME_FORMAT_V2)}</p>}
+        </>
+      ),
+    },
+    {
+      title: "Engagement Rate",
+      align: 'center',
+      key: "engagementRate",
+      width: 150,
+      render: (_, record) => (
+        <>
+          {loading ? <Skeleton.Node style={{ height: 40 }} active /> : <p>{record?.engagementRate || '---'}</p>}
+        </>
+      ),
+    },
+    {
+      title: "Revenue",
+      key: "revenue",
+      align: 'center',
+      width: 150,
+      render: (_, record) => (
+        <>
+          {loading ? <Skeleton.Node style={{ height: 40 }} active /> : <p>{record?.totalRevenue || '---'}</p>}
+        </>
+      ),
+    },
+    {
+      title: "Clicks",
+      key: "Clicks",
+      width: 150,
+      align: 'center',
+      render: (_, record) => (
+        <>
+          {loading ? <Skeleton.Node style={{ height: 40 }} active /> : <p>{record?.totalClicks || '---'}</p>}
+        </>
+      ),
+    },
+    {
+      title: "Cost Per Click (CPC)",
+      key: "CPC",
+      width: 180,
+      align: 'center',
+      render: (_, record) => (
+        <>
+          {loading ? <Skeleton.Node style={{ height: 40 }} active /> : <p>{record?.costPerClick || '---'}</p>}
+        </>
+      ),
+    },
+    {
+      title: "Purchases",
+      key: "purchases",
+      width: 150,
+      align: 'center',
+      render: (_, record) => (
+        <>
+          {loading ? <Skeleton.Node style={{ height: 40 }} active /> : <p>{record.totalPurchases || '---'}</p>}
+        </>
+      ),
+    },
+    {
+      title: "Conversion Rate",
+      key: "cr",
+      width: 150,
+      align: 'center',
+      render: (_, record) => (
+        <>
+          {loading ? <Skeleton.Node style={{ height: 40 }} active /> : <p>{record.conversionRate || '---'}</p>}
+        </>
+      ),
+    },
+    {
+      title: "Action",
+      align: 'center',
+      key: "action",
+      fixed: "right",
+      width: 50,
+      render: (_, record: Content) => (
+        <>
+          {loading ? <Skeleton.Node style={{ maxWidth: 50, height: 20 }} active /> :
+            <ActionDropdown
+              record={record}
+              onRefresh={onRefresh}
+            />}
+        </>
+      ),
+    },
+  ];

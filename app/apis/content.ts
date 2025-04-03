@@ -1,3 +1,5 @@
+import { FormData } from '~/components/content/ModalFilterContent';
+
 import {
   getData,
   postData,
@@ -37,6 +39,14 @@ export const disputeContent = (contentId: string, reason: string) => {
     return postData(`/api/v1/brand/${contentId}/dispute-story-content`, { reason: reason })
 }
 
-export const getContents = (page:number,limit:number) => {
-    return getData(`/api/v1/content?limit=${limit}&page=${page}`)
+export const getContents = (page: number, limit: number, search: string, filter: FormData | null) => {
+    return postData(`/api/v1/content?limit=${limit}&page=${page}&keyword=${search}`, filter ?? undefined)
+}
+
+export const getAllInfluencerInContent = () => {
+    return getData(`/api/v1/brand/imported-influencers?keywrod=&action=filter`)
+}
+
+export const getAllCampaigns = () => {
+    return getData(`/api/v1/campaign?keyword=&action=filter`)
 }
