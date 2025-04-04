@@ -10,6 +10,7 @@ import {
 import CountUp from 'react-countup';
 import { getInstagramStatistics } from '~/apis/campaign';
 import {
+  getAverageOrder,
   getCampaignConversionRate,
   getCampaignROI,
   getClickThroughRateInReport,
@@ -52,7 +53,7 @@ function Reports({ campaign, filter }: ReportsProps) {
 
   const handleGetIGReport = async () => {
     setLoading(true)
-    const [igStats, roi, conversionRate, costPerConversion, costperClicks, influencers, ctr, cpa] = await Promise.all([
+    const [igStats, roi, conversionRate, costPerConversion, costperClicks, influencers, ctr, cpa,average] = await Promise.all([
       getInstagramStatistics(id as string, filter),
       getCampaignROI(id as string, filter),
       getCampaignConversionRate(id as string, filter),
@@ -60,8 +61,8 @@ function Reports({ campaign, filter }: ReportsProps) {
       getCostPerClicks(id as string, filter),
       getInfluencerInReport(id as string, filter),
       getClickThroughRateInReport(id as string, filter),
-      getCpaInReport(id as string, filter)
-
+      getCpaInReport(id as string, filter),
+      getAverageOrder(id as string)
     ]).finally(() => setLoading(false))
 
     setReportData({
@@ -78,7 +79,8 @@ function Reports({ campaign, filter }: ReportsProps) {
       totalCost: roi?.data?.totalCost,
       totalCtr: ctr?.data?.crt,
       cpa: cpa?.data?.costPerAcquisition,
-      totalPurchases: conversionRate?.data?.buyCount
+      totalPurchases: conversionRate?.data?.buyCount,
+      averageOrder:average?.data?.averageOrder
     })
   };
 
@@ -195,7 +197,7 @@ function Reports({ campaign, filter }: ReportsProps) {
           {loading
             ? <Skeleton.Button active block />
             : <span className='text-2xl font-bold'>
-              $<CountUp end={reportData?.costPerClicks} decimals={2} />
+              $<CountUp end={reportData?.averageOrder as number} decimals={2} />
             </span>
           }
         </div>

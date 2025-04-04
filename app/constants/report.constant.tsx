@@ -112,7 +112,8 @@ export const initialReport = {
   totalCost: 0,
   totalCtr: 0,
   cpa: 0,
-  totalPurchases: 0
+  totalPurchases: 0,
+  averageOrder:0
 }
 
 export const initialInfluencerOverLifeTime = {
