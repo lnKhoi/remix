@@ -11,6 +11,7 @@ export type ReportCampaign = {
     totalPurchases:number
     roi: number;
     cpa:number
+    averageOrder?:number
     totalCtr?:number,
     totalCost?:number
     influencers: InfluencerInReport[]
