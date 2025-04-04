@@ -83,3 +83,7 @@ export const getCpaInReport = (campaignId: string, filter: FilterDateRange) => {
 export const getInfluencerMetric = (creatorId:string) => {
     return getData(`/api/v1/creator/${creatorId}/metrics`)
 }
+
+export const getAverageOrder = (campaignId:string) => {
+    return getData(`/api/v1/report/${campaignId}/average-order`)
+}

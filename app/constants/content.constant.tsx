@@ -271,7 +271,7 @@ export const ContentsColumns = ({
         <>
           {loading ? <Skeleton.Node style={{ height: 40 }} active /> :
             <p>
-              {record.engagementRate == null ? '---' : `${record.engagementRate}%`}
+              {record.engagementRate == null ? '---' : `${record.engagementRate.toFixed(2)}%`}
             </p>}
         </>
       ),
@@ -327,7 +327,7 @@ export const ContentsColumns = ({
       align: 'center',
       render: (_, record) => (
         <>
-          {loading ? <Skeleton.Node style={{ height: 40 }} active /> : <p>{record.conversionRate == null ? '---' : `${record.conversionRate}%`}</p>}
+          {loading ? <Skeleton.Node style={{ height: 40 }} active /> : <p>{record.conversionRate == null ? '---' : `${record.conversionRate.toFixed(2)}%`}</p>}
         </>
       ),
     },
