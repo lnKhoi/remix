@@ -40,7 +40,7 @@ export const disputeContent = (contentId: string, reason: string) => {
 }
 
 export const getContents = (page: number, limit: number, search: string, filter: FormData | null) => {
-    return postData(`/api/v1/content?limit=${limit}&page=${page}&keyword=${search}`, filter ?? undefined)
+    return postData(`/api/v1/content?limit=${limit}&page=${page}&name=${search}`, filter ?? undefined)
 }
 
 export const getAllInfluencerInContent = () => {

@@ -59,7 +59,7 @@ const ModalFilterContent = ({ onFilter }: ModalFilterContentProps) => {
     to: null,
     campaignIds: [],
     influencerIds: [],
-    engagementRate: [0, 150],
+    engagementRate: [0, 300],
     conversionRate: [],
     costPerClick: [0, 1000000],
     revenue: [0, 1000000],
