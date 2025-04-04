@@ -190,6 +190,15 @@ function Reports({ campaign, filter }: ReportsProps) {
             </span>
           }
         </div>
+        <div className='border justify-around border-gray-200 hover:shadow-md cursor-pointer transition-shadow 2xl:p-5 p-4 rounded-2xl flex items-start flex-col h-[109px]'>
+          <h5 className=' text-gray-800 text-xs'>Average Order</h5>
+          {loading
+            ? <Skeleton.Button active block />
+            : <span className='text-2xl font-bold'>
+              $<CountUp end={reportData?.costPerClicks} decimals={2} />
+            </span>
+          }
+        </div>
       </div>
       {/* Influencer Performance */}
       <h2 className='mt-6 text-2xl font-medium text-gray-800'>Influencer Performance</h2>
