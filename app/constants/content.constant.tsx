@@ -19,13 +19,21 @@ import {
 } from '~/apis/campaign';
 import { approveContent } from '~/apis/content';
 import ModalPostingDate from '~/components/content/ModalPostingDate';
-import { Content } from '~/models/Content.model';
+import {
+  Content,
+  ContentFormat,
+} from '~/models/Content.model';
 import Editor from '~/plugins/editor';
 import { ModalType } from '~/routes/_dash.manager.content.$id';
 import { abbreviateLastName } from '~/utils/formatNumber';
 
 import { EllipsisOutlined } from '@ant-design/icons';
-import { CheckCircleIcon } from '@heroicons/react/24/outline';
+import {
+  CheckCircleIcon,
+  FilmIcon,
+  PlusCircleIcon,
+  Squares2X2Icon,
+} from '@heroicons/react/24/outline';
 import { Link } from '@remix-run/react';
 
 import { DATE_TIME_FORMAT_V2 } from './time.constant';
@@ -194,6 +202,15 @@ export const ContentsColumns = ({
                   alt="content"
                 />
             }
+            {!loading && (
+              <div
+                style={{ background: 'linear-gradient(135deg, #F9CE34 0%, #EE2A7B 51.44%, #6228D7 100%)' }}
+                className='absolute cursor-pointer top-[4.3px] right-[6.5px] w-5 h-5 flex items-center justify-center rounded-[25px] '>
+                <Tooltip title={getContentIcon(record.contentFormat as ContentFormat)?.desc}>
+                {getContentIcon(record.contentFormat as ContentFormat)?.icon}
+                </Tooltip>
+              </div>
+            )}
           </div>
         )
       }
@@ -266,7 +283,7 @@ export const ContentsColumns = ({
       width: 150,
       render: (_, record) => (
         <>
-          {loading ? <Skeleton.Node style={{ height: 40 }} active /> : <p> {record.totalRevenue == null ? '---' : `${record.totalRevenue}$`}</p>}
+          {loading ? <Skeleton.Node style={{ height: 40 }} active /> : <p> {record.totalRevenue == null ? '---' : `$${record.totalRevenue.toFixed(2)}`}</p>}
         </>
       ),
     },
@@ -288,7 +305,7 @@ export const ContentsColumns = ({
       align: 'center',
       render: (_, record) => (
         <>
-          {loading ? <Skeleton.Node style={{ height: 40 }} active /> : <p>{record.costPerClick == null ? '---' : `${record.costPerClick}$`}</p>}
+          {loading ? <Skeleton.Node style={{ height: 40 }} active /> : <p>{record.costPerClick == null ? '---' : `$${record.costPerClick.toFixed(2)}`}</p>}
         </>
       ),
     },
@@ -331,3 +348,17 @@ export const ContentsColumns = ({
       ),
     },
   ];
+
+
+const getContentIcon = (type: ContentFormat) => {
+  switch (type) {
+    case 'post':
+      return { desc: 'Post', icon: <Squares2X2Icon className='w-4 h-4 text-white font-bold ' /> }
+    case 'reel':
+      return { desc: 'Reel', icon: <FilmIcon className='w-4 h-4 text-white  font-bold ' /> }
+    case 'story':
+      return { desc: 'Story', icon: <PlusCircleIcon className='w-4 h-4 font-bold text-white' /> }
+    default:
+      break;
+  }
+}
