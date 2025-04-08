@@ -1,4 +1,4 @@
-import {
+import React, {
   memo,
   useEffect,
   useState,
@@ -17,58 +17,27 @@ import {
   getAllCampaigns,
   getAllInfluencerInContent,
 } from '~/apis/content';
+import { initialFilterContent } from '~/constants/content.constant';
 import { Campaign } from '~/models/Campaign.model';
+import { FilterContentPayload } from '~/models/Content.model';
 import { Creator } from '~/models/User.model';
 import { formatNumber } from '~/utils/formatNumber';
 
 const { Option } = Select;
 
 
-// Base interface for shared properties
-interface BaseFormData {
-  campaignIds: string[];
-  influencerIds: string[];
-  engagementRate: number[];
-  conversionRate: string[];
-  costPerClick: number[];
-  revenue: number[];
-  clicks: number[];
-  purchases: number[];
-}
 
-// Interface for the form state (used internally with Dayjs)
-interface FormState extends BaseFormData {
-  from: Dayjs | null;
-  to: Dayjs | null;
-}
-
-// Interface for the payload (used for onFilter with string dates)
-export interface FormData extends BaseFormData {
-  from: string | null;
-  to: string | null;
-}
 
 type ModalFilterContentProps = {
-  onFilter: (payload: FormData | null) => void;
-}
+  onFilter: (data: FilterContentPayload | null) => void;
+  filter: FilterContentPayload;
+};
 
-const ModalFilterContent = ({ onFilter }: ModalFilterContentProps) => {
+const ModalFilterContent = ({ onFilter, filter }: ModalFilterContentProps) => {
+  const [influencers, setInfluencers] = useState<Creator[]>([]);
+  const [campaigns, setCampaigns] = useState<Campaign[]>([]);
 
-  const [formData, setFormData] = useState<FormState>({
-    from: null,
-    to: null,
-    campaignIds: [],
-    influencerIds: [],
-    engagementRate: [0, 300],
-    conversionRate: [],
-    costPerClick: [0, 1000000],
-    revenue: [0, 1000000],
-    clicks: [0, 1000000],
-    purchases: [0, 100000],
-  });
-
-  const [influencers, setInfluencers] = useState<Creator[]>([])
-  const [campaigns, setCampaigns] = useState<Campaign[]>([])
+  const [formData, setFormData] = useState<FilterContentPayload>(filter);
 
   const handleStartDateChange = (date: Dayjs | null) => {
     if (date && formData.to && date.isAfter(formData.to)) {
@@ -91,94 +60,101 @@ const ModalFilterContent = ({ onFilter }: ModalFilterContentProps) => {
   };
 
   const handleSubmit = () => {
-    if (formData.to && !formData.to) {
-      message.error('Please select a start date before submitting');
+    if (!formData.from || !formData.to) {
+      message.error('Please select both start and end dates');
       return;
     }
+
     const payload = {
       ...formData,
-      from: formData.from?.toISOString(),
-      to: formData.to?.toISOString(),
+      from: formData.from.toISOString(),
+      to: formData.to.toISOString(),
     };
-    onFilter(payload as FormData)
-
+    onFilter(payload as any);
   };
 
   const handleReset = () => {
-    setFormData({
-      from: null,
-      to: null,
-      campaignIds: [],
-      influencerIds: [],
-      engagementRate: [0, 300],
-      conversionRate: [],
-      costPerClick: [0, 100000],
-      revenue: [0, 1000000],
-      clicks: [0, 1000000],
-      purchases: [0, 100000],
-    });
-
-    onFilter(null)
+    const resetState: FilterContentPayload = initialFilterContent
+    setFormData(resetState);
+    onFilter(null);
   };
 
   const handleFetchData = () => {
-    Promise.all([
-      getAllCampaigns(),
-      getAllInfluencerInContent(),
-    ])
-      .then(([campaign, influencer]) => {
-        setCampaigns(campaign?.data?.data);
-        setInfluencers(influencer?.data?.data)
-      })
+    Promise.all([getAllCampaigns(), getAllInfluencerInContent()]).then(([campaign, influencer]) => {
+      setCampaigns(campaign?.data?.data || []);
+      setInfluencers(influencer?.data?.data || []);
+    });
   };
 
-  useEffect(() => { handleFetchData() }, []);
+  useEffect(() => {
+    handleFetchData();
+  }, []);
 
   return (
     <div className="p-4 bg-white h-[600px] overflow-y-scroll rounded-lg shadow-md w-96">
       <h3 className="text-gray-700 font-medium mb-2">Posting date</h3>
       <div className="mb-4 flex gap-2">
-        <DatePicker placeholder="Start date" className="w-full" value={formData.from} onChange={handleStartDateChange} />
+        <DatePicker
+          placeholder="Start date"
+          className="w-full"
+          value={formData.from}
+          onChange={handleStartDateChange}
+        />
         <DatePicker
           placeholder="End date"
           className="w-full"
           value={formData.to}
           onChange={handleEndDateChange}
-          disabledDate={(current) => formData.from ? current.isBefore(formData.to) : false} />
+        />
       </div>
 
       <h3 className="text-gray-700 font-medium mb-2">Campaign</h3>
-      <Select mode="multiple"
+      <Select
+        mode="multiple"
         maxTagCount={1}
-        placeholder="Select option" className="w-full mb-4"
+        placeholder="Select campaign"
+        className="w-full mb-4"
         value={formData.campaignIds}
-        onChange={(value: string[]) => setFormData({ ...formData, campaignIds: value })}>
-        {campaigns?.map(c => (
-          <Option key={c.id} value={c.id}>{c.name}</Option>
+        onChange={(value) => setFormData({ ...formData, campaignIds: value })}
+      >
+        {campaigns?.map((c) => (
+          <Option key={c.id} value={c.id}>
+            {c.name}
+          </Option>
         ))}
       </Select>
 
       <h3 className="text-gray-700 font-medium mb-2">Influencer</h3>
-      <Select mode="multiple"
+      <Select
+        mode="multiple"
         maxTagCount={1}
-        placeholder="Select option"
+        placeholder="Select influencer"
         className="w-full mb-4"
         value={formData.influencerIds}
-        onChange={(value: string[]) => setFormData({ ...formData, influencerIds: value })}>
-        {influencers?.map(c => (
-          <Option key={c.id} value={c.id}>{c.name}</Option>
+        onChange={(value) => setFormData({ ...formData, influencerIds: value })}
+      >
+        {influencers?.map((i) => (
+          <Option key={i.id} value={i.id}>
+            {i.name}
+          </Option>
         ))}
       </Select>
 
       <h3 className="text-gray-700 font-medium mb-2">Conversion Rate</h3>
       <div className="grid grid-cols-3 gap-2 mb-4">
         {['0 - 20%', '20 - 40%', '40 - 60%', '60 - 80%', '80 - 100%'].map((label) => (
-          <Checkbox key={label} checked={formData.conversionRate.includes(label)} onChange={(e) => {
-            setFormData((prev) => ({
-              ...prev,
-              conversionRate: e.target.checked ? [...prev.conversionRate, label] : prev.conversionRate.filter((item) => item !== label),
-            }));
-          }}>
+          <Checkbox
+            key={label}
+            checked={formData.conversionRate.includes(label)}
+            onChange={(e) =>
+              setFormData((prev) => ({
+                ...prev,
+                conversionRate: e.target.checked
+                  ? [...prev.conversionRate, label]
+                  : prev.conversionRate.filter((item) => item !== label),
+              }))
+            }
+          >
             {label}
           </Checkbox>
         ))}
@@ -189,36 +165,30 @@ const ModalFilterContent = ({ onFilter }: ModalFilterContentProps) => {
         { key: 'costPerClick', label: 'Cost Per Click (CPC)', min: 0, max: 100000, suffix: '$', step: 10000 },
         { key: 'revenue', label: 'Revenue', min: 0, max: 1000000, suffix: '$', step: 10000 },
         { key: 'clicks', label: 'Clicks', min: 0, max: 1000000, suffix: '', step: 10000 },
-        { key: 'purchases', label: 'Purchases', min: 0, max: 100000, suffix: '', step: 1000 }
+        { key: 'purchases', label: 'Purchases', min: 0, max: 100000, suffix: '', step: 1000 },
       ].map(({ key, label, min, max, suffix, step }) => (
         <div key={key} className="mb-4">
           <h3 className="text-gray-700 font-medium mb-2">{label}</h3>
-          <div className="flex items-center gap-2 w-full">
-            <span>{suffix}{min}</span>
-            <Slider
-              range
-              className="w-full"
-              min={min}
-              max={max}
-              step={step}
-              value={formData[key as keyof FormData] as number[]}
-              onChange={(value: number[]) => setFormData({ ...formData, [key]: value })}
-            />
-            <span className='w-[40px] text-end '>{suffix}{formatNumber(max)}</span>
-          </div>
+          <Slider
+            range
+            min={min}
+            max={max}
+            step={step}
+            value={formData[key as keyof FilterContentPayload] as number[]}
+            onChange={(value) => setFormData({ ...formData, [key]: value })}
+            tooltip={{ formatter: (value) => `${formatNumber(value as number)}${suffix}` }}
+          />
         </div>
       ))}
 
       <div className="flex justify-end gap-2 mt-4">
-        <Button className="border-gray-300" onClick={handleReset}>
-          Reset
-        </Button>
-        <Button type="primary" className="bg-blue-600" onClick={handleSubmit}>
-          Apply
+        <Button onClick={handleReset}>Reset</Button>
+        <Button type="primary" onClick={handleSubmit}>
+          Apply Filter
         </Button>
       </div>
     </div>
   );
 };
 
-export default memo(ModalFilterContent)
+export default memo(ModalFilterContent);
