@@ -362,3 +362,16 @@ const getContentIcon = (type: ContentFormat) => {
       break;
   }
 }
+
+export const initialFilterContent = {
+  from: '',
+  to: '',
+  campaignIds: [],
+  influencerIds: [],
+  engagementRate: [0, 300],
+  conversionRate: [],
+  costPerClick: [0, 1000000],
+  revenue: [0, 1000000],
+  clicks: [0, 1000000],
+  purchases: [0, 100000],
+}
