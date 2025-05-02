@@ -6,12 +6,17 @@ import {
 import { TabsProps } from 'antd/lib';
 import { InfluencerInReport } from '~/models/report.model';
 
+import { EyeIcon } from '@heroicons/react/24/outline';
+import { Link } from '@remix-run/react';
+
 type ColumnsProps = {
-  loading: boolean
+  loading: boolean,
+  id:string
 };
 
 export const influencerPerformanceColumns = ({
-  loading
+  loading,
+  id
 }: ColumnsProps): TableColumnsType<InfluencerInReport> => [
     {
       title: 'Name',
@@ -22,8 +27,8 @@ export const influencerPerformanceColumns = ({
               ? <Skeleton.Avatar active shape='circle' />
               :
               <div className='flex items-center gap-3'>
-                <Avatar src={record.creator?.avatarUrl} className='w-[36px] h-[36px] rounded-[50%]' />
-                <div className='flex flex-col items-center'>
+                <Avatar src={record.creator?.avatarUrl || record?.creator?.instagramProfilePictureUrl} className='w-[36px] h-[36px] rounded-[50%]' />
+                <div className='flex flex-col items-start'>
                   <p className='text-sm font-medium text-gray-800'>{record?.creator?.name}</p>
                   <p className='text-sm font-normal text-gray-500'>{record?.creator?.email}</p>
                 </div>
@@ -43,29 +48,18 @@ export const influencerPerformanceColumns = ({
         </div>
     },
     {
-      title: 'Engagement Rate',
+      title: 'ROI (%)',
       render: (_, record) =>
         <div>
           {
             loading
               ? <Skeleton.Input active size='small' />
-              : <div className='text-sm font-normal text-gray-800'>{(record?.engagementRate || 0)?.toFixed(2)}%</div>
+              : <div className='text-sm font-normal text-gray-800'>{record?.roi?.toFixed(2)}%</div>
           }
         </div>
     },
     {
-      title: 'Clicks',
-      render: (_, record) =>
-        <div>
-          {
-            loading
-              ? <Skeleton.Input active size='small' />
-              : <div className='text-sm font-normal text-gray-800'>{record?.totalClicks}</div>
-          }
-        </div>
-    },
-    {
-      title: 'Cost Per Click (CPC)',
+      title: 'CPA',
       render: (_, record) =>
         <div>
           {
@@ -76,14 +70,35 @@ export const influencerPerformanceColumns = ({
         </div>
     },
     {
-      title: 'Purchases',
+      title: 'CTR',
+      render: (_, record) =>
+        <div>
+          {
+            loading
+              ? <Skeleton.Input active size='small' />
+              : <div className='text-sm font-normal text-gray-800'>{record?.ctr?.toFixed(2)}%</div>
+          }
+        </div>
+    },
+    {
+      title: 'CPC',
+      render: (_, record) =>
+        <div>
+          {
+            loading
+              ? <Skeleton.Input active size='small' />
+              : <div className='text-sm font-normal text-gray-800'>${record?.costPerClick?.toFixed(2)}</div>
+          }
+        </div>
+    },
+    {
+      title: 'Total Purchases',
       render: (_, record) =>
         <div>
           {
             loading
               ? <Skeleton.Input active size='small' />
               : <div className='text-sm font-normal text-gray-800'>{record?.totalOrders}</div>
-
           }
         </div>
     },
@@ -97,6 +112,20 @@ export const influencerPerformanceColumns = ({
               : <div className='text-sm font-normal text-gray-800'>{record?.conversionRate?.toFixed(2)}%</div>
           }
         </div>
+    },
+    {
+      title: 'Action',
+      align: 'justify',
+      render: (_, record) =>
+        <Link to={`/manager/${id}/${record.creatorId}`} state={{ record }}>
+          <div className='flex justify-start ml-3'>
+            {
+              loading
+                ? <Skeleton.Input active size='small' />
+                : <EyeIcon className='w-5 h-5 text-gray-800' />
+            }
+          </div>
+        </Link>
     },
   ];
 
@@ -114,12 +143,12 @@ export const initialReport = {
   totalCtr: 0,
   cpa: 0,
   totalPurchases: 0,
-  averageOrder:0,
-  addToCartPerClick:0,
-  costPerAddToCarts:0,
-  customerBehavior:0,
-  bounceRate:0,
-  averageDuration:0
+  averageOrder: 0,
+  addToCartPerClick: 0,
+  costPerAddToCarts: 0,
+  customerBehavior: 0,
+  bounceRate: 0,
+  averageDuration: 0
 }
 
 export const initialInfluencerOverLifeTime = {

@@ -28,11 +28,9 @@ import {
 } from '~/constants/report.constant';
 import { Campaign } from '~/models/Campaign.model';
 import { ReportCampaign } from '~/models/report.model';
-import { InfluencerPerformance } from '~/models/User.model';
 
 import { useParams } from '@remix-run/react';
 
-import InfluencerProfile from '../profile/InfluencerProfile';
 import Metric from '../report/Metric';
 import { DateRange } from '../ui/ModalSelectTimeRange';
 
@@ -43,21 +41,13 @@ type ReportsProps = {
 
 function Reports({ campaign, filter }: ReportsProps) {
   const { id } = useParams();
-  const [activeTab, setActiveTab] = useState<string>('1')
+  const [activeTab, setActiveTab] = useState(() => localStorage.getItem('report-tab') || '1');
   const [loading, setLoading] = useState<boolean>(false)
   const [reportData, setReportData] = useState<ReportCampaign>(initialReport)
 
-  const [modal, setModal] = useState<boolean>(false)
-  const [selectedInfluencer, setSelectedInfluencer] = useState<InfluencerPerformance | null>(null)
-
-  const handleViewInfluencerProfile = (influencer: InfluencerPerformance) => {
-    setModal(!modal)
-    setSelectedInfluencer(influencer)
-  }
-
   const handleGetIGReport = async () => {
     setLoading(true)
-    const [igStats, roi, conversionRate, costPerConversion, costperClicks, influencers, ctr, cpa, average, cartInfo,duration] = await Promise.all([
+    const [igStats, roi, conversionRate, costPerConversion, costperClicks, influencers, ctr, cpa, average, cartInfo, duration] = await Promise.all([
       getInstagramStatistics(id as string, filter),
       getCampaignROI(id as string, filter),
       getCampaignConversionRate(id as string, filter),
@@ -68,7 +58,7 @@ function Reports({ campaign, filter }: ReportsProps) {
       getCpaInReport(id as string, filter),
       getAverageOrder(id as string, filter),
       getCartInfo(id as string, filter),
-      bounceAndDuration(id as string , filter)
+      bounceAndDuration(id as string, filter)
     ]).finally(() => setLoading(false))
 
     setReportData({
@@ -89,9 +79,9 @@ function Reports({ campaign, filter }: ReportsProps) {
       averageOrder: average?.data?.averageOrder,
       addToCartPerClick: cartInfo?.data?.addToCartPerClick,
       costPerAddToCarts: cartInfo?.data?.costPerAddToCarts,
-      customerBehavior:cartInfo?.data?.customerBehavior,
-      bounceRate:duration?.data?.bounceRate,
-      averageDuration:duration?.data?.averageDuration
+      customerBehavior: cartInfo?.data?.customerBehavior,
+      bounceRate: duration?.data?.bounceRate,
+      averageDuration: duration?.data?.averageDuration
     })
   };
 
@@ -102,10 +92,9 @@ function Reports({ campaign, filter }: ReportsProps) {
   }, [filter.time, filter.dateRange])
 
 
-
   return (
     <div className='w-full custom-report'>
-      <Tabs defaultActiveKey="1" items={ReportTab} onChange={(e) => setActiveTab(e)} />
+      <Tabs activeKey={activeTab} items={ReportTab} onChange={(e) => { setActiveTab(e); localStorage.setItem('report-tab', e) }} />
       {/* Campaign Performance */}
       {activeTab == '1' && (
         <div className=' -mt-3' >
@@ -161,7 +150,7 @@ function Reports({ campaign, filter }: ReportsProps) {
             <Collapse.Panel header="Customer Behavior" key="5">
               <span className="text-gray-500">Gain deeper insights into customer behavior to enhance UX and increase sales.</span>
               <div className="grid grid-cols-4 gap-5 mt-5">
-                <Metric unit="" data={reportData.customerBehavior as number} title="Total Purchases" loading={loading} />
+                <Metric unit="" data={reportData.customerBehavior as number} title="Customer Behavior" loading={loading} />
               </div>
             </Collapse.Panel>
           </Collapse>
@@ -175,10 +164,7 @@ function Reports({ campaign, filter }: ReportsProps) {
           <p className='text-sm mt-1 text-gray-700'>Manage your content and view their sales performance.</p>
           <div className='mt-6 cursor-pointer'>
             <Table
-              onRow={(record) => ({
-                onClick: () => handleViewInfluencerProfile(record as any),
-              })}
-              columns={influencerPerformanceColumns({ loading })}
+              columns={influencerPerformanceColumns({ loading, id: id ?? '' })}
               dataSource={
                 loading
                   ? [1, 2, 3] as any
@@ -186,14 +172,6 @@ function Reports({ campaign, filter }: ReportsProps) {
               } />
           </div>
         </div>
-      )}
-
-      {modal && (
-        <InfluencerProfile
-          campaignId={id as string}
-          inluencerId={selectedInfluencer?.creator?.id as string}
-          onClose={() => setModal(false)}
-          open={modal} />
       )}
     </div>
   )

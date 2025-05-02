@@ -125,6 +125,7 @@ export type Creator = {
   deadline?: string
   instagramFollowsCount?: number
   demographicAges?: Demographic[]
+  instagramProfilePictureUrl?:string
   demographicGenders?: Demographic[]
   demographicCities?: Demographic[]
   instagramMediaCount?: number
