@@ -365,3 +365,23 @@ input::placeholder {
 .slick-next:before {
   display: none !important;
 }
+
+
+
+/* Custom background color for the Select component */
+.custom-report .ant-collapse {
+  background-color: white;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+}
+
+.custom-report .ant-collapse-header-text {
+  font-size: 20px;
+}
+
+.custom-report .ant-collapse-item-active .ant-collapse-header{
+  padding-bottom: 0 !important;
+}
+
+.custom-report .ant-collapse-item {
+  margin-top: 20px !important;
+}
