@@ -27,6 +27,9 @@ export type InfluencerInReport = {
     totalImpressions?: number;
     totalFollowers?: number;
     revenue?:number
+    ctr?:number
+    roi?:number
+    instagramProfilePictureUrl?:string
     totalInteractions?: number;
     engagementRate?: number;
     totalPurchases?:number
