@@ -54,7 +54,7 @@ export const influencerPerformanceColumns = ({
           {
             loading
               ? <Skeleton.Input active size='small' />
-              : <div className='text-sm font-normal text-gray-800'>{record?.roi?.toFixed(2)}%</div>
+              : <div className='text-sm font-normal text-gray-800'>{(record?.roi || 0)?.toFixed(2)}%</div>
           }
         </div>
     },
