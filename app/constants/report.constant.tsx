@@ -3,6 +3,7 @@ import {
   Skeleton,
   TableColumnsType,
 } from 'antd';
+import { TabsProps } from 'antd/lib';
 import { InfluencerInReport } from '~/models/report.model';
 
 type ColumnsProps = {
@@ -31,17 +32,6 @@ export const influencerPerformanceColumns = ({
         </div>
     },
     {
-      title: 'Engagement Rate',
-      render: (_, record) =>
-        <div>
-          {
-            loading
-              ? <Skeleton.Input active size='small' />
-              : <div className='text-sm font-normal text-gray-800'>{(record?.engagementRate || 0)?.toFixed(2)}%</div>
-          }
-        </div>
-    },
-    {
       title: 'Revenue',
       render: (_, record) =>
         <div>
@@ -49,6 +39,17 @@ export const influencerPerformanceColumns = ({
             loading
               ? <Skeleton.Input active size='small' />
               : <div className='text-sm font-normal text-gray-800'>${record?.totalRevenue?.toFixed(2)}</div>
+          }
+        </div>
+    },
+    {
+      title: 'Engagement Rate',
+      render: (_, record) =>
+        <div>
+          {
+            loading
+              ? <Skeleton.Input active size='small' />
+              : <div className='text-sm font-normal text-gray-800'>{(record?.engagementRate || 0)?.toFixed(2)}%</div>
           }
         </div>
     },
@@ -113,9 +114,25 @@ export const initialReport = {
   totalCtr: 0,
   cpa: 0,
   totalPurchases: 0,
-  averageOrder:0
+  averageOrder:0,
+  addToCartPerClick:0,
+  costPerAddToCarts:0,
+  customerBehavior:0,
+  bounceRate:0,
+  averageDuration:0
 }
 
 export const initialInfluencerOverLifeTime = {
   conversionRate: 0, totalClicks: 0, influencerAudience: null, revenue: 0, costPerClicks: 0, purchases: 0
 }
+
+export const ReportTab: TabsProps['items'] = [
+  {
+    key: '1',
+    label: 'Campaign Performance',
+  },
+  {
+    key: '2',
+    label: 'Influencer Performance',
+  },
+];

@@ -84,6 +84,25 @@ export const getInfluencerMetric = (creatorId:string) => {
     return getData(`/api/v1/creator/${creatorId}/metrics`)
 }
 
-export const getAverageOrder = (campaignId:string) => {
-    return getData(`/api/v1/report/${campaignId}/average-order`)
+export const getAverageOrder = (campaignId:string,filter:FilterDateRange) => {
+    const dateRangeQuery = filter.dateRange
+        ? `&from=${filter.dateRange[0]}&to=${filter.dateRange[1]}`
+        : ''; 
+    return getData(`/api/v1/report/${campaignId}/average-order?timeRange=${filter.time}${dateRangeQuery}`)
 }
+
+export const getCartInfo = (campaignId:string,filter:FilterDateRange) => {
+    const dateRangeQuery = filter.dateRange
+        ? `&from=${filter.dateRange[0]}&to=${filter.dateRange[1]}`
+        : ''; 
+    return getData(`/api/v1/report/add-to-carts?campaignId=${campaignId}&timeRange=${filter.time}${dateRangeQuery}`)
+}
+
+
+export const bounceAndDuration = (campaignId:string,filter:FilterDateRange) => {
+    const dateRangeQuery = filter.dateRange
+        ? `&from=${filter.dateRange[0]}&to=${filter.dateRange[1]}`
+        : ''; 
+    return getData(`/api/v1/report/bounce-and-duration?campaignId=${campaignId}&timeRange=${filter.time}${dateRangeQuery}`)
+}
+

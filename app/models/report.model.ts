@@ -13,7 +13,12 @@ export type ReportCampaign = {
     cpa:number
     averageOrder?:number
     totalCtr?:number,
+    customerBehavior?:number
+    bounceRate:number,
+    averageDuration:number
     totalCost?:number
+    costPerAddToCarts?:number
+    addToCartPerClick?:number
     influencers: InfluencerInReport[]
 };
 
