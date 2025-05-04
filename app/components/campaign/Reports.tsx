@@ -113,8 +113,7 @@ function Reports({ campaign, filter }: ReportsProps) {
               <span className="text-gray-500">Evaluate audience reach and engagement across platforms.</span>
               <div className="grid grid-cols-4 gap-5 mt-5">
                 <Metric unit="%" data={reportData.engagementRate} title="Engagement Rate" loading={loading} />
-                <Metric unit="%" data={reportData.totalCtr as number} title="Click through rate" loading={loading} />
-                <Metric unit="" data={reportData.totalClicks as number} title="Total Clicks" loading={loading} />
+                <Metric unit="%" data={9999} title="Comment Rate" loading={loading} />
               </div>
             </Collapse.Panel>
           </Collapse>
@@ -124,8 +123,10 @@ function Reports({ campaign, filter }: ReportsProps) {
               <span className="text-gray-500">Understand where users are coming from, how long they stay, and bounce rates.</span>
               <div className="grid grid-cols-4 gap-5 mt-5">
                 <Metric unit="" data={reportData.totalClicks} title="Product View" loading={loading} />
+                <Metric unit="" data={reportData.totalClicks as number} title="Total Clicks" loading={loading} />
                 <Metric unit="" data={reportData.averageDuration} title="Average Duration" loading={loading} />
                 <Metric unit="%" data={reportData.bounceRate} title="Bounced Rate" loading={loading} />
+                <Metric unit="%" data={reportData.totalCtr as number} title="Click through rate" loading={loading} />
               </div>
             </Collapse.Panel>
           </Collapse>
@@ -142,6 +143,8 @@ function Reports({ campaign, filter }: ReportsProps) {
                 <Metric unit="$" data={reportData.cpa} title="CPA (Cost per acquisition)" loading={loading} />
                 <Metric unit="" data={reportData.totalPurchases} title="Total purchases" loading={loading} />
                 <Metric unit="$" data={reportData.averageOrder as number} title="Average Order" loading={loading} />
+                <Metric unit="" data={9999} title="Total Add to cart" loading={loading} />
+                <Metric unit="" data={9999} title="Average Add to cart" loading={loading} />
               </div>
             </Collapse.Panel>
           </Collapse>
