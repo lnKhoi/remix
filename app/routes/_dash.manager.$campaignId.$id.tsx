@@ -18,6 +18,9 @@ function InfluencerMetrics() {
   const params = useParams()
 
   const data = location?.state?.record
+  const { Panel } = Collapse;
+
+  if (!data) return <></>
 
   return (
     <div className='custom-report'>
@@ -49,39 +52,40 @@ function InfluencerMetrics() {
 
         {/* Metrics */}
         <Collapse defaultActiveKey={['1']} bordered={false} expandIconPosition="right">
-          <Collapse.Panel header="General Performance" key="1">
+          <Panel header="General Performance" key="1">
             <span className="text-gray-500">Quickly understand the overall status of your campaign.</span>
             <div className="grid grid-cols-4 gap-5 mt-5">
               <Metric loading={false} unit="$" data={data?.totalRevenue} title="Total Revenue" />
               <Metric loading={false} unit="$" data={data?.totalOrders as number} title="Total Cost" />
             </div>
-          </Collapse.Panel>
+          </Panel>
         </Collapse>
 
         <Collapse defaultActiveKey={['2']} bordered={false} expandIconPosition="right">
-          <Collapse.Panel header="Social Media Metrics" key="2">
+          <Panel header="Social Media Metrics" key="2">
             <span className="text-gray-500">Evaluate audience reach and engagement across platforms.</span>
             <div className="grid grid-cols-4 gap-5 mt-5">
               <Metric unit="%" data={data?.engagementRate} loading={false} title="Engagement Rate" />
-              <Metric unit="%" data={data?.ctr as number} loading={false} title="Click through rate" />
-              <Metric unit="" data={data?.totalClicks as number} loading={false} title="Total Clicks" />
+              <Metric unit="%" data={9999} loading={false} title="Comment Rate" />
             </div>
-          </Collapse.Panel>
+          </Panel>
         </Collapse>
 
         <Collapse defaultActiveKey={['3']} bordered={false} expandIconPosition="right">
-          <Collapse.Panel header="Website Traffic Metric" key="3">
+          <Panel header="Website Traffic Metric" key="3">
             <span className="text-gray-500">Understand where users are coming from, how long they stay, and bounce rates.</span>
             <div className="grid grid-cols-4 gap-5 mt-5">
               <Metric unit="" data={data?.totalClicks} loading={false} title="Product View" />
+              <Metric unit="" data={data?.totalClicks as number} loading={false} title="Total Clicks" />
               <Metric unit="" data={data?.averageDuration} loading={false} title="Average Duration" />
               <Metric unit="%" data={data?.bounceRate} loading={false} title="Bounced Rate" />
+              <Metric unit="%" data={data?.ctr as number} loading={false} title="Click through rate" />
             </div>
-          </Collapse.Panel>
+          </Panel>
         </Collapse>
 
         <Collapse defaultActiveKey={['4']} bordered={false} expandIconPosition="right">
-          <Collapse.Panel header="Conversion Funnel Metrics" key="4">
+          <Panel header="Conversion Funnel Metrics" key="4">
             <span className="text-gray-500">Identify strengths and bottlenecks in the sales funnel and optimize conversion rates.</span>
             <div className="grid grid-cols-4 gap-5 mt-5">
               <Metric unit="%" data={data?.addToCart as number} loading={false} title="Add to card %" />
@@ -92,17 +96,19 @@ function InfluencerMetrics() {
               <Metric unit="$" data={data?.cpa} loading={false} title="CPA (Cost per acquisition)" />
               <Metric unit="" data={data?.totalOrders} loading={false} title="Total purchases" />
               <Metric unit="$" data={data?.averageOrder as number} loading={false} title="Average Order" />
+              <Metric unit="" data={9999} loading={false} title="Total add to cart" />
+              <Metric unit="" data={9999} loading={false} title="Average add to cart" />
             </div>
-          </Collapse.Panel>
+          </Panel>
         </Collapse>
 
         <Collapse defaultActiveKey={['5']} bordered={false} expandIconPosition="right">
-          <Collapse.Panel header="Customer Behavior" key="5">
+          <Panel header="Customer Behavior" key="5">
             <span className="text-gray-500">Gain deeper insights into customer behavior to enhance UX and increase sales.</span>
             <div className="grid grid-cols-4 gap-5 mt-5">
               <Metric unit="" data={data?.behavior as number} loading={false} title="Customer Behavior" />
             </div>
-          </Collapse.Panel>
+          </Panel>
         </Collapse>
       </div>
     </div>
