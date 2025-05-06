@@ -148,8 +148,8 @@ const Discount = ({ form }: DiscountProps) => {
             </div>
 
             {/* Products Page*/}
-            <p className="text-lg font-semibold ">Product Page</p>
-            <p className='text-sm text-gray-500 mb-5'>You can choose a specific option within a group or select the group itself to apply to all items</p>
+            <p className="text-lg font-semibold mb-2 ">Store Site Map</p>
+            {/* <p className='text-sm text-gray-500 mb-5'>You can choose a specific option within a group or select the group itself to apply to all items</p> */}
             <div className="w-full flex items-start justify-between gap-5">
                 <Form.Item
                     className="w-full"

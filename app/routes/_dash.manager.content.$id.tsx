@@ -170,7 +170,6 @@ const ContentDetails = () => {
     userInfo && !hasPermission('view-content') && navigation('/page-not-found')
   }, [userInfo])
 
-
   return (
     <div className='custom-select'>
 
