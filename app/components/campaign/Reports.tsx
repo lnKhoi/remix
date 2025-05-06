@@ -130,7 +130,7 @@ function Reports({ campaign, filter }: ReportsProps) {
               <div className="grid grid-cols-4 gap-5 mt-5">
                 <Metric unit="" data={reportData.totalClicks} title="Product View" loading={loading} />
                 <Metric unit="" data={reportData.totalClicks as number} title="Total Clicks" loading={loading} />
-                <Metric unit="" data={reportData.averageDuration} title="Average Duration" loading={loading} />
+                <Metric unit="" data={reportData.averageDuration} title="Average Duration (ms)" loading={loading} />
                 <Metric unit="%" data={reportData.bounceRate} title="Bounced Rate" loading={loading} />
                 <Metric unit="%" data={reportData.totalCtr as number} title="Click through rate" loading={loading} />
               </div>
@@ -141,16 +141,16 @@ function Reports({ campaign, filter }: ReportsProps) {
             <Collapse.Panel header="Conversion Funnel Metrics" key="4">
               <span className="text-gray-500">Identify strengths and bottlenecks in the sales funnel and optimize conversion rates.</span>
               <div className="grid grid-cols-4 gap-5 mt-5">
-                <Metric unit="%" data={reportData.addToCartPerClick as number} title="Add to card %" loading={loading} />
-                <Metric unit="$" data={reportData.costPerAddToCarts as number} title="Cost per add to card" loading={loading} />
+                <Metric unit="%" data={reportData.addToCartPerClick as number} title="Add to cart %" loading={loading} />
+                <Metric unit="$" data={reportData.costPerAddToCarts as number} title="Cost per add to cart" loading={loading} />
+                <Metric unit="" data={reportData.totalAddToCarts as number} title="Total Add to cart" loading={loading} />
+                <Metric unit="" data={reportData.averageAddToCart as number} title="Average Add to cart" loading={loading} />
                 <Metric unit="%" data={reportData.conversionRate} title="Conversion Rate" loading={loading} />
                 <Metric unit="%" data={reportData.roi} title="ROI (%)" loading={loading} />
                 <Metric unit="$" data={reportData.costPerClicks} title="Cost per click" loading={loading} />
                 <Metric unit="$" data={reportData.cpa} title="CPA (Cost per acquisition)" loading={loading} />
                 <Metric unit="" data={reportData.totalPurchases} title="Total purchases" loading={loading} />
                 <Metric unit="$" data={reportData.averageOrder as number} title="Average Order" loading={loading} />
-                <Metric unit="" data={reportData.totalAddToCarts as number} title="Total Add to cart" loading={loading} />
-                <Metric unit="" data={reportData.averageAddToCart as number} title="Average Add to cart" loading={loading} />
               </div>
             </Collapse.Panel>
           </Collapse>
