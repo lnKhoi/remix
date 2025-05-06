@@ -13,6 +13,7 @@ export type Campaign = {
     socialMedia: string[]; 
     maximumParticipants?:number
     location: string; 
+    productIds?:string [] 
     discount: number; 
     campaignOverview: string; 
     isDeleted?: boolean; 
