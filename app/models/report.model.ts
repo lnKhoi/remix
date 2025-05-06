@@ -14,6 +14,9 @@ export type ReportCampaign = {
     averageOrder?:number
     totalCtr?:number,
     customerBehavior?:number
+    averageAddToCart?:number
+    totalAddToCarts?:number
+    commentRate?:number
     bounceRate:number,
     averageDuration:number
     totalCost?:number
