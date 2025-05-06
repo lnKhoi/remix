@@ -14,6 +14,7 @@ import {
 import {
   getDiscountCodeShopify,
   getProducts,
+  getProductsSiteMap,
   getShopId,
 } from '~/apis/shopify';
 import { DISCOUNT_REQUIRED } from '~/constants/messages.constant';
@@ -26,6 +27,8 @@ import { PlusIcon } from '@heroicons/react/24/outline';
 
 import ModalCreateDiscount from './ModalCreateDiscount';
 
+const { Option, OptGroup } = Select;
+
 interface DiscountProps {
     form: FormInstance
 }
@@ -35,6 +38,7 @@ const Discount = ({ form }: DiscountProps) => {
     const [modal, setModal] = useState<boolean>(false)
     const [discountCodes, setDiscountCodes] = useState<DiscountCode[]>([]);
     const [products, setProducts] = useState<Product[]>([])
+    const [productPage, setProductPage] = useState([])
     const [shopId, setShopId] = useState<string>('')
     const formData = form.getFieldsValue()
     const [modalConnectShopify, setModalConnectShopify] = useState<boolean>(false)
@@ -53,6 +57,7 @@ const Discount = ({ form }: DiscountProps) => {
 
     const handleGetProducts = (shopId: string) => {
         getProducts(shopId).then(res => setProducts(res.data.products))
+        getProductsSiteMap().then(res => setProductPage(res.data))
     }
 
     useEffect(() => {
@@ -142,6 +147,30 @@ const Discount = ({ form }: DiscountProps) => {
                 </Form.Item>
             </div>
 
+            {/* Products Page*/}
+            <p className="text-lg font-semibold ">Product Page</p>
+            <p className='text-sm text-gray-500 mb-5'>You can choose a specific option within a group or select the group itself to apply to all items</p>
+            <div className="w-full flex items-start justify-between gap-5">
+                <Form.Item
+                    className="w-full"
+                    label=""
+                    name="trackingUrl"
+                    rules={[{ required: false }]}
+                >
+                    <Select className='w-full' placeholder="Select an item">
+                        {productPage?.map((group) => (
+                            <OptGroup key={group?.title} label={group?.value}>
+                                {group?.children?.map((item) => (
+                                    <Option key={item?.value} value={item?.value}>
+                                        {item?.title}
+                                    </Option>
+                                ))}
+                            </OptGroup>
+                        ))}
+                    </Select>
+                </Form.Item>
+            </div>
+
             {/* Modal Create Discount */}
             {modal && (
                 <ModalCreateDiscount
@@ -186,3 +215,4 @@ const Discount = ({ form }: DiscountProps) => {
 };
 
 export default Discount;
+

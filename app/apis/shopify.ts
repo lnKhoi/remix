@@ -30,3 +30,7 @@ export const getOrders = (campaignId:string) => {
 export const getOrdersInCampagin = () => {
     return getData(`/api/v1/order?page=1&limit=15`)
 }
+
+export const getProductsSiteMap = () => {
+    return getData(`/api/v1/campaign/store-sitemap`)
+}

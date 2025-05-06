@@ -66,7 +66,7 @@ function InfluencerMetrics() {
             <span className="text-gray-500">Evaluate audience reach and engagement across platforms.</span>
             <div className="grid grid-cols-4 gap-5 mt-5">
               <Metric unit="%" data={data?.engagementRate} loading={false} title="Engagement Rate" />
-              <Metric unit="%" data={9999} loading={false} title="Comment Rate" />
+              <Metric unit="%" data={data?.commentRate} loading={false} title="Comment Rate" />
             </div>
           </Panel>
         </Collapse>
@@ -96,8 +96,8 @@ function InfluencerMetrics() {
               <Metric unit="$" data={data?.cpa} loading={false} title="CPA (Cost per acquisition)" />
               <Metric unit="" data={data?.totalOrders} loading={false} title="Total purchases" />
               <Metric unit="$" data={data?.averageOrder as number} loading={false} title="Average Order" />
-              <Metric unit="" data={9999} loading={false} title="Total add to cart" />
-              <Metric unit="" data={9999} loading={false} title="Average add to cart" />
+              <Metric unit="" data={data?.totalAddToCarts} loading={false} title="Total add to cart" />
+              <Metric unit="" data={data?.averageAddToCart} loading={false} title="Average add to cart" />
             </div>
           </Panel>
         </Collapse>
