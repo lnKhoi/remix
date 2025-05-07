@@ -43,7 +43,7 @@ export const influencerPerformanceColumns = ({
           {
             loading
               ? <Skeleton.Input active size='small' />
-              : <div className='text-sm font-normal text-gray-800'>${record?.totalRevenue?.toFixed(2)}</div>
+              : <div className='text-sm font-normal text-gray-800'>${(record?.totalRevenue || 0)?.toFixed(2)}</div>
           }
         </div>
     },
@@ -65,7 +65,7 @@ export const influencerPerformanceColumns = ({
           {
             loading
               ? <Skeleton.Input active size='small' />
-              : <div className='text-sm font-normal text-gray-800'>${record?.cpa?.toFixed(2)}</div>
+              : <div className='text-sm font-normal text-gray-800'>${(record?.cpa || 0)?.toFixed(2)}</div>
           }
         </div>
     },
@@ -76,7 +76,7 @@ export const influencerPerformanceColumns = ({
           {
             loading
               ? <Skeleton.Input active size='small' />
-              : <div className='text-sm font-normal text-gray-800'>{record?.ctr?.toFixed(2)}%</div>
+              : <div className='text-sm font-normal text-gray-800'>{(record?.ctr || 0)?.toFixed(2)}%</div>
           }
         </div>
     },
@@ -87,7 +87,7 @@ export const influencerPerformanceColumns = ({
           {
             loading
               ? <Skeleton.Input active size='small' />
-              : <div className='text-sm font-normal text-gray-800'>${record?.costPerClick?.toFixed(2)}</div>
+              : <div className='text-sm font-normal text-gray-800'>${(record?.costPerClick || 0)?.toFixed(2)}</div>
           }
         </div>
     },
@@ -98,7 +98,7 @@ export const influencerPerformanceColumns = ({
           {
             loading
               ? <Skeleton.Input active size='small' />
-              : <div className='text-sm font-normal text-gray-800'>{record?.totalOrders}</div>
+              : <div className='text-sm font-normal text-gray-800'>{(record?.totalOrders || 0)}</div>
           }
         </div>
     },
