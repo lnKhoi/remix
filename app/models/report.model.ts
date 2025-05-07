@@ -28,6 +28,7 @@ export type ReportCampaign = {
 export type InfluencerInReport = {
     creatorId?: string;
     totalImpressions?: number;
+    cpa?:number
     totalFollowers?: number;
     revenue?:number
     ctr?:number
