@@ -65,7 +65,7 @@ export const influencerPerformanceColumns = ({
           {
             loading
               ? <Skeleton.Input active size='small' />
-              : <div className='text-sm font-normal text-gray-800'>${record?.costPerClick?.toFixed(2)}</div>
+              : <div className='text-sm font-normal text-gray-800'>${record?.cpa?.toFixed(2)}</div>
           }
         </div>
     },

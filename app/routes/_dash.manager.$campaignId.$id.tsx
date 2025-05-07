@@ -20,6 +20,7 @@ function InfluencerMetrics() {
   const data = location?.state?.record
   const { Panel } = Collapse;
 
+
   if (!data) return <></>
 
   return (
@@ -56,7 +57,7 @@ function InfluencerMetrics() {
             <span className="text-gray-500">Quickly understand the overall status of your campaign.</span>
             <div className="grid grid-cols-4 gap-5 mt-5">
               <Metric loading={false} unit="$" data={data?.totalRevenue} title="Total Revenue" />
-              <Metric loading={false} unit="$" data={data?.totalOrders as number} title="Total Cost" />
+              <Metric loading={false} unit="$" data={data?.totalCost as number} title="Total Cost" />
             </div>
           </Panel>
         </Collapse>
