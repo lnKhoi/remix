@@ -5,16 +5,15 @@ import {
 
 import {
   Button,
-  DatePicker,
   Form,
   FormInstance,
+  Input,
   Modal,
   Select,
 } from 'antd';
 import {
   getDiscountCodeShopify,
   getProducts,
-  getProductsSiteMap,
   getShopId,
 } from '~/apis/shopify';
 import { DISCOUNT_REQUIRED } from '~/constants/messages.constant';
@@ -27,27 +26,26 @@ import { PlusIcon } from '@heroicons/react/24/outline';
 
 import ModalCreateDiscount from './ModalCreateDiscount';
 
-const { Option, OptGroup } = Select;
-
 interface DiscountProps {
     form: FormInstance
 }
-const { RangePicker } = DatePicker;
 
 const Discount = ({ form }: DiscountProps) => {
     const [modal, setModal] = useState<boolean>(false)
     const [discountCodes, setDiscountCodes] = useState<DiscountCode[]>([]);
     const [products, setProducts] = useState<Product[]>([])
-    const [productPage, setProductPage] = useState([])
     const [shopId, setShopId] = useState<string>('')
     const formData = form.getFieldsValue()
+    const [shopUrl, setShopUrl] = useState<string>('')
     const [modalConnectShopify, setModalConnectShopify] = useState<boolean>(false)
+    const [value, setValue] = useState("");
 
     const handleGetShopifyId = () => {
         getShopId().then(res => {
             setShopId(res?.data?.[0]?.id)
             handleGetDiscountCode(res?.data?.[0]?.id)
             handleGetProducts(res?.data?.[0]?.id)
+            setShopUrl(res?.data?.[0]?.shopUrl)
         })
     }
 
@@ -57,13 +55,11 @@ const Discount = ({ form }: DiscountProps) => {
 
     const handleGetProducts = (shopId: string) => {
         getProducts(shopId).then(res => setProducts(res.data.products))
-        getProductsSiteMap().then(res => setProductPage(res.data))
     }
 
     useEffect(() => {
         handleGetShopifyId()
     }, [])
-
 
     useEffect(() => {
         formData?.discountCode && form.setFieldValue('removed', formData?.discountCode)
@@ -79,6 +75,12 @@ const Discount = ({ form }: DiscountProps) => {
         })
     }
 
+    const handleBlur = () => {
+        if (value.startsWith(shopUrl)) {
+            setValue(value.replace(shopUrl, ""));
+            form.setFieldValue('trackingUrl', value.replace(shopUrl, ""))
+        }
+    };
 
     return (
         <div className="flex flex-col pt-8 items-start mt-6 border-t border-t-gray-200">
@@ -157,17 +159,13 @@ const Discount = ({ form }: DiscountProps) => {
                     name="trackingUrl"
                     rules={[{ required: false }]}
                 >
-                    <Select className='w-full' placeholder="Select an item">
-                        {productPage?.map((group) => (
-                            <OptGroup key={group?.title} label={group?.value}>
-                                {group?.children?.map((item) => (
-                                    <Option key={item?.value} value={item?.value}>
-                                        {item?.title}
-                                    </Option>
-                                ))}
-                            </OptGroup>
-                        ))}
-                    </Select>
+                    <Input
+                        addonBefore={shopUrl}
+                        value={value}
+                        onChange={(e) => setValue(e.target.value)}
+                        onBlur={handleBlur}
+                        placeholder="e.g. products/t-shirt"
+                    />
                 </Form.Item>
             </div>
 

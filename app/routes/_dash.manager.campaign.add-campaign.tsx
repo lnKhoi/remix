@@ -135,24 +135,24 @@ const CampaignForm = () => {
 
   // Debounced function to save form data to localStorage when user leaving
   const handleDraftCampaign = debounce(() => {
-    sessionStorage.setItem('campaignFormValues',
-      JSON.stringify({ ...form.getFieldsValue(), socialMedias: selectedSocials }));
+    // sessionStorage.setItem('campaignFormValues',
+    //   JSON.stringify({ ...form.getFieldsValue(), socialMedias: selectedSocials }));
   }, 1000);
 
   // Load form values from localStorage when the component mounts
-  useEffect(() => {
-    const getLastFormValues = sessionStorage.getItem('campaignFormValues');
+  // useEffect(() => {
+  //   const getLastFormValues = sessionStorage.getItem('campaignFormValues');
 
-    if (getLastFormValues) {
-      const parsedValues = JSON.parse(getLastFormValues);
+  //   if (getLastFormValues) {
+  //     const parsedValues = JSON.parse(getLastFormValues);
 
-      if (parsedValues.socialMedias) {
-        setSelectedSocials(parsedValues?.socialMedias)
-      }
+  //     if (parsedValues.socialMedias) {
+  //       setSelectedSocials(parsedValues?.socialMedias)
+  //     }
 
-      form.setFieldsValue(parsedValues);
-    }
-  }, [form]);
+  //     form.setFieldsValue(parsedValues);
+  //   }
+  // }, [form]);
 
   return (
     <div className='custom-select custom-form'>
