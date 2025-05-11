@@ -108,8 +108,8 @@ function Reports({ campaign, filter }: ReportsProps) {
             <Collapse.Panel header="General Performance" key="1">
               <span className="text-gray-500">Quickly understand the overall status of your campaign.</span>
               <div className="grid grid-cols-4 gap-5 mt-5">
-                <Metric desc='Campaign revenue through URL link' unit="$" data={reportData.totalRevenue} title="Total Revenue" loading={loading} />
-                <Metric desc='Total campaign budget + Cost of product + Shipping fee' unit="$" data={reportData.totalCost as number} title="Total Cost" loading={loading} />
+                <Metric desc='Campaign revenue through URL link' unit="$" data={reportData.totalRevenue} title="Total revenue" loading={loading} />
+                <Metric desc='Total campaign budget + Cost of product + Shipping fee' unit="$" data={reportData.totalCost as number} title="Total cost" loading={loading} />
               </div>
             </Collapse.Panel>
           </Collapse>
@@ -118,8 +118,8 @@ function Reports({ campaign, filter }: ReportsProps) {
             <Collapse.Panel header="Social Media Metrics" key="2">
               <span className="text-gray-500">Evaluate audience reach and engagement across platforms.</span>
               <div className="grid grid-cols-4 gap-5 mt-5">
-                <Metric desc='(Total Engagement / Total Followers) * 100%' unit="%" data={reportData.engagementRate} title="Engagement Rate" loading={loading} />
-                <Metric desc='Comment count / Post reach count) * 100%' unit="%" data={reportData.commentRate as number} title="Comment Rate" loading={loading} />
+                <Metric desc='(Total Engagement / Total Followers) * 100%' unit="%" data={reportData.engagementRate} title="Engagement rate (%)" loading={loading} />
+                <Metric desc='Comment count / Post reach count) * 100%' unit="%" data={reportData.commentRate as number} title="Comment rate (%)" loading={loading} />
               </div>
             </Collapse.Panel>
           </Collapse>
@@ -128,12 +128,24 @@ function Reports({ campaign, filter }: ReportsProps) {
             <Collapse.Panel header="Website Traffic Metric" key="3">
               <span className="text-gray-500">Understand where users are coming from, how long they stay, and bounce rates.</span>
               <div className="grid grid-cols-4 gap-5 mt-5">
-                <Metric desc='Total click' unit="" data={reportData.totalClicks} title="Product View" loading={loading} />
-                <Metric desc='Total unique clicks on URL link' unit="" data={reportData.totalClicks as number} title="Total Clicks" loading={loading} />
-                <Metric desc='Total time click / Total click' unit="" data={reportData.averageDuration} title="Average Duration (min)" loading={loading} />
-                <Metric desc='Total Bounce/ Total click * 100' unit="%" data={reportData.bounceRate} title="Bounced Rate" loading={loading} />
-                <Metric desc=' (Clicks ÷ Impressions) x 100%' unit="%" data={reportData.totalCtr as number} title="Click through rate" loading={loading} />
-                <Metric unit="" data={9999} loading={false} title="View content" />
+                <Metric desc='Total unique clicks on URL link' unit="" data={reportData.totalClicks as number} title="Total clicks" loading={loading} />
+                <Metric unit="" data={0} loading={false} title="Total view content" />
+                <Metric desc='Total click' unit="" data={reportData.totalClicks} title="Total product view" loading={loading} />
+                <Metric desc='Total time click / Total click' unit="" data={reportData.averageDuration} title="Average duration (min)" loading={loading} />
+              </div>
+              <div className="grid grid-cols-4 gap-5 mt-5">
+                <Metric desc='Cost / Total Clicks' unit="$" data={reportData.costPerClicks} title="Cost per click" loading={loading} />
+                <Metric desc='' unit="%" data={0} title="View content rate (%)" loading={loading} />
+                <Metric desc='' unit="%" data={0} title="View product rate (%)" loading={loading} />
+                <Metric desc='Total Bounce/ Total click * 100' unit="%" data={reportData.bounceRate} title="Bounced rate (%)" loading={loading} />
+              </div>
+              <div className="grid grid-cols-4 gap-5 mt-5">
+              </div>
+              <div className="grid grid-cols-4 gap-5 mt-5">
+                <Metric desc=' (Clicks ÷ Impressions) x 100%' unit="%" data={reportData.totalCtr as number} title="Click through rate (%)" loading={loading} />
+              </div>
+              <div className="grid grid-cols-4 gap-5 mt-5">
+                {/* <Metric desc=' (Clicks ÷ Impressions) x 100%' unit="%" data={reportData.totalCtr as number} title="Click through rate (%)" loading={loading} /> */}
               </div>
             </Collapse.Panel>
           </Collapse>
@@ -142,25 +154,26 @@ function Reports({ campaign, filter }: ReportsProps) {
             <Collapse.Panel header="Conversion Funnel Metrics" key="4">
               <span className="text-gray-500">Identify strengths and bottlenecks in the sales funnel and optimize conversion rates.</span>
               <div className="grid grid-cols-4 gap-5 mt-5">
-                <Metric desc='Total add to cart /  Total click' unit="%" data={reportData.addToCartPerClick as number} title="Add to cart rate" loading={loading} />
-                <Metric desc='Total Cost  / Total add to cart' unit="$" data={reportData.costPerAddToCarts as number} title="Cost per add to cart" loading={loading} />
-                <Metric desc='The number of add to cart session based' unit="" data={reportData.totalAddToCarts as number} title="Total Add to cart" loading={loading} />
-                {/* <Metric desc='(Product price * Quantity_cart) / Quantity_cart' unit="" data={reportData.averageAddToCart as number} title="Average Add to cart" loading={loading} /> */}
-                <Metric desc='Total purchases/ Total click' unit="%" data={reportData.conversionRate} title="Conversion Rate" loading={loading} />
-                <Metric desc='((Revenue – cost)/ cost) * 100%' unit="%" data={reportData.roi} title="ROI (%)" loading={loading} />
-                <Metric desc='Cost / Total Clicks' unit="$" data={reportData.costPerClicks} title="Cost per click" loading={loading} />
-                <Metric desc='Cost/ Total purchases' unit="$" data={reportData.cpa} title="CPA (Cost per acquisition)" loading={loading} />
+                <Metric desc='The number of add to cart session based' unit="" data={reportData.totalAddToCarts as number} title="Total add to cart" loading={loading} />
                 <Metric desc='Total number of orders on shopify ordered via url link' unit="" data={reportData.totalPurchases} title="Total order" loading={loading} />
+                <Metric desc='((Revenue – cost)/ cost) * 100%' unit="%" data={reportData.roi} title="ROI (%)" loading={loading} />
+              </div>
+              <div className="grid grid-cols-4 gap-5 mt-5">
+                <Metric desc='Total add to cart /  Total click' unit="%" data={reportData.addToCartPerClick as number} title="Add to cart rate (%)" loading={loading} />
                 <Metric desc='(Product price * Quantity_order) / Quantity_order' unit="$" data={reportData.averageOrder as number} title="Average order  value" loading={loading} />
+                <Metric desc='Cost/ Total purchases' unit="$" data={reportData.cpa} title="CPA (Cost per acquisition)" loading={loading} />
+              </div>
+              <div className="grid grid-cols-4 gap-5 mt-5">
+                <Metric desc='Total Cost  / Total add to cart' unit="$" data={reportData.costPerAddToCarts as number} title="Cost per add to cart" loading={loading} />
+                <Metric desc='Total purchases/ Total click' unit="%" data={reportData.conversionRate} title="Conversion rate (%)" loading={loading} />
               </div>
             </Collapse.Panel>
           </Collapse>
-
           <Collapse defaultActiveKey={['5']} bordered={false} expandIconPosition="right">
             <Collapse.Panel header="Customer Behavior" key="5">
               <span className="text-gray-500">Gain deeper insights into customer behavior to enhance UX and increase sales.</span>
               <div className="grid grid-cols-4 gap-5 mt-5">
-                <Metric desc='Total purchases + Total Add to cart' unit="" data={reportData.customerBehavior as number} title="Customer Behavior" loading={loading} />
+                <Metric desc='Total purchases + Total Add to cart' unit="" data={reportData.customerBehavior as number} title="Customer behavior" loading={loading} />
               </div>
             </Collapse.Panel>
           </Collapse>
