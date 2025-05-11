@@ -77,7 +77,7 @@ function InfluencerMetrics() {
             <span className="text-gray-500">Understand where users are coming from, how long they stay, and bounce rates.</span>
             <div className="grid grid-cols-4 gap-5 mt-5">
               <Metric desc='Total unique clicks on URL link' unit="" data={data?.totalClicks as number} loading={false} title="Total Clicks" />
-              <Metric desc='' unit="" data={0} loading={false} title="Total view content" />
+              <Metric desc='' unit="" data={0} loading={false} title="View content" />
               <Metric desc='Total clicks' unit="" data={data?.totalClicks} loading={false} title="Total product View" />
               <Metric desc='Total time clicks ÷ Total clicks' unit="" data={data?.averageDuration} loading={false} title="Average Duration (mins)" />
             </div>
@@ -89,6 +89,7 @@ function InfluencerMetrics() {
             </div>
             <div className="grid grid-cols-4 gap-5 mt-5">
               <Metric desc=' (Total clicks ÷ Impressions) x 100%' unit="%" data={data?.ctr as number} loading={false} title="Click through rate (%)" />
+              <Metric desc='' unit="$" data={0} title="Cost per view content" loading={false} />
             </div>
           </Panel>
         </Collapse>
@@ -99,16 +100,16 @@ function InfluencerMetrics() {
             <div className="grid grid-cols-4 gap-5 mt-5">
               <Metric desc='The number of add to cart session based' unit="" data={data?.totalAddToCarts} loading={false} title="Total add to cart" />
               <Metric desc='Total number of orders on shopify ordered via url link' unit="" data={data?.totalOrders} loading={false} title="Total order" />
-              <Metric desc='((Total revenue – Total cost) ÷ Total cost) x 100%' unit="%" data={data?.roi} loading={false} title="ROI (%)" />
+              <Metric desc='(Product price x Quantity) ÷ Total quantity' unit="$" data={data?.averageOrder as number} loading={false} title="Average order value" />
             </div>
             <div className="grid grid-cols-4 gap-5 mt-5">
               <Metric desc='Total add to cart ÷  Total clicks' unit="%" data={data?.addToCart as number} loading={false} title="Add to cart rate (%)" />
-              <Metric desc='(Product price x Quantity) ÷ Total quantity' unit="$" data={data?.averageOrder as number} loading={false} title="Average order value" />
-              <Metric desc='Total cost ÷ Total order' unit="$" data={data?.cpa} loading={false} title="CPA (Cost per acquisition)" />
+              <Metric desc='Total order ÷ Total clicks' unit="%" data={data?.conversionRate} loading={false} title="Conversion rate (%)" />
+              <Metric desc='((Total revenue – Total cost) ÷ Total cost) x 100%' unit="%" data={data?.roi} loading={false} title="ROI (%)" />
             </div>
             <div className="grid grid-cols-4 gap-5 mt-5">
               <Metric desc='Total cost ÷ Total add to cart' unit="$" data={data?.costPerAddToCart as number} loading={false} title="Cost per add to cart" />
-              <Metric desc='Total order ÷ Total clicks' unit="%" data={data?.conversionRate} loading={false} title="Conversion rate (%)" />
+              <Metric desc='Total cost ÷ Total order' unit="$" data={data?.cpa} loading={false} title="CPA (Cost per acquisition)" />
 
             </div>
           </Panel>
