@@ -1,8 +1,8 @@
 import React, { memo } from 'react';
 
 import {
-  Skeleton,
-  Tooltip,
+    Skeleton,
+    Tooltip,
 } from 'antd';
 import CountUp from 'react-countup';
 
@@ -27,9 +27,11 @@ function Metric({ loading, data, title, unit, desc }: MetricProps) {
                     {unit == '$' && '$'}<CountUp decimals={2} end={data || 0} />{unit == '%' && '%'}
                 </span>
             }
-            <Tooltip title={desc}>
-                <InformationCircleIcon className='w-5 cursor-pointer absolute right-2 top-2 h-5 text-gray-600' />
-            </Tooltip>
+            {desc !== '' && (
+                <Tooltip title={desc}>
+                    <InformationCircleIcon className='w-5 cursor-pointer absolute right-2 top-2 h-5 text-gray-600' />
+                </Tooltip>
+            )}
         </div>
     )
 }
