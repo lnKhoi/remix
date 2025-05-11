@@ -56,8 +56,8 @@ function InfluencerMetrics() {
           <Panel header="General Performance" key="1">
             <span className="text-gray-500">Quickly understand the overall status of your campaign.</span>
             <div className="grid grid-cols-4 gap-5 mt-5">
-              <Metric loading={false} unit="$" data={data?.totalRevenue} title="Total revenue" />
-              <Metric loading={false} unit="$" data={data?.totalCost as number} title="Total cost" />
+              <Metric desc='Campaign revenue through URL link' loading={false} unit="$" data={data?.totalRevenue} title="Total revenue" />
+              <Metric desc='Total campaign budget + Cost of product + Shipping fee' loading={false} unit="$" data={data?.totalCost as number} title="Total cost" />
             </div>
           </Panel>
         </Collapse>
@@ -66,8 +66,8 @@ function InfluencerMetrics() {
           <Panel header="Social Media Metrics" key="2">
             <span className="text-gray-500">Evaluate audience reach and engagement across platforms.</span>
             <div className="grid grid-cols-4 gap-5 mt-5">
-              <Metric unit="%" data={data?.engagementRate} loading={false} title="Engagement rate (%)" />
-              <Metric unit="%" data={data?.commentRate} loading={false} title="Comment rate (%)" />
+              <Metric desc='(Total Engagement ÷ Total Followers) x 100%' unit="%" data={data?.engagementRate} loading={false} title="Engagement rate (%)" />
+              <Metric desc='(Comment count ÷ Post reach count) x 100%' unit="%" data={data?.commentRate} loading={false} title="Comment rate (%)" />
             </div>
           </Panel>
         </Collapse>
@@ -76,19 +76,19 @@ function InfluencerMetrics() {
           <Panel header="Website Traffic Metric" key="3">
             <span className="text-gray-500">Understand where users are coming from, how long they stay, and bounce rates.</span>
             <div className="grid grid-cols-4 gap-5 mt-5">
-              <Metric unit="" data={data?.totalClicks as number} loading={false} title="Total Clicks" />
-              <Metric unit="" data={9999} loading={false} title="Total view content" />
-              <Metric unit="" data={data?.totalClicks} loading={false} title="Total product View" />
-              <Metric unit="" data={data?.averageDuration} loading={false} title="Average Duration (min)" />
+              <Metric desc='Total unique clicks on URL link' unit="" data={data?.totalClicks as number} loading={false} title="Total Clicks" />
+              <Metric desc='' unit="" data={0} loading={false} title="Total view content" />
+              <Metric desc='Total clicks' unit="" data={data?.totalClicks} loading={false} title="Total product View" />
+              <Metric desc='Total time clicks ÷ Total clicks' unit="" data={data?.averageDuration} loading={false} title="Average Duration (mins)" />
             </div>
             <div className="grid grid-cols-4 gap-5 mt-5">
-              <Metric unit="$" data={data?.costPerClick} loading={false} title="Cost per click" />
+              <Metric desc='Total cost ÷ Total clicks' unit="$" data={data?.costPerClick} loading={false} title="Cost per click" />
               <Metric desc='' unit="%" data={0} title="View content rate (%)" loading={false} />
               <Metric desc='' unit="%" data={0} title="View product rate (%)" loading={false} />
-              <Metric unit="%" data={data?.bounceRate} loading={false} title="Bounced rate (%)" />
+              <Metric desc='Total bounce ÷ Total clicks * 100' unit="%" data={data?.bounceRate} loading={false} title="Bounced rate (%)" />
             </div>
             <div className="grid grid-cols-4 gap-5 mt-5">
-              <Metric unit="%" data={data?.ctr as number} loading={false} title="Click through rate (%)" />
+              <Metric desc=' (Total clicks ÷ Impressions) x 100%' unit="%" data={data?.ctr as number} loading={false} title="Click through rate (%)" />
             </div>
           </Panel>
         </Collapse>
@@ -97,18 +97,18 @@ function InfluencerMetrics() {
           <Panel header="Conversion Funnel Metrics" key="4">
             <span className="text-gray-500">Identify strengths and bottlenecks in the sales funnel and optimize conversion rates.</span>
             <div className="grid grid-cols-4 gap-5 mt-5">
-              <Metric unit="" data={data?.totalAddToCarts} loading={false} title="Total add to cart" />
-              <Metric unit="" data={data?.totalOrders} loading={false} title="Total order" />
-              <Metric unit="%" data={data?.roi} loading={false} title="ROI (%)" />
+              <Metric desc='The number of add to cart session based' unit="" data={data?.totalAddToCarts} loading={false} title="Total add to cart" />
+              <Metric desc='Total number of orders on shopify ordered via url link' unit="" data={data?.totalOrders} loading={false} title="Total order" />
+              <Metric desc='((Total revenue – Total cost) ÷ Total cost) x 100%' unit="%" data={data?.roi} loading={false} title="ROI (%)" />
             </div>
             <div className="grid grid-cols-4 gap-5 mt-5">
-              <Metric unit="%" data={data?.addToCart as number} loading={false} title="Add to cart rate (%)" />
-              <Metric unit="$" data={data?.averageOrder as number} loading={false} title="Average order value" />
-              <Metric unit="$" data={data?.cpa} loading={false} title="CPA (Cost per acquisition)" />
+              <Metric desc='Total add to cart ÷  Total clicks' unit="%" data={data?.addToCart as number} loading={false} title="Add to cart rate (%)" />
+              <Metric desc='(Product price x Quantity) ÷ Total quantity' unit="$" data={data?.averageOrder as number} loading={false} title="Average order value" />
+              <Metric desc='Total cost ÷ Total order' unit="$" data={data?.cpa} loading={false} title="CPA (Cost per acquisition)" />
             </div>
             <div className="grid grid-cols-4 gap-5 mt-5">
-              <Metric unit="$" data={data?.costPerAddToCart as number} loading={false} title="Cost per add to cart" />
-              <Metric unit="%" data={data?.conversionRate} loading={false} title="Conversion rate (%)" />
+              <Metric desc='Total cost ÷ Total add to cart' unit="$" data={data?.costPerAddToCart as number} loading={false} title="Cost per add to cart" />
+              <Metric desc='Total order ÷ Total clicks' unit="%" data={data?.conversionRate} loading={false} title="Conversion rate (%)" />
 
             </div>
           </Panel>
@@ -118,7 +118,7 @@ function InfluencerMetrics() {
           <Panel header="Customer Behavior" key="5">
             <span className="text-gray-500">Gain deeper insights into customer behavior to enhance UX and increase sales.</span>
             <div className="grid grid-cols-4 gap-5 mt-5">
-              <Metric unit="" data={data?.behavior as number} loading={false} title="Customer behavior" />
+              <Metric desc='Total order + Total Add to cart' unit="" data={data?.behavior as number} loading={false} title="Customer behavior" />
             </div>
           </Panel>
         </Collapse>
