@@ -11,7 +11,7 @@ import { Link } from '@remix-run/react';
 
 type ColumnsProps = {
   loading: boolean,
-  id:string
+  id: string
 };
 
 export const influencerPerformanceColumns = ({
@@ -138,13 +138,15 @@ export const initialReport = {
   roi: 0,
   costPerConversion: 0,
   costPerClicks: 0,
-  commentRate:0,
+  contentView: 0,
+  commentRate: 0,
+  contentViewRate: 0,
   influencers: [],
   totalCost: 0,
   totalCtr: 0,
   cpa: 0,
   totalPurchases: 0,
-  averageAddToCart:0,
+  averageAddToCart: 0,
   averageOrder: 0,
   addToCartPerClick: 0,
   costPerAddToCarts: 0,

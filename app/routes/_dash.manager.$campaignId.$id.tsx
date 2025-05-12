@@ -20,7 +20,6 @@ function InfluencerMetrics() {
   const data = location?.state?.record
   const { Panel } = Collapse;
 
-
   if (!data) return <></>
 
   return (
@@ -77,13 +76,13 @@ function InfluencerMetrics() {
             <span className="text-gray-500">Understand where users are coming from, how long they stay, and bounce rates.</span>
             <div className="grid grid-cols-4 gap-5 mt-5">
               <Metric desc='Total unique clicks on URL link' unit="" data={data?.totalClicks as number} loading={false} title="Total Clicks" />
-              <Metric desc='' unit="" data={0} loading={false} title="View content" />
+              <Metric desc='' unit="" data={data?.contentView} loading={false} title="View content" />
               <Metric desc='Total clicks' unit="" data={data?.totalClicks} loading={false} title="Total product View" />
               <Metric desc='Total time clicks ÷ Total clicks' unit="" data={data?.averageDuration} loading={false} title="Average Duration (mins)" />
             </div>
             <div className="grid grid-cols-4 gap-5 mt-5">
               <Metric desc='Total cost ÷ Total clicks' unit="$" data={data?.costPerClick} loading={false} title="Cost per click" />
-              <Metric desc='' unit="%" data={0} title="View content rate (%)" loading={false} />
+              <Metric desc='' unit="%" data={data?.contentViewRate} title="View content rate (%)" loading={false} />
               <Metric desc='' unit="%" data={0} title="View product rate (%)" loading={false} />
               <Metric desc='Total bounce ÷ Total clicks * 100' unit="%" data={data?.bounceRate} loading={false} title="Bounced rate (%)" />
             </div>

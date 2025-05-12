@@ -8,40 +8,42 @@ export type ReportCampaign = {
     totalRevenue: number;
     costPerConversion: number;
     costPerClicks: number;
-    totalPurchases:number
+    totalPurchases: number
     roi: number;
-    cpa:number
-    averageOrder?:number
-    totalCtr?:number,
-    customerBehavior?:number
-    averageAddToCart?:number
-    totalAddToCarts?:number
-    commentRate?:number
-    bounceRate:number,
-    averageDuration:number
-    totalCost?:number
-    costPerAddToCarts?:number
-    addToCartPerClick?:number
+    cpa: number
+    averageOrder?: number
+    totalCtr?: number,
+    customerBehavior?: number
+    averageAddToCart?: number
+    totalAddToCarts?: number
+    commentRate?: number
+    bounceRate: number,
+    averageDuration: number
+    contentViewRate: number
+    contentView: number
+    totalCost?: number
+    costPerAddToCarts?: number
+    addToCartPerClick?: number
     influencers: InfluencerInReport[]
 };
 
 export type InfluencerInReport = {
     creatorId?: string;
     totalImpressions?: number;
-    cpa?:number
+    cpa?: number
     totalFollowers?: number;
-    revenue?:number
-    ctr?:number
-    roi?:number
-    instagramProfilePictureUrl?:string
+    revenue?: number
+    ctr?: number
+    roi?: number
+    instagramProfilePictureUrl?: string
     totalInteractions?: number;
     engagementRate?: number;
-    totalPurchases?:number
-    totalOrders?:number
-    costPerClick?:number
-    totalRevenue?:number
+    totalPurchases?: number
+    totalOrders?: number
+    costPerClick?: number
+    totalRevenue?: number
     conversionRate?: number;
-    totalClicks?:number
+    totalClicks?: number
     creator?: Creator;
 }
 
