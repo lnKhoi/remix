@@ -20,6 +20,7 @@ function InfluencerMetrics() {
   const data = location?.state?.record
   const { Panel } = Collapse;
 
+
   if (!data) return <></>
 
   return (
