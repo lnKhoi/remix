@@ -61,7 +61,6 @@ function Reports({ campaign, filter }: ReportsProps) {
       bounceAndDuration(id as string, filter)
     ]).finally(() => setLoading(false))
 
-
     setReportData({
       ...reportData,
       roi: roi?.data?.roi,
@@ -87,6 +86,7 @@ function Reports({ campaign, filter }: ReportsProps) {
       totalAddToCarts: cartInfo?.data?.totalAddToCarts,
       commentRate: igStats?.data?.commentRate,
       contentView: duration?.data?.contentView,
+      costPerContentView: duration?.data?.costPerContentView,
       contentViewRate: duration?.data?.contentViewRate
     })
 
@@ -140,7 +140,7 @@ function Reports({ campaign, filter }: ReportsProps) {
               </div>
               <div className="grid grid-cols-4 gap-5 mt-5">
                 <Metric desc=' (Total clicks ÷ Impressions) x 100%' unit="%" data={reportData.totalCtr as number} title="Click through rate (%)" loading={loading} />
-                <Metric desc='Total cost ÷ View content' unit="$" data={0} title="Cost per view content" loading={loading} />
+                <Metric desc='Total cost ÷ View content' unit="$" data={reportData?.costPerContentView as number} title="Cost per view content" loading={loading} />
               </div>
               <div className="grid grid-cols-4 gap-5 mt-5">
                 {/* <Metric desc=' (Clicks ÷ Impressions) x 100%' unit="%" data={reportData.totalCtr as number} title="Click through rate (%)" loading={loading} /> */}

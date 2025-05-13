@@ -10,6 +10,7 @@ export type ReportCampaign = {
     costPerClicks: number;
     totalPurchases: number
     roi: number;
+    costPerContentView: number
     cpa: number
     averageOrder?: number
     totalCtr?: number,
