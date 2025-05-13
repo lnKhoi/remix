@@ -86,7 +86,7 @@ function InfluencerMetrics() {
             </div>
             <div className="grid grid-cols-4 gap-5 mt-5">
               <Metric desc=' (Total clicks ÷ Impressions) x 100%' unit="%" data={data?.ctr as number} loading={false} title="Click through rate (%)" />
-              <Metric desc='Total cost ÷ View content' unit="$" data={0} title="Cost per view content" loading={false} />
+              <Metric desc='Total cost ÷ View content' unit="$" data={data?.costPerContentView} title="Cost per view content" loading={false} />
             </div>
           </Panel>
         </Collapse>

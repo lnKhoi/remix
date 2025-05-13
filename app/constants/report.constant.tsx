@@ -137,6 +137,7 @@ export const initialReport = {
   engagementRate: 0,
   roi: 0,
   costPerConversion: 0,
+  costPerContentView: 0,
   costPerClicks: 0,
   contentView: 0,
   commentRate: 0,
