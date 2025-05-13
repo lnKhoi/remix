@@ -130,21 +130,17 @@ function Reports({ campaign, filter }: ReportsProps) {
               <span className="text-gray-500">Understand where users are coming from, how long they stay, and bounce rates.</span>
               <div className="grid grid-cols-4 gap-5 mt-5">
                 <Metric desc='Total unique clicks on URL link' unit="" data={reportData.totalClicks as number} title="Total clicks" loading={loading} />
-                <Metric unit="" desc='' data={reportData.contentView} loading={false} title="View content" />
-                <Metric desc='Total clicks' unit="" data={reportData.totalClicks} title="Total product view" loading={loading} />
+                <Metric unit="" desc='Total view product on shop page' data={reportData.contentView} loading={false} title="View content" />
                 <Metric desc='Total time clicks ÷ Total clicks' unit="" data={reportData.averageDuration} title="Average duration (mins)" loading={loading} />
               </div>
               <div className="grid grid-cols-4 gap-5 mt-5">
                 <Metric desc='Total cost ÷ Total clicks' unit="$" data={reportData.costPerClicks} title="Cost per click" loading={loading} />
-                <Metric desc='' unit="%" data={reportData.contentViewRate} title="View content rate (%)" loading={loading} />
-                <Metric desc='' unit="%" data={0} title="View product rate (%)" loading={loading} />
-                <Metric desc='Total bounce ÷ Total clicks * 100' unit="%" data={reportData.bounceRate} title="Bounced rate (%)" loading={loading} />
-              </div>
-              <div className="grid grid-cols-4 gap-5 mt-5">
+                <Metric desc='View content ÷ Total clicks x 100%' unit="%" data={reportData.contentViewRate} title="View content rate (%)" loading={loading} />
+                <Metric desc='Total bounce ÷ Total clicks x 100%' unit="%" data={reportData.bounceRate} title="Bounced rate (%)" loading={loading} />
               </div>
               <div className="grid grid-cols-4 gap-5 mt-5">
                 <Metric desc=' (Total clicks ÷ Impressions) x 100%' unit="%" data={reportData.totalCtr as number} title="Click through rate (%)" loading={loading} />
-                <Metric desc='' unit="$" data={0} title="Cost per view content" loading={loading} />
+                <Metric desc='Total cost ÷ View content' unit="$" data={0} title="Cost per view content" loading={loading} />
               </div>
               <div className="grid grid-cols-4 gap-5 mt-5">
                 {/* <Metric desc=' (Clicks ÷ Impressions) x 100%' unit="%" data={reportData.totalCtr as number} title="Click through rate (%)" loading={loading} /> */}
