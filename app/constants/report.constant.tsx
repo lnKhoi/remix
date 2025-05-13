@@ -92,7 +92,7 @@ export const influencerPerformanceColumns = ({
         </div>
     },
     {
-      title: 'Total Purchases',
+      title: 'Total Order',
       render: (_, record) =>
         <div>
           {
